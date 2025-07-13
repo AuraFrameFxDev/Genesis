@@ -10,12 +10,22 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.sandbox.ui"
-    compileSdk = 36
+    compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
-        minSdk = 33
+        minSdk = rootProject.extra["minSdk"] as Int
+        // targetSdk is deprecated in library modules, using testOptions and lint instead
+        testOptions.targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
+        lint.targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        
+        // Configure NDK if needed
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+            version = rootProject.extra["ndkVersion"] as String
+            debugSymbolLevel = "FULL"
+        }
     }
 
     buildTypes {
@@ -38,6 +48,20 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    
+    packaging {
+        resources {
+            excludes.addAll(
+                listOf(
+                    "META-INF/*.kotlin_module",
+                    "META-INF/*.version",
+                    "META-INF/proguard/*",
+                    "**/libjni*.so"
+                )
+            )
+        }
     }
 
     composeOptions {
@@ -46,38 +70,37 @@ android {
 }
 
 dependencies {
-    // Core project dependency
-    implementation(project(":app"))
+    // Core project dependency - use api to expose dependencies to dependent modules
+    api(project(":app"))
 
     // AndroidX Core
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
-    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation(libs.androidxCoreKtx)
+    implementation(libs.androidxLifecycleRuntimeKtx)
+    implementation(libs.androidxActivityCompose)
 
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.animation:animation")
-    implementation("androidx.compose.foundation:foundation")
+    implementation(platform(libs.composeBom))
+    implementation(libs.ui)
+    implementation(libs.uiToolingPreview)
+    implementation(libs.material3)
+    implementation(libs.animation)
+    implementation(libs.foundation)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.1")
+    implementation(libs.navigationComposeV291)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    kapt("com.google.dagger:hilt-compiler:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hiltAndroid)
+    kapt(libs.hiltCompiler)
+    implementation(libs.hiltNavigationCompose)
 
     // Debug tools
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
+    debugImplementation(libs.uiTooling)
+    debugImplementation(libs.uiTestManifest)
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.06.01"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation(libs.testJunit)
+    androidTestImplementation(libs.junitV115)
+    androidTestImplementation(libs.espressoCoreV351)
+    androidTestImplementation(libs.uiTestJunit4)
 }

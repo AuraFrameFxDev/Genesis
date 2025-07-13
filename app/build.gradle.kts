@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     // Core plugins
     alias(libs.plugins.androidApplication) apply true
@@ -17,36 +19,64 @@ plugins {
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx"
-    compileSdk = 36  // Compatible with AGP 8.8.0
+    namespace = "com.example.app"
+    compileSdk = 36  // Using API level 36 as per Android Studio's recommendation
+    
+    // Enable build config generation
+    buildFeatures {
+        buildConfig = true
+        compose = true
+        viewBinding = true
+        ndkVersion = "27.0.12077973"
+    }
 
     defaultConfig {
-        applicationId = "dev.aurakai.auraframefx"
-        minSdk = 33
-        targetSdk = 36  // Compatible with AGP 8.8.0
+        applicationId = "com.example.app"
+        minSdk = 26
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+        testInstrumentationRunner = "com.example.app.HiltTestRunner"
         multiDexEnabled = true
 
-        // Specify NDK version
-        ndkVersion = "27.0.12077973"
-        
-        // Specify ABI filters
+        // NDK configuration
         ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+            // Specify the ABI architectures you want to build for
+            abiFilters.clear()
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+            
+            // Specify NDK version explicitly
+            version = "27.0.12077973"
         }
-
-        externalNativeBuild {
-            cmake {
-                cppFlags += ""
-                arguments(
-                    "-DANDROID_STL=c++_shared",
-                    "-DANDROID_CPP_FEATURES=rtti exceptions"
+        
+        // Enable prefab for native dependencies
+        buildFeatures {
+            prefab = true
+        }
+        
+        // Packaging options for native libraries
+        packaging {
+            resources {
+                excludes.addAll(
+                    listOf(
+                        "META-INF/*.kotlin_module",
+                        "META-INF/*.version",
+                        "META-INF/proguard/*",
+                        "**/libjni*.so"
+                    )
                 )
+                
+                // For native libraries
+                jniLibs {
+                    // Keep debug symbols in release builds for crash reporting
+                    keepDebugSymbols.add("**/*.so")
+                    
+                    // Exclude unwanted ABIs if needed
+                    // excludes += listOf("armeabi-v7a", "x86")
+                }
             }
         }
-
+        
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -68,11 +98,6 @@ android {
         viewBinding = true
     }
 
-    // Configure Compose
-    buildFeatures {
-        compose = true
-    }
-    
     // Configure Compose Compiler
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -85,7 +110,7 @@ android {
     
     kotlin {
         compilerOptions {
-            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+            jvmTarget = JvmTarget.JVM_21
             freeCompilerArgs.addAll(
                 "-Xjvm-default=all",
                 "-Xcontext-receivers",
@@ -102,18 +127,39 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
+            version = rootProject.extra["cmakeVersion"] as String
+            
         }
+    }
+    
+    // Enable prefab for native dependencies
+    buildFeatures {
+        prefab = true
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        checkDependencies = true
+        lintConfig = file("lint.xml")
+        warningsAsErrors = true
+        abortOnError = true
+        checkReleaseBuilds = true
+        checkGeneratedSources = true
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+        disable.add("GradleDeprecatedConfiguration")
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+
+
     }
     
     // Configure build variants
     buildTypes {
         debug {
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DEBUG"
-                }
-            }
+            // Debug flags are now handled by CMake
         }
         release {
             isMinifyEnabled = false
@@ -121,11 +167,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DNDEBUG"
-                }
-            }
+            // Release flags are now handled by CMake
         }
     }
 }
@@ -138,9 +180,9 @@ openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set(openApiSpecPath)
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/kotlin")
-    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
-    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
-    invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
+    apiPackage.set("com.example.app.api.client.apis")
+    modelPackage.set("com.example.app.api.client.models")
+    invokerPackage.set("com.example.app.api.client.infrastructure")
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",
@@ -169,10 +211,25 @@ tasks.named("preBuild") {
     dependsOn("openApiGenerate")
 }
 
-// KMP/Native Exclusions
+// Dependency configurations
 configurations.all {
+    // KMP/Native Exclusions
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-common")
+    
+    // Resolution strategy for dependency conflicts
+    resolutionStrategy {
+        // Prefer stable versions
+        preferProjectModules()
+        
+        // Force specific versions for common dependencies
+        force(
+            "org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-common:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-reflect:${libs.versions.kotlin.get()}"
+        )
+    }
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-common")
     exclude(group = "org.jetbrains.kotlin.native")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")

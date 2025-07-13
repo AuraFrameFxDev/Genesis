@@ -1,5 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules
 
+// Project-wide variables
+extra["ndkVersion"] = "27.0.12077973"
+extra["cmakeVersion"] = "3.22.1"
+
+// Common versions for all modules
+extra["compileSdk"] = 36
+extra["targetSdk"] = 36
+extra["minSdk"] = 26
+
 // Configure buildscript repositories for plugins
 buildscript {
     repositories {
@@ -55,13 +64,59 @@ plugins {
 
 // Configure all projects with common settings
 allprojects {
+    // Set NDK and CMake versions for all subprojects
+    afterEvaluate {
+        if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
+            configure<com.android.build.gradle.BaseExtension> {
+                // Configure SDK versions - using android-36.2 as it's a valid format
+                compileSdkVersion = "android-36.2"
+                
+                defaultConfig {
+                    minSdk = (rootProject.extra["minSdk"] as? Int) ?: 26
+                    targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
+                    
+                    // Configure NDK
+                    ndk {
+                        abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+                        version = rootProject.extra["ndkVersion"] as String
+                        debugSymbolLevel = "FULL"
+                    }
+                }
+                
+                // Configure external native build
+                externalNativeBuild {
+                    cmake {
+                        version = rootProject.extra["cmakeVersion"] as String
+                    }
+                }
+                
+                // Enable prefab for native dependencies
+                buildFeatures.prefab = true
+                
+                // Configure packaging options
+                packagingOptions {
+                    jniLibs {
+                        keepDebugSymbols.add("**/*.so")
+                    }
+                    resources.excludes.addAll(
+                        listOf(
+                            "META-INF/*.kotlin_module",
+                            "META-INF/*.version",
+                            "META-INF/proguard/*",
+                            "**/libjni*.so"
+                        )
+                    )
+                }
+            }
+        }
+    }
     // Toolchain resolver plugin is applied in settings.gradle.kts
     
     // Configure Java toolchain for all projects
     plugins.withType<JavaBasePlugin> {
         extensions.configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(21)) // Java 21 required for Gradle 8.13+
+                languageVersion.set(JavaLanguageVersion.of(24)) // Java 24 required for AGP 8.14.2+
                 vendor.set(JvmVendorSpec.ADOPTIUM)
                 implementation.set(JvmImplementation.VENDOR_SPECIFIC)
             }
