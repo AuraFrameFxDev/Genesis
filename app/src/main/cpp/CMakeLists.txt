@@ -14,9 +14,23 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Set common compile flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fexceptions -fno-limit-debug-info -fvisibility=hidden")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fexceptions -fno-limit-debug-info -fvisibility=hidden -fvisibility-inlines-hidden")
+# Set C++ standard and properties
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Set common compile flags for all configurations
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fexceptions -fvisibility=hidden -fno-limit-debug-info")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fexceptions -fvisibility=hidden -fvisibility-inlines-hidden -fno-limit-debug-info")
+
+# Configuration-specific flags
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g -O0")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -g -O0")
+else()
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -DNDEBUG")
+endif()
 
 # Add JNI includes
 include_directories(
@@ -34,10 +48,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/in
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/intermediates/cxx/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/intermediates/cxx/${CMAKE_BUILD_TYPE}/${ANDROID_ABI})
 
-# Add source files
+# Add source files (exclude test files)
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
+
+# Filter out test files from main sources
+list(FILTER SRC_FILES EXCLUDE REGEX ".*_test\.cpp$")
+
+# Find test files
+file(GLOB_RECURSE TEST_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*_test.cpp"
 )
 
 # Create the shared library
@@ -46,6 +68,29 @@ add_library(
     SHARED
     ${SRC_FILES}
 )
+
+# Add test executable if tests are enabled
+if(BUILD_TESTING AND TEST_FILES)
+    enable_testing()
+    
+    # Create test executable
+    add_executable(${LIBRARY_NAME}_test
+        ${TEST_FILES}
+    )
+    
+    # Link test executable with main library and gtest
+    target_link_libraries(${LIBRARY_NAME}_test PRIVATE
+        ${LIBRARY_NAME}
+        gtest
+        gmock
+        ${log-lib}
+    )
+    
+    # Add test
+    add_test(NAME ${LIBRARY_NAME}_test
+        COMMAND ${LIBRARY_NAME}_test
+    )
+endif()
 
 # Set target properties
 target_compile_definitions(${LIBRARY_NAME} PRIVATE

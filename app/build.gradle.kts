@@ -18,12 +18,19 @@ plugins {
 
 android {
     namespace = "com.example.app"
-    compileSdk = 36  // Compatible with AGP 8.8.0
+    compileSdk = 36  // Using API level 36 as per Android Studio's recommendation
+    
+    // Enable build config generation
+    buildFeatures {
+        buildConfig = true
+        compose = true
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.app"
-        minSdk = 33
-        targetSdk = 36  // Compatible with AGP 8.8.0
+        minSdk = 26
+        targetSdk = 36  // Using API level 36 as per Android Studio's recommendation
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.example.app.HiltTestRunner"
@@ -81,11 +88,6 @@ android {
         viewBinding = true
     }
 
-    // Configure Compose
-    buildFeatures {
-        compose = true
-    }
-    
     // Configure Compose Compiler
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -116,7 +118,13 @@ android {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
+            // Let AGP handle the build directory
         }
+    }
+    
+    // Enable prefab for native dependencies
+    buildFeatures {
+        prefab = true
     }
 
     lint {
@@ -193,10 +201,25 @@ tasks.named("preBuild") {
     dependsOn("openApiGenerate")
 }
 
-// KMP/Native Exclusions
+// Dependency configurations
 configurations.all {
+    // KMP/Native Exclusions
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-common")
+    
+    // Resolution strategy for dependency conflicts
+    resolutionStrategy {
+        // Prefer stable versions
+        preferProjectModules()
+        
+        // Force specific versions for common dependencies
+        force(
+            "org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-common:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-reflect:${libs.versions.kotlin.get()}"
+        )
+    }
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-common")
     exclude(group = "org.jetbrains.kotlin.native")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")
