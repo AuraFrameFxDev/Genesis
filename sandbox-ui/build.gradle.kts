@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.androidxActivityCompose)
 
     // Compose BOM
-    implementation(libs.composeBom)
+    implementation(platform(libs.composeBom))
     implementation(libs.ui)
     implementation(libs.uiToolingPreview)
     implementation(libs.material3)
@@ -102,6 +102,5 @@ dependencies {
     testImplementation(libs.testJunit)
     androidTestImplementation(libs.junitV115)
     androidTestImplementation(libs.espressoCoreV351)
-    androidTestImplementation(libs.composeBom)
     androidTestImplementation(libs.uiTestJunit4)
 }
