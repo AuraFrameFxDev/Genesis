@@ -116,7 +116,7 @@ allprojects {
     plugins.withType<JavaBasePlugin> {
         extensions.configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(21)) // Java 21 required for Gradle 8.13+
+                languageVersion.set(JavaLanguageVersion.of(24)) // Java 24 required for AGP 8.14.2+
                 vendor.set(JvmVendorSpec.ADOPTIUM)
                 implementation.set(JvmImplementation.VENDOR_SPECIFIC)
             }

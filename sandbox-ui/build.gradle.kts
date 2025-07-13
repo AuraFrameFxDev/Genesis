@@ -74,34 +74,34 @@ dependencies {
     api(project(":app"))
 
     // AndroidX Core
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidxCoreKtx)
+    implementation(libs.androidxLifecycleRuntimeKtx)
+    implementation(libs.androidxActivityCompose)
 
-    // Compose BOM - versions come from the BOM
-    implementation(platform(libs.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.androidx.ui.graphics)
+    // Compose BOM
+    implementation(libs.composeBom)
+    implementation(libs.ui)
+    implementation(libs.uiToolingPreview)
+    implementation(libs.material3)
+    implementation(libs.animation)
+    implementation(libs.foundation)
 
-    // Navigation - version managed by BOM if using androidx.navigation:navigation-compose
-    implementation(libs.androidx.navigation.compose)
+    // Navigation
+    implementation(libs.navigationComposeV291)
 
-    // Hilt - versions managed by version catalog
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    // Hilt
+    implementation(libs.hiltAndroid)
+    kapt(libs.hiltCompiler)
+    implementation(libs.hiltNavigationCompose)
 
-    // Debug tools - versions come from the BOM
-    debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
+    // Debug tools
+    debugImplementation(libs.uiTooling)
+    debugImplementation(libs.uiTestManifest)
 
     // Testing
-    testImplementation(libs.test.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.testJunit)
+    androidTestImplementation(libs.junitV115)
+    androidTestImplementation(libs.espressoCoreV351)
+    androidTestImplementation(libs.composeBom)
+    androidTestImplementation(libs.uiTestJunit4)
 }
