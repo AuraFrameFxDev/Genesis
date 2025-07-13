@@ -25,46 +25,54 @@ android {
         buildConfig = true
         compose = true
         viewBinding = true
+        ndkVersion = "27.0.12077973"
     }
 
     defaultConfig {
         applicationId = "com.example.app"
         minSdk = 26
-        targetSdk = 36  // Using API level 36 as per Android Studio's recommendation
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.example.app.HiltTestRunner"
         multiDexEnabled = true
 
-        // NDK configuration - simplified for AGP 8.11.1+
+        // NDK configuration
         ndk {
-            // Keep only the most common architectures for smaller APK size
+            // Specify the ABI architectures you want to build for
             abiFilters.clear()
-            abiFilters.addAll(listOf("arm64-v8a")) // Remove armeabi-v7a for smaller APK
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
             
-            // Enable debug symbols
-            debugSymbolLevel = "FULL"
+            // Specify NDK version explicitly
+            version = "27.0.12077973"
         }
-
-        // External native build configuration will be set up in the main externalNativeBuild block
-        ndkVersion = "25.2.9519653"  // Use the exact NDK version that matches your installed version
+        
+        // Enable prefab for native dependencies
+        buildFeatures {
+            prefab = true
+        }
         
         // Packaging options for native libraries
         packaging {
-            jniLibs {
-                // Keep debug symbols in release builds for crash reporting
-                keepDebugSymbols += "**/*.so"
-            }
-            
-            // Exclude files that cause conflicts
-            resources.excludes.addAll(
-                listOf(
-                    "META-INF/*.kotlin_module",
-                    "META-INF/*.version",
-                    "META-INF/proguard/*",
-                    "**/libjni*.so"
+            resources {
+                excludes.addAll(
+                    listOf(
+                        "META-INF/*.kotlin_module",
+                        "META-INF/*.version",
+                        "META-INF/proguard/*",
+                        "**/libjni*.so"
+                    )
                 )
-            )
+                
+                // For native libraries
+                jniLibs {
+                    // Keep debug symbols in release builds for crash reporting
+                    keepDebugSymbols.add("**/*.so")
+                    
+                    // Exclude unwanted ABIs if needed
+                    // excludes += listOf("armeabi-v7a", "x86")
+                }
+            }
         }
         
         vectorDrawables {
@@ -117,8 +125,8 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
-            // Let AGP handle the build directory
+            version = rootProject.extra["cmakeVersion"] as String
+            
         }
     }
     

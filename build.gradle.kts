@@ -4,6 +4,11 @@
 extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 
+// Common versions for all modules
+extra["compileSdk"] = 36
+extra["targetSdk"] = 36
+extra["minSdk"] = 26
+
 // Configure buildscript repositories for plugins
 buildscript {
     repositories {
@@ -63,7 +68,20 @@ allprojects {
     afterEvaluate {
         if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
             configure<com.android.build.gradle.BaseExtension> {
-                ndkVersion = rootProject.extra["ndkVersion"] as String
+                // Configure SDK versions - using android-36.2 as it's a valid format
+                compileSdkVersion = "android-36.2"
+                
+                defaultConfig {
+                    minSdk = (rootProject.extra["minSdk"] as? Int) ?: 26
+                    targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
+                    
+                    // Configure NDK
+                    ndk {
+                        abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+                        version = rootProject.extra["ndkVersion"] as String
+                        debugSymbolLevel = "FULL"
+                    }
+                }
                 
                 // Configure external native build
                 externalNativeBuild {
@@ -72,10 +90,22 @@ allprojects {
                     }
                 }
                 
-                // Configure NDK options
-                defaultConfig.ndk {
-                    // Enable debug symbols in release builds for better crash reporting
-                    debugSymbolLevel = "FULL"
+                // Enable prefab for native dependencies
+                buildFeatures.prefab = true
+                
+                // Configure packaging options
+                packagingOptions {
+                    jniLibs {
+                        keepDebugSymbols.add("**/*.so")
+                    }
+                    resources.excludes.addAll(
+                        listOf(
+                            "META-INF/*.kotlin_module",
+                            "META-INF/*.version",
+                            "META-INF/proguard/*",
+                            "**/libjni*.so"
+                        )
+                    )
                 }
             }
         }
