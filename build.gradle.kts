@@ -1,5 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules
 
+// Project-wide variables
+extra["ndkVersion"] = "27.0.12077973"
+extra["cmakeVersion"] = "3.22.1"
+
 // Configure buildscript repositories for plugins
 buildscript {
     repositories {
@@ -55,6 +59,27 @@ plugins {
 
 // Configure all projects with common settings
 allprojects {
+    // Set NDK and CMake versions for all subprojects
+    afterEvaluate {
+        if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
+            configure<com.android.build.gradle.BaseExtension> {
+                ndkVersion = rootProject.extra["ndkVersion"] as String
+                
+                // Configure external native build
+                externalNativeBuild {
+                    cmake {
+                        version = rootProject.extra["cmakeVersion"] as String
+                    }
+                }
+                
+                // Configure NDK options
+                ndk {
+                    // Enable debug symbols in release builds for better crash reporting
+                    debugSymbolLevel = 'FULL'
+                }
+            }
+        }
+    }
     // Toolchain resolver plugin is applied in settings.gradle.kts
     
     // Configure Java toolchain for all projects

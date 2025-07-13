@@ -29,24 +29,64 @@ android {
         testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
         multiDexEnabled = true
 
-        // Specify NDK version
-        ndkVersion = "27.0.12077973"
-        
-        // Specify ABI filters
+        // NDK configuration
         ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+            // Use the same NDK version as the one specified in the root project
+            val ndkVersion = project.properties["ndkVersion"] as? String ?: "27.0.12077973"
+            this.ndkVersion = ndkVersion
+            
+            // Specify ABI filters - only include the most common architectures
+            abiFilters.clear()
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
+            
+            // Enable debug symbols
+            debugSymbolLevel = 'FULL'
         }
 
+        // External native build configuration
         externalNativeBuild {
             cmake {
-                cppFlags += ""
+                // Use the same CMake version as specified in the root project
+                version = project.properties["cmakeVersion"] as? String ?: "3.22.1"
+                
+                // Set the path to the CMake build script
+                path = file("src/main/cpp/CMakeLists.txt")
+                
+                // Specify CMake build arguments
                 arguments(
                     "-DANDROID_STL=c++_shared",
-                    "-DANDROID_CPP_FEATURES=rtti exceptions"
+                    "-DANDROID_CPP_FEATURES=rtti exceptions",
+                    "-DANDROID_TOOLCHAIN=clang",
+                    "-DANDROID_PLATFORM=android-${minSdk}",
+                    "-DCMAKE_BUILD_TYPE=${if (project.gradle.startParameter.taskNames.any { it.contains("Debug") }) "Debug" else "Release"}"
                 )
+                
+                // Specify CMake build targets
+                targets("language_id_l2c_jni")
+                
+                // Enable CMake build in parallel if possible
+                buildStagingDirectory = file("${project.buildDir}/cmake")
             }
         }
-
+        
+        // Packaging options for native libraries
+        packaging {
+            jniLibs {
+                // Keep debug symbols in release builds for crash reporting
+                keepDebugSymbols += "**/*.so"
+            }
+            
+            // Exclude files that cause conflicts
+            resources.excludes.addAll(
+                listOf(
+                    "META-INF/*.kotlin_module",
+                    "META-INF/*.version",
+                    "META-INF/proguard/*",
+                    "**/libjni*.so"
+                )
+            )
+        }
+        
         vectorDrawables {
             useSupportLibrary = true
         }
