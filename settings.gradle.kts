@@ -22,7 +22,7 @@ pluginManagement {
                 // Android Gradle Plugin
                 requested.id.id == "com.android.application" || 
                 requested.id.id == "com.android.library" ->
-                    useVersion("8.9.1")
+                    useVersion("8.11.1")
                     
                 // Compose is handled by the Android Gradle Plugin
             }
