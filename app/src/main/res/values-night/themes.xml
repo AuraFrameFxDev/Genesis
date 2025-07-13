@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Use a fully qualified name for the parent theme -->
+    <style name="Theme.AuraFrameFX.Material3" parent="android:Theme.Material.NoActionBar">
+        <!-- Use our defined colors with standard android attributes -->
+        <item name="android:colorPrimary">@color/neon_teal</item>
+        <item name="android:textColorPrimary">@color/on_primary</item>
+
+        <item name="android:colorSecondary">@color/neon_purple</item>
+        <item name="android:textColorSecondary">@color/on_secondary</item>
+
+        <item name="android:colorAccent">@color/neon_blue</item>
+
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="android:colorForeground">@color/on_surface</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+    </style>
+
+</resources>

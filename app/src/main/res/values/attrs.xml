@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 corner size attributes -->
+    <attr name="cornerFamily" format="enum">
+        <enum name="rounded" value="0" />
+        <enum name="cut" value="1" />
+    </attr>
+    <attr name="cornerSize" format="dimension" />
+    <attr name="cornerSizeSmall" format="dimension" />
+    <attr name="cornerSizeMedium" format="dimension" />
+    <attr name="cornerSizeLarge" format="dimension" />
+
+    <declare-styleable name="ShapeAppearance">
+        <attr name="cornerFamily" />
+        <attr name="cornerSize" />
+        <attr name="cornerSizeSmall" />
+        <attr name="cornerSizeMedium" />
+        <attr name="cornerSizeLarge" />
+    </declare-styleable>
+
+    <!-- Button attributes -->
+    <declare-styleable name="MaterialButton">
+        <attr name="buttonCornerRadius" format="dimension" />
+        <attr name="buttonStrokeColor" format="color" />
+        <attr name="buttonStrokeWidth" format="dimension" />
+    </declare-styleable>
+
+    <!-- CardView attributes -->
+    <declare-styleable name="CardView">
+        <attr name="cardCornerRadius" format="dimension" />
+        <attr name="cardStrokeColor" format="color" />
+        <attr name="cardStrokeWidth" format="dimension" />
+    </declare-styleable>
+</resources>

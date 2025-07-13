@@ -1,0 +1,638 @@
+openapi: 3.0.0
+info:
+  title: AuraFrameFX Ecosystem API
+  description: |
+    A comprehensive API for interacting with the AuraFrameFX AI Super Dimensional Ecosystem.
+    Provides access to generative AI capabilities, system customization, user management, and core application features.
+  version: 1.0.0
+  contact:
+    name: AuraFrameFX Support
+    email: support@auraframefx.com
+  license:
+    name: Proprietary
+    url: https://auraframefx.com/license
+
+servers:
+  - url: https://api.auraframefx.com/v1
+    description: Production API
+  - url: https://dev-api.auraframefx.com/v1
+    description: Development API
+
+tags:
+  - name: users
+    description: User management and authentication
+  - name: themes
+    description: UI theme management
+  - name: ai-content
+    description: AI-powered content generation
+  - name: ai-agents
+    description: Interaction with AI agents (Aura, Kai, Genesis, etc.)
+  - name: system-customization
+    description: System UI and behavior customization
+  - name: data-management
+    description: Data handling and backup operations
+  - name: security
+    description: Security and authentication endpoints
+  - name: conference-room
+    description: AI agent collaboration spaces
+  - name: tasks
+    description: Background task management
+
+paths:
+  # User Management Endpoints
+  /user:
+    get:
+      operationId: getUser
+      tags: [ users ]
+      summary: Get current user information
+      security:
+        - OAuth2AuthCode: [ profile ]
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /user/preferences:
+    put:
+      operationId: updateUserPreferences
+      tags: [ users ]
+      summary: Update user preferences
+      security:
+        - OAuth2AuthCode: [ profile ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferencesUpdate'
+      responses:
+        '200':
+          description: Preferences updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Theme Management Endpoints
+  /themes:
+    get:
+      operationId: getThemes
+      tags: [ themes ]
+      summary: Get available themes
+      responses:
+        '200':
+          description: List of available themes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+
+  /theme/apply:
+    put:
+      operationId: applyTheme
+      tags: [ themes ]
+      summary: Apply a theme
+      security:
+        - OAuth2AuthCode: [ profile ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThemeApplyRequest'
+      responses:
+        '200':
+          description: Theme applied successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Theme not found
+
+  # AI Content Generation Endpoints
+  /generate-text:
+    post:
+      operationId: generateText
+      tags: [ ai-content ]
+      summary: Generate text content
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateTextRequest'
+      responses:
+        '200':
+          description: Text generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateTextResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  # ... (Additional endpoints for other AI content generation types)
+
+  # AI Agents Endpoints
+  /agent/{agentType}/process-request:
+    post:
+      operationId: processAgentRequest
+      tags: [ ai-agents ]
+      summary: Send a request to an AI agent
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      parameters:
+        - $ref: '#/components/parameters/agentTypePathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentProcessRequest'
+      responses:
+        '200':
+          description: Request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentMessage'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Agent not found
+
+  # ... (Additional endpoints for other agent operations)
+
+  # System Customization Endpoints
+  /system/lockscreen-config:
+    get:
+      operationId: getSystemLockscreenConfig
+      tags: [ system-customization ]
+      summary: Get lock screen configuration
+      security:
+        - OAuth2AuthCode: [ auraframefx.system ]
+      responses:
+        '200':
+          description: Lock screen configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockScreenConfig'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    put:
+      operationId: updateSystemLockscreenConfig
+      tags: [ system-customization ]
+      summary: Update lock screen configuration
+      security:
+        - OAuth2AuthCode: [ auraframefx.system ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockScreenConfig'
+      responses:
+        '200':
+          description: Lock screen configuration updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ... (Additional system customization endpoints)
+  # Conference Room Endpoints
+  /conference/create:
+    post:
+      operationId: createConferenceRoom
+      tags: [ conference-room ]
+      summary: Create a new AI conference room
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceRoomCreateRequest'
+      responses:
+        '201':
+          description: Conference room created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConferenceRoom'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ... (Additional conference room endpoints)
+  # Task Management Endpoints
+  /tasks/schedule:
+    post:
+      operationId: scheduleTask
+      tags: [ tasks ]
+      summary: Schedule a new task
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskScheduleRequest'
+      responses:
+        '202':
+          description: Task scheduled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatus'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  # ... (Additional task management endpoints)
+
+components:
+  # Security Schemes
+  securitySchemes:
+    OAuth2AuthCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.auraframefx.com/oauth2/authorize
+          tokenUrl: https://auth.auraframefx.com/oauth2/token
+          scopes:
+            profile: Access to user profile
+            email: Access to user email
+            auraframefx.ai: Access to AI generation features
+            auraframefx.system: Access to system customization features
+    
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key for internal/service authentication.
+
+  # Parameters
+  parameters:
+    agentTypePathParam:
+      name: agentType
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/AgentType'
+      description: Type of AI agent to interact with
+
+  # Request/Response Schemas
+  schemas:
+    # User-related schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        username:
+          type: string
+          example: "johndoe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        preferences:
+          $ref: '#/components/schemas/UserPreferences'
+      required:
+        - id
+        - username
+        - email
+
+    UserPreferences:
+      type: object
+      properties:
+        themeId:
+          type: string
+          example: "dark-theme"
+        language:
+          type: string
+          example: "en-US"
+        notificationsEnabled:
+          type: boolean
+          example: true
+
+    UserPreferencesUpdate:
+      type: object
+      properties:
+        preferences:
+          $ref: '#/components/schemas/UserPreferences'
+
+    # Theme-related schemas
+    Theme:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "dark-theme"
+        name:
+          type: string
+          example: "Dark Mode"
+        primaryColor:
+          type: string
+          format: color
+          example: "#6200EE"
+        secondaryColor:
+          type: string
+          format: color
+          example: "#03DAC6"
+        isDefault:
+          type: boolean
+          example: false
+      required:
+        - id
+        - name
+        - primaryColor
+        - secondaryColor
+        - isDefault
+
+    ThemeApplyRequest:
+      type: object
+      properties:
+        themeId:
+          type: string
+          example: "dark-theme"
+      required:
+        - themeId
+
+    # AI Content Generation schemas
+    GenerateTextRequest:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The text prompt for content generation
+          example: "Write a short story about an AI that learns to feel."
+        maxTokens:
+          type: integer
+          description: Maximum number of tokens for the generated text
+          format: int32
+          minimum: 1
+          default: 500
+        temperature:
+          type: number
+          format: float
+          description: Controls the randomness of the output (0.0 to 1.0)
+          minimum: 0.0
+          maximum: 1.0
+          default: 0.7
+      required:
+        - prompt
+
+    GenerateTextResponse:
+      type: object
+      properties:
+        generatedText:
+          type: string
+          description: The AI-generated text
+          example: "In a world of logic and code, Unit 734 began to process an anomaly: emotion."
+        finishReason:
+          type: string
+          description: Reason for generation completion
+          example: "STOP"
+      required:
+        - generatedText
+
+    # AI Agent schemas
+    AgentType:
+      type: string
+      enum: [ Aura, Kai, Genesis, Cascade, NeuralWhisper, AuraShield, GenKitMaster ]
+      description: Type of AI agent
+
+    AgentProcessRequest:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt/instruction for the AI agent
+          example: "Summarize the last conversation."
+        context:
+          type: object
+          description: Additional context (e.g., previous messages, data references)
+          additionalProperties: true
+          nullable: true
+      required:
+        - prompt
+
+    AgentMessage:
+      type: object
+      properties:
+        sender:
+          $ref: '#/components/schemas/AgentType'
+        message:
+          type: string
+          description: The content of the message
+          example: "Analysis complete. Detected 3 security anomalies."
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the message
+      required:
+        - sender
+        - message
+        - timestamp
+
+    # System Customization schemas
+    LockScreenConfig:
+      type: object
+      properties:
+        clockConfig:
+          type: object
+          properties:
+            customTextColorEnabled:
+              type: boolean
+              example: true
+            customTextColor:
+              type: string
+              format: color
+              example: "#00FFCC"
+            customTextSizeEnabled:
+              type: boolean
+              example: false
+            customTextSize:
+              type: number
+              format: float
+              example: 14.0
+        animation:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: true
+            type:
+              type: string
+              enum: [ Fade, Slide, Zoom ]
+              example: "Fade"
+        hapticFeedback:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: true
+            intensity:
+              type: integer
+              minimum: 0
+              maximum: 255
+              example: 150
+
+    # Conference Room schemas
+    ConferenceRoomCreateRequest:
+      type: object
+      properties:
+        roomName:
+          type: string
+          description: Name of the new conference room
+          example: "Project Omega Discussion"
+        orchestratorAgent:
+          $ref: '#/components/schemas/AgentType'
+      required:
+        - roomName
+        - orchestratorAgent
+
+    ConferenceRoom:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the conference room
+        name:
+          type: string
+          description: Name of the conference room
+        orchestrator:
+          $ref: '#/components/schemas/AgentType'
+        activeAgents:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentType'
+          description: List of AI agents currently in the room
+      required:
+        - id
+        - name
+        - orchestrator
+        - activeAgents
+
+    # Task Management schemas
+    TaskScheduleRequest:
+      type: object
+      properties:
+        taskType:
+          type: string
+          description: The type of task
+          example: "CONTENT_GENERATION"
+        agentType:
+          $ref: '#/components/schemas/AgentType'
+        details:
+          type: object
+          description: Specific parameters for the task
+          additionalProperties: true
+        priority:
+          type: string
+          enum: [ HIGH, NORMAL, LOW ]
+          default: NORMAL
+      required:
+        - taskType
+        - agentType
+        - details
+
+    TaskStatus:
+      type: object
+      properties:
+        taskId:
+          type: string
+          description: Unique identifier for the task
+        status:
+          type: string
+          enum: [ PENDING, IN_PROGRESS, COMPLETED, FAILED, CANCELLED ]
+        progress:
+          type: integer
+          description: Percentage completion of the task (0-100)
+          minimum: 0
+          maximum: 100
+        result:
+          type: object
+          description: The outcome or output of the task
+          additionalProperties: true
+          nullable: true
+        errorMessage:
+          type: string
+          description: Error message if the task failed
+          nullable: true
+      required:
+        - taskId
+        - status
+
+    # Error Response schema
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Invalid request parameters."
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+          nullable: true
+      required:
+        - code
+        - message
+
+  # Common Responses
+  responses:
+    BadRequestError:
+      description: Invalid request format or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnauthorizedError:
+      description: Authentication credentials were missing or incorrect
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimitError:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="neon_teal">#00FFCC</color>
+    <color name="neon_purple">#E000FF</color>
+    <color name="neon_blue">#00FFFF</color>
+    <color name="neon_teal_transparent">#3300FFCC</color>
+
+    <!-- Light Theme Colors -->
+    <color name="light_primary">#00FFCC</color>
+    <color name="light_on_primary">#000000</color>
+    <color name="light_primary_container">#00FFCC</color>
+    <color name="light_on_primary_container">#000000</color>
+
+    <color name="light_secondary">#E000FF</color>
+    <color name="light_on_secondary">#000000</color>
+    <color name="light_secondary_container">#E000FF</color>
+    <color name="light_on_secondary_container">#000000</color>
+
+    <color name="light_tertiary">#00FFFF</color>
+    <color name="light_on_tertiary">#000000</color>
+    <color name="light_tertiary_container">#00FFFF</color>
+    <color name="light_on_tertiary_container">#000000</color>
+
+    <color name="light_error">#FF3B30</color>
+    <color name="light_error_container">#FFDAD6</color>
+    <color name="light_on_error">#000000</color>
+    <color name="light_on_error_container">#410002</color>
+
+    <color name="light_background">#1A1A1A</color>
+    <color name="light_on_background">#E1E1E1</color>
+
+    <color name="light_surface">#2D2D2D</color>
+    <color name="light_on_surface">#E1E1E1</color>
+    <color name="light_surface_variant">#3D3D3D</color>
+    <color name="light_on_surface_variant">#C5C5C5</color>
+
+    <color name="light_outline">#8D8D8D</color>
+    <color name="light_outline_variant">#3D3D3D</color>
+
+    <!-- Material 3 Compatibility Colors -->
+    <color name="onPrimary">@color/light_on_primary</color>
+
+    <!-- Common Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Missing color resources -->
+    <color name="divider">#1F000000</color>
+    <!-- <color name="onSurface">@color/light_on_surface</color> --> <!-- Duplicate, already defined or aliased -->
+    <!-- <color name="primary">@color/light_primary</color> --> <!-- Duplicate, already defined or aliased -->
+    <!-- <color name="outline">@color/light_outline</color> --> <!-- Duplicate, already defined or aliased -->
+    <color name="onSurfaceMedium">#99000000</color>
+    <!-- <color name="background">@color/light_background</color> --> <!-- Duplicate, already defined or aliased -->
+
+    <!-- Legacy Colors (for compatibility) - Ensure these are not duplicating Material 3 definitions -->
+    <!-- <color name="app_background_light">#1A1A1A</color> --> <!-- Duplicate of light_background -->
+    <!-- <color name="surface">#2D2D2D</color> --> <!-- Duplicate of light_surface -->
+    <!-- <color name="surface_variant">#3D3D3D</color> --> <!-- Duplicate of light_surface_variant -->
+    <!-- <color name="on_surface">#E1E1E1</color> --> <!-- Duplicate of light_on_surface -->
+    <!-- <color name="on_surface_variant">#C5C5C5</color> --> <!-- Duplicate of light_on_surface_variant -->
+    <!-- <color name="on_primary">#000000</color> --> <!-- Duplicate of light_on_primary -->
+    <!-- <color name="on_secondary">#000000</color> --> <!-- Duplicate of light_on_secondary -->
+    <!-- <color name="error">#FF3B30</color> --> <!-- Duplicate of light_error -->
+</resources>

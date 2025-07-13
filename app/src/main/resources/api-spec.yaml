@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: AuraFrameFX API
+  description: API for AuraFrameFX application
+  version: 1.0.0
+  contact:
+    name: AuraFrameFX Development Team
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://dev-api.example.com/v1
+    description: Development server
+
+paths:
+  /user:
+    get:
+      summary: Get user information
+      description: Returns information about the current authenticated user
+      operationId: getUser
+      tags:
+        - users
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /themes:
+    get:
+      summary: Get available themes
+      description: Returns a list of available UI themes
+      operationId: getThemes
+      tags:
+        - themes
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+
+  /generateContent:
+    post:
+      summary: Generate AI content
+      description: Generate content using AI models
+      operationId: generateContent
+      tags:
+        - ai
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentRequest'
+      responses:
+        '200':
+          description: Content generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+        '400':
+          description: Invalid request
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        preferences:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - username
+        - email
+
+    Theme:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        primaryColor:
+          type: string
+          description: Hex color code
+        secondaryColor:
+          type: string
+          description: Hex color code
+        isDefault:
+          type: boolean
+      required:
+        - id
+        - name
+        - primaryColor
+        - secondaryColor
+
+    ContentRequest:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The prompt to generate content from
+        maxLength:
+          type: integer
+          description: Maximum length of generated content
+        options:
+          type: object
+          additionalProperties: true
+      required:
+        - prompt
+
+    ContentResponse:
+      type: object
+      properties:
+        content:
+          type: string
+        usage:
+          type: object
+          properties:
+            promptTokens:
+              type: integer
+            completionTokens:
+              type: integer
+            totalTokens:
+              type: integer
+      required:
+        - content

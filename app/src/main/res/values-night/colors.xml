@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night theme color overrides -->
+    <color name="dark_background">#FF121212</color>
+    <color name="on_surface">#FFFFFFFF</color>
+    <color name="surface">#FF121212</color>
+    <color name="surface_variant">#FF303030</color>
+    <color name="on_surface_variant">#FFFFFFFF</color>
+    <color name="error">#FFCF6679</color>
+    <!-- Assuming on_primary from day theme (e.g., #000000) is acceptable for contrast on error components if used.
+         If specific on_error for night is needed, it should be defined here. -->
+    <!-- Primary, Secondary, Tertiary neon colors from the main colors.xml are assumed to be used
+         unless specific night versions are required. -->
+</resources>

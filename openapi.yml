@@ -1,0 +1,619 @@
+openapi: 3.1.0
+info:
+  title: AuraFrameFX Ecosystem API
+  description: |
+    A comprehensive API for interacting with the AuraFrameFX AI Super Dimensional Ecosystem.
+    Provides access to generative AI capabilities, system customization, user management, and core application features.
+  version: 1.0.0
+  contact:
+    name: AuraFrameFX Development Team
+    url: https://github.com/AuraFrameFxDev/AuraFrameFx
+  license:
+    name: Proprietary
+    url: https://github.com/AuraFrameFxDev/AuraFrameFx/blob/main/LICENSE.txt
+
+servers:
+  - url: https://api.auraframefx.com/v1
+    description: Production API
+  - url: https://dev-api.auraframefx.com/v1
+    description: Development API
+  - url: http://localhost:8080/v1
+    description: Local development server
+
+tags:
+  - name: users
+    description: User management and authentication
+  - name: themes
+    description: UI theme management
+  - name: AI Content
+    description: AI-powered content generation and processing
+  - name: AI Agents
+    description: Management and interaction with AI agents (Aura, Kai, Genesis, etc.)
+  - name: System Customization
+    description: System UI and behavior customization
+  - name: Data Management
+    description: Data handling and backup operations
+  - name: Security
+    description: Security, authentication, and authorization endpoints
+  - name: Conference
+    description: AI agent collaboration spaces (Conference Rooms)
+  - name: Tasks
+    description: Background task scheduling and management
+
+paths:
+  # User Management
+  /user:
+    get:
+      tags: [ users ]
+      summary: Get current user information
+      security:
+        - OAuth2AuthCode: [ profile ]
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /user/preferences:
+    put:
+      tags: [ users ]
+      summary: Update user preferences
+      security:
+        - OAuth2AuthCode: [ profile ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferencesUpdate'
+      responses:
+        '200':
+          description: Preferences updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Theme Management
+  /themes:
+    get:
+      tags: [ themes ]
+      summary: Get available themes
+      responses:
+        '200':
+          description: List of available themes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+
+  /theme/apply:
+    put:
+      tags: [ themes ]
+      summary: Apply a theme
+      security:
+        - OAuth2AuthCode: [ profile ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThemeApplyRequest'
+      responses:
+        '200':
+          description: Theme applied successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Theme not found
+
+  # AI Content Generation
+  /ai/generate/text:
+    post:
+      tags: [ AI Content ]
+      summary: Generate text using AI
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateTextRequest'
+      responses:
+        '200':
+          description: Text generation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateTextResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+        '500':
+          description: Internal server error
+
+  /ai/generate/image-description:
+    post:
+      tags: [ AI Content ]
+      summary: Generate image description using AI
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateImageDescriptionRequest'
+      responses:
+        '200':
+          description: Image description generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateImageDescriptionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal server error
+
+  # AI Agents
+  /agents/status:
+    get:
+      tags: [ AI Agents ]
+      summary: Get status of all AI agents
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      responses:
+        '200':
+          description: List of agent statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentStatus'
+        '500':
+          description: Internal server error
+
+  /agent/{agentType}/process-request:
+    post:
+      tags: [ AI Agents ]
+      summary: Send a request to an AI agent
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      parameters:
+        - $ref: '#/components/parameters/agentTypePathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentProcessRequest'
+      responses:
+        '200':
+          description: Request processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentMessage'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Agent not found
+
+  # System Customization
+  /system/lockscreen-config:
+    get:
+      tags: [ System Customization ]
+      summary: Get lock screen configuration
+      security:
+        - OAuth2AuthCode: [ auraframefx.system ]
+      responses:
+        '200':
+          description: Lock screen configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockScreenConfig'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      tags: [ System Customization ]
+      summary: Update lock screen configuration
+      security:
+        - OAuth2AuthCode: [ auraframefx.system ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockScreenConfig'
+      responses:
+        '200':
+          description: Lock screen configuration updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Conference Room
+  /conference/rooms:
+    post:
+      tags: [ Conference ]
+      summary: Create a new conference room
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceRoomCreateRequest'
+      responses:
+        '201':
+          description: Conference room created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConferenceRoom'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal server error
+
+  # Task Management
+  /tasks/schedule:
+    post:
+      tags: [ Tasks ]
+      summary: Schedule a new task
+      security:
+        - OAuth2AuthCode: [ auraframefx.ai ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskScheduleRequest'
+      responses:
+        '202':
+          description: Task scheduled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatus'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          description: Internal server error
+
+  /tasks/{taskId}:
+    get:
+      tags: [ Tasks ]
+      summary: Get task status
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the task to check
+      responses:
+        '200':
+          description: Task status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatus'
+        '404':
+          description: Task not found
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    OAuth2AuthCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.auraframefx.com/oauth2/authorize
+          tokenUrl: https://auth.auraframefx.com/oauth2/token
+          scopes:
+            profile: Access to user profile
+            email: Access to user email
+            auraframefx.ai: Access to AI generation features
+            auraframefx.system: Access to system customization features
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key for internal/service authentication.
+
+  parameters:
+    agentTypePathParam:
+      name: agentType
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/AgentType'
+      description: Type of AI agent to interact with
+
+  responses:
+    BadRequestError:
+      description: Invalid request format or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnauthorizedError:
+      description: Authentication credentials were missing or incorrect
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimitError:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    # User Schemas
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        username: { type: string }
+        email: { type: string, format: email }
+        preferences: { $ref: '#/components/schemas/UserPreferences' }
+      required: [ id, username, email ]
+    UserPreferences:
+      type: object
+      properties:
+        themeId: { type: string }
+        language: { type: string }
+        notificationsEnabled: { type: boolean }
+    UserPreferencesUpdate:
+      type: object
+      properties:
+        preferences: { $ref: '#/components/schemas/UserPreferences' }
+
+    # Theme Schemas
+    Theme:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        primaryColor: { type: string, format: color }
+        secondaryColor: { type: string, format: color }
+        isDefault: { type: boolean }
+      required: [ id, name, primaryColor, secondaryColor, isDefault ]
+    ThemeApplyRequest:
+      type: object
+      properties:
+        themeId: { type: string }
+      required: [ themeId ]
+
+    # AI Content Schemas
+    GenerateTextRequest:
+      type: object
+      properties:
+        prompt: { type: string, description: "The text prompt for content generation." }
+        maxTokens: { type: integer, format: int32, minimum: 1, default: 500 }
+        temperature: { type: number, format: float, minimum: 0.0, maximum: 1.0, default: 0.7 }
+      required: [ prompt ]
+    GenerateTextResponse:
+      type: object
+      properties:
+        generatedText: { type: string, description: "The AI-generated text." }
+        finishReason: { type: string, description: "Reason for generation completion." }
+      required: [ generatedText ]
+    GenerateImageDescriptionRequest:
+      type: object
+      properties:
+        imageUrl: { type: string, format: url, description: "URL of the image to describe." }
+        context: { type: string, description: "Optional additional context." }
+      required: [ imageUrl ]
+    GenerateImageDescriptionResponse:
+      type: object
+      properties:
+        description: { type: string, description: "The AI-generated image description." }
+      required: [ description ]
+    GenerateCodeRequest:
+      type: object
+      properties:
+        language: { type: string, enum: [ Kotlin, Python, Java, JavaScript, TypeScript, Swift, C++, C# ] }
+        description: { type: string }
+        context: { type: string }
+      required: [ language, description ]
+    GenerateCodeResponse:
+      type: object
+      properties:
+        codeSnippet: { type: string }
+        explanation: { type: string }
+      required: [ codeSnippet ]
+    GenerateUIComponentRequest:
+      type: object
+      properties:
+        framework: { type: string, enum: [ JetpackCompose, XMLLayout ] }
+        description: { type: string }
+        themeId: { type: string, nullable: true }
+      required: [ framework, description ]
+    GenerateUIComponentResponse:
+      type: object
+      properties:
+        uiCode: { type: string }
+        previewImage: { type: string, format: url, nullable: true }
+      required: [ uiCode ]
+
+    # AI Agent Schemas
+    AgentType:
+      type: string
+      enum: [ Aura, Kai, Genesis, Cascade, NeuralWhisper, AuraShield, GenKitMaster ]
+    AgentProcessRequest:
+      type: object
+      properties:
+        prompt: { type: string }
+        context: { type: object, additionalProperties: true, nullable: true }
+      required: [ prompt ]
+    AgentMessage:
+      type: object
+      properties:
+        sender: { $ref: '#/components/schemas/AgentType' }
+        message: { type: string }
+        timestamp: { type: string, format: date-time }
+      required: [ sender, message, timestamp ]
+    AgentStatus:
+      type: object
+      properties:
+        agentType: { $ref: '#/components/schemas/AgentType' }
+        processingState: { type: string }
+        visionState: { type: string }
+        lastActivity: { type: string, format: date-time }
+        currentTask: { type: string, nullable: true }
+      required: [ agentType, processingState, visionState, lastActivity ]
+
+    # System Customization Schemas
+    LockScreenConfig:
+      type: object
+      properties:
+        clockConfig: { type: object, properties: { customTextColorEnabled: { type: boolean }, customTextColor: { type: string, format: color }, customTextSizeEnabled: { type: boolean }, customTextSize: { type: number, format: float } } }
+        animation: { type: object, properties: { enabled: { type: boolean }, type: { type: string, enum: [ Fade, Slide, Zoom ] } } }
+        hapticFeedback: { type: object, properties: { enabled: { type: boolean }, intensity: { type: integer, minimum: 0, maximum: 255 } } }
+    QuickSettingsConfig:
+      type: object
+      properties:
+        layout: { type: object, properties: { columns: { type: integer }, rows: { type: integer } } }
+        padding: { type: object, properties: { top: { type: integer }, bottom: { type: integer }, horizontal: { type: integer } } }
+        tiles: { type: array, items: { type: object, properties: { tileId: { type: string }, labelColor: { type: string, format: color }, iconColor: { type: string, format: color }, backgroundColor: { type: string, format: color } } } }
+    SystemOverlayConfig:
+      type: object
+      properties:
+        activeThemeName: { type: string }
+        uiNetworkMode: { type: string }
+        notchBar: { type: object, properties: { enabled: { type: boolean }, color: { type: string, format: color }, displayMode: { type: string, enum: [ Minimal, Detailed, Hidden ] }, customImageEnabled: { type: boolean }, customImageUrl: { type: string, format: url } } }
+
+    # Data Management Schemas
+    LogEntry:
+      type: object
+      properties:
+        timestamp: { type: string, format: date-time }
+        level: { type: string, enum: [ DEBUG, INFO, WARN, ERROR ] }
+        tag: { type: string }
+        message: { type: string }
+      required: [ timestamp, level, tag, message ]
+    SystemMetrics:
+      type: object
+      properties:
+        batteryLevel: { type: integer, minimum: 0, maximum: 100 }
+        isCharging: { type: boolean }
+        networkStatus: { type: string }
+        lastUpdated: { type: string, format: date-time }
+      required: [ batteryLevel, isCharging, networkStatus, lastUpdated ]
+    BackupRequest:
+      type: object
+      properties:
+        targetLocation: { type: string }
+        includeLogs: { type: boolean, default: false }
+        includePreferences: { type: boolean, default: true }
+      required: [ targetLocation ]
+
+    # Security Schemas
+    SecurityState:
+      type: object
+      properties:
+        threatDetectionActive: { type: boolean }
+        permissionsState: { type: object, additionalProperties: { type: boolean } }
+        activeThreats: { type: array, items: { type: string } }
+        lastScanTime: { type: string, format: date-time }
+      required: [ threatDetectionActive, permissionsState ]
+    OAuthStartRequest:
+      type: object
+      properties:
+        provider: { type: string }
+        redirectUri: { type: string, format: uri }
+      required: [ provider, redirectUri ]
+    OAuthStartResponse:
+      type: object
+      properties:
+        authUrl: { type: string, format: url }
+      required: [ authUrl ]
+    OAuthCallbackRequest:
+      type: object
+      properties:
+        code: { type: string }
+        state: { type: string, nullable: true }
+      required: [ code ]
+    OAuthSuccess:
+      type: object
+      properties:
+        accessToken: { type: string }
+        tokenType: { type: string }
+        expiresIn: { type: integer }
+        refreshToken: { type: string, nullable: true }
+      required: [ accessToken, tokenType, expiresIn ]
+
+    # Conference Room Schemas
+    ConferenceRoomCreateRequest:
+      type: object
+      properties:
+        roomName: { type: string }
+        orchestratorAgent: { $ref: '#/components/schemas/AgentType' }
+      required: [ roomName, orchestratorAgent ]
+    ConferenceRoom:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        orchestrator: { $ref: '#/components/schemas/AgentType' }
+        activeAgents: { type: array, items: { $ref: '#/components/schemas/AgentType' } }
+      required: [ id, name, orchestrator, activeAgents ]
+
+    # Task Management Schemas
+    TaskScheduleRequest:
+      type: object
+      properties:
+        taskType: { type: string }
+        agentType: { $ref: '#/components/schemas/AgentType' }
+        details: { type: object, additionalProperties: true }
+        priority: { type: string, enum: [ HIGH, NORMAL, LOW ], default: NORMAL }
+      required: [ taskType, agentType, details ]
+    TaskStatus:
+      type: object
+      properties:
+        taskId: { type: string }
+        status: { type: string, enum: [ PENDING, IN_PROGRESS, COMPLETED, FAILED, CANCELLED ] }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        result: { type: object, additionalProperties: true, nullable: true }
+        errorMessage: { type: string, nullable: true }
+      required: [ taskId, status ]
+
+    # Error Schema
+    ErrorResponse:
+      type: object
+      properties:
+        code: { type: integer, format: int32 }
+        message: { type: string }
+        details: { type: object, additionalProperties: true, nullable: true }
+      required: [ code, message ]
