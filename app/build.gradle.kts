@@ -29,45 +29,18 @@ android {
         testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
         multiDexEnabled = true
 
-        // NDK configuration
+        // NDK configuration - simplified for AGP 8.11.1+
         ndk {
-            // Use the same NDK version as the one specified in the root project
-            val ndkVersion = project.properties["ndkVersion"] as? String ?: "27.0.12077973"
-            this.ndkVersion = ndkVersion
-            
-            // Specify ABI filters - only include the most common architectures
+            // Keep only the most common architectures for smaller APK size
             abiFilters.clear()
-            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
+            abiFilters.addAll(listOf("arm64-v8a")) // Remove armeabi-v7a for smaller APK
             
             // Enable debug symbols
-            debugSymbolLevel = 'FULL'
+            debugSymbolLevel = "FULL"
         }
 
-        // External native build configuration
-        externalNativeBuild {
-            cmake {
-                // Use the same CMake version as specified in the root project
-                version = project.properties["cmakeVersion"] as? String ?: "3.22.1"
-                
-                // Set the path to the CMake build script
-                path = file("src/main/cpp/CMakeLists.txt")
-                
-                // Specify CMake build arguments
-                arguments(
-                    "-DANDROID_STL=c++_shared",
-                    "-DANDROID_CPP_FEATURES=rtti exceptions",
-                    "-DANDROID_TOOLCHAIN=clang",
-                    "-DANDROID_PLATFORM=android-${minSdk}",
-                    "-DCMAKE_BUILD_TYPE=${if (project.gradle.startParameter.taskNames.any { it.contains("Debug") }) "Debug" else "Release"}"
-                )
-                
-                // Specify CMake build targets
-                targets("language_id_l2c_jni")
-                
-                // Enable CMake build in parallel if possible
-                buildStagingDirectory = file("${project.buildDir}/cmake")
-            }
-        }
+        // External native build configuration will be set up in the main externalNativeBuild block
+        ndkVersion = "25.2.9519653"  // Use the exact NDK version that matches your installed version
         
         // Packaging options for native libraries
         packaging {
@@ -145,15 +118,30 @@ android {
             version = "3.22.1"
         }
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        checkDependencies = true
+        lintConfig = file("lint.xml")
+        warningsAsErrors = true
+        abortOnError = true
+        checkReleaseBuilds = true
+        checkGeneratedSources = true
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+        disable.add("GradleDeprecatedConfiguration")
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+
+
+    }
     
     // Configure build variants
     buildTypes {
         debug {
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DEBUG"
-                }
-            }
+            // Debug flags are now handled by CMake
         }
         release {
             isMinifyEnabled = false
@@ -161,11 +149,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DNDEBUG"
-                }
-            }
+            // Release flags are now handled by CMake
         }
     }
 }

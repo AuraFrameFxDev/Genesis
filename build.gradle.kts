@@ -73,9 +73,9 @@ allprojects {
                 }
                 
                 // Configure NDK options
-                ndk {
+                defaultConfig.ndk {
                     // Enable debug symbols in release builds for better crash reporting
-                    debugSymbolLevel = 'FULL'
+                    debugSymbolLevel = "FULL"
                 }
             }
         }
