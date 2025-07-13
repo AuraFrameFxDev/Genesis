@@ -8,7 +8,7 @@ hilt = "2.44" # Updated to latest stable version compatible with AGP 8.1.1
 hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
 # Using the latest stable Compose BOM that's compatible with Kotlin 2.2.0
-composeBom = "2024.06.01" # Latest stable Compose BOM
+composeBom = "2025.06.01" # Latest stable Compose BOM
 composeCompiler = "1.6.0" # Compose compiler for Kotlin 2.2.0
 
 googleServices = "4.4.3" # Stable Google Services plugin (keeping this update)
