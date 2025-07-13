@@ -51,7 +51,7 @@ espressoCore = "3.6.1"
 mockk = "1.14.4"
 
 # --- Build Logic Plugins ---
-openapiGeneratorPlugin = "7.6.0"
+openapiGeneratorPlugin = "7.14.0"
 firebaseCrashlyticsPlugin = "3.0.4"
 firebasePerfPlugin = "1.4.2"
 toolchainsFoojayResolver = "1.0.0"
