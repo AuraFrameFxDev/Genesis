@@ -29,10 +29,21 @@ android {
         testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
         multiDexEnabled = true
 
+        // Specify NDK version
+        ndkVersion = "27.0.12077973"
+        
+        // Specify ABI filters
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+        }
+
         externalNativeBuild {
             cmake {
                 cppFlags += ""
-                arguments("-DANDROID_STL=c++_shared")
+                arguments(
+                    "-DANDROID_STL=c++_shared",
+                    "-DANDROID_CPP_FEATURES=rtti exceptions"
+                )
             }
         }
 
@@ -94,12 +105,38 @@ android {
             version = "3.22.1"
         }
     }
+    
+    // Configure build variants
+    buildTypes {
+        debug {
+            externalNativeBuild {
+                cmake {
+                    cppFlags += "-DEBUG"
+                }
+            }
+        }
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            externalNativeBuild {
+                cmake {
+                    cppFlags += "-DNDEBUG"
+                }
+            }
+        }
+    }
 }
 
 // OpenAPI Generator Configuration
+// Convert Windows paths to forward slashes for OpenAPI generator
+val openApiSpecPath = file("src/main/openapi.yml").toURI().toURL().toString()
+
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set("$projectDir/src/main/openapi.yml")
+    inputSpec.set(openApiSpecPath)
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/kotlin")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
@@ -145,7 +182,7 @@ configurations.all {
 
 dependencies {
     // Core
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring(libs.desugarJdkLibs)
     implementation(libs.androidxCoreKtx)
     implementation(libs.androidxAppcompat)
 
@@ -161,8 +198,21 @@ dependencies {
     implementation(libs.androidxUi)
     implementation(libs.androidxUiGraphics)
     implementation(libs.androidxUiToolingPreview)
+    
+    // Material 3
     implementation(libs.androidxMaterial3)
     implementation(libs.androidxMaterialIconsExtended)
+    
+    // Window Manager for responsive layouts
+    implementation(libs.androidxWindow)
+    
+    // Required for Material 3 theming
+    implementation(libs.androidxActivityCompose)
+    implementation(libs.androidxNavigationCompose)
+    
+    // Material 3 Adaptive Components (if needed for future use)
+    // implementation("androidx.compose.material3:material3-adaptive:1.0.0")
+    // implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
 
     // Dagger Hilt
     implementation(libs.hiltAndroid)
