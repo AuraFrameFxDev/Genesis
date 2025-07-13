@@ -1,6 +1,6 @@
 [versions]
 # --- CORE TOOLCHAIN: THE LATEST PUBLIC RELEASES ---
-agp = "8.9.1"  # Minimum AGP version for API level 36 support
+agp = "8.11.1"  # Minimum AGP version for API level 36 support
 generativeai = "0.9.0"
 kotlin = "2.2.0" # Latest stable Kotlin, aligning with new BOM
 ksp = "2.2.0-2.0.2" # KSP version matching Kotlin 2.2.0
