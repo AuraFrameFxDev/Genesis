@@ -1,6 +1,6 @@
 plugins {
     // Core plugins
-    alias(libs.plugins.androidApplication) apply true
+    alias(libs.plugins.Application) apply true
     alias(libs.plugins.kotlinAndroid) apply true
     alias(libs.plugins.ksp) apply true  // KSP must be applied before Hilt
     alias(libs.plugins.hiltAndroid) apply true  // Hilt plugin
