@@ -5,8 +5,8 @@ extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 
 // Common versions for all modules
-extra["compileSdk"] = 36
-extra["targetSdk"] = 36
+extra["compileSdk"] = 34
+extra["targetSdk"] = 34
 extra["minSdk"] = 26
 
 // Configure buildscript repositories for plugins

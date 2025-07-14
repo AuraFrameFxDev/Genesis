@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     // Core plugins
     alias(libs.plugins.androidApplication) apply true
@@ -21,6 +19,7 @@ plugins {
 android {
     namespace = "dev.aurakai.auraframefx"
     compileSdk = 34  // Use stable Android 14 - all dependencies support this
+
     
     // Enable build config generation
     buildFeatures {
@@ -34,6 +33,7 @@ android {
         applicationId = "dev.aurakai.auraframefx"
         minSdk = 26
         targetSdk = 34
+
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
@@ -117,6 +117,7 @@ android {
                 "-opt-in=kotlin.RequiresOptIn"
             )
         }
+
     }
 
     androidResources {
