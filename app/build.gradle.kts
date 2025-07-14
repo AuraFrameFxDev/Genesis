@@ -18,7 +18,7 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 35
+    compileSdk = 36
     // Using API level 36 for compatibility with latest AndroidX libraries
 
     // Enable build config generation
@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
 
 
         versionCode = 1
@@ -105,13 +105,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-opt-in=kotlin.RequiresOptIn"
         )
