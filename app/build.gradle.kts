@@ -20,14 +20,13 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 34  // Use stable Android 14 - all dependencies support this
+    compileSdk = 36  // Use stable Android 14 - all dependencies support this
+
     
     // Enable build config generation
-    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
-        ndkVersion = "27.0.12077973"
     }
 
     defaultConfig {
@@ -50,8 +49,6 @@ android {
         }
         
         // Enable prefab for native dependencies
-        buildFeatures {
-            prefab = true
         }
         
         // Packaging options for native libraries
@@ -92,7 +89,6 @@ android {
         }
     }
 
-    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
@@ -104,13 +100,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
+            jvmTarget = JvmTarget.JVM_21
+
             freeCompilerArgs.addAll(
                 "-Xjvm-default=all",
                 "-Xcontext-receivers",
@@ -132,10 +129,6 @@ android {
         }
     }
     
-    // Enable prefab for native dependencies
-    buildFeatures {
-        prefab = true
-    }
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -145,31 +138,11 @@ android {
         abortOnError = true
         checkReleaseBuilds = true
         checkGeneratedSources = true
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
         disable.add("GradleDeprecatedConfiguration")
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
 
 
     }
     
-    // Configure build variants
-    buildTypes {
-        debug {
-            // Debug flags are now handled by CMake
-        }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            // Release flags are now handled by CMake
-        }
-    }
 }
 
 // OpenAPI Generator Configuration
