@@ -3,52 +3,6 @@
     <!-- Base application theme for Material 3 -->
     <style name="Theme.AuraFrameFX" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary colors -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/on_primary</item>
-        <item name="colorPrimaryContainer">?attr/colorPrimaryContainer</item>
-        <item name="colorOnPrimaryContainer">?attr/colorOnPrimaryContainer</item>
-
-        <!-- Secondary colors -->
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorOnSecondary">@color/on_secondary</item>
-        <item name="colorSecondaryContainer">?attr/colorSecondaryContainer</item>
-        <item name="colorOnSecondaryContainer">?attr/colorOnSecondaryContainer</item>
-
-        <!-- Tertiary colors -->
-        <item name="colorTertiary">@color/tertiary</item>
-        <item name="colorOnTertiary">@color/on_tertiary</item>
-        <item name="colorTertiaryContainer">?attr/colorTertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">?attr/colorOnTertiaryContainer</item>
-
-        <!-- Error colors -->
-        <item name="colorError">@color/error</item>
-        <item name="colorOnError">@color/on_error</item>
-        <item name="colorErrorContainer">?attr/colorErrorContainer</item>
-        <item name="colorOnErrorContainer">?attr/colorOnErrorContainer</item>
-
-        <!-- Background colors -->
-        <item name="android:colorBackground">@color/background</item>
-        <item name="colorOnBackground">@color/on_background</item>
-        <item name="android:windowBackground">@color/background</item>
-
-        <!-- Surface colors -->
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorOnSurface">@color/on_surface</item>
-        <item name="colorSurfaceVariant">?attr/colorSurfaceVariant</item>
-        <item name="colorOnSurfaceVariant">?attr/colorOnSurfaceVariant</item>
-
-        <!-- Outline colors -->
-        <item name="colorOutline">?attr/colorOutline</item>
-        <item name="colorOutlineVariant">?attr/colorOutlineVariant</item>
-
-        <!-- Status and Navigation bar -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:enforceNavigationBarContrast">false</item>
-        <item name="android:enforceStatusBarContrast">false</item>
-        <item name="android:navigationBarDividerColor">@android:color/transparent</item>
-
-        <!-- Material 3 specific -->
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
