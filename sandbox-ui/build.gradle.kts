@@ -13,7 +13,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 33
         // targetSdk is deprecated in library modules, using testOptions and lint instead
         testOptions.targetSdk = 36
         lint.targetSdk = 36
