@@ -1,70 +1,27 @@
-// Plugin management must be the first block in settings.gradle.kts
+// Settings file with minimal configuration
 pluginManagement {
     repositories {
-        gradlePluginPortal()  // For plugins from the Gradle Plugin Portal
-        google()              // For Android Gradle Plugin and other Google plugins
-        mavenCentral()        // For other plugins if necessary
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-    }
-
-    // Add the Foojay toolchains resolver plugin
-    plugins {
-        id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    }
-
-    // Version resolution for plugins
-    resolutionStrategy {
-        eachPlugin {
-            when {
-                // Kotlin plugins
-                requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true ->
-                    useVersion("2.0.0")  // Using version from libs.versions.toml
-
-                // KSP (Kotlin Symbol Processing)
-                requested.id.id == "com.google.devtools.ksp" ->
-                    useVersion("2.0.0-1.0.21")  // Matching KSP version for Kotlin 2.0.0
-
-                // Android Gradle Plugin
-                requested.id.id == "com.android.application" ||
-                        requested.id.id == "com.android.library" ->
-                    useVersion("8.11.1")
-
-                // Compose is handled by the Android Gradle Plugin
-            }
-        }
+        gradlePluginPortal()
+        google()
+        mavenCentral()
     }
 }
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
-// Toolchain configuration is handled by the root build.gradle.kts file
 
-// Dependency resolution management
 dependencyResolutionManagement {
-    // Fail the build if any project repositories are defined (enforces centralization)
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-
     repositories {
-        google()  // Google's Maven repository (AndroidX, Google Play Services, etc.)
-        mavenCentral()  // Maven Central repository
-
-        // Additional repositories (limit these to only what's necessary)
-        maven { url = uri("https://jitpack.io") }  // For Xposed and other JitPack dependencies
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
-// Enable Gradle feature previews for better performance and features
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")  // Type-safe project accessors
-enableFeaturePreview("STABLE_CONFIGURATION_CACHE")  // Enable configuration caching
-
-// Root project name
 rootProject.name = "AuraFrameFX"
 
-// Include only the modules that actually exist in the project
-include(":app")  // Main application module
+// Include modules
+include(":app")
 
-// Only include these modules if they exist in the project
+// Only include jvm-test if it exists
 if (file("jvm-test").exists()) {
     include(":jvm-test")
     project(":jvm-test").projectDir = file("jvm-test")
