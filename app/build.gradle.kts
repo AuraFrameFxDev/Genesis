@@ -36,7 +36,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
         multiDexEnabled = true
 
         // NDK configuration
@@ -180,9 +180,9 @@ openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set(openApiSpecPath)
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/kotlin")
-    apiPackage.set("com.example.app.api.client.apis")
-    modelPackage.set("com.example.app.api.client.models")
-    invokerPackage.set("com.example.app.api.client.infrastructure")
+    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
+    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+    invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",
