@@ -10,13 +10,13 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.sandbox.ui"
-    compileSdk = rootProject.extra["compileSdk"] as Int
+    compileSdk = 36
 
     defaultConfig {
-        minSdk = rootProject.extra["minSdk"] as Int
+        minSdk = 26
         // targetSdk is deprecated in library modules, using testOptions and lint instead
-        testOptions.targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
-        lint.targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
+        testOptions.targetSdk = 36
+        lint.targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         
