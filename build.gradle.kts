@@ -21,7 +21,6 @@ buildscript {
 
     dependencies {
         // Add buildscript dependencies if needed
-        classpath("com.android.tools.build:gradle:8.6.0")  // Using AGP 8.6.0 for compileSdk 35 compatibility
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
         // Add Hilt plugin
         classpath("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
@@ -38,20 +37,23 @@ buildscript {
 
 // Apply plugins to the root project (not subprojects)
 plugins {
-    // Android Gradle Plugin (AGP) - Version is specified in buildscript classpath
+    // Android Application Plugin with version
     id("com.android.application") version "8.6.0" apply false
-
+    
+    // Android Library Plugin with version
+    id("com.android.library") version "8.6.0" apply false
+    
     // Kotlin Android Plugin
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.android) apply false
 
     // KSP (Kotlin Symbol Processing)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp) apply false
 
     // Dagger Hilt
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.hilt) apply false
 
     // Google Services
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.google.services) apply false
 
     // Kotlin Plugins
     alias(libs.plugins.kotlin.serialization) apply false
