@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     // Core plugins
     alias(libs.plugins.androidApplication) apply true
@@ -20,7 +18,7 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 36  // Using API level 36 as per Android Studio's recommendation
+    compileSdk = 35  // Using API level 34 for better compatibility with Firebase and other libraries
     
     // Enable build config generation
     buildFeatures {
@@ -33,7 +31,7 @@ android {
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
@@ -104,19 +102,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
-            freeCompilerArgs.addAll(
-                "-Xjvm-default=all",
-                "-Xcontext-receivers",
-                "-opt-in=kotlin.RequiresOptIn"
-            )
-        }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     androidResources {
