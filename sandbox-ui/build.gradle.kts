@@ -65,7 +65,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = "2.0.0"
     }
 }
 
@@ -82,7 +82,7 @@ dependencies {
     implementation(platform(libs.composeBom))
     implementation(libs.ui)
     implementation(libs.uiToolingPreview)
-    implementation(libs.material3)
+    implementation(libs.androidxMaterial3)
     implementation(libs.animation)
     implementation(libs.foundation)
 
