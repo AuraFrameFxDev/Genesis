@@ -1,54 +1,47 @@
 [versions]
 # --- CORE TOOLCHAIN: THE LATEST PUBLIC RELEASES ---
-agp = "8.11.1"  # Stable AGP version compatible with Kotlin 2.0.0
+agp = "8.11.1"
 desugar_jdk_libs = "2.1.5"
 espressoCoreVersion = "3.5.1"
 generativeai = "0.9.0"
 junitVersion = "1.1.5"
-kotlin = "2.0.0" # Latest stable Kotlin version
-ksp = "2.0.0-1.0.21" # KSP version matching Kotlin 2.2.0
-hilt = "2.56.2" # Updated to latest stable version
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.21"
+hilt = "2.56.2"
 hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
-# Using the latest stable Compose BOM that's compatible with Kotlin 2.2.0
-composeBom = "2024.05.00" # Compatible with Kotlin 2.0.0
-
-composeCompiler = "1.6.0" # Compose compiler for Kotlin 2.2.0
-material3 = "1.3.0" # Material 3 version
-material3Adaptive = "1.0.0" # Material 3 Adaptive components
+composeBom = "2024.05.00"
+composeCompiler = "1.6.0"
+material3 = "1.3.0"
+material3Adaptive = "1.0.0"
 navigationComposeVersion = "2.9.1"
-windowSizeClass = "1.0.0" # Window size class for responsive layouts
-
-googleServices = "4.4.3" # Stable Google Services plugin (keeping this update)
+windowSizeClass = "1.0.0"
+googleServices = "4.4.3"
 
 # --- APP Dependencies ---
-accompanistPager = "0.36.0" # Needs migration to official Compose Pager
-accompanistPermissions = "0.37.3" # Needs migration to official permissions handling
-accompanistSystemuicontroller = "0.36.0" # Needs migration (e.g., enableEdgeToEdge)
+accompanistPager = "0.36.0"
+accompanistPermissions = "0.37.3"
+accompanistSystemuicontroller = "0.36.0"
 coreKtx = "1.16.0"
-appcompat = "1.7.1" # Updated to latest stable version
+appcompat = "1.7.1"
 activityCompose = "1.10.1"
 material = "1.12.0"
 navigationCompose = "2.9.1"
-lifecycle = "2.9.1" # Updated to latest stable version
-lifecycleRuntimeCompose = "2.9.1" # Aligned with lifecycle
-lifecycleViewmodelCompose = "2.9.1" # Aligned with lifecycle
+lifecycle = "2.9.1"
+lifecycleRuntimeCompose = "2.9.1"
+lifecycleViewmodelCompose = "2.9.1"
 room = "2.7.2"
-workManager = "2.10.2" # Updated to latest stable version
-datastore = "1.1.7" # Updated to latest stable version
-
+workManager = "2.10.2"
+datastore = "1.1.7"
 datastoreCore = "1.1.7"
-securityCrypto = "1.0.0" # androidxSecurityCrypto in [libraries] uses 1.1.0-beta01, which is fine
+securityCrypto = "1.0.0"
 firebaseBomVersion = "33.16.0"
-# firebaseConfigKtx = "22.1.2" # No longer needed, version from BoM
-# firebaseStorageKtx = "21.0.2" # No longer needed, version from BoM
-kotlinxCoroutines = "1.10.2" # Updated to latest stable version
+kotlinxCoroutines = "1.10.2"
 kotlinxSerializationJson = "1.9.0"
 kotlinxDatetime = "0.6.0"
 retrofit = "3.0.0"
-okhttp = "5.1.0" # Updated to latest stable version
-
-converterGson = "3.0.0" # Align with Retrofit
+okhttp = "5.1.0"
+converterGson = "3.0.0"
 retrofitKotlinxSerializationConverter = "1.0.0"
 coilCompose = "2.7.0"
 timber = "5.0.1"
@@ -61,8 +54,7 @@ espressoCore = "3.6.1"
 mockk = "1.14.4"
 
 # --- Build Logic Plugins ---
-openapiGeneratorPlugin = "7.14.0" # Updated to latest stable version
-
+openapiGeneratorPlugin = "7.14.0"
 firebaseCrashlyticsPlugin = "3.0.4"
 firebasePerfPlugin = "1.4.2"
 toolchainsFoojayResolver = "1.0.0"
@@ -75,7 +67,7 @@ espressoCoreV351 = { module = "androidx.test.espresso:espresso-core", version = 
 foundation = { module = "androidx.compose.foundation:foundation" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" } # KSP
+hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hiltWork = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 hiltAndroidTesting = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
@@ -89,9 +81,9 @@ androidxUiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-p
 
 # Material 3
 androidxMaterial3 = { group = "androidx.compose.material3", name = "material3" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidxMaterialIconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidxComposeAnimation = { group = "androidx.compose.animation", name = "animation" }
-# Window Manager for window size classes
 androidxWindow = { group = "androidx.window", name = "window", version = "1.4.0" }
 composeUiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 composeUiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -126,8 +118,8 @@ firebaseAnalyticsKtx = { group = "com.google.firebase", name = "firebase-analyti
 firebaseCrashlyticsKtx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version = "19.4.4" }
 firebasePerfKtx = { group = "com.google.firebase", name = "firebase-perf-ktx", version = "21.0.5" }
 firebaseMessagingKtx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.1.2" }
-firebaseConfigKtx = { module = "com.google.firebase:firebase-config-ktx", version = "22.1.2" } # Version will be supplied by BoM
-firebaseStorageKtx = { module = "com.google.firebase:firebase-storage-ktx", version = "21.0.2" } # Version will be supplied by BoM
+firebaseConfigKtx = { module = "com.google.firebase:firebase-config-ktx", version = "22.1.2" }
+firebaseStorageKtx = { module = "com.google.firebase:firebase-storage-ktx", version = "21.0.2" }
 
 # KotlinX
 kotlinxCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -177,6 +169,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
-# Gradle toolchains resolver
 gradle-toolchains-foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "toolchainsFoojayResolver" }
-
