@@ -7,17 +7,22 @@ pluginManagement {
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
     
+    // Add the Foojay toolchains resolver plugin
+    plugins {
+        id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    }
+    
     // Version resolution for plugins
     resolutionStrategy {
         eachPlugin {
             when {
                 // Kotlin plugins
                 requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true ->
-                    useVersion("2.2.0")
+                    useVersion("2.0.0")  // Using version from libs.versions.toml
                     
                 // KSP (Kotlin Symbol Processing)
                 requested.id.id == "com.google.devtools.ksp" ->
-                    useVersion("2.2.0-2.0.2")
+                    useVersion("2.0.0-1.0.21")  // Matching KSP version for Kotlin 2.0.0
                     
                 // Android Gradle Plugin
                 requested.id.id == "com.android.application" || 

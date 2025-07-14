@@ -7,7 +7,7 @@ plugins {
 
     // Other plugins
     alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.google.services) apply true
+    alias(libs.plugins.googleServices) apply true
     alias(libs.plugins.openapi.generator) apply true
     alias(libs.plugins.firebase.crashlytics) apply true
     alias(libs.plugins.firebase.perf) apply true

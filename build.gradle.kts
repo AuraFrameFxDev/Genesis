@@ -9,6 +9,8 @@ extra["compileSdk"] = 34
 extra["targetSdk"] = 34
 extra["minSdk"] = 26
 
+extra["kotlinVersion"] = libs.versions.kotlin.get()
+
 // Configure buildscript repositories for plugins
 buildscript {
     repositories {
@@ -49,7 +51,7 @@ plugins {
     alias(libs.plugins.hiltAndroid) apply false
     
     // Google Services
-    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.googleServices) apply false
     
     // Kotlin Plugins
     alias(libs.plugins.kotlin.serialization) apply false
