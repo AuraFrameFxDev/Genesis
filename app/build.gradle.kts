@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     // Core plugins
     alias(libs.plugins.androidApplication) apply true
@@ -7,7 +9,7 @@ plugins {
 
     // Other plugins
     alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.googleServices) apply true
+    alias(libs.plugins.google.services) apply true
     alias(libs.plugins.openapi.generator) apply true
     alias(libs.plugins.firebase.crashlytics) apply true
     alias(libs.plugins.firebase.perf) apply true
@@ -18,23 +20,21 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 34  // Using API level 36 for compatibility with latest AndroidX libraries
+    compileSdk = 36  // Use stable Android 14 - all dependencies support this
     
     // Enable build config generation
-    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
-        ndkVersion = "27.0.12077973"
     }
 
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
-        minSdk = 33
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
+        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
         multiDexEnabled = true
 
         // NDK configuration
@@ -48,8 +48,6 @@ android {
         }
         
         // Enable prefab for native dependencies
-        buildFeatures {
-            prefab = true
         }
         
         // Packaging options for native libraries
@@ -90,7 +88,6 @@ android {
         }
     }
 
-    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
@@ -102,16 +99,19 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn"
-        )
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+            freeCompilerArgs.addAll(
+                "-Xjvm-default=all",
+                "-Xcontext-receivers",
+                "-opt-in=kotlin.RequiresOptIn"
+            )
+        }
     }
 
     androidResources {
@@ -127,10 +127,6 @@ android {
         }
     }
     
-    // Enable prefab for native dependencies
-    buildFeatures {
-        prefab = true
-    }
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -140,31 +136,11 @@ android {
         abortOnError = true
         checkReleaseBuilds = true
         checkGeneratedSources = true
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
         disable.add("GradleDeprecatedConfiguration")
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
 
 
     }
     
-    // Configure build variants
-    buildTypes {
-        debug {
-            // Debug flags are now handled by CMake
-        }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            // Release flags are now handled by CMake
-        }
-    }
 }
 
 // OpenAPI Generator Configuration
