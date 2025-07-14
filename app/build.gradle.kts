@@ -101,7 +101,7 @@ android {
 
     // Configure Compose Compiler
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     compileOptions {
