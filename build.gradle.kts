@@ -5,9 +5,9 @@ extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 
 // Common versions for all modules
-extra["compileSdk"] = 34
-extra["targetSdk"] = 34
-extra["minSdk"] = 26
+extra["compileSdk"] = 36
+extra["targetSdk"] = 36
+extra["minSdk"] = 33
 
 extra["kotlinVersion"] = libs.versions.kotlin.get()
 
