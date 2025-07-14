@@ -5,8 +5,8 @@ extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 
 // Common versions for all modules
-extra["compileSdk"] = 36
-extra["targetSdk"] = 36
+extra["compileSdk"] = 34
+extra["targetSdk"] = 34
 extra["minSdk"] = 26
 
 // Configure buildscript repositories for plugins
@@ -68,12 +68,12 @@ allprojects {
     afterEvaluate {
         if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
             configure<com.android.build.gradle.BaseExtension> {
-                // Configure SDK versions - using android-36.2 as it's a valid format
-                compileSdkVersion = "android-36.2"
+                // Configure SDK versions
+                compileSdkVersion = "android-${rootProject.extra["compileSdk"]}"
                 
                 defaultConfig {
-                    minSdk = (rootProject.extra["minSdk"] as? Int) ?: 26
-                    targetSdk = (rootProject.extra["targetSdk"] as? Int) ?: 36
+                    minSdk = (rootProject.extra["minSdk"] as Int).toString().toInt()
+                    targetSdk = (rootProject.extra["targetSdk"] as Int).toString().toInt()
                     
                     // Configure NDK
                     ndk {
@@ -116,7 +116,7 @@ allprojects {
     plugins.withType<JavaBasePlugin> {
         extensions.configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(24)) // Java 24 required for AGP 8.14.2+
+                languageVersion.set(JavaLanguageVersion.of(21)) 
                 vendor.set(JvmVendorSpec.ADOPTIUM)
                 implementation.set(JvmImplementation.VENDOR_SPECIFIC)
             }

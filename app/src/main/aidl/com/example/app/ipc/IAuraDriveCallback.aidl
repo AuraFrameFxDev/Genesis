@@ -1,5 +1,5 @@
 // IAuraDriveCallback.aidl
-package com.example.app.ipc;
+package dev.aurakai.auraframefx.ipc;
 
 // Callback interface for service-to-client communication
 oneway interface IAuraDriveCallback {
