@@ -254,20 +254,11 @@ dependencies {
     implementation(libs.androidxUiGraphics)
     implementation(libs.androidxUiToolingPreview)
 
-    // Material 3
-    implementation(libs.androidxMaterial3)
-    implementation(libs.androidxMaterialIconsExtended)
-
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)
 
-    // Required for Material 3 theming
     implementation(libs.androidxActivityCompose)
     implementation(libs.androidxNavigationCompose)
-
-    // Material 3 Adaptive Components (if needed for future use)
-    // implementation("androidx.compose.material3:material3-adaptive:1.0.0")
-    // implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
 
     // Dagger Hilt
     implementation(libs.hiltAndroid)
