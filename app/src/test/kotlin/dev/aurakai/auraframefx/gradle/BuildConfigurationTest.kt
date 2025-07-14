@@ -1,10 +1,33 @@
 package dev.aurakai.auraframefx.gradle
 
-import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
+import org.junit.Assert.*
+import org.junit.Before
 import java.io.File
 
+/**
+ * Enhanced comprehensive unit tests for build.gradle.kts configuration validation.
+ * 
+ * This expanded test suite now validates:
+ * - Basic configuration syntax and structure validation
+ * - SDK version consistency and compatibility checks
+ * - Plugin configuration completeness and order
+ * - Dependency management best practices
+ * - Security and performance configurations
+ * - Framework-specific setups (Compose, Hilt, Room, Firebase)
+ * - Build optimization and resource management
+ * - Testing infrastructure and coverage setup
+ * - Code quality, lint, and static analysis configurations
+ * - NDK and native build configurations
+ * - Packaging and resource optimization
+ * - Task dependencies and build lifecycle
+ * - Configuration exclusions and resolution strategies
+ * - Edge cases and failure condition handling
+ * 
+ * Testing Framework: JUnit 4
+ * Test Coverage: Comprehensive validation with 50+ test scenarios
+ * Focus: Build configuration correctness, security, and performance
+ */
 /**
  * Unit tests for build.gradle.kts configuration validation.
  * Tests various aspects of the Gradle build configuration to ensure
@@ -390,6 +413,416 @@ class BuildConfigurationTest {
 
     @Test
     fun `test desugaring configuration`() {
+
+    @Test
+    fun `test build file exists and is readable`() {
+        assertTrue("Build file should exist", buildFile.exists() || File("../app/build.gradle.kts").exists())
+        assertNotEquals("Build content should not be empty", "", buildContent)
+        assertTrue("Build content should contain gradle configuration", buildContent.contains("android {") || buildContent.contains("android{"))
+    }
+
+    @Test
+    fun `test SDK version consistency and compatibility`() {
+        val compileSdkRegex = Regex("compileSdk\s*=\s*(\d+)")
+        val targetSdkRegex = Regex("targetSdk\s*=\s*(\d+)")
+        val minSdkRegex = Regex("minSdk\s*=\s*(\d+)")
+        
+        val compileSdkMatch = compileSdkRegex.find(buildContent)
+        val targetSdkMatch = targetSdkRegex.find(buildContent)
+        val minSdkMatch = minSdkRegex.find(buildContent)
+        
+        if (compileSdkMatch != null && targetSdkMatch != null && minSdkMatch != null) {
+            val compileSdk = compileSdkMatch.groupValues[1].toInt()
+            val targetSdk = targetSdkMatch.groupValues[1].toInt()
+            val minSdk = minSdkMatch.groupValues[1].toInt()
+            
+            assertTrue("MinSdk should be less than or equal to targetSdk", minSdk <= targetSdk)
+            assertTrue("TargetSdk should be less than or equal to compileSdk", targetSdk <= compileSdk)
+            assertTrue("MinSdk should be reasonable (>= 21)", minSdk >= 21)
+            assertTrue("CompileSdk should not be too old (>= 33)", compileSdk >= 33)
+        }
+    }
+
+    @Test
+    fun `test namespace follows package naming conventions`() {
+        val namespaceRegex = Regex("namespace\s*=\s*"([^"]+)"")
+        val applicationIdRegex = Regex("applicationId\s*=\s*"([^"]+)"")
+        
+        val namespaceMatch = namespaceRegex.find(buildContent)
+        val applicationIdMatch = applicationIdRegex.find(buildContent)
+        
+        if (namespaceMatch != null) {
+            val namespace = namespaceMatch.groupValues[1]
+            assertTrue("Namespace should follow reverse domain naming", namespace.contains("."))
+            assertTrue("Namespace should start with company domain", namespace.startsWith("dev.aurakai"))
+            assertFalse("Namespace should not contain uppercase letters", namespace.contains(Regex("[A-Z]")))
+        }
+        
+        if (applicationIdMatch != null && namespaceMatch != null) {
+            assertEquals("ApplicationId should match namespace", namespaceMatch.groupValues[1], applicationIdMatch.groupValues[1])
+        }
+    }
+
+    @Test
+    fun `test plugin configuration completeness`() {
+        val essentialPlugins = listOf(
+            "libs.plugins.androidApplication",
+            "libs.plugins.kotlinAndroid",
+            "libs.plugins.hiltAndroid",
+            "libs.plugins.ksp"
+        )
+        
+        essentialPlugins.forEach { plugin ->
+            assertTrue("Essential plugin $plugin should be applied", buildContent.contains(plugin))
+        }
+        
+        // Test that plugins are in the plugins block
+        assertTrue("Plugins should be in plugins block", buildContent.contains("plugins {"))
+    }
+
+    @Test
+    fun `test Java version compatibility across all configurations`() {
+        val javaVersions = listOf(
+            "sourceCompatibility = JavaVersion.VERSION_21",
+            "targetCompatibility = JavaVersion.VERSION_21",
+            "jvmTarget = JvmTarget.JVM_21"
+        )
+        
+        javaVersions.forEach { config ->
+            assertTrue("Java version configuration should be consistent: $config", buildContent.contains(config))
+        }
+    }
+
+    @Test
+    fun `test Compose configuration completeness`() {
+        if (buildContent.contains("compose = true")) {
+            assertTrue("Compose compiler extension version should be set when Compose is enabled",
+                buildContent.contains("kotlinCompilerExtensionVersion"))
+            assertTrue("Compose BOM should be included when Compose is enabled",
+                buildContent.contains("platform(libs.composeBom)"))
+            assertTrue("Compose UI should be included when Compose is enabled",
+                buildContent.contains("implementation(libs.androidxUi)"))
+        }
+    }
+
+    @Test
+    fun `test dependency declaration patterns`() {
+        // Test that implementation dependencies follow correct pattern
+        val implementationPattern = Regex("implementation\(libs\.[a-zA-Z0-9\.]+\)")
+        val implementationMatches = implementationPattern.findAll(buildContent).count()
+        assertTrue("Should have implementation dependencies using version catalog", implementationMatches > 0)
+        
+        // Test that test dependencies follow correct pattern
+        val testImplementationPattern = Regex("testImplementation\(libs\.[a-zA-Z0-9\.]+\)")
+        val testMatches = testImplementationPattern.findAll(buildContent).count()
+        assertTrue("Should have test dependencies using version catalog", testMatches > 0)
+        
+        // Test that android test dependencies follow correct pattern
+        val androidTestPattern = Regex("androidTestImplementation\(libs\.[a-zA-Z0-9\.]+\)")
+        val androidTestMatches = androidTestPattern.findAll(buildContent).count()
+        assertTrue("Should have android test dependencies using version catalog", androidTestMatches > 0)
+    }
+
+    @Test
+    fun `test build configuration syntax validity`() {
+        // Test for basic Kotlin/Gradle syntax issues
+        val openBraces = buildContent.count { it == '"{"' }
+        val closeBraces = buildContent.count { it == '"}"' }
+        assertEquals("Should have matching braces", openBraces, closeBraces)
+        
+        // Test for proper string quoting
+        val doubleQuoteCount = buildContent.count { it == '"""' }
+        assertTrue("Should have even number of double quotes", doubleQuoteCount % 2 == 0)
+    }
+
+    @Test
+    fun `test NDK ABI configuration completeness`() {
+        if (buildContent.contains("ndk {")) {
+            val requiredAbis = listOf("arm64-v8a")
+            requiredAbis.forEach { abi ->
+                assertTrue("Required ABI $abi should be included", buildContent.contains(abi))
+            }
+            // Test that NDK version is specified
+            assertTrue("NDK version should be specified", buildContent.contains("version = "))
+        }
+    }
+
+    @Test
+    fun `test CMake configuration validity`() {
+        if (buildContent.contains("cmake {")) {
+            assertTrue("CMake path should point to valid CMakeLists.txt location",
+                buildContent.contains("CMakeLists.txt"))
+            assertTrue("CMake version should be specified",
+                buildContent.contains("version = "))
+        }
+    }
+
+    @Test
+    fun `test ProGuard configuration for release builds`() {
+        if (buildContent.contains("release {")) {
+            assertTrue("ProGuard files should be specified for release builds",
+                buildContent.contains("proguard") || buildContent.contains("minifyEnabled"))
+        }
+    }
+
+    @Test
+    fun `test test instrumentation runner validity`() {
+        val testRunnerRegex = Regex("testInstrumentationRunner\s*=\s*"([^"]+)"")
+        val match = testRunnerRegex.find(buildContent)
+        
+        if (match != null) {
+            val runner = match.groupValues[1]
+            assertTrue("Test runner should be a valid class name", runner.contains("."))
+            assertFalse("Test runner should not be empty", runner.isEmpty())
+            assertTrue("Test runner should be Hilt runner", runner.contains("Hilt"))
+        }
+    }
+
+    @Test
+    fun `test Firebase configuration consistency`() {
+        val firebasePlugins = listOf(
+            "libs.plugins.google.services",
+            "libs.plugins.firebase.crashlytics",
+            "libs.plugins.firebase.perf"
+        )
+        
+        val firebaseDependencies = listOf(
+            "platform(libs.firebaseBom)",
+            "libs.firebaseAnalyticsKtx",
+            "libs.firebaseCrashlyticsKtx",
+            "libs.firebasePerfKtx"
+        )
+        
+        val hasFirebasePlugins = firebasePlugins.any { buildContent.contains(it) }
+        val hasFirebaseDependencies = firebaseDependencies.any { buildContent.contains(it) }
+        
+        if (hasFirebasePlugins || hasFirebaseDependencies) {
+            assertTrue("Google Services plugin should be applied when using Firebase",
+                buildContent.contains("libs.plugins.google.services"))
+            assertTrue("Firebase BOM should be included when using Firebase",
+                buildContent.contains("platform(libs.firebaseBom)"))
+        }
+    }
+
+    @Test
+    fun `test Hilt configuration completeness`() {
+        if (buildContent.contains("libs.plugins.hiltAndroid")) {
+            assertTrue("Hilt Android dependency should be included when plugin is applied",
+                buildContent.contains("implementation(libs.hiltAndroid)"))
+            assertTrue("Hilt Compiler should be included when plugin is applied",
+                buildContent.contains("ksp(libs.hiltCompiler)"))
+            assertTrue("KSP plugin should be applied for Hilt",
+                buildContent.contains("libs.plugins.ksp"))
+        }
+    }
+
+    @Test
+    fun `test Room configuration completeness`() {
+        if (buildContent.contains("libs.androidxRoomRuntime")) {
+            assertTrue("Room KTX should be included with Room Runtime",
+                buildContent.contains("libs.androidxRoomKtx"))
+            assertTrue("Room Compiler should be included with KSP",
+                buildContent.contains("ksp(libs.androidxRoomCompiler)"))
+            assertTrue("Room schema location should be configured",
+                buildContent.contains("room.schemaLocation"))
+        }
+    }
+
+    @Test
+    fun `test network configuration completeness`() {
+        if (buildContent.contains("libs.retrofit")) {
+            assertTrue("OkHttp should be included with Retrofit",
+                buildContent.contains("libs.okhttp"))
+            assertTrue("Converter should be included with Retrofit",
+                buildContent.contains("converter") || buildContent.contains("gson"))
+        }
+    }
+
+    @Test
+    fun `test Kotlin compiler options validity`() {
+        val kotlinOptions = listOf(
+            "-Xcontext-receivers",
+            "-Xjvm-default=all",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
+        
+        kotlinOptions.forEach { option ->
+            if (buildContent.contains(option)) {
+                assertTrue("Kotlin compiler option $option should be properly formatted",
+                    buildContent.contains(""$option"") || buildContent.contains("'""'))
+            }
+        }
+    }
+
+    @Test
+    fun `test build features configuration validity`() {
+        val buildFeatures = listOf("compose", "buildConfig", "viewBinding")
+        
+        buildFeatures.forEach { feature ->
+            if (buildContent.contains("$feature = true")) {
+                assertTrue("Build feature $feature should be in buildFeatures block",
+                    buildContent.contains("buildFeatures"))
+            }
+        }
+    }
+
+    @Test
+    fun `test no deprecated API usage`() {
+        val deprecatedApis = listOf(
+            "compile(",  // Should use implementation
+            "testCompile(",  // Should use testImplementation
+            "androidTestCompile(",  // Should use androidTestImplementation
+            "provided(",  // Should use compileOnly
+            "jcenter()",  // Repository is deprecated
+        )
+        
+        deprecatedApis.forEach { api ->
+            assertFalse("Deprecated API $api should not be used", buildContent.contains(api))
+        }
+    }
+
+    @Test
+    fun `test security best practices`() {
+        // Test for security-related configurations
+        if (buildContent.contains("minifyEnabled = true")) {
+            assertTrue("Obfuscation should be enabled for release builds with minification",
+                buildContent.contains("proguard") || buildContent.contains("R8"))
+        }
+        
+        // Test for proper signing configuration references
+        if (buildContent.contains("signingConfig")) {
+            assertFalse("Signing config should not contain hardcoded passwords",
+                buildContent.contains("password = ""))
+        }
+    }
+
+    @Test
+    fun `test performance configuration`() {
+        // Test for APK optimization
+        if (buildContent.contains("release {")) {
+            assertTrue("APK optimization should be configured for release",
+                buildContent.contains("shrinkResources") || buildContent.contains("minifyEnabled"))
+        }
+    }
+
+    @Test
+    fun `test version catalog usage consistency`() {
+        // Test that most dependencies use version catalog pattern
+        val directVersionPattern = Regex("implementation\s*\(\s*["'"]([^"'"]+:[^"'"]+:[^"'"]+)["'"]")
+        val directVersionMatches = directVersionPattern.findAll(buildContent).toList()
+        
+        // Allow some direct versions for special cases, but warn if too many
+        assertTrue("Most dependencies should use version catalog (found ${directVersionMatches.size} direct versions)",
+            directVersionMatches.size < 5)
+    }
+
+    @Test
+    fun `test multidex necessity check`() {
+        if (buildContent.contains("multiDexEnabled = true")) {
+            assertTrue("MinSdk should be checked when multidex is enabled",
+                buildContent.contains("minSdk"))
+            // Multidex is required for minSdk < 21, optional for >= 21
+        }
+    }
+
+    @Test
+    fun `test resource optimization`() {
+        // Test for vector drawable optimization
+        assertTrue("Vector drawable support should be enabled",
+            buildContent.contains("useSupportLibrary = true"))
+    }
+
+    @Test
+    fun `test lint configuration completeness`() {
+        // Test for lint options
+        val lintConfigs = listOf("lintOptions", "lint {")
+        val hasLintConfig = lintConfigs.any { buildContent.contains(it) }
+        
+        if (hasLintConfig) {
+            assertTrue("Lint should be properly configured",
+                buildContent.contains("abortOnError") || 
+                buildContent.contains("checkReleaseBuilds") || 
+                buildContent.contains("warningsAsErrors"))
+        }
+    }
+
+    @Test
+    fun `test packaging configuration`() {
+        if (buildContent.contains("packaging {")) {
+            assertTrue("Packaging should exclude common problematic files",
+                buildContent.contains("excludes") || buildContent.contains("exclude"))
+        }
+    }
+
+    @Test
+    fun `test OpenAPI generator configuration validation`() {
+        if (buildContent.contains("openApiGenerate")) {
+            assertTrue("OpenAPI input spec should be specified",
+                buildContent.contains("inputSpec.set"))
+            assertTrue("OpenAPI output directory should be specified",
+                buildContent.contains("outputDir.set"))
+            assertTrue("OpenAPI generator name should be kotlin",
+                buildContent.contains("generatorName.set("kotlin")"))
+        }
+    }
+
+    @Test
+    fun `test source sets configuration`() {
+        if (buildContent.contains("sourceSets")) {
+            assertTrue("Generated sources should be included in source sets",
+                buildContent.contains("srcDirs"))
+        }
+    }
+
+    @Test
+    fun `test task dependencies are valid`() {
+        if (buildContent.contains("dependsOn")) {
+            assertTrue("Task dependencies should be properly formatted",
+                buildContent.contains("dependsOn("") || buildContent.contains("dependsOn tasks"))
+        }
+    }
+
+    @Test
+    fun `test configuration exclusions are appropriate`() {
+        if (buildContent.contains("exclude(")) {
+            val commonExclusions = listOf(
+                "kotlin-stdlib-common",
+                "kotlinx-coroutines-core-common"
+            )
+            commonExclusions.forEach { exclusion ->
+                if (buildContent.contains(exclusion)) {
+                    assertTrue("Exclusion $exclusion should be properly formatted",
+                        buildContent.contains("exclude(group =") || buildContent.contains("exclude(module ="))
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test android resources configuration`() {
+        if (buildContent.contains("androidResources")) {
+            assertTrue("No compress should be configured for specific file types",
+                buildContent.contains("noCompress"))
+        }
+    }
+
+    @Test
+    fun `test external native build configuration`() {
+        if (buildContent.contains("externalNativeBuild")) {
+            assertTrue("CMake path should be configured",
+                buildContent.contains("path = file("))
+            assertTrue("CMake version should be configured",
+                buildContent.contains("version ="))
+        }
+    }
+
+    @Test
+    fun `test resolution strategy configuration`() {
+        if (buildContent.contains("resolutionStrategy")) {
+            assertTrue("Resolution strategy should force specific versions",
+                buildContent.contains("force(") || buildContent.contains("preferProjectModules()"))
+        }
+    }
         assertTrue("Core library desugaring should be enabled", 
             buildContent.contains("coreLibraryDesugaring(libs.desugarJdkLibs)"))
     }
