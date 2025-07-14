@@ -30,11 +30,11 @@ class OracleDriveControlViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val TAG = "OracleDriveVM"
-    
+
     // Service connection state
     private var auraDriveService: IAuraDriveService? = null
     private var isBound = false
-    
+
     // UI State
     private val _isServiceConnected = MutableStateFlow(false)
     val isServiceConnected: StateFlow<Boolean> = _isServiceConnected.asStateFlow()
@@ -47,13 +47,13 @@ class OracleDriveControlViewModel @Inject constructor(
 
     private val _diagnosticsLog = MutableStateFlow("")
     val diagnosticsLog: StateFlow<String> = _diagnosticsLog.asStateFlow()
-    
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-    
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-    
+
     // Service connection
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -81,7 +81,8 @@ class OracleDriveControlViewModel @Inject constructor(
      */
     fun bindService() {
         try {
-            val intent = Intent(context, Class.forName("dev.aurakai.auraframefx.services.AuraDriveService"))
+            val intent =
+                Intent(context, Class.forName("dev.aurakai.auraframefx.services.AuraDriveService"))
             context.bindService(
                 intent,
                 connection,
@@ -113,14 +114,16 @@ class OracleDriveControlViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 _status.value = service.oracleDriveStatus ?: "Status unavailable"
-                _detailedStatus.value = service.detailedInternalStatus ?: "Detailed status unavailable"
-                
+                _detailedStatus.value =
+                    service.detailedInternalStatus ?: "Detailed status unavailable"
+
                 val logs = service.internalDiagnosticsLog
                 _diagnosticsLog.value = logs?.joinToString("\n") ?: "No diagnostic logs available"
-                
+
                 _errorMessage.value = null
             } catch (e: Exception) {
                 Log.e(TAG, "Error refreshing status", e)
@@ -130,7 +133,7 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Imports a file from the specified URI
      */
@@ -139,13 +142,14 @@ class OracleDriveControlViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val fileId = service.importFile(uri)
                 _status.value = "File imported successfully (ID: $fileId)"
                 refreshStatus()
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error importing file", e)
                 _errorMessage.value = "Import failed: ${e.message}"
@@ -154,7 +158,7 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Exports a file to the specified destination URI
      */
@@ -163,9 +167,10 @@ class OracleDriveControlViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val success = service.exportFile(fileId, destinationUri)
                 if (success) {
                     _status.value = "File exported successfully"
@@ -173,7 +178,7 @@ class OracleDriveControlViewModel @Inject constructor(
                 } else {
                     _errorMessage.value = "Export operation failed"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error exporting file", e)
                 _errorMessage.value = "Export failed: ${e.message}"
@@ -182,7 +187,7 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Verifies the integrity of a file
      */
@@ -191,16 +196,17 @@ class OracleDriveControlViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val isValid = service.verifyFileIntegrity(fileId)
                 if (isValid) {
                     _status.value = "File integrity verified successfully"
                 } else {
                     _errorMessage.value = "File integrity verification failed"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error verifying file integrity", e)
                 _errorMessage.value = "Verification failed: ${e.message}"
@@ -209,7 +215,7 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Toggles a module's enabled state
      */
@@ -218,9 +224,10 @@ class OracleDriveControlViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val result = service.toggleLSPosedModule(packageName, enable)
                 if (result) {
                     val action = if (enable) "enabled" else "disabled"
@@ -229,7 +236,7 @@ class OracleDriveControlViewModel @Inject constructor(
                 } else {
                     _errorMessage.value = "Failed to toggle module '$packageName'"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error toggling module", e)
                 _errorMessage.value = "Module operation failed: ${e.message}"
@@ -238,7 +245,7 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     override fun onCleared() {
         super.onCleared()
         unbindService()

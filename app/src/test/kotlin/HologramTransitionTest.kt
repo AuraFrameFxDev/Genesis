@@ -1,6 +1,5 @@
 package dev.aurakai.auraframefx
 
-import dev.aurakai.auraframefx.ui.components.HologramTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -10,20 +9,20 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
+import dev.aurakai.auraframefx.ui.components.HologramTransition
+import org.junit.Rule
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.Rule
 import kotlin.test.assertTrue
-import kotlin.test.assertFalse
 
 /**
  * Unit tests for HologramTransition composable.
- * 
+ *
  * Testing Framework: JUnit 5 with Compose Testing
  * Mocking Library: MockK (available but not needed for this composable)
- * 
+ *
  * The HologramTransition is a simple composable that conditionally shows content
  * based on a visible parameter. These tests ensure proper behavior across
  * various scenarios including visibility states, recomposition, and edge cases.
@@ -208,12 +207,12 @@ class HologramTransitionTest {
             composeTestRule
                 .onNodeWithTag("complex-box")
                 .assertExists()
-            
+
             composeTestRule
                 .onNodeWithTag("title")
                 .assertExists()
                 .assertTextEquals("Title")
-            
+
             composeTestRule
                 .onNodeWithTag("subtitle")
                 .assertExists()
@@ -273,7 +272,7 @@ class HologramTransitionTest {
                     visible = true,
                     content = {
                         var clicked by remember { mutableStateOf(false) }
-                        
+
                         Text(
                             text = if (clicked) "Clicked" else "Not Clicked",
                             modifier = Modifier
@@ -331,9 +330,11 @@ class HologramTransitionTest {
             composeTestRule.waitForIdle()
 
             // Then - Content should be composed
-            assertTrue(recompositionCount > initialRecompositions, 
-                "Content should compose when becoming visible")
-            
+            assertTrue(
+                recompositionCount > initialRecompositions,
+                "Content should compose when becoming visible"
+            )
+
             composeTestRule
                 .onNodeWithTag("recomp-text")
                 .assertExists()
@@ -365,9 +366,11 @@ class HologramTransitionTest {
             composeTestRule.waitForIdle()
 
             // Then - Content should recompose due to state change
-            assertTrue(contentRecompositions > initialCompositions,
-                "Content should recompose when internal state changes")
-            
+            assertTrue(
+                contentRecompositions > initialCompositions,
+                "Content should recompose when internal state changes"
+            )
+
             composeTestRule
                 .onNodeWithTag("stable-text")
                 .assertTextEquals("State: changed")
@@ -499,7 +502,10 @@ class HologramTransitionTest {
                             Box {
                                 Box {
                                     Box {
-                                        Text("Deep Content", modifier = Modifier.testTag("deep-content"))
+                                        Text(
+                                            "Deep Content",
+                                            modifier = Modifier.testTag("deep-content")
+                                        )
                                     }
                                 }
                             }
@@ -572,7 +578,10 @@ class HologramTransitionTest {
             val duration = endTime - startTime
 
             // Then - Should complete within reasonable time
-            assertTrue(duration < 5000, "100 toggles should complete within 5 seconds, took ${duration}ms")
+            assertTrue(
+                duration < 5000,
+                "100 toggles should complete within 5 seconds, took ${duration}ms"
+            )
         }
 
         @Test
@@ -615,7 +624,10 @@ class HologramTransitionTest {
                     visible = true,
                     content = {
                         // Content that changes with counter
-                        Text("Recreation $recreateCounter", modifier = Modifier.testTag("recreate-text"))
+                        Text(
+                            "Recreation $recreateCounter",
+                            modifier = Modifier.testTag("recreate-text")
+                        )
                     }
                 )
             }
@@ -646,16 +658,19 @@ class HologramTransitionTest {
             composeTestRule.setContent {
                 Box(modifier = Modifier.testTag("root-container")) {
                     Text("Header", modifier = Modifier.testTag("header"))
-                    
+
                     HologramTransition(
                         visible = showHologram,
                         content = {
                             Box(modifier = Modifier.testTag("hologram-container")) {
-                                Text("Hologram Content", modifier = Modifier.testTag("hologram-text"))
+                                Text(
+                                    "Hologram Content",
+                                    modifier = Modifier.testTag("hologram-text")
+                                )
                             }
                         }
                     )
-                    
+
                     Text("Footer", modifier = Modifier.testTag("footer"))
                 }
             }
@@ -695,7 +710,7 @@ class HologramTransitionTest {
             composeTestRule.setContent {
                 Box {
                     Text("Background", modifier = Modifier.testTag("background"))
-                    
+
                     HologramTransition(
                         visible = true,
                         content = {
@@ -774,7 +789,7 @@ class HologramTransitionTest {
             composeTestRule.setContent {
                 Box {
                     Text("Always Visible", modifier = Modifier.testTag("always-visible"))
-                    
+
                     HologramTransition(
                         visible = false,
                         content = {

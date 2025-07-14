@@ -71,7 +71,7 @@ toolchainsFoojayResolver = "1.0.0"
 # Hilt (Core & Testing)
 animation = { module = "androidx.compose.animation:animation" }
 desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
-espressoCoreV351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+espressoCoreV351 = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
 foundation = { module = "androidx.compose.foundation:foundation" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -82,7 +82,7 @@ hiltAndroidTesting = { module = "com.google.dagger:hilt-android-testing", versio
 hiltAndroidCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 
 # Compose BOM and Libraries (versions from BOM)
-composeBom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+composeBom = { group = "androidx.compose", name = "compose-bom", version = "2025.06.01" }
 androidxUi = { group = "androidx.compose.ui", name = "ui" }
 androidxUiGraphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidxUiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -105,7 +105,7 @@ androidxNavigationCompose = { module = "androidx.navigation:navigation-compose",
 androidxLifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidxLifecycleViewmodelKtx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidxLifecycleLivedataKtx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
-junitV115 = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+junitV115 = { module = "androidx.test.ext:junit", version = "1.1.5" }
 lifecycleCommonJava8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycle" }
 androidxLifecycleProcess = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle" }
 androidxLifecycleService = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle" }
@@ -122,12 +122,12 @@ androidxSecurityCrypto = { module = "androidx.security:security-crypto", version
 
 # Firebase
 firebaseBom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBomVersion" }
-firebaseAnalyticsKtx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebaseCrashlyticsKtx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebasePerfKtx = { group = "com.google.firebase", name = "firebase-perf-ktx" }
-firebaseMessagingKtx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-firebaseConfigKtx = { module = "com.google.firebase:firebase-config-ktx" } # Version will be supplied by BoM
-firebaseStorageKtx = { module = "com.google.firebase:firebase-storage-ktx" } # Version will be supplied by BoM
+firebaseAnalyticsKtx = { group = "com.google.firebase", name = "firebase-analytics-ktx", version = "22.5.0" }
+firebaseCrashlyticsKtx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version = "19.4.4" }
+firebasePerfKtx = { group = "com.google.firebase", name = "firebase-perf-ktx", version = "21.0.5" }
+firebaseMessagingKtx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.1.2" }
+firebaseConfigKtx = { module = "com.google.firebase:firebase-config-ktx", version = "22.1.2" } # Version will be supplied by BoM
+firebaseStorageKtx = { module = "com.google.firebase:firebase-storage-ktx", version = "21.0.2" } # Version will be supplied by BoM
 
 # KotlinX
 kotlinxCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -163,7 +163,7 @@ espressoCore = { module = "androidx.test.espresso:espresso-core", version.ref = 
 mockkAndroid = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockkAgent = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 uiTestJunit4 = { module = "androidx.compose.ui:ui-test-junit4" }
-uiTestManifest = { module = "androidx.compose.ui:ui-test-manifest" }
+uiTestManifest = { module = "androidx.compose.ui:ui-test-manifest", version = "1.8.3" }
 uiTooling = { module = "androidx.compose.ui:ui-tooling" }
 uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview" }
 ui = { module = "androidx.compose.ui:ui" }

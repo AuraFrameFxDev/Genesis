@@ -7,7 +7,7 @@ initscript {
         mavenCentral()
         gradlePluginPortal()
     }
-    
+
     dependencies {
         // Android Gradle Plugin
         classpath("com.android.tools.build:gradle:8.1.1")
@@ -34,7 +34,7 @@ allprojects {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
-    
+
     // Common configurations
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -65,32 +65,32 @@ rootProject {
 plugins.withId("com.android.application") {
     configure<com.android.build.gradle.BaseExtension> {
         compileSdk = 36
-        
+
         defaultConfig {
             minSdk = 33
             targetSdk = 36
             versionCode = 1
             versionName = "1.0"
-            
+
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
         }
-        
+
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_21
             targetCompatibility = JavaVersion.VERSION_21
             isCoreLibraryDesugaringEnabled = true
         }
-        
+
         buildFeatures {
             compose = true
             buildConfig = true
         }
-        
+
         composeOptions {
             kotlinCompilerExtensionVersion = "2.2.0"
         }
-        
+
         packaging {
             resources {
                 excludes += "/META-INF/{AL2.0,LGPL2.1}"

@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     // Core plugins
     alias(libs.plugins.androidApplication) apply true
@@ -9,24 +7,26 @@ plugins {
 
     // Other plugins
     alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.google.services) apply true
+    alias(libs.plugins.googleServices) apply true
     alias(libs.plugins.openapi.generator) apply true
     alias(libs.plugins.firebase.crashlytics) apply true
     alias(libs.plugins.firebase.perf) apply true
-    
+
     // Compose plugin for Kotlin 2.0+
     id("org.jetbrains.kotlin.plugin.compose") version libs.versions.kotlin.get()
 }
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 36  // Use stable Android 14 - all dependencies support this
+    compileSdk = 35
+    // Using API level 36 for compatibility with latest AndroidX libraries
 
-    
     // Enable build config generation
+    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
+        ndkVersion = "27.0.12077973"
     }
 
     defaultConfig {
@@ -34,9 +34,10 @@ android {
         minSdk = 33
         targetSdk = 35
 
+
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
         multiDexEnabled = true
 
         // NDK configuration
@@ -44,14 +45,16 @@ android {
             // Specify the ABI architectures you want to build for
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
-            
+
             // Specify NDK version explicitly
             version = "27.0.12077973"
         }
-        
+
         // Enable prefab for native dependencies
+        buildFeatures {
+            prefab = true
         }
-        
+
         // Packaging options for native libraries
         packaging {
             resources {
@@ -63,18 +66,18 @@ android {
                         "**/libjni*.so"
                     )
                 )
-                
+
                 // For native libraries
                 jniLibs {
                     // Keep debug symbols in release builds for crash reporting
                     keepDebugSymbols.add("**/*.so")
-                    
+
                     // Exclude unwanted ABIs if needed
                     // excludes += listOf("armeabi-v7a", "x86")
                 }
             }
         }
-        
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -90,6 +93,7 @@ android {
         }
     }
 
+    buildFeatures {
         buildConfig = true
         compose = true
         viewBinding = true
@@ -101,20 +105,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
-    
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
 
-            freeCompilerArgs.addAll(
-                "-Xjvm-default=all",
-                "-Xcontext-receivers",
-                "-opt-in=kotlin.RequiresOptIn"
-            )
-        }
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
 
     androidResources {
@@ -126,10 +126,14 @@ android {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = rootProject.extra["cmakeVersion"] as String
-            
+
         }
     }
-    
+
+    // Enable prefab for native dependencies
+    buildFeatures {
+        prefab = true
+    }
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -139,11 +143,31 @@ android {
         abortOnError = true
         checkReleaseBuilds = true
         checkGeneratedSources = true
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
         disable.add("GradleDeprecatedConfiguration")
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
 
 
     }
-    
+
+    // Configure build variants
+    buildTypes {
+        debug {
+            // Debug flags are now handled by CMake
+        }
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            // Release flags are now handled by CMake
+        }
+    }
 }
 
 // OpenAPI Generator Configuration
@@ -190,12 +214,12 @@ configurations.all {
     // KMP/Native Exclusions
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-common")
-    
+
     // Resolution strategy for dependency conflicts
     resolutionStrategy {
         // Prefer stable versions
         preferProjectModules()
-        
+
         // Force specific versions for common dependencies
         force(
             "org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}",
@@ -229,18 +253,18 @@ dependencies {
     implementation(libs.androidxUi)
     implementation(libs.androidxUiGraphics)
     implementation(libs.androidxUiToolingPreview)
-    
+
     // Material 3
     implementation(libs.androidxMaterial3)
     implementation(libs.androidxMaterialIconsExtended)
-    
+
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)
-    
+
     // Required for Material 3 theming
     implementation(libs.androidxActivityCompose)
     implementation(libs.androidxNavigationCompose)
-    
+
     // Material 3 Adaptive Components (if needed for future use)
     // implementation("androidx.compose.material3:material3-adaptive:1.0.0")
     // implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")

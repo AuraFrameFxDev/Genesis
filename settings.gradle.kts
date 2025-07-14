@@ -6,12 +6,12 @@ pluginManagement {
         mavenCentral()        // For other plugins if necessary
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
-    
+
     // Add the Foojay toolchains resolver plugin
     plugins {
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     }
-    
+
     // Version resolution for plugins
     resolutionStrategy {
         eachPlugin {
@@ -19,16 +19,16 @@ pluginManagement {
                 // Kotlin plugins
                 requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true ->
                     useVersion("2.0.0")  // Using version from libs.versions.toml
-                    
+
                 // KSP (Kotlin Symbol Processing)
                 requested.id.id == "com.google.devtools.ksp" ->
                     useVersion("2.0.0-1.0.21")  // Matching KSP version for Kotlin 2.0.0
-                    
+
                 // Android Gradle Plugin
-                requested.id.id == "com.android.application" || 
-                requested.id.id == "com.android.library" ->
+                requested.id.id == "com.android.application" ||
+                        requested.id.id == "com.android.library" ->
                     useVersion("8.11.1")
-                    
+
                 // Compose is handled by the Android Gradle Plugin
             }
         }
@@ -43,11 +43,11 @@ plugins {
 dependencyResolutionManagement {
     // Fail the build if any project repositories are defined (enforces centralization)
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
+
     repositories {
         google()  // Google's Maven repository (AndroidX, Google Play Services, etc.)
         mavenCentral()  // Maven Central repository
-        
+
         // Additional repositories (limit these to only what's necessary)
         maven { url = uri("https://jitpack.io") }  // For Xposed and other JitPack dependencies
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
@@ -104,120 +104,120 @@ if (file("sandbox-ui").exists()) {
 // include(":lib-ai-ai43")
 // include(":lib-ai-ai44")
 //
-// include(":lib-ai-ai21-xposed")
-// include(":lib-ai-ai22-xposed")
-// include(":lib-ai-ai23-xposed")
-// include(":lib-ai-ai24-xposed")
-// include(":lib-ai-ai25-xposed")
-// include(":lib-ai-ai26-xposed")
-// include(":lib-ai-ai27-xposed")
-// include(":lib-ai-ai28-xposed")
-// include(":lib-ai-ai29-xposed")
-// include(":lib-ai-ai30-xposed")
-// include(":lib-ai-ai31-xposed")
-// include(":lib-ai-ai32-xposed")
-// include(":lib-ai-ai33-xposed")
-// include(":lib-ai-ai34-xposed")
-// include(":lib-ai-ai35-xposed")
-// include(":lib-ai-ai36-xposed")
-// include(":lib-ai-ai37-xposed")
-// include(":lib-ai-ai38-xposed")
-// include(":lib-ai-ai39-xposed")
-// include(":lib-ai-ai40-xposed")
-// include(":lib-ai-ai41-xposed")
-// include(":lib-ai-ai42-xposed")
-// include(":lib-ai-ai43-xposed")
-// include(":lib-ai-ai44-xposed")
-//
-// include(":lib-system-quicksettings")
-// include(":lib-system-quicksettings-xposed")
-// include(":lib-system-lockscreen")
-// include(":lib-system-lockscreen-xposed")
-// include(":lib-system-overlay")
-// include(":lib-system-overlay-xposed")
-// include(":lib-system-homescreen")
-// include(":lib-system-homescreen-xposed")
-//
-// include(":lib-system-notchbar")
-// include(":lib-system-notchbar-xposed")
-//
-// include(":lib-system-statusbar")
-// include(":lib-system-statusbar-xposed")
-//
-// include(":lib-system-navigationbar")
-// include(":lib-system-navigationbar-xposed")
-//
-// include(":lib-system-telephony")
-//
-// include(":lib-system-customization")
-// include(":lib-system-customization-xposed")
-//
-// include(":lib-system-keyguard")
-// include(":lib-system-keyguard-xposed")
-//
-// include(":lib-system-systemui")
-// include(":lib-system-systemui-xposed")
-//
-// include(":lib-system-sysui")
-// include(":lib-system-sysui-xposed")
-//
-// include(":lib-system-battery")
-// include(":lib-system-battery-xposed")
-//
-// include(":lib-system-bluetooth")
-// include(":lib-system-bluetooth-xposed")
-//
-// include(":lib-system-display")
-// include(":lib-system-display-xposed")
-//
-// include(":lib-system-fingerprint")
-//
-// include(":lib-system-sound")
-// include(":lib-system-sound-xposed")
-//
-// include(":lib-system-usb")
-//
-// include(":lib-system-vibrator")
-//
-// include(":lib-system-power")
-// include(":lib-system-power-xposed")
-//
-// include(":lib-system-camera")
-//
-// include(":lib-system-graphics")
-// include(":lib-system-graphics-xposed")
-//
-// include(":lib-system-permissions")
-// include(":lib-system-permissions-xposed")
-//
-// include(":lib-system-settings")
-// include(":lib-system-settings-xposed")
-//
-// include(":lib-system-tweaks")
-// include(":lib-system-tweaks-xposed")
-//
-// include(":lib-system-widget")
-// include(":lib-system-widget-xposed")
-//
-// include(":lib-system-apps")
-// include(":lib-system-apps-xposed")
-//
-// include(":lib-system-contacts")
-// include(":lib-system-contacts-xposed")
-//
-// include(":lib-system-calendar")
-// include(":lib-system-calendar-xposed")
-//
-// include(":lib-system-messaging")
-// include(":lib-system-messaging-xposed")
-//
-// include(":lib-system-notifications")
-// include(":lib-system-notifications-xposed")
-//
-// include(":lib-system-media")
-// include(":lib-system-media-xposed")
-//
-// include(":lib-system-photos")
+include(":lib-ai-ai21-xposed")
+include(":lib-ai-ai22-xposed")
+include(":lib-ai-ai23-xposed")
+include(":lib-ai-ai24-xposed")
+include(":lib-ai-ai25-xposed")
+include(":lib-ai-ai26-xposed")
+include(":lib-ai-ai27-xposed")
+include(":lib-ai-ai28-xposed")
+include(":lib-ai-ai29-xposed")
+include(":lib-ai-ai30-xposed")
+include(":lib-ai-ai31-xposed")
+include(":lib-ai-ai32-xposed")
+include(":lib-ai-ai33-xposed")
+include(":lib-ai-ai34-xposed")
+include(":lib-ai-ai35-xposed")
+include(":lib-ai-ai36-xposed")
+include(":lib-ai-ai37-xposed")
+include(":lib-ai-ai38-xposed")
+include(":lib-ai-ai39-xposed")
+include(":lib-ai-ai40-xposed")
+include(":lib-ai-ai41-xposed")
+include(":lib-ai-ai42-xposed")
+include(":lib-ai-ai43-xposed")
+include(":lib-ai-ai44-xposed")
+
+include(":lib-system-quicksettings")
+include(":lib-system-quicksettings-xposed")
+include(":lib-system-lockscreen")
+include(":lib-system-lockscreen-xposed")
+include(":lib-system-overlay")
+include(":lib-system-overlay-xposed")
+include(":lib-system-homescreen")
+include(":lib-system-homescreen-xposed")
+
+include(":lib-system-notchbar")
+include(":lib-system-notchbar-xposed")
+
+include(":lib-system-statusbar")
+include(":lib-system-statusbar-xposed")
+
+include(":lib-system-navigationbar")
+include(":lib-system-navigationbar-xposed")
+
+include(":lib-system-telephony")
+
+include(":lib-system-customization")
+include(":lib-system-customization-xposed")
+
+include(":lib-system-keyguard")
+include(":lib-system-keyguard-xposed")
+
+include(":lib-system-systemui")
+include(":lib-system-systemui-xposed")
+
+include(":lib-system-sysui")
+include(":lib-system-sysui-xposed")
+
+include(":lib-system-battery")
+include(":lib-system-battery-xposed")
+
+include(":lib-system-bluetooth")
+include(":lib-system-bluetooth-xposed")
+
+include(":lib-system-display")
+include(":lib-system-display-xposed")
+
+include(":lib-system-fingerprint")
+
+include(":lib-system-sound")
+include(":lib-system-sound-xposed")
+
+include(":lib-system-usb")
+
+include(":lib-system-vibrator")
+
+include(":lib-system-power")
+include(":lib-system-power-xposed")
+
+include(":lib-system-camera")
+
+include(":lib-system-graphics")
+include(":lib-system-graphics-xposed")
+
+include(":lib-system-permissions")
+include(":lib-system-permissions-xposed")
+
+include(":lib-system-settings")
+include(":lib-system-settings-xposed")
+
+include(":lib-system-tweaks")
+include(":lib-system-tweaks-xposed")
+
+include(":lib-system-widget")
+include(":lib-system-widget-xposed")
+
+include(":lib-system-apps")
+include(":lib-system-apps-xposed")
+
+include(":lib-system-contacts")
+include(":lib-system-contacts-xposed")
+
+include(":lib-system-calendar")
+include(":lib-system-calendar-xposed")
+
+include(":lib-system-messaging")
+include(":lib-system-messaging-xposed")
+
+include(":lib-system-notifications")
+include(":lib-system-notifications-xposed")
+
+include(":lib-system-media")
+include(":lib-system-media-xposed")
+
+include(":lib-system-photos")
 // include(":lib-system-photos-xposed")
 //
 // include(":lib-system-voice")
