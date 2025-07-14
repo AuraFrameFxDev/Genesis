@@ -21,6 +21,7 @@ plugins {
 android {
     namespace = "dev.aurakai.auraframefx"
     compileSdk = 36  // Use stable Android 14 - all dependencies support this
+
     
     // Enable build config generation
         buildConfig = true
@@ -30,8 +31,9 @@ android {
 
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
-        minSdk = 26
+        minSdk = 33
         targetSdk = 35
+
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
@@ -106,6 +108,7 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_21
+
             freeCompilerArgs.addAll(
                 "-Xjvm-default=all",
                 "-Xcontext-receivers",
