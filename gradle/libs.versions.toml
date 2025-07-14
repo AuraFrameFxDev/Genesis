@@ -11,7 +11,7 @@ hilt = "2.56.2"
 hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
 composeBom = "2024.05.00"
-composeBom = "2024.04.00"
+
 material3Adaptive = "1.0.0"
 navigationComposeVersion = "2.9.1"
 windowSizeClass = "1.0.0"
