@@ -5,9 +5,9 @@ extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 
 // Common versions for all modules
-extra["compileSdk"] = 34
-extra["targetSdk"] = 34
-extra["minSdk"] = 26
+extra["compileSdk"] = 35
+extra["targetSdk"] = 35
+extra["minSdk"] = 33
 
 extra["kotlinVersion"] = libs.versions.kotlin.get()
 
@@ -21,7 +21,7 @@ buildscript {
 
     dependencies {
         // Add buildscript dependencies if needed
-        classpath("com.android.tools.build:gradle:${libs.versions.agp.get()}")
+        classpath("com.android.tools.build:gradle:8.6.0")  // Using AGP 8.6.0 for compileSdk 35 compatibility
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
         // Add Hilt plugin
         classpath("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
@@ -38,20 +38,20 @@ buildscript {
 
 // Apply plugins to the root project (not subprojects)
 plugins {
-    // Android Gradle Plugin (AGP)
-    alias(libs.plugins.androidApplication) apply false
+    // Android Gradle Plugin (AGP) - Version is specified in buildscript classpath
+    id("com.android.application") version "8.6.0" apply false
 
     // Kotlin Android Plugin
-    alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.kotlin.android)
 
     // KSP (Kotlin Symbol Processing)
-    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.ksp)
 
     // Dagger Hilt
-    alias(libs.plugins.hiltAndroid) apply false
+    alias(libs.plugins.hilt)
 
     // Google Services
-    alias(libs.plugins.googleServices) apply false
+    alias(libs.plugins.google.services)
 
     // Kotlin Plugins
     alias(libs.plugins.kotlin.serialization) apply false

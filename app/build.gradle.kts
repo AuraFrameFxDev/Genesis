@@ -19,7 +19,7 @@ plugins {
 android {
     namespace = "dev.aurakai.auraframefx"
     compileSdk = 35
-    // Using API level 36 for compatibility with latest AndroidX libraries
+    buildToolsVersion = "34.0.0"
 
     // Enable build config generation
     buildFeatures {
@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
-        minSdk = 33
+        minSdk = 26
         targetSdk = 35
 
 
