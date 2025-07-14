@@ -19,7 +19,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app"
+    namespace = "dev.aurakai.auraframefx"
     compileSdk = 36  // Using API level 36 as per Android Studio's recommendation
     
     // Enable build config generation
@@ -31,12 +31,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.app"
+        applicationId = "dev.aurakai.auraframefx"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "com.example.app.HiltTestRunner"
+        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
         multiDexEnabled = true
 
         // NDK configuration

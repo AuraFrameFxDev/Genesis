@@ -1,4 +1,4 @@
-package com.example.app
+package dev.aurakai.auraframefx
 
 import android.content.Context
 import android.content.res.Resources
