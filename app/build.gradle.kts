@@ -18,7 +18,7 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 35  // Using API level 34 for better compatibility with Firebase and other libraries
+    compileSdk = 34  // Using API level 36 for compatibility with latest AndroidX libraries
     
     // Enable build config generation
     buildFeatures {
@@ -30,8 +30,8 @@ android {
 
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx"
-        minSdk = 26
-        targetSdk = 35
+        minSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
@@ -104,10 +104,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
 
     androidResources {
