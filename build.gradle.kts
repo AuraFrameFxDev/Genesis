@@ -18,7 +18,7 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
     }
-    
+
     dependencies {
         // Add buildscript dependencies if needed
         classpath("com.android.tools.build:gradle:${libs.versions.agp.get()}")
@@ -40,26 +40,26 @@ buildscript {
 plugins {
     // Android Gradle Plugin (AGP)
     alias(libs.plugins.androidApplication) apply false
-    
+
     // Kotlin Android Plugin
     alias(libs.plugins.kotlinAndroid) apply false
-    
+
     // KSP (Kotlin Symbol Processing)
     alias(libs.plugins.ksp) apply false
-    
+
     // Dagger Hilt
     alias(libs.plugins.hiltAndroid) apply false
-    
+
     // Google Services
     alias(libs.plugins.googleServices) apply false
-    
+
     // Kotlin Plugins
     alias(libs.plugins.kotlin.serialization) apply false
 
     // Firebase
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.firebase.perf) apply false
-    
+
     // OpenAPI Generator
     alias(libs.plugins.openapi.generator) apply false
 }
@@ -72,11 +72,11 @@ allprojects {
             configure<com.android.build.gradle.BaseExtension> {
                 // Configure SDK versions
                 compileSdkVersion = "android-${rootProject.extra["compileSdk"]}"
-                
+
                 defaultConfig {
                     minSdk = (rootProject.extra["minSdk"] as Int).toString().toInt()
                     targetSdk = (rootProject.extra["targetSdk"] as Int).toString().toInt()
-                    
+
                     // Configure NDK
                     ndk {
                         abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
@@ -84,17 +84,17 @@ allprojects {
                         debugSymbolLevel = "FULL"
                     }
                 }
-                
+
                 // Configure external native build
                 externalNativeBuild {
                     cmake {
                         version = rootProject.extra["cmakeVersion"] as String
                     }
                 }
-                
+
                 // Enable prefab for native dependencies
                 buildFeatures.prefab = true
-                
+
                 // Configure packaging options
                 packagingOptions {
                     jniLibs {
@@ -113,12 +113,12 @@ allprojects {
         }
     }
     // Toolchain resolver plugin is applied in settings.gradle.kts
-    
+
     // Configure Java toolchain for all projects
     plugins.withType<JavaBasePlugin> {
         extensions.configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(21)) 
+                languageVersion.set(JavaLanguageVersion.of(21))
                 vendor.set(JvmVendorSpec.ADOPTIUM)
                 implementation.set(JvmImplementation.VENDOR_SPECIFIC)
             }
@@ -136,7 +136,7 @@ allprojects {
             )
         }
     }
-    
+
     // Configure Java compilation for all projects
     tasks.withType<JavaCompile>().configureEach {
         sourceCompatibility = JavaVersion.VERSION_21.toString()
@@ -145,7 +145,7 @@ allprojects {
         options.isIncremental = true
         options.compilerArgs.add("--enable-preview")
     }
-    
+
     // Configure test tasks
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()

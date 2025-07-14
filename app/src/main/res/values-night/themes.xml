@@ -57,9 +57,15 @@
         <item name="colorOutlineVariant">@color/dark_outline_variant</item>
 
         <!-- Material 3 shape appearance -->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AuraFrameFX.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AuraFrameFX.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AuraFrameFX.LargeComponent</item>
+        <item name="shapeAppearanceSmallComponent">
+            @style/ShapeAppearance.AuraFrameFX.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.AuraFrameFX.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">
+            @style/ShapeAppearance.AuraFrameFX.LargeComponent
+        </item>
 
         <!-- Widget Styles -->
         <item name="materialButtonStyle">@style/Widget.AuraFrameFX.Button</item>

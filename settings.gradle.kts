@@ -6,12 +6,12 @@ pluginManagement {
         mavenCentral()        // For other plugins if necessary
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
-    
+
     // Add the Foojay toolchains resolver plugin
     plugins {
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     }
-    
+
     // Version resolution for plugins
     resolutionStrategy {
         eachPlugin {
@@ -19,16 +19,16 @@ pluginManagement {
                 // Kotlin plugins
                 requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true ->
                     useVersion("2.0.0")  // Using version from libs.versions.toml
-                    
+
                 // KSP (Kotlin Symbol Processing)
                 requested.id.id == "com.google.devtools.ksp" ->
                     useVersion("2.0.0-1.0.21")  // Matching KSP version for Kotlin 2.0.0
-                    
+
                 // Android Gradle Plugin
-                requested.id.id == "com.android.application" || 
-                requested.id.id == "com.android.library" ->
+                requested.id.id == "com.android.application" ||
+                        requested.id.id == "com.android.library" ->
                     useVersion("8.11.1")
-                    
+
                 // Compose is handled by the Android Gradle Plugin
             }
         }
@@ -43,11 +43,11 @@ plugins {
 dependencyResolutionManagement {
     // Fail the build if any project repositories are defined (enforces centralization)
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
+
     repositories {
         google()  // Google's Maven repository (AndroidX, Google Play Services, etc.)
         mavenCentral()  // Maven Central repository
-        
+
         // Additional repositories (limit these to only what's necessary)
         maven { url = uri("https://jitpack.io") }  // For Xposed and other JitPack dependencies
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }

@@ -19,7 +19,7 @@ android {
         lint.targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        
+
         // Configure NDK if needed
         ndk {
             abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
@@ -50,7 +50,7 @@ android {
         compose = true
         buildConfig = true
     }
-    
+
     packaging {
         resources {
             excludes.addAll(
