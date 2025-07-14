@@ -2,9 +2,11 @@ package dev.aurakai.auraframefx.gradle
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.Assert.*
 
 /**
  * Integration tests for build configuration that verify the actual runtime
@@ -36,15 +38,15 @@ class BuildIntegrationTest {
         try {
             val buildConfigClass = Class.forName("dev.aurakai.auraframefx.BuildConfig")
             assertNotNull("BuildConfig class should be generated", buildConfigClass)
-            
+
             // Verify essential BuildConfig fields
             val debugField = buildConfigClass.getField("DEBUG")
             assertNotNull("DEBUG field should exist in BuildConfig", debugField)
-            
+
             val applicationIdField = buildConfigClass.getField("APPLICATION_ID")
             assertNotNull("APPLICATION_ID field should exist in BuildConfig", applicationIdField)
             assertEquals("dev.aurakai.auraframefx", applicationIdField.get(null))
-            
+
         } catch (e: ClassNotFoundException) {
             fail("BuildConfig class should be generated")
         }
@@ -65,8 +67,11 @@ class BuildIntegrationTest {
         // If the app starts successfully with multiDexEnabled = true,
         // it indicates MultiDex is working correctly
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        assertNotNull("Context should be available, indicating successful app initialization", context)
-        
+        assertNotNull(
+            "Context should be available, indicating successful app initialization",
+            context
+        )
+
         // Try to access a class that would be in a secondary dex file
         try {
             val classLoader = context.classLoader
@@ -80,11 +85,14 @@ class BuildIntegrationTest {
     fun testHiltIsProperlyConfigured() {
         // This test verifies that Hilt test runner is working
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        
+
         // Verify that the application context is available
         // (Hilt would fail to initialize if not properly configured)
-        assertNotNull("Application context should be available with Hilt", context.applicationContext)
-        
+        assertNotNull(
+            "Application context should be available with Hilt",
+            context.applicationContext
+        )
+
         // Check if we can access the application class
         val application = context.applicationContext
         assertNotNull("Application should be initialized", application)
