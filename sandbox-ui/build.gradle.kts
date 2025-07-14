@@ -100,6 +100,8 @@ dependencies {
 
     // Testing
     testImplementation(libs.testJunit)
+    testImplementation("org.gradle:gradle-tooling-api:8.4")
+    testImplementation("org.gradle:gradle-test-kit:8.4")
     androidTestImplementation(libs.junitV115)
     androidTestImplementation(libs.espressoCoreV351)
     androidTestImplementation(libs.uiTestJunit4)
