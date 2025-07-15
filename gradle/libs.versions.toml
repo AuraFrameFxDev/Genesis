@@ -61,7 +61,7 @@ toolchainsFoojayResolver = "1.0.0"
 # Hilt (Core & Testing)
 animation = { module = "androidx.compose.animation:animation" }
 desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
-espressoCoreV351 = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
+espressoCoreV351 = { module = "androidx.test.espresso:espresso-core", version = "3.6.1" }
 foundation = { module = "androidx.compose.foundation:foundation" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
