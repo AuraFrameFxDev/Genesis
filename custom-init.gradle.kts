@@ -7,7 +7,7 @@ allprojects {
     plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin> {
         tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
             compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
                 freeCompilerArgs.addAll(
                     "-opt-in=kotlin.RequiresOptIn",
                     "-Xjvm-default=all",
@@ -21,8 +21,7 @@ allprojects {
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
         extensions.configure<org.gradle.api.plugins.JavaPluginExtension> {
             toolchain {
-                languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(21))
-                vendor.set(org.gradle.jvm.toolchain.JvmVendorSpec.ADOPTIUM)
+                languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(17))
             }
         }
     }
