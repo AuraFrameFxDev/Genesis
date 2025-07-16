@@ -99,11 +99,6 @@ android {
         viewBinding = true
     }
 
-    // Configure Compose Compiler
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -253,6 +248,7 @@ dependencies {
     implementation(libs.androidxUi)
     implementation(libs.androidxUiGraphics)
     implementation(libs.androidxUiToolingPreview)
+    implementation(libs.androidx.material3)
 
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)

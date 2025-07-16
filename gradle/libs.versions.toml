@@ -78,7 +78,7 @@ androidxUiGraphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidxUiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 
 # Material 3
-androidxMaterial3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidxMaterialIconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidxComposeAnimation = { group = "androidx.compose.animation", name = "animation" }
 androidxWindow = { group = "androidx.window", name = "window", version = "1.4.0" }
