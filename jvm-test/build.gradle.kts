@@ -48,8 +48,8 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
     
     // Kotlin Test
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.0.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
     
     // MockK for mocking
     testImplementation("io.mockk:mockk:1.13.10")
