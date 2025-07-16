@@ -107,9 +107,11 @@ android {
         }
     }
 
-    // Configure Compose Compiler
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    buildFeatures {
+        buildConfig = true
+        compose = true
+        viewBinding = true
+
     }
 
     compileOptions {
@@ -253,30 +255,14 @@ dependencies {
     implementation(libs.androidxLifecycleViewmodelKtx)
     implementation(libs.androidxLifecycleRuntimeCompose)
 
-    // Compose BOM (Bill of Materials)
-    val composeBom = platform("androidx.compose:compose-bom:2024.04.00")
-    implementation(platform(composeBom))
-    
-    // Core Compose dependencies
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    
-    // Material 3
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3-window-size-class")
-    
-    // Material Components (for View-based components if needed)
-    implementation("com.google.android.material:material:1.12.0")
-    
-    // Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.0")
-    
-    // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    
-    // Integration with observables
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
+    // Compose
+    val composeBom = platform(libs.composeBom)
+    implementation(composeBom)
+    implementation(libs.androidxUi)
+    implementation(libs.androidxUiGraphics)
+    implementation(libs.androidxUiToolingPreview)
+    implementation(libs.androidx.material3)
+
 
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)
