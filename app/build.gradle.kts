@@ -1,65 +1,74 @@
+// Version catalog accessor
+val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+// Apply plugins directly with versions from the version catalog
 plugins {
-    // Core plugins
-    alias(libs.plugins.androidApplication) apply true
-    alias(libs.plugins.kotlinAndroid) apply true
-    alias(libs.plugins.ksp) apply true  // KSP must be applied before Hilt
-    alias(libs.plugins.hiltAndroid) apply true  // Hilt plugin
-
-    // Other plugins
-    alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.googleServices) apply true
-    alias(libs.plugins.openapi.generator) apply true
-    alias(libs.plugins.firebase.crashlytics) apply true
-    alias(libs.plugins.firebase.perf) apply true
-
-    // Compose plugin for Kotlin 2.0+
-    id("org.jetbrains.kotlin.plugin.compose") version libs.versions.kotlin.get()
+    id("com.android.application")
+    kotlin("android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization")
+    id("com.google.gms.google-services")
+    id("org.openapi.generator")
+    id("com.google.firebase.crashlytics")
+    id("com.google.firebase.firebase-perf")
 }
 
 android {
     namespace = "dev.aurakai.auraframefx"
     compileSdk = 36
-    // Using API level 36 for compatibility with latest AndroidX libraries
-
-    // Enable build config generation
-    buildFeatures {
-        buildConfig = true
-        compose = true
-        viewBinding = true
-        ndkVersion = "27.0.12077973"
+    
+    // NDK configuration
+    ndkVersion = "27.0.12077973"
+    
+    // Enable Java 21 features
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-
-    defaultConfig {
-        applicationId = "dev.aurakai.auraframefx"
-        minSdk = 33
-        targetSdk = 36
-
-
-        versionCode = 1
-        versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
-        multiDexEnabled = true
-
-        // NDK configuration
-        ndk {
-            // Specify the ABI architectures you want to build for
-            abiFilters.clear()
-            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
-
-            // Specify NDK version explicitly
-            version = "27.0.12077973"
-        }
-
-        // Enable prefab for native dependencies
-        buildFeatures {
-            prefab = true
+    
+    // Kotlin options for Java 21 compatibility
+    kotlinOptions {
+        jvmTarget = "21"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers"
+        )
+    }
+    
+        // LSPosed compatibility and modern Android development settings
+    
+    // Enable ViewBinding and other modern features
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+        aidl = true
+        renderScript = false
+    }
+    
+    // Enable vector drawable support
+    vectorDrawables {
+        useSupportLibrary = true
+    }
+    
+    // NDK configuration
+    ndk {
+        // Specify the ABI architectures you want to build for
+        abiFilters.clear()
+        abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
         }
 
         // Packaging options for native libraries
         packaging {
             resources {
+                // Exclude common files that can cause conflicts
                 excludes.addAll(
                     listOf(
+                        "/META-INF/{AL2.0,LGPL2.1}",
+                        "META-INF/*.md",
+                        "META-INF/AL2.0",
+                        "META-INF/LGPL2.1",
                         "META-INF/*.kotlin_module",
                         "META-INF/*.version",
                         "META-INF/proguard/*",
@@ -83,13 +92,18 @@ android {
         }
     }
 
+    // Build types configuration
     buildTypes {
+        debug {
+            // Debug flags are now handled by CMake
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Release flags are now handled by CMake
         }
     }
 
@@ -97,19 +111,30 @@ android {
         buildConfig = true
         compose = true
         viewBinding = true
+
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
+        
+        // Enable Java 8+ API desugaring support
+        isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xjvm-default=all",
+            "-Xcontext-receivers"
         )
+        
+        // Enable experimental coroutines API
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.FlowPreview"
     }
 
     androidResources {
@@ -121,14 +146,15 @@ android {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = rootProject.extra["cmakeVersion"] as String
-
         }
     }
-
+    
     // Enable prefab for native dependencies
     buildFeatures {
         prefab = true
     }
+
+
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -149,20 +175,7 @@ android {
 
     }
 
-    // Configure build variants
-    buildTypes {
-        debug {
-            // Debug flags are now handled by CMake
-        }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            // Release flags are now handled by CMake
-        }
-    }
+
 }
 
 // OpenAPI Generator Configuration
@@ -250,6 +263,7 @@ dependencies {
     implementation(libs.androidxUiToolingPreview)
     implementation(libs.androidx.material3)
 
+
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)
 
@@ -309,6 +323,13 @@ dependencies {
     // UI
     implementation(libs.coilCompose)
     implementation(libs.timber)
+    
+    // Material Icons
+    implementation("androidx.compose.material:material-icons-extended")
+    
+    // Window Size Class and Adaptive Layout
+    implementation("androidx.window:window:1.2.0")
+    // Note: material3-adaptive is now part of material3, no need for separate dependency
 
     // Testing
     testImplementation(libs.testJunit)
