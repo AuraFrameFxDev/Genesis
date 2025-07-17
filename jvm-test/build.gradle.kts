@@ -55,7 +55,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     
     // AssertJ for assertions
-    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 // Configure test tasks
