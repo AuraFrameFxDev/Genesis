@@ -1,13 +1,9 @@
-// Common configurations for AuraFrameFX modules
-// This script is applied to all projects via the root build.gradle.kts
-
-// Common configurations for all projects
 allprojects {
     // Common Kotlin compilation options
     plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin> {
         tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
             compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
                 freeCompilerArgs.addAll(
                     "-opt-in=kotlin.RequiresOptIn",
                     "-Xjvm-default=all",
@@ -21,7 +17,8 @@ allprojects {
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
         extensions.configure<org.gradle.api.plugins.JavaPluginExtension> {
             toolchain {
-                languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(17))
+                languageVersion.set(org.gradle.jvm.toolchain.JavaLanguageVersion.of(21))
+                vendor.set(org.gradle.jvm.toolchain.JvmVendorSpec.ADOPTIUM)
             }
         }
     }

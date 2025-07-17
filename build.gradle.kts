@@ -1,6 +1,3 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules
-
-// Project-wide variables
 extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 extra["compileSdkVersion"] = 36
@@ -17,6 +14,9 @@ allprojects {
         configure<JavaPluginExtension> {
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
+                vendor.set(JvmVendorSpec.ADOPTIUM)
+                // Ensure toolchain version is set to 1.0.0
+                version = "1.0.0"
             }
         }
     }
