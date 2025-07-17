@@ -10,7 +10,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
+    id("com.google.devtools.ksp") version "1.0.17" apply false   // supports Kotlin 1.8.22
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0" apply false
 }
 
