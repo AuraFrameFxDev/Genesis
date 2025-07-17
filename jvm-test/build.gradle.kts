@@ -41,7 +41,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     
     // Kotlin Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     
     // JUnit 5 for testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.3")
