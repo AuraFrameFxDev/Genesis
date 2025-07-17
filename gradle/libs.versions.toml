@@ -1,8 +1,8 @@
 [versions]
 # Core versions
-agp = "8.2.2"
-kotlin = "1.8.22"
-hilt = "2.57"
+agp = "8.11.1"
+kotlin = "2.2.0"
+hilt = "2.57"  # Hilt version (minimum for KSP compatibility)
 kotlinxSerialization = "1.6.0"  # Kotlin Serialization version
 googleServices = "4.4.2"  # Google Services version (latest stable)
 openapiGenerator = "7.6.0"  # OpenAPI Generator version (latest stable)
@@ -54,7 +54,8 @@ guavaAndroid = "33.4.8-android"
 # --- Testing ---
 junit = "5.13.3"
 androidxTestExtJunit = "1.2.1"
-espressoCore = "3.27.3"
+
+espressoCore = "3.6.1"
 mockk = "1.14.5"
 
 # --- Build Logic Plugins ---

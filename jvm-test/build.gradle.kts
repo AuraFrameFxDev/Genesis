@@ -41,11 +41,11 @@ dependencies {
     implementation(kotlin("stdlib"))
     
     // Kotlin Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     
     // JUnit 5 for testing
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.3")
     
     // Kotlin Test
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.0")
@@ -55,7 +55,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     
     // AssertJ for assertions
-    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 // Configure test tasks
