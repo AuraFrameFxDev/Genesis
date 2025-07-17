@@ -18,7 +18,7 @@ ksp = "2.2.0-2.0.2"  # KSP version compatible with Kotlin 2.2.0 and Hilt 2.56+
 
 hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
-composeBom = "2024.06.00"
+composeBom = "2025.07.00"
 material3Adaptive = "1.0.0"
 navigationComposeVersion = "2.9.1"
 windowSizeClass = "1.0.0"
