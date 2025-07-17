@@ -326,7 +326,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     
     // Window Size Class and Adaptive Layout
-    implementation("androidx.window:window:1.2.0")
+    implementation("androidx.window:window:1.4.0")
     // Note: material3-adaptive is now part of material3, no need for separate dependency
 
     // Testing
