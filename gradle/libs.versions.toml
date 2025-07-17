@@ -1,6 +1,6 @@
 [versions]
 # Core versions
-agp = "8.2.2"
+agp = "8.11.1"
 kotlin = "2.2.0"
 hilt = "2.57"  # Hilt version (minimum for KSP compatibility)
 kotlinxSerialization = "1.6.0"  # Kotlin Serialization version
