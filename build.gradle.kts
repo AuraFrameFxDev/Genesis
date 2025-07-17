@@ -8,7 +8,7 @@ extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
 
 // Java and Kotlin compatibility settings
-val javaVersion = JavaVersion.VERSION_21
+val javaVersion = JavaVersion.VERSION_17
 
 // Apply common configuration to all projects
 allprojects {

@@ -4,8 +4,17 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url = uri("https://repo.maven.apache.org/maven2/") }
+        maven { url = uri("https://dl.google.com/dl/android/maven2/") }
     }
 }
+
+plugins {
+    id("com.google.devtools.ksp") version "1.0.17" apply false   // supports Kotlin 1.8.22
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0" apply false
+}
+
+
 
 // Enable Gradle features
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
@@ -17,6 +26,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
+    }
+    plugins {
+        id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
     }
 }
 
