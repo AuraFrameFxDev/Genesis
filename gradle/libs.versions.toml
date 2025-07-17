@@ -2,7 +2,7 @@
 # Core versions
 agp = "8.2.2"
 kotlin = "2.2.0"
-hilt = "2.56"  # Hilt version (minimum for KSP compatibility)
+hilt = "2.57"  # Hilt version (minimum for KSP compatibility)
 kotlinxSerialization = "1.6.0"  # Kotlin Serialization version
 googleServices = "4.4.2"  # Google Services version (latest stable)
 openapiGenerator = "7.6.0"  # OpenAPI Generator version (latest stable)
