@@ -8,7 +8,7 @@ extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
 
 // Java and Kotlin compatibility settings
-val javaVersion = JavaVersion.VERSION_17
+val javaVersion = JavaVersion.VERSION_21
 
 // Apply common configuration to all projects
 allprojects {
@@ -17,9 +17,6 @@ allprojects {
         configure<JavaPluginExtension> {
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
-                vendor.set(JvmVendorSpec.ADOPTIUM)
-                // Ensure toolchain version is set to 1.0.0
-                version = "1.0.0"
             }
         }
     }

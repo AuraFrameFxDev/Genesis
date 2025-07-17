@@ -10,7 +10,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.google.devtools.ksp") version "1.0.17" apply false   // supports Kotlin 1.8.22
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0" apply false
 }
 
@@ -27,9 +27,10 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
-    plugins {
-        id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
-    }
+}
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 rootProject.name = "AuraFrameFX"
