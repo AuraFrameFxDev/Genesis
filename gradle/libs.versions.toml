@@ -13,9 +13,8 @@ firebasePerformance = "1.4.4"  # Firebase Performance version (latest stable)
 desugar_jdk_libs = "2.1.5"
 espressoCoreVersion = "3.5.1"
 generativeai = "0.9.0"
-junitVersion = "1.2.1"
-ksp = "2.2.0-2.0.2"  # KSP version compatible with Kotlin 2.2.0 and Hilt 2.56+
-
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
 composeBom = "2025.07.00"
@@ -53,8 +52,9 @@ timber = "5.0.1"
 guavaAndroid = "33.4.8-android"
 
 # --- Testing ---
-junit = "4.13.2"
+junit = "5.13.3"
 androidxTestExtJunit = "1.2.1"
+
 espressoCore = "3.6.1"
 mockk = "1.14.5"
 

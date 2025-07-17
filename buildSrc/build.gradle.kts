@@ -11,7 +11,7 @@ repositories {
 }
 
 // Use the same Kotlin version as the main project
-val kotlinVersion = "1.8.22"
+val kotlinVersion = libs.versions.kotlin.get()
 
 // Configure Java toolchain for buildSrc
 java {
@@ -30,20 +30,18 @@ dependencies {
 
 // Configure Kotlin settings
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     
     // Source set configuration not needed - using standard project structure
 }
 
 // Ensure all tasks use the correct Java version
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_17.toString()
-    targetCompatibility = JavaVersion.VERSION_17.toString()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         freeCompilerArgs.add("-Xjvm-default=all")
     }
 }
