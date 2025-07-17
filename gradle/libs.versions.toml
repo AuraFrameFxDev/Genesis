@@ -56,7 +56,7 @@ guavaAndroid = "33.4.8-android"
 junit = "4.13.2"
 androidxTestExtJunit = "1.2.1"
 espressoCore = "3.6.1"
-mockk = "1.14.4"
+mockk = "1.14.5"
 
 # --- Build Logic Plugins ---
 openapiGeneratorPlugin = "7.14.0"
