@@ -26,7 +26,7 @@ securityCrypto = "1.1.0-alpha06" # Note: Still in alpha, but widely used
 desugar-jdk-libs = "2.0.4"
 
 # Firebase
-firebaseBom = "33.1.0"
+firebaseBom = "33.16.0"
 
 # Networking & Serialization
 kotlinxDatetime = "0.6.0"
