@@ -10,6 +10,7 @@ hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
 googleServices = "4.4.2"
 firebaseCrashlyticsPlugin = "3.0.4"
+
 firebasePerfPlugin = "1.4.2"
 openapiGeneratorPlugin = "7.14.0"
 desugar-jdk-libs = "2.1.5"
