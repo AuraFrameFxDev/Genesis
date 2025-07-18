@@ -20,20 +20,13 @@ buildscript {
         classpath("com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebaseCrashlyticsPlugin.get()}")
         classpath("com.google.firebase:perf-plugin:${libs.versions.firebasePerfPlugin.get()}")
         classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${libs.versions.ksp.get()}")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebaseCrashlyticsPlugin.get()}")
+        classpath("org.openapi.generator:org.openapi.generator.gradle.plugin:${libs.versions.openapiGeneratorPlugin.get()}")
     }
 }
 
 plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.firebase.crashlytics) apply false
-    alias(libs.plugins.firebase.perf) apply false
-    alias(libs.plugins.openapi.generator) apply false
+
 }
 
 allprojects {
