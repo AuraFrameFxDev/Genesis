@@ -291,21 +291,4 @@ class LibsVersionsTomlTest {
         val pattern = """$versionName\s*=\s*"([^"]+)""""
         return Regex(pattern).find(tomlContent)?.groupValues?.get(1)
     }
-
-    // Helper methods for version parsing and comparison
-    private fun parseVersionComponents(versionString: String): List<Int> {
-        return versionString.split(".").mapNotNull { it.toIntOrNull() }
-    }
-
-    private fun compareVersionComponents(version1: List<Int>, version2: List<Int>): Int {
-        val maxLength = maxOf(version1.size, version2.size)
-        for (i in 0 until maxLength) {
-            val v1 = version1.getOrNull(i) ?: 0
-            val v2 = version2.getOrNull(i) ?: 0
-            if (v1 != v2) {
-                return v1.compareTo(v2)
-            }
-        }
-        return 0
-    }
 }
