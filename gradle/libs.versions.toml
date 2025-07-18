@@ -41,7 +41,7 @@ timber = "5.0.1"
 # Testing
 junit = "5.10.2"
 androidxTestExtJunit = "1.1.5"
-espressoCore = "3.5.1"
+espressoCore = "3.6.1"
 mockk = "1.13.11"
 hiltNavigationCompose = "1.2.0" # Test-related Hilt dependencies
 hiltWork = "1.2.0"
