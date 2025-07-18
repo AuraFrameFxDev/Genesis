@@ -10,7 +10,6 @@ hiltNavigationCompose = "1.2.0"
 hiltWork = "1.2.0"
 googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.4"
-
 firebasePerfPlugin = "1.4.2"
 openapiGeneratorPlugin = "7.14.0"
 desugar-jdk-libs = "2.1.5"
@@ -36,6 +35,7 @@ timber = "5.0.1"
 mockk = "1.14.5"
 material3 = "1.3.2"
 material = "1.12.0"
+composeCompiler = "1.5.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -106,7 +106,8 @@ mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "moc
 mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
-material3 = { module = "androidx.compose.material3:material3" }
+# Only one material3 definition, using version.ref
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 # Compose Accompanist
 accompanistPager = { module = "com.google.accompanist:accompanist-pager", version = "0.36.0" }
