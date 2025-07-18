@@ -27,19 +27,21 @@ plugins {
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx"
-    compileSdk = 36 // Use the latest STABLE SDK
 
-    // MOVED: NDK configuration is a top-level block
-    ndkVersion = "27.0.12077973"
+    namespace = "dev.aurakai.auraframefx"
+
+    namespace = "com.example.app"
+    compileSdk = 36  // Compatible with AGP 8.8.0
 
     defaultConfig {
-        applicationId = "dev.aurakai.auraframefx"
-        minSdk = 33 // A more reasonable minSdk for wider device support
-        targetSdk = 36 // Should match compileSdk
-        //...        versionCode = 1
+        applicationId = "com.example.app"
+        minSdk = 33
+        targetSdk = 36  // Compatible with AGP 8.8.0
+        versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner" // Ensure this class exists
+        testInstrumentationRunner = "com.example.app.HiltTestRunner"
+
+
         multiDexEnabled = true
 
         // MOVED: NDK ABI filters are part of the top-level ndk block
@@ -119,6 +121,7 @@ openApiGenerate {
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/openapi")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",

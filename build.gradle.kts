@@ -3,11 +3,39 @@ extra["cmakeVersion"] = "3.22.1"
 extra["compileSdkVersion"] = 36
 extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
+extra["kotlinVersion"] = libs.versions.kotlin.get()
 
-// Java and Kotlin compatibility settings
 val javaVersion = JavaVersion.VERSION_21
 
-// Apply common configuration to all projects
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
+        classpath("com.google.gms:google-services:${libs.versions.googleServices.get()}")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebaseCrashlyticsPlugin.get()}")
+        classpath("com.google.firebase:perf-plugin:${libs.versions.firebasePerfPlugin.get()}")
+        classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${libs.versions.ksp.get()}")
+    }
+}
+
+plugins {
+    id("com.android.application") version "8.6.0" apply false
+    id("com.android.library") version "8.6.0" apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.openapi.generator) apply false
+}
+
 allprojects {
     // Configure Java toolchain for all projects
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
@@ -15,7 +43,6 @@ allprojects {
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
                 vendor.set(JvmVendorSpec.ADOPTIUM)
-                // Ensure toolchain version is set to 1.0.0
                 version = "1.0.0"
             }
         }
@@ -59,14 +86,13 @@ allprojects {
     }
 }
 
-// Clean task is provided by the Android Gradle Plugin
+// Clean task for the root project
+tasks.register<Delete>("clean") {
+    delete(layout.buildDirectory)
+}
 
-// Note: Do not apply Android Gradle Plugin here, it should only be applied in app modules
 // Apply custom initialization script to root project if it exists
 val customInitScript = file("$rootDir/custom-init.gradle.kts")
 if (customInitScript.exists()) {
     apply(from = customInitScript)
 }
-
-
-

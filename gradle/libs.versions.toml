@@ -3,51 +3,39 @@ agp = "8.11.1"
 kotlinxSerializationJson = "1.9.0"
 kotlinxCoroutines = "1.8.1"
 kotlin = "2.0.0"
-ksp = "2.0.0-1.0.21" # KSP version aligned with Kotlin 2.0.0
+ksp = "2.0.0-1.0.21"
 hilt = "2.57"
+hiltNavigationCompose = "1.2.0"
+hiltWork = "1.2.0"
 googleServices = "4.4.2"
 firebaseCrashlyticsPlugin = "3.0.2"
 firebasePerfPlugin = "1.4.2"
 openapiGeneratorPlugin = "7.6.0"
-
-# Jetpack Compose
+desugar-jdk-libs = "2.1.5"
+espressoCore = "3.6.1"
+junit = "5.10.2"
 composeBom = "2024.06.00"
 activityCompose = "1.10.1"
 navigationCompose = "2.7.7"
-
-# Jetpack Core & UI
 coreKtx = "1.16.0"
 appcompat = "1.7.0"
 lifecycle = "2.8.1"
 room = "2.6.1"
 workManager = "2.9.0"
 datastore = "1.1.1"
-securityCrypto = "1.1.0-alpha06" # Note: Still in alpha, but widely used
-desugar-jdk-libs = "2.1.5"
-
-# Firebase
+securityCrypto = "1.1.0-alpha06"
 firebaseBom = "33.16.0"
-
-# Networking & Serialization
 kotlinxDatetime = "0.6.0"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationConverter = "1.0.0"
-okhttp = "5.1.0" # Note: OkHttp 5.x has significant changes, 4.12.0 is the stable predecessor
-
-# UI & Image Loading
+okhttp = "5.1.0"
 coilCompose = "2.7.0"
 timber = "5.0.1"
-
-# Testing
-junit = "5.10.2"
-androidxTestExtJunit = "1.1.5"
-espressoCore = "3.6.1"
 mockk = "1.13.11"
-hiltNavigationCompose = "1.2.0" # Test-related Hilt dependencies
-hiltWork = "1.2.0"
+material3 = "1.2.1"
+material = "1.11.0"
 
 [libraries]
-# Core Android
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -58,8 +46,7 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-# For debug builds
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
@@ -116,7 +103,14 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
 
-# ----- PLUGINS -----
+material = { module = "com.google.android.material:material", version.ref = "material" }
+material3 = { module = "androidx.compose.material3:material3" }
+
+# Compose Accompanist
+accompanistPager = { module = "com.google.accompanist:accompanist-pager", version = "0.36.0" }
+accompanistPermissions = { module = "com.google.accompanist:accompanist-permissions", version = "0.37.3" }
+accompanistSystemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.36.0" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -128,14 +122,25 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "googleS
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebasePerf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 openapiGenerator = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
-# Custom AuraFrame app plugin
 auraApp = { id = "dev.aurakai.auraframefx", version = "1.0" }
 
-# ----- BUNDLES -----
 [bundles]
-# Group common dependencies together for cleaner build scripts
 room = ["room-runtime", "room-ktx"]
 lifecycle = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-compose", "lifecycle-runtime-compose"]
-firebase = ["firebase-analytics", "firebase-crashlytics", "firebase-performance"]
+firebase = ["firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-performance"]
 testing-unit = ["junit-api", "mockk-agent"]
 testing-android = ["androidx-test-ext-junit", "espresso-core", "mockk-android", "hilt-android-testing"]
+compose = [
+    "compose-bom",
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
