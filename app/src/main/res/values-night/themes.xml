@@ -1,23 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark theme that extends the base theme -->
+    <style name="Theme.AuraFrameFX" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Status and Navigation bar -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:navigationBarDividerColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:forceDarkAllowed">true</item>
 
-    <!-- Use a fully qualified name for the parent theme -->
-    <style name="Theme.AuraFrameFX.Material3" parent="android:Theme.Material.NoActionBar">
-        <!-- Use our defined colors with standard android attributes -->
-        <item name="android:colorPrimary">@color/neon_teal</item>
-        <item name="android:textColorPrimary">@color/on_primary</item>
+        <!-- Material 3 specific -->
+        <item name="android:colorControlHighlight">@color/neon_teal_transparent</item>
+        <item name="android:colorControlActivated">@color/neon_teal</item>
+        <item name="android:colorControlNormal">@color/dark_on_surface_variant</item>
 
-        <item name="android:colorSecondary">@color/neon_purple</item>
-        <item name="android:textColorSecondary">@color/on_secondary</item>
+        <!-- Primary colors (dark theme) -->
+        <item name="colorPrimary">@color/dark_primary</item>
+        <item name="colorOnPrimary">@color/dark_on_primary</item>
+        <item name="colorPrimaryContainer">@color/dark_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/dark_on_primary_container</item>
 
-        <item name="android:colorAccent">@color/neon_blue</item>
+        <!-- Secondary colors (dark theme) -->
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorOnSecondary">@color/dark_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/dark_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/dark_on_secondary_container</item>
 
+        <!-- Tertiary colors (dark theme) -->
+        <item name="colorTertiary">@color/dark_tertiary</item>
+        <item name="colorOnTertiary">@color/dark_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/dark_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/dark_on_tertiary_container</item>
+
+        <!-- Error colors (dark theme) -->
+        <item name="colorError">@color/dark_error</item>
+        <item name="colorOnError">@color/dark_on_error</item>
+        <item name="colorErrorContainer">@color/dark_error_container</item>
+        <item name="colorOnErrorContainer">@color/dark_on_error_container</item>
+
+        <!-- Background colors (dark theme) -->
         <item name="android:colorBackground">@color/dark_background</item>
-        <item name="android:colorForeground">@color/on_surface</item>
+        <item name="colorOnBackground">@color/dark_on_background</item>
         <item name="android:windowBackground">@color/dark_background</item>
 
-        <item name="android:statusBarColor">@color/dark_background</item>
-        <item name="android:navigationBarColor">@color/dark_background</item>
-    </style>
+        <!-- Surface colors (dark theme) -->
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorOnSurface">@color/dark_on_surface</item>
+        <item name="colorSurfaceVariant">@color/dark_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/dark_on_surface_variant</item>
 
+        <!-- Outline colors (dark theme) -->
+        <item name="colorOutline">@color/dark_outline</item>
+        <item name="colorOutlineVariant">@color/dark_outline_variant</item>
+
+        <!-- Material 3 shape appearance -->
+        <item name="shapeAppearanceSmallComponent">
+            @style/ShapeAppearance.AuraFrameFX.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.AuraFrameFX.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">
+            @style/ShapeAppearance.AuraFrameFX.LargeComponent
+        </item>
+
+        <!-- Widget Styles -->
+        <item name="materialButtonStyle">@style/Widget.AuraFrameFX.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.AuraFrameFX.CardView</item>
+        <item name="chipStyle">@style/Widget.AuraFrameFX.Chip</item>
+        <item name="textInputStyle">@style/Widget.AuraFrameFX.TextInputLayout</item>
+    </style>
 </resources>

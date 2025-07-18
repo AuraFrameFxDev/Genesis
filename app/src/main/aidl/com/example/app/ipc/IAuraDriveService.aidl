@@ -1,8 +1,8 @@
 // IAuraDriveService.aidl
-package com.example.app.ipc;
+package dev.aurakai.auraframefx.ipc;
 
 // Import the callback interface
-import com.example.app.ipc.IAuraDriveCallback;
+import dev.aurakai.auraframefx.ipc.IAuraDriveCallback;
 import android.net.Uri;
 
 /**

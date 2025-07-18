@@ -30,11 +30,11 @@ class OracleDriveControlViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val TAG = "OracleDriveVM"
-    
+
     // Service connection state
     private var auraDriveService: IAuraDriveService? = null
     private var isBound = false
-    
+
     // UI State
     private val _isServiceConnected = MutableStateFlow(false)
     val isServiceConnected: StateFlow<Boolean> = _isServiceConnected.asStateFlow()
@@ -47,15 +47,21 @@ class OracleDriveControlViewModel @Inject constructor(
 
     private val _diagnosticsLog = MutableStateFlow("")
     val diagnosticsLog: StateFlow<String> = _diagnosticsLog.asStateFlow()
-    
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-    
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-    
+
     // Service connection
     private val connection = object : ServiceConnection {
+        /**
+         * Handles actions when the AuraDriveService is connected.
+         *
+         * Sets up the service interface, marks the service as bound, updates the connection state, and triggers a status refresh.
+
+         */
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             Log.d(TAG, "Service connected")
             auraDriveService = IAuraDriveService.Stub.asInterface(service)
@@ -77,11 +83,15 @@ class OracleDriveControlViewModel @Inject constructor(
     }
 
     /**
-     * Binds to the AuraDriveService
+     * Initiates binding to the AuraDriveService for Oracle Drive operations.
+     *
+     * Updates the status to indicate connection progress. If binding fails, sets an error message.
+
      */
     fun bindService() {
         try {
-            val intent = Intent(context, Class.forName("dev.aurakai.auraframefx.services.AuraDriveService"))
+            val intent =
+                Intent(context, Class.forName("dev.aurakai.auraframefx.services.AuraDriveService"))
             context.bindService(
                 intent,
                 connection,
@@ -107,20 +117,25 @@ class OracleDriveControlViewModel @Inject constructor(
     }
 
     /**
-     * Refreshes the status and diagnostics from the service
+     * Updates the UI state with the latest status, detailed status, and diagnostics log from the Oracle Drive service.
+     *
+     * Fetches current status information and diagnostics from the bound service and updates the corresponding state flows. Sets an error message if the operation fails.
+
      */
     fun refreshStatus() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 _status.value = service.oracleDriveStatus ?: "Status unavailable"
-                _detailedStatus.value = service.detailedInternalStatus ?: "Detailed status unavailable"
-                
+                _detailedStatus.value =
+                    service.detailedInternalStatus ?: "Detailed status unavailable"
+
                 val logs = service.internalDiagnosticsLog
                 _diagnosticsLog.value = logs?.joinToString("\n") ?: "No diagnostic logs available"
-                
+
                 _errorMessage.value = null
             } catch (e: Exception) {
                 Log.e(TAG, "Error refreshing status", e)
@@ -130,22 +145,28 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
-     * Imports a file from the specified URI
+     * Imports a file from the given URI using the AuraDriveService.
+     *
+     * Initiates an asynchronous import operation and updates UI state flows with the result or error message.
+
+     *
+     * @param uri The URI of the file to import.
      */
     fun importFile(uri: Uri) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val fileId = service.importFile(uri)
                 _status.value = "File imported successfully (ID: $fileId)"
                 refreshStatus()
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error importing file", e)
                 _errorMessage.value = "Import failed: ${e.message}"
@@ -154,18 +175,25 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
-     * Exports a file to the specified destination URI
+     * Exports a file identified by its ID to the specified destination URI using the AuraDriveService.
+     *
+     * Updates the status and error message state flows based on the result of the export operation.
+     *
+     * @param fileId The unique identifier of the file to export.
+     * @param destinationUri The URI where the file will be exported.
+
      */
     fun exportFile(fileId: String, destinationUri: Uri) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val success = service.exportFile(fileId, destinationUri)
                 if (success) {
                     _status.value = "File exported successfully"
@@ -173,7 +201,7 @@ class OracleDriveControlViewModel @Inject constructor(
                 } else {
                     _errorMessage.value = "Export operation failed"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error exporting file", e)
                 _errorMessage.value = "Export failed: ${e.message}"
@@ -182,25 +210,31 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
-     * Verifies the integrity of a file
+     * Initiates verification of the integrity of a file via the AuraDriveService.
+     *
+     * Updates UI state flows to reflect verification results or errors.
+     *
+     * @param fileId The identifier of the file to verify.
+
      */
     fun verifyFileIntegrity(fileId: String) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val isValid = service.verifyFileIntegrity(fileId)
                 if (isValid) {
                     _status.value = "File integrity verified successfully"
                 } else {
                     _errorMessage.value = "File integrity verification failed"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error verifying file integrity", e)
                 _errorMessage.value = "Verification failed: ${e.message}"
@@ -209,18 +243,25 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
-     * Toggles a module's enabled state
+     * Enables or disables a module identified by its package name via the AuraDrive service.
+     *
+     * Updates the status or error message state flows based on the operation result and refreshes the current status on success.
+     *
+     * @param packageName The package name of the module to toggle.
+     * @param enable `true` to enable the module, `false` to disable it.
+
      */
     fun toggleModule(packageName: String, enable: Boolean) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
-                
-                val service = auraDriveService ?: throw IllegalStateException("Service not connected")
-                
+
+                val service =
+                    auraDriveService ?: throw IllegalStateException("Service not connected")
+
                 val result = service.toggleLSPosedModule(packageName, enable)
                 if (result) {
                     val action = if (enable) "enabled" else "disabled"
@@ -229,7 +270,7 @@ class OracleDriveControlViewModel @Inject constructor(
                 } else {
                     _errorMessage.value = "Failed to toggle module '$packageName'"
                 }
-                
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error toggling module", e)
                 _errorMessage.value = "Module operation failed: ${e.message}"
@@ -238,7 +279,11 @@ class OracleDriveControlViewModel @Inject constructor(
             }
         }
     }
-    
+
+    /**
+     * Called when the ViewModel is being destroyed to perform cleanup, including unbinding from the AuraDriveService.
+
+     */
     override fun onCleared() {
         super.onCleared()
         unbindService()

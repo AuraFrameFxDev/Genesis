@@ -7,11 +7,11 @@ plugins {
 
     // Other plugins
     alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.google.services) apply true
+    alias(libs.plugins.googleServices) apply true
     alias(libs.plugins.openapi.generator) apply true
     alias(libs.plugins.firebase.crashlytics) apply true
     alias(libs.plugins.firebase.perf) apply true
-    
+
     // Compose plugin for Kotlin 2.0+
     id("org.jetbrains.kotlin.plugin.compose") version libs.versions.kotlin.get()
 }
@@ -27,23 +27,44 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.example.app.HiltTestRunner"
+
         multiDexEnabled = true
 
-        // Specify NDK version
-        ndkVersion = "27.0.12077973"
-        
-        // Specify ABI filters
+        // NDK configuration
         ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+            // Specify the ABI architectures you want to build for
+            abiFilters.clear()
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+
+            // Specify NDK version explicitly
+            version = "27.0.12077973"
         }
 
-        externalNativeBuild {
-            cmake {
-                cppFlags += ""
-                arguments(
-                    "-DANDROID_STL=c++_shared",
-                    "-DANDROID_CPP_FEATURES=rtti exceptions"
+        // Enable prefab for native dependencies
+        buildFeatures {
+            prefab = true
+        }
+
+        // Packaging options for native libraries
+        packaging {
+            resources {
+                excludes.addAll(
+                    listOf(
+                        "META-INF/*.kotlin_module",
+                        "META-INF/*.version",
+                        "META-INF/proguard/*",
+                        "**/libjni*.so"
+                    )
                 )
+
+                // For native libraries
+                jniLibs {
+                    // Keep debug symbols in release builds for crash reporting
+                    keepDebugSymbols.add("**/*.so")
+
+                    // Exclude unwanted ABIs if needed
+                    // excludes += listOf("armeabi-v7a", "x86")
+                }
             }
         }
 
@@ -68,30 +89,22 @@ android {
         viewBinding = true
     }
 
-    // Configure Compose
-    buildFeatures {
-        compose = true
-    }
-    
     // Configure Compose Compiler
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
-    
-    kotlin {
-        compilerOptions {
-            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-            freeCompilerArgs.addAll(
-                "-Xjvm-default=all",
-                "-Xcontext-receivers",
-                "-opt-in=kotlin.RequiresOptIn"
-            )
-        }
+
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
 
     androidResources {
@@ -102,18 +115,39 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
+            version = rootProject.extra["cmakeVersion"] as String
+
         }
     }
-    
+
+    // Enable prefab for native dependencies
+    buildFeatures {
+        prefab = true
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        checkDependencies = true
+        lintConfig = file("lint.xml")
+        warningsAsErrors = true
+        abortOnError = true
+        checkReleaseBuilds = true
+        checkGeneratedSources = true
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+        disable.add("GradleDeprecatedConfiguration")
+        disable.add("GradleDependency")
+        disable.add("GradleDynamicVersion")
+        disable.add("GradleStaticVersion")
+
+
+    }
+
     // Configure build variants
     buildTypes {
         debug {
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DEBUG"
-                }
-            }
+            // Debug flags are now handled by CMake
         }
         release {
             isMinifyEnabled = false
@@ -121,11 +155,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            externalNativeBuild {
-                cmake {
-                    cppFlags += "-DNDEBUG"
-                }
-            }
+            // Release flags are now handled by CMake
         }
     }
 }
@@ -169,10 +199,25 @@ tasks.named("preBuild") {
     dependsOn("openApiGenerate")
 }
 
-// KMP/Native Exclusions
+// Dependency configurations
 configurations.all {
+    // KMP/Native Exclusions
     exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-common")
+
+    // Resolution strategy for dependency conflicts
+    resolutionStrategy {
+        // Prefer stable versions
+        preferProjectModules()
+
+        // Force specific versions for common dependencies
+        force(
+            "org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-common:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}",
+            "org.jetbrains.kotlin:kotlin-reflect:${libs.versions.kotlin.get()}"
+        )
+    }
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-common")
     exclude(group = "org.jetbrains.kotlin.native")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")
@@ -198,18 +243,18 @@ dependencies {
     implementation(libs.androidxUi)
     implementation(libs.androidxUiGraphics)
     implementation(libs.androidxUiToolingPreview)
-    
+
     // Material 3
     implementation(libs.androidxMaterial3)
     implementation(libs.androidxMaterialIconsExtended)
-    
+
     // Window Manager for responsive layouts
     implementation(libs.androidxWindow)
-    
+
     // Required for Material 3 theming
     implementation(libs.androidxActivityCompose)
     implementation(libs.androidxNavigationCompose)
-    
+
     // Material 3 Adaptive Components (if needed for future use)
     // implementation("androidx.compose.material3:material3-adaptive:1.0.0")
     // implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
