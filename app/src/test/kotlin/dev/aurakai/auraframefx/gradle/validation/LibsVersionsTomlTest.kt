@@ -291,7 +291,7 @@ class LibsVersionsTomlTest {
         val pattern = """$versionName\s*=\s*"([^"]+)""""
         return Regex(pattern).find(tomlContent)?.groupValues?.get(1)
     }
-}
+
     @Test
     fun `test TOML file has proper bundles section`() {
         assertTrue("Should contain [bundles] section", tomlContent.contains("[bundles]"))
