@@ -18,10 +18,12 @@
 
 21111
 plugins {
-    alias(libs.plugins.googleServices)
-    alias(libs.plugins.hiltAndroid)
-    alias(libs.plugins.firebasePerf)
-    alias(libs.plugins.openapiGenerator)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
+    id("com.google.firebase.firebase-perf")
+    id("org.openapi.generator")
 
 
 }
