@@ -32,7 +32,7 @@ retrofitKotlinxSerializationConverter = "1.0.0"
 okhttp = "5.1.0"
 coilCompose = "2.7.0"
 timber = "5.0.1"
-mockk = "1.13.11"
+mockk = "1.14.5"
 material3 = "1.2.1"
 material = "1.12.0"
 
