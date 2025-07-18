@@ -32,7 +32,7 @@ firebaseBom = "33.1.0"
 kotlinxDatetime = "0.6.0"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationConverter = "1.0.0"
-okhttp = "4.12.0" # Note: OkHttp 5.x has significant changes, 4.12.0 is the stable predecessor
+okhttp = "5.1.0" # Note: OkHttp 5.x has significant changes, 4.12.0 is the stable predecessor
 
 # UI & Image Loading
 coilCompose = "2.6.0"
