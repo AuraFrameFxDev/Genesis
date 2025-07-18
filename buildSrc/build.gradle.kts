@@ -15,7 +15,7 @@ repositories {
 
 // Use the same Kotlin version as the main project
 val kotlinVersion = "2.2.0"
-val agpVersion = "8.6.0"  // Using AGP 8.6.0 for compileSdk 35 compatibility
+val agpVersion = "8.11.1"  // Using AGP 8.6.0 for compileSdk 35 compatibility
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
