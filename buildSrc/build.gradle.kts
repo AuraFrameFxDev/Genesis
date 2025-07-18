@@ -13,7 +13,7 @@ repositories {
     }
 }
 
-val kotlinVersion = "2.1.20"
+val kotlinVersion = "2.2.0"
 val agpVersion = "8.11.1"  // Using AGP 8.6.0 for compileSdk 35 compatibility
 
 dependencies {
