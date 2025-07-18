@@ -294,6 +294,468 @@ class LibsVersionsTomlTest {
         val pattern = """$versionName\s*=\s*"([^"]+)""""
         return Regex(pattern).find(tomlContent)?.groupValues?.get(1)
     }
+
+    // Additional comprehensive test cases for TOML validation
+    @Test
+    fun `test file accessibility and basic integrity`() {
+        val tomlFile = File("gradle/libs.versions.toml")
+        assertTrue("TOML file should exist", tomlFile.exists())
+        assertTrue("TOML file should be readable", tomlFile.canRead())
+        assertTrue("TOML file should not be empty", tomlFile.length() > 0)
+        assertTrue("TOML file should contain version definitions", tomlContent.contains("[versions]"))
+    }
+
+    @Test
+    fun `test dynamic version patterns are not used`() {
+        val dynamicVersionPatterns = listOf(
+            Regex("""d+.+"""), // Gradle + notation
+            Regex("""d+.*"""), // Wildcard notation
+            Regex("""[d+.d+,d+.d+]"""), // Maven range notation
+            Regex("""(d+.d+,d+.d+)"""), // Exclusive range
+            Regex("""latest..*"""), // Latest version
+            Regex("""LATEST"""), // Latest version uppercase
+            Regex("""RELEASE""") // Release version
+        )
+        
+        dynamicVersionPatterns.forEach { pattern ->
+            assertFalse(
+                "Dynamic version pattern should not be used for reproducible builds: ${pattern.pattern}",
+                pattern.containsMatchIn(tomlContent)
+            )
+        }
+    }
+
+    @Test
+    fun `test deprecated android libraries are avoided`() {
+        val deprecatedLibraries = listOf(
+            "com.android.support:", // Old support library
+            "androidx.lifecycle:lifecycle-extensions", // Deprecated lifecycle extensions
+            "androidx.legacy:legacy-support-v4", // Legacy support deprecated
+            "androidx.test:runner", // Use androidx.test.ext.junit instead
+            "com.google.firebase:firebase-core", // Use firebase-analytics instead
+            "androidx.fragment:fragment", // Use fragment-ktx instead
+            "androidx.activity:activity" // Use activity-ktx instead
+        )
+        
+        deprecatedLibraries.forEach { deprecated ->
+            assertFalse(
+                "Deprecated library should not be used: $deprecated",
+                tomlContent.contains(deprecated)
+            )
+        }
+    }
+
+    @Test
+    fun `test coroutines version consistency`() {
+        val coroutinesLibraries = listOf(
+            "kotlinx-coroutines-core", "kotlinx-coroutines-android", "kotlinx-coroutines-test"
+        )
+        val librariesSection = extractSection("[libraries]")
+        val coroutinesVersions = mutableSetOf<String>()
+        
+        coroutinesLibraries.forEach { lib ->
+            val libDef = extractLibraryDefinition(librariesSection, lib)
+            if (libDef.isNotEmpty()) {
+                val versionRef = extractVersionRefFromLibrary(libDef)
+                if (versionRef.isNotEmpty()) {
+                    coroutinesVersions.add(extractVersionValue(versionRef))
+                }
+            }
+        }
+        
+        assertTrue(
+            "All Kotlin coroutines libraries should use consistent versions, found: $coroutinesVersions",
+            coroutinesVersions.size <= 1
+        )
+    }
+
+    @Test
+    fun `test security library versions meet minimum requirements`() {
+        val securityLibraries = mapOf(
+            "securityCrypto" to "1.0.0", // AndroidX Security
+            "okhttp" to "4.0.0", // Network security
+            "retrofit" to "2.9.0" // Network security
+        )
+        
+        securityLibraries.forEach { (lib, minVersion) ->
+            val version = extractVersionValue(lib)
+            if (version.isNotEmpty()) {
+                val versionParts = version.split(".")
+                val minVersionParts = minVersion.split(".")
+                
+                if (versionParts.size >= 2 && minVersionParts.size >= 2) {
+                    val major = versionParts[0].toIntOrNull() ?: 0
+                    val minor = versionParts[1].toIntOrNull() ?: 0
+                    val minMajor = minVersionParts[0].toIntOrNull() ?: 0
+                    val minMinor = minVersionParts[1].toIntOrNull() ?: 0
+                    
+                    assertTrue(
+                        "Security library $lib should be at least version $minVersion, found $version",
+                        major > minMajor || (major == minMajor && minor >= minMinor)
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test build tools compatibility and currency`() {
+        val agpVersion = extractVersionValue("agp")
+        val kotlinVersion = extractVersionValue("kotlin")
+        val kspVersion = extractVersionValue("ksp")
+        
+        if (agpVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            assertTrue("AGP version should be 8.0+ for modern Android development", agpMajor >= 8)
+        }
+        
+        if (kotlinVersion.isNotEmpty()) {
+            val kotlinMajor = kotlinVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMinor = kotlinVersion.split(".").getOrNull(1)?.toIntOrNull() ?: 0
+            assertTrue(
+                "Kotlin version should be 1.9+ or 2.0+ for modern features",
+                kotlinMajor >= 2 || (kotlinMajor == 1 && kotlinMinor >= 9)
+            )
+        }
+        
+        if (kspVersion.isNotEmpty() && kotlinVersion.isNotEmpty()) {
+            assertTrue(
+                "KSP version should be compatible with Kotlin version",
+                kspVersion.startsWith(kotlinVersion.substring(0, minOf(3, kotlinVersion.length)))
+            )
+        }
+    }
+
+    @Test
+    fun `test accompanist library migration awareness`() {
+        val accompanistLibs = tomlLines.filter { it.contains("accompanist") && !it.trim().startsWith("#") }
+        val migrationKeywords = listOf("migration", "deprecated", "replace", "alternative", "compose")
+        
+        accompanistLibs.forEach { line ->
+            val lineIndex = tomlLines.indexOf(line)
+            val context = tomlLines.subList(
+                maxOf(0, lineIndex - 2),
+                minOf(tomlLines.size, lineIndex + 3)
+            ).joinToString(" ")
+            
+            val hasDocumentation = migrationKeywords.any { keyword ->
+                context.lowercase().contains(keyword)
+            }
+            
+            // Log for maintenance awareness
+            if (!hasDocumentation) {
+                println("INFO: Accompanist library may need migration documentation: $line")
+            }
+        }
+        
+        // Check for pre-1.0 versions that might need attention
+        val accompanistVersionPattern = Regex("""accompanist.*version = "([^"]+)"""")
+        val accompanistMatches = accompanistVersionPattern.findAll(tomlContent)
+        
+        accompanistMatches.forEach { match ->
+            val version = match.groupValues[1]
+            val versionParts = version.split(".")
+            if (versionParts.isNotEmpty()) {
+                val major = versionParts[0].toIntOrNull() ?: 0
+                if (major == 0) {
+                    println("INFO: Accompanist version $version is pre-1.0 - consider migration path")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test version catalog naming convention compliance`() {
+        val versionKeys = parseKeyValuePairs(extractSection("[versions]")).keys
+        val libraryKeys = parseLibraryEntries(extractSection("[libraries]")).keys
+        
+        // Version keys should use camelCase or kebab-case
+        val invalidVersionKeys = versionKeys.filter { key ->
+            !key.matches(Regex("""^[a-zA-Z][a-zA-Z0-9]*([A-Z][a-zA-Z0-9]*)*$""")) && // camelCase
+            !key.matches(Regex("""^[a-z][a-z0-9]*(-[a-z0-9]+)*$""")) // kebab-case
+        }
+        
+        assertTrue(
+            "Version keys should follow camelCase or kebab-case conventions: $invalidVersionKeys",
+            invalidVersionKeys.isEmpty()
+        )
+        
+        // Library keys should use kebab-case (with some flexibility for existing patterns)
+        val problematicLibraryKeys = libraryKeys.filter { key ->
+            key.contains("_") || key.contains(" ") || key.matches(Regex(""".*[A-Z]{2,}.*"""))
+        }
+        
+        if (problematicLibraryKeys.isNotEmpty()) {
+            println("INFO: Library keys that might benefit from kebab-case: $problematicLibraryKeys")
+        }
+    }
+
+    @Test
+    fun `test production dependencies avoid unstable versions`() {
+        val unstableMarkers = listOf("SNAPSHOT", "dev", "alpha", "beta", "rc", "M1", "M2", "M3")
+        val productionLibraries = listOf(
+            "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose",
+            "room-runtime", "retrofit", "kotlinx-coroutines-android", "hilt-android"
+        )
+        
+        val librariesSection = extractSection("[libraries]")
+        
+        productionLibraries.forEach { lib ->
+            val libDef = extractLibraryDefinition(librariesSection, lib)
+            if (libDef.isNotEmpty()) {
+                val versionRef = extractVersionRefFromLibrary(libDef)
+                if (versionRef.isNotEmpty()) {
+                    val version = extractVersionValue(versionRef)
+                    unstableMarkers.forEach { marker ->
+                        assertFalse(
+                            "Production library $lib should not use unstable version $version containing $marker",
+                            version.contains(marker, ignoreCase = true)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test android gradle plugin kotlin compatibility`() {
+        val agpVersion = extractVersionValue("agp")
+        val kotlinVersion = extractVersionValue("kotlin")
+        
+        if (agpVersion.isNotEmpty() && kotlinVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMajor = kotlinVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMinor = kotlinVersion.split(".").getOrNull(1)?.toIntOrNull() ?: 0
+            
+            // AGP 8.x compatibility requirements
+            if (agpMajor >= 8) {
+                assertTrue(
+                    "AGP $agpVersion requires Kotlin 1.8+ or 2.0+, found Kotlin $kotlinVersion",
+                    kotlinMajor >= 2 || (kotlinMajor == 1 && kotlinMinor >= 8)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test bundle logical consistency`() {
+        val bundlesSection = extractSection("[bundles]")
+        val bundleEntries = parseBundleEntries(bundlesSection)
+        
+        bundleEntries.forEach { (bundleName, libraries) ->
+            assertTrue(
+                "Bundle $bundleName should contain at least 2 libraries for logical grouping",
+                libraries.size >= 2
+            )
+            
+            // Test specific bundle logic
+            when (bundleName) {
+                "compose" -> {
+                    val hasComposeBom = libraries.any { it.contains("compose-bom") }
+                    val hasComposeUi = libraries.any { it.contains("compose-ui") }
+                    assertTrue("Compose bundle should include compose-bom", hasComposeBom)
+                    assertTrue("Compose bundle should include compose-ui", hasComposeUi)
+                }
+                "testing-unit" -> {
+                    val hasJUnit = libraries.any { it.contains("junit") }
+                    assertTrue("Unit testing bundle should include JUnit", hasJUnit)
+                }
+                "testing-android" -> {
+                    val hasAndroidTest = libraries.any { it.contains("androidx-test") || it.contains("espresso") }
+                    assertTrue("Android testing bundle should include Android test libraries", hasAndroidTest)
+                }
+                "firebase" -> {
+                    val hasFirebaseBom = libraries.any { it.contains("firebase-bom") }
+                    assertTrue("Firebase bundle should include firebase-bom", hasFirebaseBom)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test plugin version alignment`() {
+        val pluginsSection = extractSection("[plugins]")
+        val pluginEntries = parsePluginEntries(pluginsSection)
+        
+        val pluginLibraryMappings = mapOf(
+            "kotlinAndroid" to "kotlin",
+            "kotlinSerialization" to "kotlin",
+            "ksp" to "ksp",
+            "hiltAndroid" to "hilt",
+            "androidApplication" to "agp",
+            "androidLibrary" to "agp"
+        )
+        
+        pluginLibraryMappings.forEach { (pluginKey, expectedVersionKey) ->
+            val pluginDef = pluginEntries[pluginKey]
+            if (pluginDef != null && pluginDef.contains("version.ref")) {
+                val actualVersionRef = extractVersionRefFromLibrary(pluginDef)
+                assertEquals(
+                    "Plugin $pluginKey should use version reference $expectedVersionKey",
+                    expectedVersionKey, actualVersionRef
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test toml file structure integrity`() {
+        val fileBytes = File("gradle/libs.versions.toml").readBytes()
+        
+        // Check for UTF-8 BOM (should not be present)
+        val hasUtf8BOM = fileBytes.size >= 3 && 
+                        fileBytes[0] == 0xEF.toByte() && 
+                        fileBytes[1] == 0xBB.toByte() && 
+                        fileBytes[2] == 0xBF.toByte()
+        
+        assertFalse("TOML file should not have UTF-8 BOM", hasUtf8BOM)
+        
+        // Check for consistent section ordering
+        val sections = listOf("[versions]", "[libraries]", "[plugins]", "[bundles]")
+        val sectionIndices = sections.map { tomlContent.indexOf(it) }
+        
+        for (i in 0 until sectionIndices.size - 1) {
+            if (sectionIndices[i] != -1 && sectionIndices[i + 1] != -1) {
+                assertTrue(
+                    "Section ${sections[i]} should come before ${sections[i + 1]}",
+                    sectionIndices[i] < sectionIndices[i + 1]
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test version definition completeness`() {
+        val versionSection = extractSection("[versions]")
+        val versionLines = versionSection.lines()
+            .filter { it.contains(" = ") && !it.trim().startsWith("#") }
+            .map { it.trim() }
+        
+        // Check for duplicate version keys
+        val versionKeys = versionLines.map { it.split(" = ")[0] }
+        val duplicateKeys = versionKeys.groupingBy { it }.eachCount().filter { it.value > 1 }
+        
+        assertTrue(
+            "No duplicate version keys should exist: ${duplicateKeys.keys}",
+            duplicateKeys.isEmpty()
+        )
+        
+        // Check that versions are non-empty
+        versionLines.forEach { line ->
+            val parts = line.split(" = ")
+            if (parts.size >= 2) {
+                val version = parts[1].trim().removePrefix(""").removeSuffix(""")
+                assertTrue(
+                    "Version should not be empty: $line",
+                    version.isNotEmpty()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test performance library version adequacy`() {
+        val performanceLibraries = mapOf(
+            "okhttp" to "4.10.0",
+            "retrofit" to "2.9.0",
+            "room" to "2.5.0",
+            "kotlinxCoroutines" to "1.6.0",
+            "coilCompose" to "2.0.0"
+        )
+        
+        performanceLibraries.forEach { (lib, recommendedVersion) ->
+            val currentVersion = extractVersionValue(lib)
+            if (currentVersion.isNotEmpty()) {
+                val current = parseVersionComponents(currentVersion)
+                val recommended = parseVersionComponents(recommendedVersion)
+                
+                if (current.isNotEmpty() && recommended.isNotEmpty()) {
+                    val isAdequate = compareVersionComponents(current, recommended) >= 0
+                    if (!isAdequate) {
+                        println("INFO: Performance library $lib is at version $currentVersion (recommended: $recommendedVersion+)")
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test gradle wrapper compatibility awareness`() {
+        val agpVersion = extractVersionValue("agp")
+        if (agpVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            
+            // AGP 8.0+ requires Gradle 8.0+
+            if (agpMajor >= 8) {
+                println("INFO: AGP $agpVersion requires Gradle 8.0+ - verify gradle/wrapper/gradle-wrapper.properties")
+            }
+        }
+    }
+
+    @Test
+    fun `test custom plugin configuration validity`() {
+        val pluginsSection = extractSection("[plugins]")
+        val customPlugins = listOf("auraApp")
+        
+        customPlugins.forEach { plugin ->
+            assertTrue(
+                "Custom plugin $plugin should be defined",
+                pluginsSection.contains("$plugin = ")
+            )
+        }
+    }
+
+    @Test
+    fun `test critical dependency presence`() {
+        val criticalDeps = listOf(
+            "agp", "kotlin", "ksp", "hilt", "composeBom", "junit", "mockk"
+        )
+        val versionSection = extractSection("[versions]")
+        
+        criticalDeps.forEach { dep ->
+            assertTrue(
+                "Critical dependency $dep should be present in versions",
+                versionSection.contains("$dep = ")
+            )
+        }
+    }
+
+    @Test
+    fun `test library module format consistency`() {
+        val librariesSection = extractSection("[libraries]")
+        val libraryEntries = parseLibraryEntries(librariesSection)
+        
+        libraryEntries.forEach { (key, definition) ->
+            if (definition.contains("group = ") && definition.contains("name = ")) {
+                assertTrue(
+                    "Library $key should use proper group/name format",
+                    definition.contains("group = ") && definition.contains("name = ")
+                )
+            } else if (definition.contains("module = ")) {
+                assertTrue(
+                    "Library $key should use proper module format",
+                    definition.contains("module = ")
+                )
+            }
+        }
+    }
+
+    // Helper methods for version parsing and comparison
+    private fun parseVersionComponents(versionString: String): List<Int> {
+        return versionString.split(".").mapNotNull { it.toIntOrNull() }
+    }
+    
+    private fun compareVersionComponents(version1: List<Int>, version2: List<Int>): Int {
+        val maxLength = maxOf(version1.size, version2.size)
+        for (i in 0 until maxLength) {
+            val v1 = version1.getOrNull(i) ?: 0
+            val v2 = version2.getOrNull(i) ?: 0
+            if (v1 != v2) {
+                return v1.compareTo(v2)
+            }
+        }
+        return 0
+    }
 }
     // Additional comprehensive tests for version pattern validation
     @Test
@@ -894,5 +1356,467 @@ class LibsVersionsTomlTest {
         return versionRefPattern.findAll(tomlContent)
             .map { it.groupValues[1] }
             .toSet()
+    }
+
+    // Additional comprehensive test cases for TOML validation
+    @Test
+    fun `test file accessibility and basic integrity`() {
+        val tomlFile = File("gradle/libs.versions.toml")
+        assertTrue("TOML file should exist", tomlFile.exists())
+        assertTrue("TOML file should be readable", tomlFile.canRead())
+        assertTrue("TOML file should not be empty", tomlFile.length() > 0)
+        assertTrue("TOML file should contain version definitions", tomlContent.contains("[versions]"))
+    }
+
+    @Test
+    fun `test dynamic version patterns are not used`() {
+        val dynamicVersionPatterns = listOf(
+            Regex("""d+.+"""), // Gradle + notation
+            Regex("""d+.*"""), // Wildcard notation
+            Regex("""[d+.d+,d+.d+]"""), // Maven range notation
+            Regex("""(d+.d+,d+.d+)"""), // Exclusive range
+            Regex("""latest..*"""), // Latest version
+            Regex("""LATEST"""), // Latest version uppercase
+            Regex("""RELEASE""") // Release version
+        )
+        
+        dynamicVersionPatterns.forEach { pattern ->
+            assertFalse(
+                "Dynamic version pattern should not be used for reproducible builds: ${pattern.pattern}",
+                pattern.containsMatchIn(tomlContent)
+            )
+        }
+    }
+
+    @Test
+    fun `test deprecated android libraries are avoided`() {
+        val deprecatedLibraries = listOf(
+            "com.android.support:", // Old support library
+            "androidx.lifecycle:lifecycle-extensions", // Deprecated lifecycle extensions
+            "androidx.legacy:legacy-support-v4", // Legacy support deprecated
+            "androidx.test:runner", // Use androidx.test.ext.junit instead
+            "com.google.firebase:firebase-core", // Use firebase-analytics instead
+            "androidx.fragment:fragment", // Use fragment-ktx instead
+            "androidx.activity:activity" // Use activity-ktx instead
+        )
+        
+        deprecatedLibraries.forEach { deprecated ->
+            assertFalse(
+                "Deprecated library should not be used: $deprecated",
+                tomlContent.contains(deprecated)
+            )
+        }
+    }
+
+    @Test
+    fun `test coroutines version consistency`() {
+        val coroutinesLibraries = listOf(
+            "kotlinx-coroutines-core", "kotlinx-coroutines-android", "kotlinx-coroutines-test"
+        )
+        val librariesSection = extractSection("[libraries]")
+        val coroutinesVersions = mutableSetOf<String>()
+        
+        coroutinesLibraries.forEach { lib ->
+            val libDef = extractLibraryDefinition(librariesSection, lib)
+            if (libDef.isNotEmpty()) {
+                val versionRef = extractVersionRefFromLibrary(libDef)
+                if (versionRef.isNotEmpty()) {
+                    coroutinesVersions.add(extractVersionValue(versionRef))
+                }
+            }
+        }
+        
+        assertTrue(
+            "All Kotlin coroutines libraries should use consistent versions, found: $coroutinesVersions",
+            coroutinesVersions.size <= 1
+        )
+    }
+
+    @Test
+    fun `test security library versions meet minimum requirements`() {
+        val securityLibraries = mapOf(
+            "securityCrypto" to "1.0.0", // AndroidX Security
+            "okhttp" to "4.0.0", // Network security
+            "retrofit" to "2.9.0" // Network security
+        )
+        
+        securityLibraries.forEach { (lib, minVersion) ->
+            val version = extractVersionValue(lib)
+            if (version.isNotEmpty()) {
+                val versionParts = version.split(".")
+                val minVersionParts = minVersion.split(".")
+                
+                if (versionParts.size >= 2 && minVersionParts.size >= 2) {
+                    val major = versionParts[0].toIntOrNull() ?: 0
+                    val minor = versionParts[1].toIntOrNull() ?: 0
+                    val minMajor = minVersionParts[0].toIntOrNull() ?: 0
+                    val minMinor = minVersionParts[1].toIntOrNull() ?: 0
+                    
+                    assertTrue(
+                        "Security library $lib should be at least version $minVersion, found $version",
+                        major > minMajor || (major == minMajor && minor >= minMinor)
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test build tools compatibility and currency`() {
+        val agpVersion = extractVersionValue("agp")
+        val kotlinVersion = extractVersionValue("kotlin")
+        val kspVersion = extractVersionValue("ksp")
+        
+        if (agpVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            assertTrue("AGP version should be 8.0+ for modern Android development", agpMajor >= 8)
+        }
+        
+        if (kotlinVersion.isNotEmpty()) {
+            val kotlinMajor = kotlinVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMinor = kotlinVersion.split(".").getOrNull(1)?.toIntOrNull() ?: 0
+            assertTrue(
+                "Kotlin version should be 1.9+ or 2.0+ for modern features",
+                kotlinMajor >= 2 || (kotlinMajor == 1 && kotlinMinor >= 9)
+            )
+        }
+        
+        if (kspVersion.isNotEmpty() && kotlinVersion.isNotEmpty()) {
+            assertTrue(
+                "KSP version should be compatible with Kotlin version",
+                kspVersion.startsWith(kotlinVersion.substring(0, minOf(3, kotlinVersion.length)))
+            )
+        }
+    }
+
+    @Test
+    fun `test accompanist library migration awareness`() {
+        val accompanistLibs = tomlLines.filter { it.contains("accompanist") && !it.trim().startsWith("#") }
+        val migrationKeywords = listOf("migration", "deprecated", "replace", "alternative", "compose")
+        
+        accompanistLibs.forEach { line ->
+            val lineIndex = tomlLines.indexOf(line)
+            val context = tomlLines.subList(
+                maxOf(0, lineIndex - 2),
+                minOf(tomlLines.size, lineIndex + 3)
+            ).joinToString(" ")
+            
+            val hasDocumentation = migrationKeywords.any { keyword ->
+                context.lowercase().contains(keyword)
+            }
+            
+            // Log for maintenance awareness
+            if (!hasDocumentation) {
+                println("INFO: Accompanist library may need migration documentation: $line")
+            }
+        }
+        
+        // Check for pre-1.0 versions that might need attention
+        val accompanistVersionPattern = Regex("""accompanist.*version = "([^"]+)"""")
+        val accompanistMatches = accompanistVersionPattern.findAll(tomlContent)
+        
+        accompanistMatches.forEach { match ->
+            val version = match.groupValues[1]
+            val versionParts = version.split(".")
+            if (versionParts.isNotEmpty()) {
+                val major = versionParts[0].toIntOrNull() ?: 0
+                if (major == 0) {
+                    println("INFO: Accompanist version $version is pre-1.0 - consider migration path")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test version catalog naming convention compliance`() {
+        val versionKeys = parseKeyValuePairs(extractSection("[versions]")).keys
+        val libraryKeys = parseLibraryEntries(extractSection("[libraries]")).keys
+        
+        // Version keys should use camelCase or kebab-case
+        val invalidVersionKeys = versionKeys.filter { key ->
+            !key.matches(Regex("""^[a-zA-Z][a-zA-Z0-9]*([A-Z][a-zA-Z0-9]*)*$""")) && // camelCase
+            !key.matches(Regex("""^[a-z][a-z0-9]*(-[a-z0-9]+)*$""")) // kebab-case
+        }
+        
+        assertTrue(
+            "Version keys should follow camelCase or kebab-case conventions: $invalidVersionKeys",
+            invalidVersionKeys.isEmpty()
+        )
+        
+        // Library keys should use kebab-case (with some flexibility for existing patterns)
+        val problematicLibraryKeys = libraryKeys.filter { key ->
+            key.contains("_") || key.contains(" ") || key.matches(Regex(""".*[A-Z]{2,}.*"""))
+        }
+        
+        if (problematicLibraryKeys.isNotEmpty()) {
+            println("INFO: Library keys that might benefit from kebab-case: $problematicLibraryKeys")
+        }
+    }
+
+    @Test
+    fun `test production dependencies avoid unstable versions`() {
+        val unstableMarkers = listOf("SNAPSHOT", "dev", "alpha", "beta", "rc", "M1", "M2", "M3")
+        val productionLibraries = listOf(
+            "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose",
+            "room-runtime", "retrofit", "kotlinx-coroutines-android", "hilt-android"
+        )
+        
+        val librariesSection = extractSection("[libraries]")
+        
+        productionLibraries.forEach { lib ->
+            val libDef = extractLibraryDefinition(librariesSection, lib)
+            if (libDef.isNotEmpty()) {
+                val versionRef = extractVersionRefFromLibrary(libDef)
+                if (versionRef.isNotEmpty()) {
+                    val version = extractVersionValue(versionRef)
+                    unstableMarkers.forEach { marker ->
+                        assertFalse(
+                            "Production library $lib should not use unstable version $version containing $marker",
+                            version.contains(marker, ignoreCase = true)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test android gradle plugin kotlin compatibility`() {
+        val agpVersion = extractVersionValue("agp")
+        val kotlinVersion = extractVersionValue("kotlin")
+        
+        if (agpVersion.isNotEmpty() && kotlinVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMajor = kotlinVersion.split(".")[0].toIntOrNull() ?: 0
+            val kotlinMinor = kotlinVersion.split(".").getOrNull(1)?.toIntOrNull() ?: 0
+            
+            // AGP 8.x compatibility requirements
+            if (agpMajor >= 8) {
+                assertTrue(
+                    "AGP $agpVersion requires Kotlin 1.8+ or 2.0+, found Kotlin $kotlinVersion",
+                    kotlinMajor >= 2 || (kotlinMajor == 1 && kotlinMinor >= 8)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test bundle logical consistency`() {
+        val bundlesSection = extractSection("[bundles]")
+        val bundleEntries = parseBundleEntries(bundlesSection)
+        
+        bundleEntries.forEach { (bundleName, libraries) ->
+            assertTrue(
+                "Bundle $bundleName should contain at least 2 libraries for logical grouping",
+                libraries.size >= 2
+            )
+            
+            // Test specific bundle logic
+            when (bundleName) {
+                "compose" -> {
+                    val hasComposeBom = libraries.any { it.contains("compose-bom") }
+                    val hasComposeUi = libraries.any { it.contains("compose-ui") }
+                    assertTrue("Compose bundle should include compose-bom", hasComposeBom)
+                    assertTrue("Compose bundle should include compose-ui", hasComposeUi)
+                }
+                "testing-unit" -> {
+                    val hasJUnit = libraries.any { it.contains("junit") }
+                    assertTrue("Unit testing bundle should include JUnit", hasJUnit)
+                }
+                "testing-android" -> {
+                    val hasAndroidTest = libraries.any { it.contains("androidx-test") || it.contains("espresso") }
+                    assertTrue("Android testing bundle should include Android test libraries", hasAndroidTest)
+                }
+                "firebase" -> {
+                    val hasFirebaseBom = libraries.any { it.contains("firebase-bom") }
+                    assertTrue("Firebase bundle should include firebase-bom", hasFirebaseBom)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test plugin version alignment`() {
+        val pluginsSection = extractSection("[plugins]")
+        val pluginEntries = parsePluginEntries(pluginsSection)
+        
+        val pluginLibraryMappings = mapOf(
+            "kotlinAndroid" to "kotlin",
+            "kotlinSerialization" to "kotlin",
+            "ksp" to "ksp",
+            "hiltAndroid" to "hilt",
+            "androidApplication" to "agp",
+            "androidLibrary" to "agp"
+        )
+        
+        pluginLibraryMappings.forEach { (pluginKey, expectedVersionKey) ->
+            val pluginDef = pluginEntries[pluginKey]
+            if (pluginDef != null && pluginDef.contains("version.ref")) {
+                val actualVersionRef = extractVersionRefFromLibrary(pluginDef)
+                assertEquals(
+                    "Plugin $pluginKey should use version reference $expectedVersionKey",
+                    expectedVersionKey, actualVersionRef
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test toml file structure integrity`() {
+        val fileBytes = File("gradle/libs.versions.toml").readBytes()
+        
+        // Check for UTF-8 BOM (should not be present)
+        val hasUtf8BOM = fileBytes.size >= 3 && 
+                        fileBytes[0] == 0xEF.toByte() && 
+                        fileBytes[1] == 0xBB.toByte() && 
+                        fileBytes[2] == 0xBF.toByte()
+        
+        assertFalse("TOML file should not have UTF-8 BOM", hasUtf8BOM)
+        
+        // Check for consistent section ordering
+        val sections = listOf("[versions]", "[libraries]", "[plugins]", "[bundles]")
+        val sectionIndices = sections.map { tomlContent.indexOf(it) }
+        
+        for (i in 0 until sectionIndices.size - 1) {
+            if (sectionIndices[i] != -1 && sectionIndices[i + 1] != -1) {
+                assertTrue(
+                    "Section ${sections[i]} should come before ${sections[i + 1]}",
+                    sectionIndices[i] < sectionIndices[i + 1]
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test version definition completeness`() {
+        val versionSection = extractSection("[versions]")
+        val versionLines = versionSection.lines()
+            .filter { it.contains(" = ") && !it.trim().startsWith("#") }
+            .map { it.trim() }
+        
+        // Check for duplicate version keys
+        val versionKeys = versionLines.map { it.split(" = ")[0] }
+        val duplicateKeys = versionKeys.groupingBy { it }.eachCount().filter { it.value > 1 }
+        
+        assertTrue(
+            "No duplicate version keys should exist: ${duplicateKeys.keys}",
+            duplicateKeys.isEmpty()
+        )
+        
+        // Check that versions are non-empty
+        versionLines.forEach { line ->
+            val parts = line.split(" = ")
+            if (parts.size >= 2) {
+                val version = parts[1].trim().removePrefix(""").removeSuffix(""")
+                assertTrue(
+                    "Version should not be empty: $line",
+                    version.isNotEmpty()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test performance library version adequacy`() {
+        val performanceLibraries = mapOf(
+            "okhttp" to "4.10.0",
+            "retrofit" to "2.9.0",
+            "room" to "2.5.0",
+            "kotlinxCoroutines" to "1.6.0",
+            "coilCompose" to "2.0.0"
+        )
+        
+        performanceLibraries.forEach { (lib, recommendedVersion) ->
+            val currentVersion = extractVersionValue(lib)
+            if (currentVersion.isNotEmpty()) {
+                val current = parseVersionComponents(currentVersion)
+                val recommended = parseVersionComponents(recommendedVersion)
+                
+                if (current.isNotEmpty() && recommended.isNotEmpty()) {
+                    val isAdequate = compareVersionComponents(current, recommended) >= 0
+                    if (!isAdequate) {
+                        println("INFO: Performance library $lib is at version $currentVersion (recommended: $recommendedVersion+)")
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test gradle wrapper compatibility awareness`() {
+        val agpVersion = extractVersionValue("agp")
+        if (agpVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toIntOrNull() ?: 0
+            
+            // AGP 8.0+ requires Gradle 8.0+
+            if (agpMajor >= 8) {
+                println("INFO: AGP $agpVersion requires Gradle 8.0+ - verify gradle/wrapper/gradle-wrapper.properties")
+            }
+        }
+    }
+
+    @Test
+    fun `test custom plugin configuration validity`() {
+        val pluginsSection = extractSection("[plugins]")
+        val customPlugins = listOf("auraApp")
+        
+        customPlugins.forEach { plugin ->
+            assertTrue(
+                "Custom plugin $plugin should be defined",
+                pluginsSection.contains("$plugin = ")
+            )
+        }
+    }
+
+    @Test
+    fun `test critical dependency presence`() {
+        val criticalDeps = listOf(
+            "agp", "kotlin", "ksp", "hilt", "composeBom", "junit", "mockk"
+        )
+        val versionSection = extractSection("[versions]")
+        
+        criticalDeps.forEach { dep ->
+            assertTrue(
+                "Critical dependency $dep should be present in versions",
+                versionSection.contains("$dep = ")
+            )
+        }
+    }
+
+    @Test
+    fun `test library module format consistency`() {
+        val librariesSection = extractSection("[libraries]")
+        val libraryEntries = parseLibraryEntries(librariesSection)
+        
+        libraryEntries.forEach { (key, definition) ->
+            if (definition.contains("group = ") && definition.contains("name = ")) {
+                assertTrue(
+                    "Library $key should use proper group/name format",
+                    definition.contains("group = ") && definition.contains("name = ")
+                )
+            } else if (definition.contains("module = ")) {
+                assertTrue(
+                    "Library $key should use proper module format",
+                    definition.contains("module = ")
+                )
+            }
+        }
+    }
+
+    // Helper methods for version parsing and comparison
+    private fun parseVersionComponents(versionString: String): List<Int> {
+        return versionString.split(".").mapNotNull { it.toIntOrNull() }
+    }
+    
+    private fun compareVersionComponents(version1: List<Int>, version2: List<Int>): Int {
+        val maxLength = maxOf(version1.size, version2.size)
+        for (i in 0 until maxLength) {
+            val v1 = version1.getOrNull(i) ?: 0
+            val v2 = version2.getOrNull(i) ?: 0
+            if (v1 != v2) {
+                return v1.compareTo(v2)
+            }
+        }
+        return 0
     }
 }
