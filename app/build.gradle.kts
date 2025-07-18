@@ -1,22 +1,35 @@
+
+0......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+21111
 plugins {
-    // Core plugins
-    alias(libs.plugins.androidApplication) apply true
-    alias(libs.plugins.kotlinAndroid) apply true
-    alias(libs.plugins.ksp) apply true  // KSP must be applied before Hilt
-    alias(libs.plugins.hiltAndroid) apply true  // Hilt plugin
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.firebasePerf)
+    alias(libs.plugins.openapiGenerator)
 
-    // Other plugins
-    alias(libs.plugins.kotlin.serialization) apply true
-    alias(libs.plugins.googleServices) apply true
-    alias(libs.plugins.openapi.generator) apply true
-    alias(libs.plugins.firebase.crashlytics) apply true
-    alias(libs.plugins.firebase.perf) apply true
 
-    // Compose plugin for Kotlin 2.0+
-    id("org.jetbrains.kotlin.plugin.compose") version libs.versions.kotlin.get()
 }
 
 android {
+
+    namespace = "dev.aurakai.auraframefx"
+
     namespace = "com.example.app"
     compileSdk = 36  // Compatible with AGP 8.8.0
 
@@ -28,101 +41,68 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "com.example.app.HiltTestRunner"
 
+
         multiDexEnabled = true
 
-        // NDK configuration
-        ndk {
-            // Specify the ABI architectures you want to build for
-            abiFilters.clear()
-            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
-
-            // Specify NDK version explicitly
-            version = "27.0.12077973"
-        }
-
-        // Enable prefab for native dependencies
-        buildFeatures {
-            prefab = true
-        }
-
-        // Packaging options for native libraries
-        packaging {
-            resources {
-                excludes.addAll(
-                    listOf(
-                        "META-INF/*.kotlin_module",
-                        "META-INF/*.version",
-                        "META-INF/proguard/*",
-                        "**/libjni*.so"
-                    )
-                )
-
-                // For native libraries
-                jniLibs {
-                    // Keep debug symbols in release builds for crash reporting
-                    keepDebugSymbols.add("**/*.so")
-
-                    // Exclude unwanted ABIs if needed
-                    // excludes += listOf("armeabi-v7a", "x86")
-                }
-            }
-        }
-
+        // MOVED: NDK ABI filters are part of the top-level ndk block
         vectorDrawables {
             useSupportLibrary = true
         }
     }
 
+    // MOVED: Packaging options are a top-level block
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "/META-INF/*.kotlin_module"
+        }
+        jniLibs {
+            // Keep debug symbols for better crash reporting
+            keepDebugSymbols.add("**/*.so")
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true // Enable minification and obfuscation for release builds
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            // Debug specific configurations can go here
         }
     }
 
     buildFeatures {
         buildConfig = true
         compose = true
-        viewBinding = true
+        viewBinding = true // Disabled for pure Compose app
+        prefab = true
     }
 
-    // Configure Compose Compiler
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
+    // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        // Use Java 17, the standard for modern Android development
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn"
-        )
-    }
-
-    androidResources {
-        noCompress += listOf("proto", "json")
-        ignoreAssetsPattern = "!*.version"
+        jvmTarget = "21"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
-            version = rootProject.extra["cmakeVersion"] as String
-
+            version = rootProject.extra["cmakeVersion"] as String? // Use safe cast
         }
-    }
-
-    // Enable prefab for native dependencies
-    buildFeatures {
-        prefab = true
     }
 
     lint {
@@ -131,202 +111,110 @@ android {
         lintConfig = file("lint.xml")
         warningsAsErrors = true
         abortOnError = true
-        checkReleaseBuilds = true
-        checkGeneratedSources = true
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
-        disable.add("GradleDeprecatedConfiguration")
-        disable.add("GradleDependency")
-        disable.add("GradleDynamicVersion")
-        disable.add("GradleStaticVersion")
-
-
-    }
-
-    // Configure build variants
-    buildTypes {
-        debug {
-            // Debug flags are now handled by CMake
-        }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            // Release flags are now handled by CMake
-        }
     }
 }
 
 // OpenAPI Generator Configuration
-// Convert Windows paths to forward slashes for OpenAPI generator
-val openApiSpecPath = file("src/main/openapi.yml").toURI().toURL().toString()
-
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set(openApiSpecPath)
-    outputDir.set("${layout.buildDirectory.get().asFile}/generated/kotlin")
-    apiPackage.set("com.example.app.api.client.apis")
-    modelPackage.set("com.example.app.api.client.models")
-    invokerPackage.set("com.example.app.api.client.infrastructure")
+    inputSpec.set("$projectDir/src/main/openapi.yml")
+    outputDir.set("${layout.buildDirectory.get().asFile}/generated/openapi")
+    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
+    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",
             "useCoroutines" to "true",
-            "collectionType" to "list"
+            "serializationLibrary" to "kotlinx_serialization" // Use kotlinx.serialization
         )
     )
 }
 
-// KSP Configuration
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
-// Source Sets
-android.sourceSets {
-    getByName("main") {
-        java {
-            srcDirs("${layout.buildDirectory.get()}/generated/kotlin")
-        }
-    }
+android.sourceSets.getByName("main") {
+    java.srcDir("${layout.buildDirectory.get().asFile}/generated/openapi/src/main/kotlin")
 }
 
-// Task Dependencies
 tasks.named("preBuild") {
     dependsOn("openApiGenerate")
 }
 
-// Dependency configurations
-configurations.all {
-    // KMP/Native Exclusions
-    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-common")
-
-    // Resolution strategy for dependency conflicts
-    resolutionStrategy {
-        // Prefer stable versions
-        preferProjectModules()
-
-        // Force specific versions for common dependencies
-        force(
-            "org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}",
-            "org.jetbrains.kotlin:kotlin-stdlib-common:${libs.versions.kotlin.get()}",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${libs.versions.kotlin.get()}",
-            "org.jetbrains.kotlin:kotlin-reflect:${libs.versions.kotlin.get()}"
-        )
-    }
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-common")
-    exclude(group = "org.jetbrains.kotlin.native")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-serialization-core-native")
-    exclude(group = "org.jetbrains.compose")
-}
+// REMOVED: The entire 'configurations.all' block.
 
 dependencies {
-    // Core
-    coreLibraryDesugaring(libs.desugarJdkLibs)
-    implementation(libs.androidxCoreKtx)
-    implementation(libs.androidxAppcompat)
+    // Core & Desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    // REMOVED: appcompat and material are not needed for pure Compose
 
-    // Lifecycle
-    implementation(libs.androidxLifecycleRuntimeKtx)
-    implementation(libs.lifecycleViewmodelCompose)
-    implementation(libs.androidxLifecycleViewmodelKtx)
-    implementation(libs.androidxLifecycleRuntimeCompose)
-
-    // Compose
-    val composeBom = platform(libs.composeBom)
+    // Jetpack Compose - BOM controls all versions
+    val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
-    implementation(libs.androidxUi)
-    implementation(libs.androidxUiGraphics)
-    implementation(libs.androidxUiToolingPreview)
+    androidTestImplementation(composeBom)
 
-    // Material 3
-    implementation(libs.androidxMaterial3)
-    implementation(libs.androidxMaterialIconsExtended)
+    // Compose dependencies
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.navigation.compose)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.material.icons.extended.filled)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 
-    // Window Manager for responsive layouts
-    implementation(libs.androidxWindow)
-
-    // Required for Material 3 theming
-    implementation(libs.androidxActivityCompose)
-    implementation(libs.androidxNavigationCompose)
-
-    // Material 3 Adaptive Components (if needed for future use)
-    // implementation("androidx.compose.material3:material3-adaptive:1.0.0")
-    // implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
+    // Lifecycle - using a bundle for cleanliness
+    implementation(libs.bundles.lifecycle)
 
     // Dagger Hilt
-    implementation(libs.hiltAndroid)
-    ksp(libs.hiltCompiler)
-    implementation(libs.hiltNavigationCompose)
-    implementation(libs.hiltWork)
-
-    // Navigation
-    implementation(libs.androidxNavigationCompose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
 
     // Coroutines
-    implementation(libs.kotlinxCoroutinesAndroid)
-    implementation(libs.kotlinxCoroutinesCore)
+    implementation(libs.kotlinx.coroutines.android)
 
-    // Xposed
-    compileOnly(files("Libs/api-82.jar"))
-
-    // Room
-    implementation(libs.androidxRoomRuntime)
-    implementation(libs.androidxRoomKtx)
-    ksp(libs.androidxRoomCompiler)
+    // Room (Database) - using a bundle
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
 
     // WorkManager
-    implementation(libs.androidxWorkRuntimeKtx)
+    implementation(libs.work.runtime.ktx)
 
-    // Firebase
-    implementation(platform(libs.firebaseBom))
-    implementation(libs.firebaseAnalyticsKtx)
-    implementation(libs.firebaseCrashlyticsKtx)
-    implementation(libs.firebasePerfKtx)
-    implementation(libs.firebaseConfigKtx)
-    implementation(libs.firebaseStorageKtx)
-    implementation(libs.firebaseMessagingKtx)
+    // Firebase - BOM controls all versions
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase) // Use the bundle
 
-    // Google AI
-    implementation(libs.generativeai)
-
-    // Network
+    // Network & Serialization
     implementation(libs.retrofit)
-    implementation(libs.converterGson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttpLoggingInterceptor)
-    implementation(libs.retrofitKotlinxSerializationConverter)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp.logging.interceptor) // Should be debugImplementation
+    implementation(libs.kotlinx.serialization.json)
 
-    // DataStore
-    implementation(libs.androidxDatastorePreferences)
-    implementation(libs.androidxDatastoreCore)
+    // DataStore & Security
+    implementation(libs.datastore.preferences)
+    implementation(libs.security.crypto)
 
-    // Security
-    implementation(libs.androidxSecurityCrypto)
-
-    // UI
-    implementation(libs.coilCompose)
+    // UI & Other
+    implementation(libs.coil.compose)
     implementation(libs.timber)
 
-    // Testing
-    testImplementation(libs.testJunit)
-    testImplementation(libs.kotlinxCoroutinesTest)
-    testImplementation(libs.mockkAgent)
+    // --- TESTING ---
+    // Unit Tests
+    testImplementation(libs.bundles.testing.unit)
+    // Android Instrumented Tests
+    androidTestImplementation(libs.bundles.testing.android)
+    kspAndroidTest(libs.hilt.compiler) // Don't forget KSP for android tests
 
-    androidTestImplementation(libs.androidxTestExtJunit)
-    androidTestImplementation(libs.espressoCore)
-    androidTestImplementation(composeBom)
-    androidTestImplementation(libs.composeUiTestJunit4)
-    androidTestImplementation(libs.mockkAndroid)
-    androidTestImplementation(libs.hiltAndroidTesting)
-    kspAndroidTest(libs.hiltAndroidCompiler)
-
-    // Debug
-    debugImplementation(libs.composeUiTooling)
-    debugImplementation(libs.composeUiTestManifest)
+    // --- DEBUG ---
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
