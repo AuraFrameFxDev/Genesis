@@ -23,7 +23,7 @@ room = "2.6.1"
 workManager = "2.9.0"
 datastore = "1.1.1"
 securityCrypto = "1.1.0-alpha06" # Note: Still in alpha, but widely used
-desugar-jdk-libs = "2.0.4"
+desugar-jdk-libs = "2.1.5"
 
 # Firebase
 firebaseBom = "33.1.0"
