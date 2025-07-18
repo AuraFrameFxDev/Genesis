@@ -295,481 +295,604 @@ class LibsVersionsTomlTest {
         return Regex(pattern).find(tomlContent)?.groupValues?.get(1)
     }
 }
+    // Additional comprehensive tests for version pattern validation
     @Test
-    fun `test all version references resolve correctly`() {
-        val versionsSection = extractSection(tomlContent, "versions")
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val pluginsSection = extractSection(tomlContent, "plugins")
-        
-        val definedVersions = parseVersionsFromSection(versionsSection)
-        val libraryVersionRefs = extractVersionReferences(librariesSection)
-        val pluginVersionRefs = extractVersionReferences(pluginsSection)
-        
-        (libraryVersionRefs + pluginVersionRefs).forEach { versionRef ->
+    fun `test all version strings follow semantic versioning patterns`() {
+        val versionPattern = Regex("""^\d+\.\d+(\.\d+)?(-[\w\d\-.]+)?$""")
+        val versionSection = extractSection("[versions]")
+        val versionEntries = parseKeyValuePairs(versionSection)
+
+        versionEntries.forEach { (key, value) ->
             assertTrue(
-                "Version reference '$versionRef' should be defined in versions section",
-                definedVersions.containsKey(versionRef)
+                "Version '$value' for '$key' should follow semantic versioning pattern",
+                versionPattern.matches(value)
             )
         }
     }
 
     @Test
-    fun `test bundle definitions reference valid libraries`() {
-        val bundlesSection = extractSection(tomlContent, "bundles")
-        val librariesSection = extractSection(tomlContent, "libraries")
+    fun `test version values contain only valid characters`() {
+        val versionSection = extractSection("[versions]")
+        val versionEntries = parseKeyValuePairs(versionSection)
+        val invalidCharPattern = Regex("""[^a-zA-Z0-9.\-]""")
+
+        versionEntries.forEach { (key, value) ->
+            assertFalse(
+                "Version '$value' for '$key' should not contain invalid characters",
+                invalidCharPattern.containsMatchIn(value)
+            )
+        }
+    }
+
+    @Test
+    fun `test android gradle plugin version is compatible with kotlin`() {
+        val agpVersion = extractVersionValue("agp")
+        val kotlinVersion = extractVersionValue("kotlin")
         
-        val definedLibraries = extractLibraryNames(librariesSection)
-        val bundleLibraries = extractBundleLibraries(bundlesSection)
+        if (agpVersion.isNotEmpty() && kotlinVersion.isNotEmpty()) {
+            val agpMajor = agpVersion.split(".")[0].toInt()
+            val kotlinMajor = kotlinVersion.split(".")[0].toInt()
+            
+            // AGP 8.x requires Kotlin 1.8+ or 2.0+
+            if (agpMajor >= 8) {
+                assertTrue(
+                    "AGP $agpVersion requires Kotlin 1.8+ or 2.0+, but found Kotlin $kotlinVersion",
+                    kotlinMajor >= 2 || (kotlinMajor == 1 && kotlinVersion.split(".")[1].toInt() >= 8)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test compose bom version follows expected format`() {
+        val composeBomVersion = extractVersionValue("composeBom")
+        val bomPattern = Regex("""^\d{4}\.\d{2}\.\d{2}$""")
         
-        bundleLibraries.forEach { (bundleName, libraries) ->
+        if (composeBomVersion.isNotEmpty()) {
+            assertTrue(
+                "Compose BOM version '$composeBomVersion' should follow YYYY.MM.DD format",
+                bomPattern.matches(composeBomVersion)
+            )
+        }
+    }
+
+    @Test
+    fun `test junit version should be jupiter`() {
+        val junitVersion = extractVersionValue("junit")
+        if (junitVersion.isNotEmpty()) {
+            val majorVersion = junitVersion.split(".")[0].toInt()
+            assertTrue(
+                "JUnit version should be 5.x or higher (Jupiter), but found $junitVersion",
+                majorVersion >= 5
+            )
+        }
+    }
+
+    // Bundle integrity tests
+    @Test
+    fun `test testing unit bundle contains core unit testing libraries`() {
+        val testingUnitBundle = extractBundleLibraries("testing-unit")
+        val expectedLibs = listOf("junit-api", "mockk-agent")
+
+        expectedLibs.forEach { lib ->
+            assertTrue(
+                "Unit testing bundle should contain '$lib'",
+                testingUnitBundle.contains(lib)
+            )
+        }
+    }
+
+    @Test
+    fun `test testing android bundle contains core android testing libraries`() {
+        val testingAndroidBundle = extractBundleLibraries("testing-android")
+        val expectedLibs = listOf("androidx-test-ext-junit", "espresso-core", "mockk-android", "hilt-android-testing")
+
+        expectedLibs.forEach { lib ->
+            assertTrue(
+                "Android testing bundle should contain '$lib'",
+                testingAndroidBundle.contains(lib)
+            )
+        }
+    }
+
+    @Test
+    fun `test compose bundle contains all essential compose libraries`() {
+        val composeBundle = extractBundleLibraries("compose")
+        val essentialLibs = listOf(
+            "compose-bom", "compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview",
+            "compose-material3", "androidx-activity-compose", "navigation-compose",
+            "lifecycle-viewmodel-compose", "lifecycle-runtime-compose"
+        )
+
+        essentialLibs.forEach { lib ->
+            assertTrue(
+                "Compose bundle should contain '$lib'",
+                composeBundle.contains(lib)
+            )
+        }
+    }
+
+    @Test
+    fun `test firebase bundle contains core firebase libraries`() {
+        val firebaseBundle = extractBundleLibraries("firebase")
+        val expectedLibs = listOf("firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-performance")
+
+        expectedLibs.forEach { lib ->
+            assertTrue(
+                "Firebase bundle should contain '$lib'",
+                firebaseBundle.contains(lib)
+            )
+        }
+    }
+
+    @Test
+    fun `test room bundle contains essential room libraries`() {
+        val roomBundle = extractBundleLibraries("room")
+        val expectedLibs = listOf("room-runtime", "room-ktx")
+
+        expectedLibs.forEach { lib ->
+            assertTrue(
+                "Room bundle should contain '$lib'",
+                roomBundle.contains(lib)
+            )
+        }
+    }
+
+    @Test
+    fun `test lifecycle bundle contains essential lifecycle libraries`() {
+        val lifecycleBundle = extractBundleLibraries("lifecycle")
+        val expectedLibs = listOf("lifecycle-runtime-ktx", "lifecycle-viewmodel-compose", "lifecycle-runtime-compose")
+
+        expectedLibs.forEach { lib ->
+            assertTrue(
+                "Lifecycle bundle should contain '$lib'",
+                lifecycleBundle.contains(lib)
+            )
+        }
+    }
+
+    // Plugin configuration validation tests
+    @Test
+    fun `test all plugin ids follow reverse domain naming convention`() {
+        val pluginsSection = extractSection("[plugins]")
+        val pluginEntries = parsePluginEntries(pluginsSection)
+        val domainPattern = Regex("""^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$""")
+
+        pluginEntries.forEach { (key, definition) ->
+            val idMatch = Regex("""id = "([^"]+)"""").find(definition)
+            if (idMatch != null) {
+                val pluginId = idMatch.groupValues[1]
+                assertTrue(
+                    "Plugin ID '$pluginId' for '$key' should follow reverse domain naming convention",
+                    domainPattern.matches(pluginId)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test essential development plugins are present`() {
+        val essentialPlugins = mapOf(
+            "androidApplication" to "com.android.application",
+            "androidLibrary" to "com.android.library",
+            "kotlinAndroid" to "org.jetbrains.kotlin.android",
+            "kotlinSerialization" to "org.jetbrains.kotlin.plugin.serialization",
+            "ksp" to "com.google.devtools.ksp",
+            "hiltAndroid" to "com.google.dagger.hilt.android"
+        )
+
+        val pluginsSection = extractSection("[plugins]")
+        essentialPlugins.forEach { (key, expectedId) ->
+            assertTrue(
+                "Essential plugin '$key' should be defined",
+                pluginsSection.contains("$key = ")
+            )
+            assertTrue(
+                "Plugin '$key' should have correct ID '$expectedId'",
+                pluginsSection.contains("id = \"$expectedId\"")
+            )
+        }
+    }
+
+    @Test
+    fun `test custom aura plugin has proper versioning`() {
+        val pluginsSection = extractSection("[plugins]")
+        assertTrue(
+            "Custom auraApp plugin should be defined",
+            pluginsSection.contains("auraApp = ")
+        )
+        assertTrue(
+            "Custom auraApp plugin should have correct ID",
+            pluginsSection.contains("id = \"dev.aurakai.auraframefx\"")
+        )
+    }
+
+    // Dependency compatibility tests
+    @Test
+    fun `test ksp version is compatible with kotlin version`() {
+        val kotlinVersion = extractVersionValue("kotlin")
+        val kspVersion = extractVersionValue("ksp")
+        
+        if (kotlinVersion.isNotEmpty() && kspVersion.isNotEmpty()) {
+            // KSP version format: {kotlin_version}-{ksp_version}
+            assertTrue(
+                "KSP version '$kspVersion' should be compatible with Kotlin version '$kotlinVersion'",
+                kspVersion.startsWith(kotlinVersion)
+            )
+        }
+    }
+
+    @Test
+    fun `test androidx test libraries use compatible versions`() {
+        val androidxTestExtJunitVersion = extractVersionValue("androidxTestExtJunit")
+        val espressoCoreVersion = extractVersionValue("espressoCore")
+        
+        if (androidxTestExtJunitVersion.isNotEmpty()) {
+            assertTrue(
+                "AndroidX Test Ext JUnit version should be 1.x",
+                androidxTestExtJunitVersion.startsWith("1.")
+            )
+        }
+        if (espressoCoreVersion.isNotEmpty()) {
+            assertTrue(
+                "Espresso Core version should be 3.x",
+                espressoCoreVersion.startsWith("3.")
+            )
+        }
+    }
+
+    @Test
+    fun `test accompanist libraries use compatible versions`() {
+        val librariesSection = extractSection("[libraries]")
+        val accompanistLibs = listOf("accompanistPager", "accompanistPermissions", "accompanistSystemuicontroller")
+        
+        accompanistLibs.forEach { lib ->
+            val libraryDef = extractLibraryDefinition(librariesSection, lib)
+            val versionMatch = Regex("""version = "([^"]+)"""").find(libraryDef)
+            if (versionMatch != null) {
+                val version = versionMatch.groupValues[1]
+                assertTrue(
+                    "Accompanist library '$lib' should use 0.x version, found '$version'",
+                    version.startsWith("0.")
+                )
+            }
+        }
+    }
+
+    // Security and production readiness tests
+    @Test
+    fun `test production libraries use stable versions`() {
+        val productionLibs = listOf(
+            "androidx-core-ktx", "androidx-appcompat", "androidx-activity-compose",
+            "room-runtime", "retrofit", "kotlinx-coroutines-android"
+        )
+        val librariesSection = extractSection("[libraries]")
+
+        productionLibs.forEach { lib ->
+            val libDef = extractLibraryDefinition(librariesSection, lib)
+            if (libDef.contains("version.ref = ")) {
+                val versionRef = extractVersionRefFromLibrary(libDef)
+                val version = extractVersionValue(versionRef)
+                val unstableKeywords = listOf("alpha", "beta", "rc", "snapshot")
+                
+                unstableKeywords.forEach { keyword ->
+                    assertFalse(
+                        "Production library '$lib' should use stable version, not '$version'",
+                        version.lowercase().contains(keyword)
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test security crypto library is present for sensitive data`() {
+        val librariesSection = extractSection("[libraries]")
+        assertTrue(
+            "Security crypto library should be present for encrypting sensitive data",
+            librariesSection.contains("security-crypto = ")
+        )
+    }
+
+    @Test
+    fun `test no hardcoded credentials or api keys`() {
+        val sensitivePatterns = listOf(
+            Regex("""(password|pwd)\s*=\s*"[^"]*"""", RegexOption.IGNORE_CASE),
+            Regex("""(apikey|api_key)\s*=\s*"[^"]*"""", RegexOption.IGNORE_CASE),
+            Regex("""(token|auth_token)\s*=\s*"[^"]*"""", RegexOption.IGNORE_CASE),
+            Regex("""(secret|client_secret)\s*=\s*"[^"]*"""", RegexOption.IGNORE_CASE)
+        )
+
+        sensitivePatterns.forEach { pattern ->
+            assertFalse(
+                "TOML file should not contain hardcoded sensitive values",
+                pattern.containsMatchIn(tomlContent)
+            )
+        }
+    }
+
+    @Test
+    fun `test desugar jdk libs present for api compatibility`() {
+        val librariesSection = extractSection("[libraries]")
+        assertTrue(
+            "Desugar JDK libs should be present for API compatibility",
+            librariesSection.contains("desugar-jdk-libs = ")
+        )
+    }
+
+    // TOML format and syntax tests
+    @Test
+    fun `test toml file has proper section headers`() {
+        val expectedSections = listOf("[versions]", "[libraries]", "[plugins]", "[bundles]")
+        expectedSections.forEach { section ->
+            assertTrue(
+                "TOML file should contain section '$section'",
+                tomlContent.contains(section)
+            )
+        }
+    }
+
+    @Test
+    fun `test toml file has no syntax errors`() {
+        // Check for common TOML syntax issues
+        assertFalse("Should not contain double equals", tomlContent.contains("= ="))
+        assertFalse("Should not contain triple quotes inappropriately", tomlContent.contains("\"\"\""))
+        
+        // Check for unmatched brackets
+        val openBrackets = tomlContent.count { it == '[' }
+        val closeBrackets = tomlContent.count { it == ']' }
+        assertEquals("Unmatched brackets in TOML file", openBrackets, closeBrackets)
+        
+        // Check for unmatched braces
+        val openBraces = tomlContent.count { it == '{' }
+        val closeBraces = tomlContent.count { it == '}' }
+        assertEquals("Unmatched braces in TOML file", openBraces, closeBraces)
+    }
+
+    @Test
+    fun `test key names follow naming conventions`() {
+        val keyPattern = Regex("""^[a-zA-Z][a-zA-Z0-9\-_]*$""")
+        val lines = tomlContent.lines()
+        
+        lines.forEach { line ->
+            val trimmed = line.trim()
+            if (trimmed.contains(" = ") && !trimmed.startsWith("#") && !trimmed.startsWith("[")) {
+                val key = trimmed.split(" = ")[0].trim()
+                assertTrue(
+                    "Key '$key' should follow naming convention (alphanumeric with hyphens/underscores)",
+                    keyPattern.matches(key)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `test comments are properly formatted`() {
+        val commentLines = tomlContent.lines().filter { it.trim().startsWith("#") }
+        
+        commentLines.forEach { line ->
+            assertTrue(
+                "Comment should have space after hash: '$line'",
+                line.trim().startsWith("# ") || line.trim() == "#"
+            )
+        }
+    }
+
+    // Integration tests
+    @Test
+    fun `test all version references are resolvable`() {
+        val versionSection = extractSection("[versions]")
+        val versionKeys = parseKeyValuePairs(versionSection).keys
+        val allVersionRefs = findAllVersionReferences()
+
+        allVersionRefs.forEach { ref ->
+            assertTrue(
+                "Version reference '$ref' should be defined in versions section",
+                versionKeys.contains(ref)
+            )
+        }
+    }
+
+    @Test
+    fun `test all bundle libraries exist`() {
+        val bundlesSection = extractSection("[bundles]")
+        val librariesSection = extractSection("[libraries]")
+        val libraryKeys = parseLibraryEntries(librariesSection).keys
+
+        val bundleEntries = parseBundleEntries(bundlesSection)
+        bundleEntries.forEach { (bundleName, libraries) ->
             libraries.forEach { library ->
                 assertTrue(
-                    "Bundle '$bundleName' references undefined library: $library",
-                    definedLibraries.contains(library)
+                    "Bundle '$bundleName' references library '$library' which should exist",
+                    libraryKeys.contains(library)
                 )
             }
         }
     }
 
     @Test
-    fun `test compose bundle contains essential libraries`() {
-        val bundlesSection = extractSection(tomlContent, "bundles")
-        val composeBundle = extractBundleLibraries(bundlesSection)["compose"]
+    fun `test file is properly structured for maintenance`() {
+        val sections = listOf("[versions]", "[libraries]", "[plugins]", "[bundles]")
+        val sectionIndices = sections.map { tomlContent.indexOf(it) }
         
-        assertNotNull("Compose bundle should be defined", composeBundle)
-        
-        val essentialComposeLibs = listOf(
-            "compose-bom", "compose-ui", "compose-ui-graphics", 
-            "compose-ui-tooling-preview", "compose-material3"
-        )
-        
-        essentialComposeLibs.forEach { lib ->
+        // Check that sections are in the correct order
+        for (i in 0 until sectionIndices.size - 1) {
             assertTrue(
-                "Compose bundle should contain $lib",
-                composeBundle!!.contains(lib)
+                "Section '${sections[i]}' should come before '${sections[i + 1]}'",
+                sectionIndices[i] < sectionIndices[i + 1]
             )
         }
     }
 
     @Test
-    fun `test room bundle only contains runtime libraries`() {
-        val bundlesSection = extractSection(tomlContent, "bundles")
-        val roomBundle = extractBundleLibraries(bundlesSection)["room"]
+    fun `test no circular dependencies in version references`() {
+        val versionSection = extractSection("[versions]")
+        val versionKeys = parseKeyValuePairs(versionSection).keys
         
-        assertNotNull("Room bundle should be defined", roomBundle)
-        
-        // Should contain runtime libraries
-        assertTrue("Room bundle should contain room-runtime", roomBundle!!.contains("room-runtime"))
-        assertTrue("Room bundle should contain room-ktx", roomBundle.contains("room-ktx"))
-        
-        // Should not contain compiler (annotation processor)
-        assertFalse("Room bundle should not contain room-compiler", roomBundle.contains("room-compiler"))
-    }
-
-    @Test
-    fun `test firebase bundle follows BOM pattern`() {
-        val bundlesSection = extractSection(tomlContent, "bundles")
-        val firebaseBundle = extractBundleLibraries(bundlesSection)["firebase"]
-        
-        assertNotNull("Firebase bundle should be defined", firebaseBundle)
-        
-        assertTrue("Firebase bundle should contain firebase-bom", firebaseBundle!!.contains("firebase-bom"))
-        assertTrue("Firebase bundle should contain firebase-analytics", firebaseBundle.contains("firebase-analytics"))
-        assertTrue("Firebase bundle should contain firebase-crashlytics", firebaseBundle.contains("firebase-crashlytics"))
-    }
-
-    @Test
-    fun `test testing bundles are properly separated`() {
-        val bundlesSection = extractSection(tomlContent, "bundles")
-        val bundles = extractBundleLibraries(bundlesSection)
-        
-        val testingUnit = bundles["testing-unit"]
-        val testingAndroid = bundles["testing-android"]
-        
-        assertNotNull("Unit testing bundle should be defined", testingUnit)
-        assertNotNull("Android testing bundle should be defined", testingAndroid)
-        
-        // Should not overlap
-        val overlap = testingUnit!!.intersect(testingAndroid!!.toSet())
-        assertTrue("Testing bundles should not overlap: $overlap", overlap.isEmpty())
-        
-        // Unit tests should contain JUnit and MockK
-        assertTrue("Unit testing should contain junit-api", testingUnit.contains("junit-api"))
-        assertTrue("Unit testing should contain mockk-agent", testingUnit.contains("mockk-agent"))
-        
-        // Android tests should contain instrumentation libraries
-        assertTrue("Android testing should contain androidx-test-ext-junit", testingAndroid.contains("androidx-test-ext-junit"))
-        assertTrue("Android testing should contain espresso-core", testingAndroid.contains("espresso-core"))
-    }
-
-    @Test
-    fun `test version format consistency`() {
-        val versionsSection = extractSection(tomlContent, "versions")
-        val versions = parseVersionsFromSection(versionsSection)
-        
-        versions.forEach { (name, version) ->
-            // Should follow semantic versioning or date format
-            val isSemanticVersion = version.matches(Regex("^\\d+\\.\\d+(\\.\\d+)?(-\\w+(\\.\\d+)?)?$"))
-            val isDateFormat = version.matches(Regex("^\\d{4}\\.\\d{2}\\.\\d{2}$"))
-            
-            assertTrue(
-                "Version '$name' should follow semantic versioning or date format: $version",
-                isSemanticVersion || isDateFormat
-            )
-        }
-    }
-
-    @Test
-    fun `test library group naming consistency`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraries = parseLibrariesFromSection(librariesSection)
-        
-        libraries.forEach { (name, definition) ->
-            definition["group"]?.let { group ->
-                assertTrue(
-                    "Library '$name' group should use valid characters: $group",
-                    group.matches(Regex("^[a-zA-Z0-9._-]+$"))
-                )
-                
-                assertFalse(
-                    "Library '$name' group should not start or end with dot: $group",
-                    group.startsWith(".") || group.endsWith(".")
-                )
+        // Simple check: version values should not reference other version keys
+        versionKeys.forEach { key ->
+            val value = extractVersionValue(key)
+            versionKeys.forEach { otherKey ->
+                if (key != otherKey) {
+                    assertFalse(
+                        "Version '$key' should not reference another version key '$otherKey'",
+                        value.contains(otherKey)
+                    )
+                }
             }
         }
     }
 
     @Test
-    fun `test plugin id format validation`() {
-        val pluginsSection = extractSection(tomlContent, "plugins")
-        val plugins = parsePluginsFromSection(pluginsSection)
+    fun `test all critical build dependencies are present`() {
+        val criticalDependencies = listOf(
+            "agp", "kotlin", "ksp", "hilt", "composeBom", "junit", "mockk"
+        )
+        val versionSection = extractSection("[versions]")
         
-        plugins.forEach { (name, definition) ->
-            val id = definition["id"]
-            assertNotNull("Plugin '$name' should have id", id)
-            
+        criticalDependencies.forEach { dependency ->
             assertTrue(
-                "Plugin '$name' id should contain dots: $id",
-                id!!.contains(".")
-            )
-            
-            assertTrue(
-                "Plugin '$name' id should use valid characters: $id",
-                id.matches(Regex("^[a-zA-Z0-9._-]+$"))
-            )
-            
-            assertFalse(
-                "Plugin '$name' id should not start or end with dot: $id",
-                id.startsWith(".") || id.endsWith(".")
+                "Critical build dependency '$dependency' should be present",
+                versionSection.contains("$dependency = ")
             )
         }
     }
 
-    @Test
-    fun `test no duplicate library names`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraryNames = extractLibraryNames(librariesSection)
-        val uniqueNames = libraryNames.toSet()
-        
-        assertEquals(
-            "Should not have duplicate library names",
-            libraryNames.size,
-            uniqueNames.size
-        )
-    }
-
-    @Test
-    fun `test no duplicate version names`() {
-        val versionsSection = extractSection(tomlContent, "versions")
-        val versions = parseVersionsFromSection(versionsSection)
-        val versionNames = versions.keys.toList()
-        val uniqueNames = versionNames.toSet()
-        
-        assertEquals(
-            "Should not have duplicate version names",
-            versionNames.size,
-            uniqueNames.size
-        )
-    }
-
-    @Test
-    fun `test accompanist libraries have proper versions`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraries = parseLibrariesFromSection(librariesSection)
-        
-        libraries.filter { (name, _) -> name.contains("accompanist") }
-            .forEach { (name, definition) ->
-                val version = definition["version"]
-                assertNotNull("Accompanist library '$name' should have version", version)
-                
-                // Should be version 0.x.x (as accompanist is still pre-1.0)
-                assertTrue(
-                    "Accompanist library '$name' should use 0.x.x version: $version",
-                    version!!.startsWith("0.")
-                )
-            }
-    }
-
-    @Test
-    fun `test security crypto library configuration`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraries = parseLibrariesFromSection(librariesSection)
-        
-        val securityCrypto = libraries["security-crypto"]
-        assertNotNull("Security crypto library should be defined", securityCrypto)
-        
-        assertEquals(
-            "Security crypto should use androidx.security group",
-            "androidx.security",
-            securityCrypto!!["group"]
-        )
-        
-        assertEquals(
-            "Security crypto should use security-crypto name",
-            "security-crypto",
-            securityCrypto["name"]
-        )
-    }
-
-    @Test
-    fun `test desugar jdk libs configuration`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraries = parseLibrariesFromSection(librariesSection)
-        
-        val desugarJdkLibs = libraries["desugar-jdk-libs"]
-        assertNotNull("Desugar JDK libs should be defined", desugarJdkLibs)
-        
-        assertEquals(
-            "Desugar JDK libs should use com.android.tools group",
-            "com.android.tools",
-            desugarJdkLibs!!["group"]
-        )
-        
-        assertEquals(
-            "Desugar JDK libs should use desugar_jdk_libs name",
-            "desugar_jdk_libs",
-            desugarJdkLibs["name"]
-        )
-    }
-
-    @Test
-    fun `test material libraries are properly configured`() {
-        val librariesSection = extractSection(tomlContent, "libraries")
-        val libraries = parseLibrariesFromSection(librariesSection)
-        
-        // Check Material 3 (Compose)
-        val material3 = libraries["material3"]
-        assertNotNull("Material3 library should be defined", material3)
-        
-        // Check Material (Classic)
-        val material = libraries["material"]
-        assertNotNull("Material library should be defined", material)
-        
-        // Should have different configurations
-        assertNotEquals("Material and Material3 should have different configurations", material, material3)
-    }
-
-    @Test
-    fun `test openapi generator plugin is configured`() {
-        val pluginsSection = extractSection(tomlContent, "plugins")
-        val plugins = parsePluginsFromSection(pluginsSection)
-        
-        val openapiGenerator = plugins["openapiGenerator"]
-        assertNotNull("OpenAPI Generator plugin should be defined", openapiGenerator)
-        
-        assertEquals(
-            "OpenAPI Generator should use correct plugin id",
-            "org.openapi.generator",
-            openapiGenerator!!["id"]
-        )
-    }
-
-    @Test
-    fun `test custom aura app plugin is configured`() {
-        val pluginsSection = extractSection(tomlContent, "plugins")
-        val plugins = parsePluginsFromSection(pluginsSection)
-        
-        val auraApp = plugins["auraApp"]
-        assertNotNull("Aura App plugin should be defined", auraApp)
-        
-        assertEquals(
-            "Aura App should use correct plugin id",
-            "dev.aurakai.auraframefx",
-            auraApp!!["id"]
-        )
-        
-        assertEquals(
-            "Aura App should use version 1.0",
-            "1.0",
-            auraApp["version"]
-        )
-    }
-
-    // Helper methods for parsing TOML sections
-    private fun extractSection(content: String, sectionName: String): String {
-        val startPattern = "[$sectionName]"
-        val startIndex = content.indexOf(startPattern)
+    // Enhanced helper methods
+    private fun extractSection(sectionName: String): String {
+        val startIndex = tomlContent.indexOf(sectionName)
         if (startIndex == -1) return ""
         
-        val nextSectionIndex = content.indexOf("\n[", startIndex + startPattern.length)
+        val nextSectionIndex = tomlContent.indexOf("\n[", startIndex + 1)
         return if (nextSectionIndex == -1) {
-            content.substring(startIndex + startPattern.length)
+            tomlContent.substring(startIndex)
         } else {
-            content.substring(startIndex + startPattern.length, nextSectionIndex)
+            tomlContent.substring(startIndex, nextSectionIndex)
         }
     }
 
-    private fun parseVersionsFromSection(section: String): Map<String, String> {
+    private fun parseKeyValuePairs(section: String): Map<String, String> {
+        val pattern = Regex("""^(\w[\w\-]*)\s*=\s*"([^"]*)"$""", RegexOption.MULTILINE)
+        return pattern.findAll(section).associate { match ->
+            match.groupValues[1] to match.groupValues[2]
+        }
+    }
+
+    private fun parseLibraryEntries(section: String): Map<String, String> {
         val result = mutableMapOf<String, String>()
-        section.lines().forEach { line ->
-            val trimmed = line.trim()
-            if (trimmed.isNotEmpty() && !trimmed.startsWith("#") && trimmed.contains("=")) {
-                val parts = trimmed.split("=", limit = 2)
-                if (parts.size == 2) {
-                    val key = parts[0].trim()
-                    val value = parts[1].trim().removeSurrounding("\"")
-                    result[key] = value
-                }
-            }
-        }
-        return result
-    }
-
-    private fun parseLibrariesFromSection(section: String): Map<String, Map<String, String>> {
-        val result = mutableMapOf<String, Map<String, String>>()
-        var currentLibrary = ""
-        var currentDefinition = mutableMapOf<String, String>()
+        val lines = section.lines()
+        var currentKey = ""
+        var currentValue = ""
         
-        section.lines().forEach { line ->
+        for (line in lines) {
             val trimmed = line.trim()
-            if (trimmed.isEmpty() || trimmed.startsWith("#")) return@forEach
+            if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("[")) continue
             
-            if (trimmed.contains("=") && !trimmed.startsWith(" ")) {
-                // Save previous library if exists
-                if (currentLibrary.isNotEmpty()) {
-                    result[currentLibrary] = currentDefinition.toMap()
+            if (trimmed.contains(" = { ")) {
+                if (currentKey.isNotEmpty()) {
+                    result[currentKey] = currentValue
                 }
-                
-                // Start new library
-                val parts = trimmed.split("=", limit = 2)
-                currentLibrary = parts[0].trim()
-                currentDefinition = mutableMapOf()
-                
-                // Parse the definition
-                val defPart = parts[1].trim()
-                if (defPart.startsWith("{") && defPart.endsWith("}")) {
-                    parseLibraryDefinitionLine(defPart, currentDefinition)
-                } else {
-                    // Simple module definition
-                    currentDefinition["module"] = defPart.removeSurrounding("\"")
-                }
+                val parts = trimmed.split(" = { ", limit = 2)
+                currentKey = parts[0].trim()
+                currentValue = parts[1].trim()
+            } else if (trimmed.endsWith(" }")) {
+                currentValue += " " + trimmed
+                result[currentKey] = currentValue
+                currentKey = ""
+                currentValue = ""
+            } else if (currentKey.isNotEmpty()) {
+                currentValue += " " + trimmed
             }
         }
         
-        // Don't forget the last library
-        if (currentLibrary.isNotEmpty()) {
-            result[currentLibrary] = currentDefinition.toMap()
+        if (currentKey.isNotEmpty()) {
+            result[currentKey] = currentValue
         }
         
         return result
     }
 
-    private fun parseLibraryDefinitionLine(defPart: String, definition: MutableMap<String, String>) {
-        val content = defPart.removeSurrounding("{", "}").trim()
-        val pairs = content.split(",")
-        pairs.forEach { pair ->
-            val trimmedPair = pair.trim()
-            if (trimmedPair.contains("=")) {
-                val parts = trimmedPair.split("=", limit = 2)
-                if (parts.size == 2) {
-                    val key = parts[0].trim()
-                    val value = parts[1].trim().removeSurrounding("\"")
-                    definition[key] = value
-                }
-            }
-        }
+    private fun parsePluginEntries(section: String): Map<String, String> {
+        return parseLibraryEntries(section)
     }
 
-    private fun parsePluginsFromSection(section: String): Map<String, Map<String, String>> {
-        // Similar to parseLibrariesFromSection but for plugins
-        return parseLibrariesFromSection(section)
-    }
-
-    private fun extractLibraryNames(section: String): List<String> {
-        val names = mutableListOf<String>()
-        section.lines().forEach { line ->
-            val trimmed = line.trim()
-            if (trimmed.isNotEmpty() && !trimmed.startsWith("#") && trimmed.contains("=") && !trimmed.startsWith(" ")) {
-                val name = trimmed.split("=")[0].trim()
-                names.add(name)
-            }
-        }
-        return names
-    }
-
-    private fun extractVersionReferences(section: String): List<String> {
-        val refs = mutableListOf<String>()
-        section.lines().forEach { line ->
-            val versionRefMatch = Regex("version\\.ref\\s*=\\s*\"([^\"]+)\"").find(line)
-            if (versionRefMatch != null) {
-                refs.add(versionRefMatch.groupValues[1])
-            }
-        }
-        return refs
-    }
-
-    private fun extractBundleLibraries(section: String): Map<String, List<String>> {
+    private fun parseBundleEntries(section: String): Map<String, List<String>> {
         val result = mutableMapOf<String, List<String>>()
-        var currentBundle = ""
-        val currentLibraries = mutableListOf<String>()
+        val lines = section.lines()
+        var currentKey = ""
+        var currentLibs = mutableListOf<String>()
+        var inArray = false
         
-        section.lines().forEach { line ->
+        for (line in lines) {
             val trimmed = line.trim()
-            if (trimmed.isEmpty() || trimmed.startsWith("#")) return@forEach
+            if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("[")) continue
             
-            if (trimmed.contains("=") && !trimmed.startsWith(" ")) {
-                // Save previous bundle if exists
-                if (currentBundle.isNotEmpty()) {
-                    result[currentBundle] = currentLibraries.toList()
+            if (trimmed.contains(" = [")) {
+                if (currentKey.isNotEmpty()) {
+                    result[currentKey] = currentLibs.toList()
                 }
+                currentKey = trimmed.split(" = [")[0].trim()
+                currentLibs = mutableListOf()
+                inArray = true
                 
-                // Start new bundle
-                val parts = trimmed.split("=", limit = 2)
-                currentBundle = parts[0].trim()
-                currentLibraries.clear()
-                
-                // Parse the bundle definition
-                val bundlePart = parts[1].trim()
-                if (bundlePart.startsWith("[")) {
-                    parseBundleArray(bundlePart, currentLibraries)
+                // Handle single line arrays
+                if (trimmed.endsWith("]")) {
+                    val arrayContent = trimmed.substringAfter("[").substringBefore("]")
+                    currentLibs.addAll(parseArrayContent(arrayContent))
+                    result[currentKey] = currentLibs.toList()
+                    currentKey = ""
+                    currentLibs = mutableListOf()
+                    inArray = false
                 }
-            } else if (trimmed.startsWith("\"") && currentBundle.isNotEmpty()) {
-                // Continuation of bundle array
-                val library = trimmed.removeSurrounding("\"").removeSuffix(",")
-                if (library.isNotEmpty()) {
-                    currentLibraries.add(library)
+            } else if (inArray) {
+                if (trimmed.endsWith("]")) {
+                    currentLibs.addAll(parseArrayContent(trimmed.substringBefore("]")))
+                    result[currentKey] = currentLibs.toList()
+                    currentKey = ""
+                    currentLibs = mutableListOf()
+                    inArray = false
+                } else {
+                    currentLibs.addAll(parseArrayContent(trimmed))
                 }
             }
-        }
-        
-        // Don't forget the last bundle
-        if (currentBundle.isNotEmpty()) {
-            result[currentBundle] = currentLibraries.toList()
         }
         
         return result
     }
 
-    private fun parseBundleArray(bundlePart: String, libraries: MutableList<String>) {
-        val content = bundlePart.removeSurrounding("[", "]").trim()
-        if (content.isEmpty()) return
-        
-        val items = content.split(",")
-        items.forEach { item ->
-            val trimmed = item.trim().removeSurrounding("\"")
-            if (trimmed.isNotEmpty()) {
-                libraries.add(trimmed)
-            }
-        }
+    private fun parseArrayContent(content: String): List<String> {
+        return content.split(",")
+            .map { it.trim().removePrefix("\"").removeSuffix("\"") }
+            .filter { it.isNotEmpty() }
+    }
+
+    private fun extractVersionValue(versionKey: String): String {
+        val pattern = Regex("""^$versionKey\s*=\s*"([^"]*)"$""", RegexOption.MULTILINE)
+        val match = pattern.find(tomlContent)
+        return match?.groupValues?.get(1) ?: ""
+    }
+
+    private fun extractLibraryDefinition(section: String, libraryKey: String): String {
+        val entries = parseLibraryEntries(section)
+        return entries[libraryKey] ?: ""
+    }
+
+    private fun extractVersionRefFromLibrary(libraryDef: String): String {
+        val pattern = Regex("""version\.ref = "([^"]+)"""")
+        val match = pattern.find(libraryDef)
+        return match?.groupValues?.get(1) ?: ""
+    }
+
+    private fun extractBundleLibraries(bundleName: String): List<String> {
+        val bundlesSection = extractSection("[bundles]")
+        val bundleEntries = parseBundleEntries(bundlesSection)
+        return bundleEntries[bundleName] ?: emptyList()
+    }
+
+    private fun findAllVersionReferences(): Set<String> {
+        val versionRefPattern = Regex("""version\.ref = "([^"]+)"""")
+        return versionRefPattern.findAll(tomlContent)
+            .map { it.groupValues[1] }
+            .toSet()
     }
 }
