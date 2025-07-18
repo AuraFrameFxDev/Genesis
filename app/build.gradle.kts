@@ -17,27 +17,17 @@ plugins {
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx"
-    compileSdk = 35
-    buildToolsVersion = "34.0.0"
-
-    // Enable build config generation
-    buildFeatures {
-        buildConfig = true
-        compose = true
-        viewBinding = true
-        ndkVersion = "27.0.12077973"
-    }
+    namespace = "com.example.app"
+    compileSdk = 36  // Compatible with AGP 8.8.0
 
     defaultConfig {
-        applicationId = "dev.aurakai.auraframefx"
-        minSdk = 26
-        targetSdk = 35
-
-
+        applicationId = "com.example.app"
+        minSdk = 33
+        targetSdk = 36  // Compatible with AGP 8.8.0
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "dev.aurakai.auraframefx.test.HiltTestRunner"
+        testInstrumentationRunner = "com.example.app.HiltTestRunner"
+
         multiDexEnabled = true
 
         // NDK configuration
@@ -178,9 +168,9 @@ openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set(openApiSpecPath)
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/kotlin")
-    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
-    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
-    invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
+    apiPackage.set("com.example.app.api.client.apis")
+    modelPackage.set("com.example.app.api.client.models")
+    invokerPackage.set("com.example.app.api.client.infrastructure")
     configOptions.set(
         mapOf(
             "dateLibrary" to "java8",
