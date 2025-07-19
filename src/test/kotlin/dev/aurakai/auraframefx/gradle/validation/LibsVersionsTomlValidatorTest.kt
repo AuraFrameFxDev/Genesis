@@ -376,6 +376,7 @@ class LibsVersionsTomlValidatorTest {
     @Test
     fun `validate should handle syntax errors gracefully`() {
         testFile.writeText("invalid toml content [[[")
+
         val result = validator.validate()
 
         assertFalse(result.isValid)
@@ -1121,8 +1122,6 @@ class LibsVersionsTomlValidatorTest {
         }
 
         stressTestBuilder.append("\n[bundles]\n")
-
-        // Create bundles with many references
         stressTestBuilder.append("stress-bundle = [")
         for (i in 1..1000) {
             stressTestBuilder.append("\"stress-lib-$i\"")
@@ -1137,7 +1136,7 @@ class LibsVersionsTomlValidatorTest {
         val endTime = System.currentTimeMillis()
 
         // Should complete validation within reasonable time (less than 10 seconds)
-        assertTrue(endTime - startTime < 10000, "Validation took too long: ${endTime - startTime}ms")
+        assertTrue(endTime - startTime < 10000, "Validation took too long: ${'$'}{endTime - startTime}ms")
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
