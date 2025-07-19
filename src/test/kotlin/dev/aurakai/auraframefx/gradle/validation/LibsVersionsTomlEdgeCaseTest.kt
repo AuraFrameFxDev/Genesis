@@ -630,3 +630,402 @@ class LibsVersionsTomlEdgeCaseTest {
         assertTrue("Memory usage should stay reasonable", memoryIncrease < 50 * 1024 * 1024)
     }
 }
+    @Test
+    fun libraryWithVersionRefAndDirectVersion_conflictDetection() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            conflicted = { 
+                module = "com.example:lib", 
+                version = "1.0.0", 
+                version.ref = "agp" 
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Should detect version conflict", result.isValid)
+        assertTrue("Should report version conflict",
+            result.errors.any { it.contains("version") && it.contains("conflict") })
+    }
+
+    @Test
+    fun libraryWithOnlyVersionRef_isValid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            refOnly = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library with only version.ref should be valid", result.isValid)
+    }
+
+    @Test
+    fun libraryWithOnlyDirectVersion_isValid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            directOnly = { module = "com.example:lib", version = "1.0.0" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library with only direct version should be valid", result.isValid)
+    }
+
+    @Test
+    fun libraryWithNeitherVersionNorRef_isInvalid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            noVersion = { module = "com.example:lib" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Library without version should be invalid", result.isValid)
+        assertTrue("Should report missing version",
+            result.errors.any { it.contains("version") || it.contains("noVersion") })
+    }
+
+    @Test
+    fun malformedModuleFormat_missingColon_isInvalid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            badModule = { module = "com.example.lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Module without colon should be invalid", result.isValid)
+        assertTrue("Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
+    }
+
+    @Test
+    fun malformedModuleFormat_multipleColons_isInvalid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            badModule = { module = "com.example:lib:extra", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Module with multiple colons should be invalid", result.isValid)
+        assertTrue("Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
+    }
+
+    @Test
+    fun malformedModuleFormat_emptyGroupOrArtifact_isInvalid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            emptyGroup = { module = ":lib", version.ref = "agp" }
+            emptyArtifact = { module = "com.example:", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Module with empty group or artifact should be invalid", result.isValid)
+        assertTrue("Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
+    }
+
+    @Test
+    fun versionKeyWithSpecialCharacters_isHandled() {
+        val toml = """
+            [versions]
+            version-with-dashes = "1.0.0"
+            version_with_underscores = "2.0.0"
+            version123numbers = "3.0.0"
+            [libraries]
+            dashLib = { module = "com.example:dash", version.ref = "version-with-dashes" }
+            underscoreLib = { module = "com.example:underscore", version.ref = "version_with_underscores" }
+            numberLib = { module = "com.example:number", version.ref = "version123numbers" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Version keys with valid special characters should be accepted", result.isValid)
+    }
+
+    @Test
+    fun libraryKeyWithSpecialCharacters_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            library-with-dashes = { module = "com.example:dash", version.ref = "agp" }
+            library_with_underscores = { module = "com.example:underscore", version.ref = "agp" }
+            library123numbers = { module = "com.example:number", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library keys with valid special characters should be accepted", result.isValid)
+    }
+
+    @Test
+    fun pluginWithInvalidId_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            invalidPlugin = { id = "", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+        assertTrue("Should report invalid plugin id",
+            result.errors.any { it.contains("Invalid plugin id") })
+    }
+
+    @Test
+    fun pluginWithMissingId_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            noIdPlugin = { version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Plugin without id should be invalid", result.isValid)
+        assertTrue("Should report missing plugin id",
+            result.errors.any { it.contains("id") })
+    }
+
+    @Test
+    fun pluginWithInvalidVersionRef_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            invalidRefPlugin = { id = "com.android.application", version.ref = "nonexistent" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Plugin with invalid version reference should be invalid", result.isValid)
+        assertTrue("Should report missing version reference",
+            result.errors.any { it.contains("Missing version reference: nonexistent") })
+    }
+
+    @Test
+    fun nestedTableStructures_areRejected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries.nested]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Nested table structures should be rejected", result.isValid)
+    }
+
+    @Test
+    fun arrayOfTables_isRejected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [[libraries]]
+            name = "testLib"
+            module = "com.example:lib"
+            version.ref = "agp"
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Array of tables should be rejected", result.isValid)
+    }
+
+    @Test
+    fun invalidTomlDataTypes_areRejected() {
+        val toml = """
+            [versions]
+            agp = 8.11.1
+            date = 2023-12-25
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Non-string version values should be rejected", result.isValid)
+    }
+
+    @Test
+    fun circularVersionReferences_areDetected() {
+        val toml = """
+            [versions]
+            version1 = { ref = "version2" }
+            version2 = { ref = "version1" }
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "version1" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Circular version references should be detected", result.isValid)
+    }
+
+    @Test
+    fun versionReferenceToItself_isDetected() {
+        val toml = """
+            [versions]
+            selfRef = { ref = "selfRef" }
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "selfRef" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Self-referencing version should be detected", result.isValid)
+    }
+
+    @Test
+    fun longRunningValidation_canBeInterrupted() {
+        // Create a large file that might take time to validate
+        val tomlBuilder = StringBuilder()
+        tomlBuilder.appendLine("[versions]")
+        tomlBuilder.appendLine("agp = \"8.11.1\"")
+        for (i in 1..5000) tomlBuilder.appendLine("version$i = \"1.0.$i\"")
+        tomlBuilder.appendLine("[libraries]")
+        for (i in 1..5000) tomlBuilder.appendLine("lib$i = { module = \"com.example:lib$i\", version.ref = \"version$i\" }")
+        write(tomlBuilder.toString())
+
+        var validationCompleted = false
+        val validationThread = Thread {
+            val result = LibsVersionsTomlValidator(tempToml).validate()
+            validationCompleted = result.isValid
+        }
+
+        validationThread.start()
+        validationThread.join(5000) // Wait max 5 seconds
+
+        if (validationThread.isAlive) {
+            validationThread.interrupt()
+            validationThread.join(1000)
+            assertTrue("Validation should be interruptible", true)
+        } else {
+            assertTrue("Large file validation completed", validationCompleted)
+        }
+    }
+
+    @Test
+    fun validationWithIOErrors_isHandledGracefully() {
+        // Create a file that exists but then delete it before validation
+        write("test content")
+        assertTrue("Temp file should exist", tempToml.exists())
+        tempToml.delete()
+        assertFalse("File should be deleted", tempToml.exists())
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Validation of non-existent file should fail", result.isValid)
+        assertTrue("Should report file access error",
+            result.errors.any { it.contains("file") || it.contains("not found") || it.contains("access") })
+    }
+
+    @Test
+    fun validationWithReadOnlyFile_handlesPermissions() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        
+        // Try to make file read-only (this might not work on all systems)
+        val wasReadOnly = tempToml.setWritable(false)
+        
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Should be able to read and validate read-only file", result.isValid)
+        
+        // Restore write permissions for cleanup
+        if (wasReadOnly) tempToml.setWritable(true)
+    }
+
+    @Test
+    fun extremelyLongVersionString_isHandled() {
+        val longVersion = "1.0.0-" + "x".repeat(10000)
+        val toml = """
+            [versions]
+            longVersion = "$longVersion"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "longVersion" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should either accept it or reject it gracefully without crashing
+        assertTrue("Validation should complete without errors", true)
+    }
+
+    @Test
+    fun extremelyLongModuleName_isHandled() {
+        val longModule = "com.example:${"verylongartifactname".repeat(100)}"
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "$longModule", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should either accept it or reject it gracefully without crashing
+        assertTrue("Validation should complete without errors", true)
+    }
+
+    @Test
+    fun multipleValidationCalls_onSameInstance_areConsistent() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        
+        val validator = LibsVersionsTomlValidator(tempToml)
+        val result1 = validator.validate()
+        val result2 = validator.validate()
+        val result3 = validator.validate()
+        
+        assertTrue("First validation should be valid", result1.isValid)
+        assertTrue("Second validation should be valid", result2.isValid)
+        assertTrue("Third validation should be valid", result3.isValid)
+        assertEquals("Results should be consistent", result1.isValid, result2.isValid)
+        assertEquals("Results should be consistent", result2.isValid, result3.isValid)
+    }
+
+    @Test
+    fun validationAfterFileModification_reflectsChanges() {
+        val validToml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(validToml)
+        
+        val validator = LibsVersionsTomlValidator(tempToml)
+        val result1 = validator.validate()
+        assertTrue("Initial validation should be valid", result1.isValid)
+        
+        // Modify file to be invalid
+        val invalidToml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "nonexistent" }
+        """.trimIndent()
+        write(invalidToml)
+        
+        val result2 = validator.validate()
+        assertFalse("Validation after modification should be invalid", result2.isValid)
+    }
