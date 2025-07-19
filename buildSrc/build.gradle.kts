@@ -1,22 +1,64 @@
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
 }
 
 repositories {
-    gradlePluginPortal()
+    google()
     mavenCentral()
+    gradlePluginPortal()
+    maven { 
+        url = uri("https://maven.google.com/")
+        name = "Google"
+    }
 }
+
+val kotlinVersion = "2.2.0"
+val agpVersion = "8.11.1"  // Using AGP 8.6.0 for compileSdk 35 compatibility
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.10")
-    testImplementation("org.gradle:gradle-tooling-api:8.4")
-    testImplementation("org.gradle:gradle-test-kit:8.4")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    implementation("com.android.tools.build:gradle:$agpVersion")
+    
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    
+    // Use the Gradle version that comes with the wrapper
+    val gradleVersion = project.gradle.gradleVersion
+    testImplementation("org.gradle:gradle-tooling-api:$gradleVersion") {
+        version { 
+            strictly(gradleVersion)
+        }
+    }
+    testImplementation("org.gradle:gradle-test-kit:$gradleVersion") {
+        version {
+            strictly(gradleVersion)
+        }
+    }
 }
 
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
+// Configure Kotlin settings
+kotlin {
+    jvmToolchain(21)
+    // Source set configuration not needed - using standard project structure
+}
+
+// Ensure all tasks use the correct Java version
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = JavaVersion.VERSION_21.toString()
+    targetCompatibility = JavaVersion.VERSION_21.toString()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget("21"))
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        freeCompilerArgs.add("-Xjvm-default=all")
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
