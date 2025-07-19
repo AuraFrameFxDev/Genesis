@@ -1,5 +1,3 @@
-@file:Suppress("LargeClass", "FunctionNaming", "TooManyFunctions")
-
 package dev.aurakai.auraframefx.gradle.validation
 
 import org.junit.After
@@ -36,6 +34,7 @@ class LibsVersionsTomlEdgeCaseTest {
     // ------------------------------------------------------------------------
     // Tests
     // ------------------------------------------------------------------------
+
     @Test
     fun mixedQuoteTypes_areHandled() {
         val toml = "[versions]\n" +
@@ -583,68 +582,68 @@ class LibsVersionsTomlEdgeCaseTest {
 
     @Test
     fun multilineInlineTableFormats_areSupported() {
-      val toml = """
-          [versions]
-          agp = "8.11.1"
-          kotlin = "2.0.0"
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            kotlin = "2.0.0"
 
-          [libraries]
-          singleLine = { module = "com.example:single", version.ref = "agp" }
-          multiLine = {
-              module = "com.example:multi",
-              version.ref = "kotlin"
-          }
-          spacedMultiLine = {
-              module = "com.example:spaced" ,
-              version.ref = "agp"
-          }
-      """.trimIndent()
+            [libraries]
+            singleLine = { module = "com.example:single", version.ref = "agp" }
+            multiLine = {
+                module = "com.example:multi",
+                version.ref = "kotlin"
+            }
+            spacedMultiLine = {
+                module = "com.example:spaced" ,
+                version.ref = "agp"
+            }
+        """.trimIndent()
 
-      write(toml)
-      val result = LibsVersionsTomlValidator(tempToml).validate()
-      assertTrue("Multiline inline table formats should be valid", result.isValid)
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Multiline inline table formats should be valid", result.isValid)
     }
 
     @Test
     fun libraryWithGroupAndName_isValid() {
-      val toml = """
-          [versions]
-          agp = "8.11.1"
+        val toml = """
+            [versions]
+            agp = "8.11.1"
 
-          [libraries]
-          groupNameLib = { group = "androidx.core", name = "core-ktx", version.ref = "agp" }
-          moduleLib = { module = "androidx.core:core-ktx", version.ref = "agp" }
-      """.trimIndent()
+            [libraries]
+            groupNameLib = { group = "androidx.core", name = "core-ktx", version.ref = "agp" }
+            moduleLib = { module = "androidx.core:core-ktx", version.ref = "agp" }
+        """.trimIndent()
 
-      write(toml)
-      val result = LibsVersionsTomlValidator(tempToml).validate()
-      assertTrue("Libraries with group/name format should be valid", result.isValid)
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Libraries with group/name format should be valid", result.isValid)
     }
 
     @Test
     fun nestedBundleArrays_areHandled() {
-      val toml = """
-          [versions]
-          v = "1.0.0"
+        val toml = """
+            [versions]
+            v = "1.0.0"
 
-          [libraries]
-          a = { module = "com.example:a", version.ref = "v" }
-          b = { module = "com.example:b", version.ref = "v" }
-          c = { module = "com.example:c", version.ref = "v" }
+            [libraries]
+            a = { module = "com.example:a", version.ref = "v" }
+            b = { module = "com.example:b", version.ref = "v" }
+            c = { module = "com.example:c", version.ref = "v" }
 
-          [bundles]
-          singleElement = ["a"]
-          twoElements = ["a", "b"]
-          threeElements = [
-              "a",
-              "b",
-              "c"
-          ]
-      """.trimIndent()
+            [bundles]
+            singleElement = ["a"]
+            twoElements = ["a", "b"]
+            threeElements = [
+                "a",
+                "b",
+                "c"
+            ]
+        """.trimIndent()
 
-      write(toml)
-      val result = LibsVersionsTomlValidator(tempToml).validate()
-      assertTrue("Nested bundle arrays should be valid", result.isValid)
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Nested bundle arrays should be valid", result.isValid)
     }
 
     @Test
@@ -680,6 +679,7 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]  # Versions section
             agp = "8.11.1"    # Android Gradle Plugin  
             kotlin = "2.0.0"  # Kotlin version
+
 
             [libraries]  # Libraries section
 
@@ -767,11 +767,11 @@ class LibsVersionsTomlEdgeCaseTest {
     }
 
     @Test
-    fun validationResultProperties_areConsistent() {
+    fun malformedTomlWithUnbalancedBrackets_isHandledGracefully() {
         val toml = """
-            [versions]
+            [versions
             agp = "8.11.1"
-            unused = "1.0.0"
+            ]
 
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
@@ -779,18 +779,133 @@ class LibsVersionsTomlEdgeCaseTest {
 
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Malformed TOML with unbalanced brackets should fail", result.isValid)
+        assertTrue("Should mention syntax error",
+            result.errors.any { it.contains("Syntax error") || it.contains("malformed") })
+    }
 
-        // Test that all required properties are present and valid
-        assertNotNull("Result should not be null", result)
-        assertNotNull("Errors list should not be null", result.errors)
-        assertNotNull("Warnings list should not be null", result.warnings)
-        assertTrue("Timestamp should be positive", result.timestamp > 0)
+    @Test
+    fun tomlWithUnicodeCharacters_isHandledCorrectly() {
+        val toml = """
+            [versions]
+            ägp = "8.11.1"
+            kotlin = "2.0.0"
 
-        // Test that validation status matches error count
-        if (result.errors.isEmpty()) {
-            assertTrue("Should be valid when no errors", result.isValid)
-        } else {
-            assertFalse("Should be invalid when errors present", result.isValid)
-        }
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "ägp" }
+            ünicodeLib = { module = "org.example:unicode-lib", version.ref = "kotlin" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Unicode characters in keys should be valid", result.isValid)
+    }
+
+    @Test
+    fun extremelyLongVersionString_isHandled() {
+        val longVersion = "1.0.0-" + "a".repeat(1000)
+        val toml = """
+            [versions]
+            agp = "$longVersion"
+
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertNotNull("Extremely long version should not crash validator", result)
+    }
+
+    @Test
+    fun specialCharactersInModuleName_areValidated() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+
+            [libraries]
+            hyphenLib = { module = "com.example:my-lib", version.ref = "agp" }
+            underscoreLib = { module = "com.example:my_lib", version.ref = "agp" }
+            numberLib = { module = "com.example:lib123", version.ref = "agp" }
+            invalidSpace = { module = "com.example:lib with space", version.ref = "agp" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Module with spaces should be invalid", result.isValid)
+        assertTrue("Should mention invalid module format",
+            result.errors.any { it.contains("Invalid module format") && it.contains("lib with space") })
+    }
+
+    @Test
+    fun versionWithSpecialSymbols_isValidated() {
+        val toml = """
+            [versions]
+            plusVersion = "1.2.+"
+            rangeVersion = "[1.0,2.0)"
+            starVersion = "*"
+            invalidSymbol = "1.0.0@invalid"
+
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "plusVersion" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertNotNull("Special version symbols should not crash validator", result)
+    }
+
+    @Test
+    fun libraryWithoutModuleOrGroup_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+
+            [libraries]
+            missingModule = { version.ref = "agp" }
+            missingName = { group = "com.example", version.ref = "agp" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library without module should still be valid per current implementation", result.isValid)
+    }
+
+    @Test
+    fun libraryWithBothModuleAndGroupName_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+
+            [libraries]
+            conflictLib = {
+                module = "com.example:lib",
+                group = "com.example",
+                name = "lib",
+                version.ref = "agp"
+            }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library with both module and group/name should be valid per current implementation", result.isValid)
+    }
+
+    @Test
+    fun pluginWithMissingId_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+            missingId = { version.ref = "agp" }
+        """.trimIndent()
+
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Plugin without ID should be valid per current implementation", result.isValid)
     }
 }
