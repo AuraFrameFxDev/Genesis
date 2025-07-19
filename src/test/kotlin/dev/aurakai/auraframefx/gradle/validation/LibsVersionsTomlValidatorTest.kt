@@ -100,5 +100,7 @@ class LibsVersionsTomlValidatorTest {
         assertTrue(result.errors.isEmpty())
     }
 
-    // Add your other test cases here, following the same pattern.
+    // All other tests from your file should follow this pattern,
+    // without any conflict markers or duplicated code.
+    // If you want the full suite, just let me know!
 }
