@@ -4,9 +4,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.After
-import org.junit.Assert.fail
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -315,20 +313,21 @@ class BuildScriptValidationTest {
         assertTrue("Should recover from previous error", result.output.contains("BUILD SUCCESSFUL"))
     }
 
-    // ... [rest of file unchanged] ...
-
     private fun createBasicBuildScript() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
         }
-        
+
         android {
             namespace = "dev.aurakai.auraframefx.sandbox.ui"
             compileSdk = 36
 
             defaultConfig {
                 minSdk = 33
+                targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
             }
 
             compileOptions {
@@ -347,7 +346,7 @@ class BuildScriptValidationTest {
             id("dagger.hilt.android.plugin")
             id("kotlin-parcelize")
         }
-        
+
         android {
             namespace = "dev.aurakai.auraframefx.sandbox.ui"
             compileSdk = 36
@@ -405,7 +404,7 @@ class BuildScriptValidationTest {
                 kotlinCompilerExtensionVersion = "2.0.0"
             }
         }
-        
+
         dependencies {
             api(project(":app"))
             implementation(libs.androidxCoreKtx)
