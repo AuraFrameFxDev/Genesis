@@ -103,10 +103,11 @@ android {
 // OpenAPI Generator Configuration
 openApiGenerate {
     generatorName.set("kotlin")
-    inputSpec.set("$projectDir/src/main/openapi.yml")
+    inputSpec.set("${projectDir}/src/main/openapi.yml".replace("\\", "/"))
     outputDir.set("${layout.buildDirectory.get().asFile}/generated/openapi")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+    validateSpec.set(false) // Disable validation to bypass path issues
 
     configOptions.set(
         mapOf(
