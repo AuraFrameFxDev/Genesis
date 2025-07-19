@@ -1,11 +1,12 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
-    id("com.google.dagger.hilt.android")
-    id("com.google.firebase.firebase-perf")
-    id("org.openapi.generator")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.firebase.perf)
+    alias(libs.plugins.openapi.generator)
 }
 
 android {
@@ -67,10 +68,18 @@ android {
     // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
 
     compileOptions {
-        // Use Java 21, compatible with AGP 8.4.2 and Android development
+        // Use Java 21, compatible with AGP 8.11.1 and Android development
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
+    }
+    
+    // Explicitly configure Java compilation to avoid --release option
+    tasks.withType<JavaCompile>().configureEach {
+        // Remove release option to avoid --release flag conflicts
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
+        options.encoding = "UTF-8"
     }
 
     // kotlinOptions removed - using compilerOptions from root build.gradle.kts

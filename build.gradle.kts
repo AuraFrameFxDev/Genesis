@@ -31,7 +31,7 @@ allprojects {
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
         configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(24)) // Use available JDK 24
+                languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt())) // Use Java 21 for Android compatibility
                 vendor.set(JvmVendorSpec.ADOPTIUM)
             }
         }
@@ -58,7 +58,7 @@ allprojects {
         targetCompatibility = javaVersion.toString()
         options.encoding = "UTF-8"
         options.isIncremental = true
-        options.release.set(javaVersion.majorVersion.toInt())
+        // Remove release option to avoid Android Gradle Plugin conflicts
         options.compilerArgs.addAll(
             listOf(
                 "--enable-preview",
