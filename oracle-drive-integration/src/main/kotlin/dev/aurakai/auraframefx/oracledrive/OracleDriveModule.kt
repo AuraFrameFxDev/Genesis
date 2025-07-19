@@ -17,7 +17,7 @@ abstract class OracleDriveModule {
     /**
      * Binds the OracleDriveServiceImpl implementation to the OracleDriveService interface as a singleton.
      *
-     * This enables dependency injection of OracleDriveService throughout the application.
+     * This allows OracleDriveService to be injected wherever required, providing a single shared instance throughout the application's lifecycle.
      */
     @Binds
     @Singleton
