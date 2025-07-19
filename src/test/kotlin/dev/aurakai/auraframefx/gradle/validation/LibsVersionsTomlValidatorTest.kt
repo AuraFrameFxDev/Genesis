@@ -273,7 +273,7 @@ class LibsVersionsTomlValidatorTest {
     }
 
     @Test
-    fun `validate should handle null file reference gracefully`() {
+    fun `validate should handle valid file reference gracefully`() {
         val validToml = """
             [versions]
             test = "1.0.0"
@@ -748,7 +748,7 @@ class LibsVersionsTomlValidatorTest {
             [Versions]
             test = "1.0.0"
 
-            [Libraries] 
+            [Libraries]
             lib = { module = "group:artifact", version = "1.0.0" }
         """.trimIndent()
 
@@ -758,8 +758,8 @@ class LibsVersionsTomlValidatorTest {
 
         // Should fail because required sections "versions" and "libraries" are missing
         assertFalse(result.isValid)
-        assertTrue(result.errors.any { it.contains("Required versions section is missing") })
-        assertTrue(result.errors.any { it.contains("Required libraries section is missing") })
+        assertTrue(result.errors.contains("The versions section is required"))
+        assertTrue(result.errors.contains("The libraries section is required"))
     }
 
     @Test
