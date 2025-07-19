@@ -11,8 +11,6 @@ plugins {
 android {
 
     namespace = "dev.aurakai.auraframefx"
-
-    namespace = "com.example.app"
     compileSdk = 36  // Compatible with AGP 8.8.0
 
     defaultConfig {
