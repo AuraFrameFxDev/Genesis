@@ -95,7 +95,9 @@ class BuildScriptValidationTest {
 
     @After
     fun cleanup() {
-        testProjectDir.toFile().deleteRecursively()
+        if (::testProjectDir.isInitialized) {
+            testProjectDir.toFile().deleteRecursively()
+        }
     }
 
     @Test
@@ -276,7 +278,7 @@ class BuildScriptValidationTest {
         val results = mutableListOf<Boolean>()
         val threads = mutableListOf<Thread>()
         
-        repeat(3) { index ->
+        repeat(3) { _ ->
             val thread = Thread {
                 try {
                     val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
