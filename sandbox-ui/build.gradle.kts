@@ -65,7 +65,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = "2.0.0"
     }
 }
 
@@ -82,7 +82,7 @@ dependencies {
     implementation(platform(libs.composeBom))
     implementation(libs.ui)
     implementation(libs.uiToolingPreview)
-    implementation(libs.material3)
+    implementation(libs.androidxMaterial3)
     implementation(libs.animation)
     implementation(libs.foundation)
 
@@ -100,6 +100,8 @@ dependencies {
 
     // Testing
     testImplementation(libs.testJunit)
+    testImplementation("org.gradle:gradle-tooling-api:8.4")
+    testImplementation("org.gradle:gradle-test-kit:8.4")
     androidTestImplementation(libs.junitV115)
     androidTestImplementation(libs.espressoCoreV351)
     androidTestImplementation(libs.uiTestJunit4)
