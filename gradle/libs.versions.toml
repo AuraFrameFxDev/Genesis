@@ -2,7 +2,7 @@
 androidxTestExtJunit = "1.2.1"
 agp = "8.4.0-alpha13"
 kotlinxSerializationJson = "1.9.0"
-kotlinxCoroutines = "1.8.1"
+kotlinxCoroutines = "1.10.2"
 kotlin = "2.2.0"
 ksp = "2.0.0-1.0.21"
 hilt = "2.57"
@@ -14,14 +14,14 @@ firebasePerfPlugin = "1.4.2"
 openapiGeneratorPlugin = "7.14.0"
 desugar-jdk-libs = "2.1.5"
 espressoCore = "3.6.1"
-junit = "5.10.2"
+junit = "5.13.3"
 composeBom = "2025.07.00"
 activityCompose = "1.10.1"
 navigationCompose = "2.9.2"
 coreKtx = "1.16.0"
 appcompat = "1.7.1"
 lifecycle = "2.9.2"
-room = "2.6.1"
+room = "2.7.2"
 workManager = "2.10.2"
 datastore = "1.1.7"
 securityCrypto = "1.1.0-beta01"
@@ -147,3 +147,15 @@ compose = [
     "accompanistPermissions",
     "accompanistSystemuicontroller"
 ]
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }

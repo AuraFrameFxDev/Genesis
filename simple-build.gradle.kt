@@ -24,7 +24,8 @@ sourceSets {
 }
 
 tasks.register("compileKotlinOnly", org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
-    source = fileTree("app/src/main/java") { include("**/*.kt") }
+    source = fileTree("app/src/main/java")
+    { include("**/*.kt") }
     classpath = configurations["compileClasspath"]
     destinationDirectory.set(file("build/classes"))
 }
