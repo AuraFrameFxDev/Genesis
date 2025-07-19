@@ -14,7 +14,7 @@ repositories {
 }
 
 val kotlinVersion = "2.2.0"
-val agpVersion = "8.11.1"  // Using AGP 8.6.0 for compileSdk 35 compatibility
+val agpVersion = "8.4.0-alpha13"  // Using AGP 8.4.0-alpha13 for Gradle 8.14.3 compatibility
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
@@ -39,19 +39,19 @@ dependencies {
 
 // Configure Kotlin settings
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(24)
     // Source set configuration not needed - using standard project structure
 }
 
 // Ensure all tasks use the correct Java version
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21.toString()
-    targetCompatibility = JavaVersion.VERSION_21.toString()
+    sourceCompatibility = JavaVersion.VERSION_24.toString()
+    targetCompatibility = JavaVersion.VERSION_24.toString()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget("21"))
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         freeCompilerArgs.add("-Xjvm-default=all")
@@ -59,6 +59,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
 }
