@@ -4,7 +4,6 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.After
-import org.junit.Assert.fail
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import java.io.File
@@ -12,6 +11,14 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
+/**
+ * Unit tests for build script validation
+ * Testing Framework: JUnit 4 with Gradle TestKit
+ * 
+ * This test suite validates the Gradle build script configuration
+ * for the sandbox-ui library module including plugins, dependencies,
+ * Android configuration, and build variants.
+ */
 class BuildScriptValidationTest {
 
     private lateinit var testProjectDir: Path
@@ -960,13 +967,28 @@ class BuildScriptValidationTest {
         assertTrue("Complete script should build", result.output.contains("BUILD SUCCESSFUL"))
     }
 
-@@ -430,6 +430,427 @@
-        assertTrue("Memory growth should be reasonable (< 200MB)", memoryGrowth < 200_000_000)
-    }
- 
-+  
     private fun createBasicBuildScript() = """
-@@ -457,6 +878,59 @@
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
         }
     """.trimIndent()
 
@@ -1132,6 +1154,7 @@ class BuildScriptValidationTest {
         assertTrue("Should have desugaring", comprehensiveScript.contains("isCoreLibraryDesugaringEnabled"))
         assertTrue("Should have proper Kotlin options", comprehensiveScript.contains("freeCompilerArgs"))
     }
+
     private fun createCompleteBuildScript() = """
         plugins {
             id("com.android.library")
@@ -1208,61 +1231,3 @@ class BuildScriptValidationTest {
         }
     """.trimIndent()
 }
- 
-+   @Test
-+   fun `should validate helper method parameter handling`() {
-+       val basicScript1 = createBasicBuildScript()
-+       val basicScript2 = createBasicBuildScript()
-+       
-+       assertEquals("Multiple calls should return identical scripts", basicScript1, basicScript2)
-+       assertTrue("Script should be non-empty", basicScript1.isNotEmpty())
-+       assertTrue("Script should contain required elements", basicScript1.contains("namespace"))
-+   }
-+
-+   @Test
-+   fun `should validate script template consistency`() {
-+       val basicScript = createBasicBuildScript()
-+       val completeScript = createCompleteBuildScript()
-+       
-+       // Basic script elements should be present in complete script
-+       assertTrue("Complete script should contain basic elements", completeScript.contains("namespace = "dev.aurakai.auraframefx.sandbox.ui""))
-+       assertTrue("Complete script should contain basic plugins", completeScript.contains("com.android.library"))
-+       assertTrue("Complete script should contain basic SDK config", completeScript.contains("compileSdk = 36"))
-+       
-+       // Complete script should have additional elements not in basic
-+       assertTrue("Complete script should have additional features", completeScript.length > basicScript.length)
-+   }
-+
-+   @Test
-+   fun `should validate script generation edge cases`() {
-+       // Test multiple rapid generations
-+       val scripts = mutableListOf<String>()
-+       repeat(10) {
-+           scripts.add(createBasicBuildScript())
-+       }
-+       
-+       // All scripts should be identical
-+       val firstScript = scripts.first()
-+       assertTrue("All generated scripts should be identical", scripts.all { it == firstScript })
-+       
-+       // Test memory efficiency
-+       val runtime = Runtime.getRuntime()
-+       val memoryBefore = runtime.totalMemory() - runtime.freeMemory()
-+       
-+       repeat(100) {
-+           createCompleteBuildScript()
-+       }
-+       
-+       runtime.gc()
-+       Thread.sleep(50)
-+       val memoryAfter = runtime.totalMemory() - runtime.freeMemory()
-+       val memoryGrowth = memoryAfter - memoryBefore
-+       
-+       assertTrue("Script generation should not cause significant memory growth", memoryGrowth < 50_000_000) // 50MB limit
-+   }
-+
-+
-    private fun createCompleteBuildScript() = """
-        plugins {
-            id("com.android.library")
-
