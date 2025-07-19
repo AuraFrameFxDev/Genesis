@@ -32,6 +32,15 @@ retrofitKotlinxSerializationConverter = "1.0.0"
 okhttp = "5.1.0"
 coilCompose = "2.7.0"
 timber = "5.0.1"
+oracleStorage = "1.5.0"
+oracleCore = "2.0.0"
+oracleDrive = "1.0.0"
+oracleStorage = "1.5.0"
+oracleCore = "2.0.0"
+oracleDrive = "1.0.0"
+oracleStorage = "1.5.0"
+oracleCore = "2.0.0"
+oracleDrive = "1.0.0"
 mockk = "1.14.5"
 material3 = "1.3.2"
 material = "1.12.0"
@@ -94,6 +103,20 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 # Other
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+# OracleDrive Integration
+oracle-drive-core = { group = "dev.aurakai.oracledrive", name = "oracle-core", version.ref = "oracleCore" }
+oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
+# OracleDrive Integration
+oracle-drive-core = { group = "dev.aurakai.oracledrive", name = "oracle-core", version.ref = "oracleCore" }
+oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
+oracle-drive-core = { group = "dev.aurakai.oracledrive", name = "oracle-core", version.ref = "oracleCore" }
+oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
+oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
@@ -131,19 +154,515 @@ auraApp = { id = "dev.aurakai.auraframefx", version = "1.0" }
 [bundles]
 room = ["room-runtime", "room-ktx"]
 lifecycle = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-compose", "lifecycle-runtime-compose"]
-firebase = ["firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-performance"]
-testing-unit = ["junit-api", "mockk-agent"]
-testing-android = ["androidx-test-ext-junit", "espresso-core", "mockk-android", "hilt-android-testing"]
 compose = [
     "compose-bom",
     "compose-ui",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+compose = [
+    "compose-bom",
+    "compose-ui",
+    "compose-bom",
+    "compose-ui",
+    "compose-ui",
     "compose-ui-graphics",
     "compose-ui-tooling-preview",
-    "
-        1E3androidx-activity-compose",
+    "compose-material3",
+    "androidx-activity-compose",
     "navigation-compose",
     "lifecycle-viewmodel-compose",
     "lifecycle-runtime-compose",
     "accompanistPager",
     "accompanistPermissions",
-    "a]
+    "accompanistSystemuicontroller"
+]
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "compose-bom",
+    "compose-ui",
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "compose-material3",
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "androidx-activity-compose",
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "navigation-compose",
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "lifecycle-runtime-compose",
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "accompanistPager",
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "accompanistPermissions",
+    "accompanistSystemuicontroller"
+]
+    "accompanistSystemuicontroller"
+]
+]
+    "accompanistSystemuicontroller"
+]
+]
+]
