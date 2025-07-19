@@ -136,6 +136,7 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
+
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
@@ -350,5 +351,5 @@ class LibsVersionsTomlValidatorTest {
         assertTrue(result.errors.any { it.contains("id") || it.contains("no-id-plugin") })
     }
     
-    // ...add more tests as needed, following the same pattern...
+    // ...add more tests as neede
 }
