@@ -10,7 +10,8 @@ import java.nio.file.Path
 
 class LibsVersionsTomlValidatorTest {
 
-    @JvmField @TempDir
+    @JvmField
+    @TempDir
     lateinit var tempDir: Path
 
     private lateinit var testFile: File
@@ -810,7 +811,8 @@ class LibsVersionsTomlValidatorTest {
             plus-version = "1.0.+"
 
             [libraries]
-            lib = { module = "group:artifact", version.ref = "plus-version" }
+            lib = { module = "group:artifact"}
+            version.ref = "plus-version"
         """.trimIndent()
 
         testFile.writeText(plusVersionToml)
