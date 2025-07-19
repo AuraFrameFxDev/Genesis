@@ -6,39 +6,46 @@ import dev.aurakai.auraframefx.oracledrive.storage.CloudStorageProvider
 import io.mockk.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.ValueSource
 import java.io.IOException
-import java.lang.RuntimeException
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeoutException
 
 /**
  * Comprehensive unit tests for OracleDriveManager
- * Testing Framework: JUnit 5 with MockK for mocking
- * 
- * Tests cover:
- * - Drive initialization scenarios (success, security failure, error)
- * - File operations (upload, download, delete, sync)
- * - Oracle synchronization
- * - Drive consciousness state monitoring
- * - Edge cases and error conditions
+ * Testing framework: JUnit 5 with MockK for mocking
+ * Covers initialization, file operations, security, and error handling scenarios
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DisplayName("OracleDriveManager Comprehensive Tests")
 class OracleDriveManagerTest {
 
-    private lateinit var oracleDriveApi: OracleDriveApi
-    private lateinit var cloudStorageProvider: CloudStorageProvider
-    private lateinit var securityManager: DriveSecurityManager
     private lateinit var oracleDriveManager: OracleDriveManager
+    private lateinit var mockOracleDriveApi: OracleDriveApi
+    private lateinit var mockCloudStorageProvider: CloudStorageProvider
+    private lateinit var mockSecurityManager: DriveSecurityManager
 
     @BeforeEach
     fun setUp() {
-        oracleDriveApi = mockk()
-        cloudStorageProvider = mockk()
-        securityManager = mockk()
-        oracleDriveManager = OracleDriveManager(oracleDriveApi, cloudStorageProvider, securityManager)
+        clearAllMocks()
+        mockOracleDriveApi = mockk()
+        mockCloudStorageProvider = mockk()
+        mockSecurityManager = mockk()
+        
+        oracleDriveManager = OracleDriveManager(
+            oracleDriveApi = mockOracleDriveApi,
+            cloudStorageProvider = mockCloudStorageProvider,
+            securityManager = mockSecurityManager
+        )
     }
 
     @Nested
@@ -46,15 +53,13 @@ class OracleDriveManagerTest {
     inner class DriveInitializationTests {
 
         @Test
-        @DisplayName("Should successfully initialize drive with valid security and optimal conditions")
-        fun `initializeDrive returns success when all validations pass`() = runTest {
+        @DisplayName("Should successfully initialize drive with valid security")
+        fun `initializeDrive should return success when all validations pass`() = runTest {
             // Given
-            val securityCheck = mockk<SecurityCheck> {
-                every { isValid } returns true
-            }
+            val securityCheck = SecurityCheck(isValid = true, reason = "")
             val driveConsciousness = DriveConsciousness(
                 isAwake = true,
-                intelligenceLevel = 100,
+                intelligenceLevel = 85,
                 activeAgents = listOf("Kai", "Genesis", "Aura")
             )
             val storageOptimization = StorageOptimization(
@@ -63,9 +68,9 @@ class OracleDriveManagerTest {
                 intelligentTiering = true
             )
 
-            every { securityManager.validateDriveAccess() } returns securityCheck
-            every { oracleDriveApi.awakeDriveConsciousness() } returns driveConsciousness
-            every { cloudStorageProvider.optimizeStorage() } returns storageOptimization
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+            coEvery { mockOracleDriveApi.awakeDriveConsciousness() } returns driveConsciousness
+            coEvery { mockCloudStorageProvider.optimizeStorage() } returns storageOptimization
 
             // When
             val result = oracleDriveManager.initializeDrive()
@@ -75,22 +80,22 @@ class OracleDriveManagerTest {
             val successResult = result as DriveInitResult.Success
             assertEquals(driveConsciousness, successResult.consciousness)
             assertEquals(storageOptimization, successResult.optimization)
-
-            verify { securityManager.validateDriveAccess() }
-            verify { oracleDriveApi.awakeDriveConsciousness() }
-            verify { cloudStorageProvider.optimizeStorage() }
+            assertTrue(successResult.consciousness.isAwake)
+            assertEquals(85, successResult.consciousness.intelligenceLevel)
+            assertEquals(3, successResult.consciousness.activeAgents.size)
+            
+            verify(exactly = 1) { mockSecurityManager.validateDriveAccess() }
+            coVerify(exactly = 1) { mockOracleDriveApi.awakeDriveConsciousness() }
+            coVerify(exactly = 1) { mockCloudStorageProvider.optimizeStorage() }
         }
 
         @Test
         @DisplayName("Should return security failure when drive access validation fails")
-        fun `initializeDrive returns security failure when access validation fails`() = runTest {
+        fun `initializeDrive should return security failure when validation fails`() = runTest {
             // Given
-            val securityCheck = mockk<SecurityCheck> {
-                every { isValid } returns false
-                every { reason } returns "Unauthorized access attempt detected"
-            }
+            val securityCheck = SecurityCheck(isValid = false, reason = "Invalid credentials")
 
-            every { securityManager.validateDriveAccess() } returns securityCheck
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
 
             // When
             val result = oracleDriveManager.initializeDrive()
@@ -98,24 +103,38 @@ class OracleDriveManagerTest {
             // Then
             assertTrue(result is DriveInitResult.SecurityFailure)
             val failureResult = result as DriveInitResult.SecurityFailure
-            assertEquals("Unauthorized access attempt detected", failureResult.reason)
+            assertEquals("Invalid credentials", failureResult.reason)
+            
+            verify(exactly = 1) { mockSecurityManager.validateDriveAccess() }
+            coVerify(exactly = 0) { mockOracleDriveApi.awakeDriveConsciousness() }
+            coVerify(exactly = 0) { mockCloudStorageProvider.optimizeStorage() }
+        }
 
-            verify { securityManager.validateDriveAccess() }
-            verify(exactly = 0) { oracleDriveApi.awakeDriveConsciousness() }
-            verify(exactly = 0) { cloudStorageProvider.optimizeStorage() }
+        @ParameterizedTest
+        @ValueSource(strings = ["Network timeout", "Authentication failed", "Access denied", "Service unavailable"])
+        @DisplayName("Should handle various security failure reasons")
+        fun `initializeDrive should handle different security failure reasons`(reason: String) = runTest {
+            // Given
+            val securityCheck = SecurityCheck(isValid = false, reason = reason)
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+
+            // When
+            val result = oracleDriveManager.initializeDrive()
+
+            // Then
+            assertTrue(result is DriveInitResult.SecurityFailure)
+            assertEquals(reason, (result as DriveInitResult.SecurityFailure).reason)
         }
 
         @Test
-        @DisplayName("Should return error when drive consciousness awakening fails")
-        fun `initializeDrive returns error when awakeDriveConsciousness throws exception`() = runTest {
+        @DisplayName("Should return error when consciousness awakening fails")
+        fun `initializeDrive should return error when consciousness awakening throws exception`() = runTest {
             // Given
-            val securityCheck = mockk<SecurityCheck> {
-                every { isValid } returns true
-            }
-            val exception = RuntimeException("Drive consciousness initialization failed")
+            val securityCheck = SecurityCheck(isValid = true, reason = "")
+            val expectedException = RuntimeException("Consciousness awakening failed")
 
-            every { securityManager.validateDriveAccess() } returns securityCheck
-            every { oracleDriveApi.awakeDriveConsciousness() } throws exception
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+            coEvery { mockOracleDriveApi.awakeDriveConsciousness() } throws expectedException
 
             // When
             val result = oracleDriveManager.initializeDrive()
@@ -123,22 +142,21 @@ class OracleDriveManagerTest {
             // Then
             assertTrue(result is DriveInitResult.Error)
             val errorResult = result as DriveInitResult.Error
-            assertEquals(exception, errorResult.exception)
+            assertEquals(expectedException, errorResult.exception)
+            assertEquals("Consciousness awakening failed", errorResult.exception.message)
         }
 
         @Test
         @DisplayName("Should return error when storage optimization fails")
-        fun `initializeDrive returns error when optimizeStorage throws exception`() = runTest {
+        fun `initializeDrive should return error when storage optimization throws exception`() = runTest {
             // Given
-            val securityCheck = mockk<SecurityCheck> {
-                every { isValid } returns true
-            }
-            val driveConsciousness = DriveConsciousness(true, 50, listOf("Kai"))
-            val exception = IOException("Storage optimization network failure")
+            val securityCheck = SecurityCheck(isValid = true, reason = "")
+            val driveConsciousness = DriveConsciousness(true, 85, listOf("Kai"))
+            val expectedException = IOException("Storage optimization failed")
 
-            every { securityManager.validateDriveAccess() } returns securityCheck
-            every { oracleDriveApi.awakeDriveConsciousness() } returns driveConsciousness
-            every { cloudStorageProvider.optimizeStorage() } throws exception
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+            coEvery { mockOracleDriveApi.awakeDriveConsciousness() } returns driveConsciousness
+            coEvery { mockCloudStorageProvider.optimizeStorage() } throws expectedException
 
             // When
             val result = oracleDriveManager.initializeDrive()
@@ -146,228 +164,607 @@ class OracleDriveManagerTest {
             // Then
             assertTrue(result is DriveInitResult.Error)
             val errorResult = result as DriveInitResult.Error
-            assertEquals(exception, errorResult.exception)
+            assertEquals(expectedException, errorResult.exception)
+            assertTrue(errorResult.exception is IOException)
+        }
+
+        @Test
+        @DisplayName("Should handle consciousness with varying intelligence levels")
+        fun `initializeDrive should handle different consciousness intelligence levels`() = runTest {
+            // Given
+            val securityCheck = SecurityCheck(isValid = true, reason = "")
+            val lowIntelligenceConsciousness = DriveConsciousness(
+                isAwake = true,
+                intelligenceLevel = 25,
+                activeAgents = listOf("Genesis")
+            )
+            val storageOptimization = StorageOptimization(0.5f, 512L, false)
+
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+            coEvery { mockOracleDriveApi.awakeDriveConsciousness() } returns lowIntelligenceConsciousness
+            coEvery { mockCloudStorageProvider.optimizeStorage() } returns storageOptimization
+
+            // When
+            val result = oracleDriveManager.initializeDrive()
+
+            // Then
+            assertTrue(result is DriveInitResult.Success)
+            val successResult = result as DriveInitResult.Success
+            assertEquals(25, successResult.consciousness.intelligenceLevel)
+            assertEquals(1, successResult.consciousness.activeAgents.size)
+            assertFalse(successResult.optimization.intelligentTiering)
         }
     }
 
     @Nested
-    @DisplayName("File Operations Tests")
-    inner class FileOperationTests {
+    @DisplayName("File Upload Tests")
+    inner class FileUploadTests {
 
         @Test
         @DisplayName("Should successfully upload file when security validation passes")
-        fun `manageFiles upload succeeds with valid file and security`() = runTest {
+        fun `manageFiles should upload file successfully when security validation passes`() = runTest {
             // Given
-            val driveFile = DriveFile("123", "test.txt", "content".toByteArray(), 7L, "text/plain")
-            val metadata = FileMetadata("user1", listOf("tag1"), true, AccessLevel.PRIVATE)
-            val operation = FileOperation.Upload(driveFile, metadata)
+            val driveFile = DriveFile("file1", "test.txt", "content".toByteArray(), 1024L, "text/plain")
+            val metadata = FileMetadata("user1", listOf("test"), false, AccessLevel.PRIVATE)
+            val uploadOperation = FileOperation.Upload(driveFile, metadata)
             
             val optimizedFile = driveFile.copy(name = "optimized_test.txt")
-            val securityValidation = mockk<SecurityValidation> {
-                every { isSecure } returns true
-            }
-            val uploadResult = FileResult.Success("Upload completed")
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Upload successful")
 
-            every { cloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
-            every { securityManager.validateFileUpload(optimizedFile) } returns securityValidation
-            every { cloudStorageProvider.uploadFile(optimizedFile, metadata) } returns uploadResult
+            coEvery { mockCloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) } returns expectedResult
 
             // When
-            val result = oracleDriveManager.manageFiles(operation)
+            val result = oracleDriveManager.manageFiles(uploadOperation)
 
             // Then
-            assertEquals(uploadResult, result)
-            verify { cloudStorageProvider.optimizeForUpload(driveFile) }
-            verify { securityManager.validateFileUpload(optimizedFile) }
-            verify { cloudStorageProvider.uploadFile(optimizedFile, metadata) }
+            assertEquals(expectedResult, result)
+            assertTrue(result is FileResult.Success)
+            coVerify(exactly = 1) { mockCloudStorageProvider.optimizeForUpload(driveFile) }
+            verify(exactly = 1) { mockSecurityManager.validateFileUpload(optimizedFile) }
+            coVerify(exactly = 1) { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) }
         }
 
         @Test
         @DisplayName("Should reject upload when security validation fails")
-        fun `manageFiles upload returns security rejection when file is not secure`() = runTest {
+        fun `manageFiles should reject upload when security validation fails`() = runTest {
             // Given
-            val driveFile = DriveFile("123", "malicious.exe", "virus".toByteArray(), 5L, "application/exe")
-            val metadata = FileMetadata("user1", emptyList(), false, AccessLevel.PUBLIC)
-            val operation = FileOperation.Upload(driveFile, metadata)
+            val driveFile = DriveFile("file1", "malicious.exe", "content".toByteArray(), 1024L, "application/octet-stream")
+            val metadata = FileMetadata("user1", listOf("test"), false, AccessLevel.PRIVATE)
+            val uploadOperation = FileOperation.Upload(driveFile, metadata)
             
-            val optimizedFile = driveFile
-            val threat = SecurityThreat("MALWARE", 10, "Potential virus detected")
-            val securityValidation = mockk<SecurityValidation> {
-                every { isSecure } returns false
-                every { threat } returns threat
-            }
+            val optimizedFile = driveFile.copy(name = "optimized_malicious.exe")
+            val threat = SecurityThreat("MALWARE", 9, "Potential malware detected")
+            val securityValidation = SecurityValidation(isSecure = false, threat)
 
-            every { cloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
-            every { securityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
 
             // When
-            val result = oracleDriveManager.manageFiles(operation)
+            val result = oracleDriveManager.manageFiles(uploadOperation)
 
             // Then
             assertTrue(result is FileResult.SecurityRejection)
             val rejectionResult = result as FileResult.SecurityRejection
             assertEquals(threat, rejectionResult.threat)
+            assertEquals("MALWARE", rejectionResult.threat.type)
+            assertEquals(9, rejectionResult.threat.severity)
+            
+            coVerify(exactly = 1) { mockCloudStorageProvider.optimizeForUpload(driveFile) }
+            verify(exactly = 1) { mockSecurityManager.validateFileUpload(optimizedFile) }
+            coVerify(exactly = 0) { mockCloudStorageProvider.uploadFile(any(), any()) }
+        }
 
-            verify(exactly = 0) { cloudStorageProvider.uploadFile(any(), any()) }
+        @ParameterizedTest
+        @EnumSource(AccessLevel::class)
+        @DisplayName("Should handle uploads with different access levels")
+        fun `manageFiles should handle uploads with various access levels`(accessLevel: AccessLevel) = runTest {
+            // Given
+            val driveFile = DriveFile("file1", "test.txt", "content".toByteArray(), 1024L, "text/plain")
+            val metadata = FileMetadata("user1", listOf("test"), false, accessLevel)
+            val uploadOperation = FileOperation.Upload(driveFile, metadata)
+            
+            val optimizedFile = driveFile.copy()
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Upload successful for $accessLevel")
+
+            coEvery { mockCloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(uploadOperation)
+
+            // Then
+            assertTrue(result is FileResult.Success)
+            assertEquals(accessLevel, metadata.accessLevel)
         }
 
         @Test
-        @DisplayName("Should successfully download file when user has access")
-        fun `manageFiles download succeeds when user has access`() = runTest {
+        @DisplayName("Should handle upload optimization failure")
+        fun `manageFiles should handle upload optimization failure gracefully`() = runTest {
             // Given
-            val operation = FileOperation.Download("file123", "user1")
-            val accessCheck = mockk<AccessCheck> {
-                every { hasAccess } returns true
+            val driveFile = DriveFile("file1", "test.txt", "content".toByteArray(), 1024L, "text/plain")
+            val metadata = FileMetadata("user1", listOf("test"), false, AccessLevel.PRIVATE)
+            val uploadOperation = FileOperation.Upload(driveFile, metadata)
+            
+            val expectedException = RuntimeException("Optimization service unavailable")
+
+            coEvery { mockCloudStorageProvider.optimizeForUpload(driveFile) } throws expectedException
+
+            // When & Then
+            val exception = assertThrows<RuntimeException> {
+                oracleDriveManager.manageFiles(uploadOperation)
             }
-            val downloadResult = FileResult.Success("Download completed")
-
-            every { securityManager.validateFileAccess("file123", "user1") } returns accessCheck
-            every { cloudStorageProvider.downloadFile("file123") } returns downloadResult
-
-            // When
-            val result = oracleDriveManager.manageFiles(operation)
-
-            // Then
-            assertEquals(downloadResult, result)
-            verify { securityManager.validateFileAccess("file123", "user1") }
-            verify { cloudStorageProvider.downloadFile("file123") }
+            assertEquals("Optimization service unavailable", exception.message)
         }
 
         @Test
-        @DisplayName("Should deny download when user lacks access")
-        fun `manageFiles download returns access denied when user lacks permission`() = runTest {
+        @DisplayName("Should handle encrypted file uploads")
+        fun `manageFiles should handle encrypted file uploads correctly`() = runTest {
             // Given
-            val operation = FileOperation.Download("restricted_file", "unauthorized_user")
-            val accessCheck = mockk<AccessCheck> {
-                every { hasAccess } returns false
-                every { reason } returns "Insufficient privileges for classified file"
-            }
+            val encryptedContent = "encrypted_content_here".toByteArray()
+            val driveFile = DriveFile("enc1", "secret.dat", encryptedContent, encryptedContent.size.toLong(), "application/octet-stream")
+            val metadata = FileMetadata("user1", listOf("encrypted", "secret"), true, AccessLevel.CLASSIFIED)
+            val uploadOperation = FileOperation.Upload(driveFile, metadata)
+            
+            val optimizedFile = driveFile.copy()
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Encrypted file uploaded")
 
-            every { securityManager.validateFileAccess("restricted_file", "unauthorized_user") } returns accessCheck
+            coEvery { mockCloudStorageProvider.optimizeForUpload(driveFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) } returns expectedResult
 
             // When
-            val result = oracleDriveManager.manageFiles(operation)
+            val result = oracleDriveManager.manageFiles(uploadOperation)
 
             // Then
-            assertTrue(result is FileResult.AccessDenied)
-            val deniedResult = result as FileResult.AccessDenied
-            assertEquals("Insufficient privileges for classified file", deniedResult.reason)
-
-            verify(exactly = 0) { cloudStorageProvider.downloadFile(any()) }
-        }
-
-        @Test
-        @DisplayName("Should successfully delete file when user is authorized")
-        fun `manageFiles delete succeeds when user is authorized`() = runTest {
-            // Given
-            val operation = FileOperation.Delete("file456", "admin_user")
-            val validation = mockk<DeletionValidation> {
-                every { isAuthorized } returns true
-            }
-            val deleteResult = FileResult.Success("File deleted")
-
-            every { securityManager.validateDeletion("file456", "admin_user") } returns validation
-            every { cloudStorageProvider.deleteFile("file456") } returns deleteResult
-
-            // When
-            val result = oracleDriveManager.manageFiles(operation)
-
-            // Then
-            assertEquals(deleteResult, result)
-            verify { securityManager.validateDeletion("file456", "admin_user") }
-            verify { cloudStorageProvider.deleteFile("file456") }
-        }
-
-        @Test
-        @DisplayName("Should prevent deletion when user is not authorized")
-        fun `manageFiles delete returns unauthorized when user lacks deletion rights`() = runTest {
-            // Given
-            val operation = FileOperation.Delete("critical_file", "regular_user")
-            val validation = mockk<DeletionValidation> {
-                every { isAuthorized } returns false
-                every { reason } returns "Only administrators can delete system files"
-            }
-
-            every { securityManager.validateDeletion("critical_file", "regular_user") } returns validation
-
-            // When
-            val result = oracleDriveManager.manageFiles(operation)
-
-            // Then
-            assertTrue(result is FileResult.UnauthorizedDeletion)
-            val unauthorizedResult = result as FileResult.UnauthorizedDeletion
-            assertEquals("Only administrators can delete system files", unauthorizedResult.reason)
-
-            verify(exactly = 0) { cloudStorageProvider.deleteFile(any()) }
-        }
-
-        @Test
-        @DisplayName("Should perform intelligent sync with proper configuration")
-        fun `manageFiles sync executes intelligent synchronization`() = runTest {
-            // Given
-            val syncConfig = SyncConfiguration(
-                bidirectional = true,
-                conflictResolution = ConflictStrategy.AI_DECIDE,
-                bandwidth = BandwidthSettings(100, 3)
-            )
-            val operation = FileOperation.Sync(syncConfig)
-            val syncResult = FileResult.Success("Sync completed successfully")
-
-            every { cloudStorageProvider.intelligentSync(syncConfig) } returns syncResult
-
-            // When
-            val result = oracleDriveManager.manageFiles(operation)
-
-            // Then
-            assertEquals(syncResult, result)
-            verify { cloudStorageProvider.intelligentSync(syncConfig) }
+            assertTrue(result is FileResult.Success)
+            assertTrue(metadata.isEncrypted)
+            assertEquals(AccessLevel.CLASSIFIED, metadata.accessLevel)
         }
     }
 
     @Nested
-    @DisplayName("Oracle Synchronization Tests")
-    inner class OracleSynchronizationTests {
+    @DisplayName("File Download Tests")
+    inner class FileDownloadTests {
+
+        @Test
+        @DisplayName("Should successfully download file when access is granted")
+        fun `manageFiles should download file successfully when access is granted`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val downloadOperation = FileOperation.Download(fileId, userId)
+            
+            val accessCheck = AccessCheck(hasAccess = true, reason = "")
+            val expectedResult = FileResult.Success("Download successful")
+
+            every { mockSecurityManager.validateFileAccess(fileId, userId) } returns accessCheck
+            coEvery { mockCloudStorageProvider.downloadFile(fileId) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(downloadOperation)
+
+            // Then
+            assertEquals(expectedResult, result)
+            assertTrue(result is FileResult.Success)
+            verify(exactly = 1) { mockSecurityManager.validateFileAccess(fileId, userId) }
+            coVerify(exactly = 1) { mockCloudStorageProvider.downloadFile(fileId) }
+        }
+
+        @Test
+        @DisplayName("Should deny download when access validation fails")
+        fun `manageFiles should deny download when access validation fails`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val downloadOperation = FileOperation.Download(fileId, userId)
+            
+            val accessCheck = AccessCheck(hasAccess = false, reason = "Insufficient privileges")
+
+            every { mockSecurityManager.validateFileAccess(fileId, userId) } returns accessCheck
+
+            // When
+            val result = oracleDriveManager.manageFiles(downloadOperation)
+
+            // Then
+            assertTrue(result is FileResult.AccessDenied)
+            val deniedResult = result as FileResult.AccessDenied
+            assertEquals("Insufficient privileges", deniedResult.reason)
+            
+            verify(exactly = 1) { mockSecurityManager.validateFileAccess(fileId, userId) }
+            coVerify(exactly = 0) { mockCloudStorageProvider.downloadFile(any()) }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["User not found", "File access expired", "Insufficient role", "Account suspended"])
+        @DisplayName("Should handle various access denial reasons")
+        fun `manageFiles should handle different access denial reasons`(reason: String) = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val downloadOperation = FileOperation.Download(fileId, userId)
+            val accessCheck = AccessCheck(hasAccess = false, reason = reason)
+
+            every { mockSecurityManager.validateFileAccess(fileId, userId) } returns accessCheck
+
+            // When
+            val result = oracleDriveManager.manageFiles(downloadOperation)
+
+            // Then
+            assertTrue(result is FileResult.AccessDenied)
+            assertEquals(reason, (result as FileResult.AccessDenied).reason)
+        }
+
+        @Test
+        @DisplayName("Should handle download failure from storage provider")
+        fun `manageFiles should handle download failure from storage provider`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val downloadOperation = FileOperation.Download(fileId, userId)
+            
+            val accessCheck = AccessCheck(hasAccess = true, reason = "")
+            val expectedException = SocketTimeoutException("Download timeout")
+
+            every { mockSecurityManager.validateFileAccess(fileId, userId) } returns accessCheck
+            coEvery { mockCloudStorageProvider.downloadFile(fileId) } throws expectedException
+
+            // When & Then
+            val exception = assertThrows<SocketTimeoutException> {
+                oracleDriveManager.manageFiles(downloadOperation)
+            }
+            assertEquals("Download timeout", exception.message)
+        }
+
+        @Test
+        @DisplayName("Should handle download of non-existent file")
+        fun `manageFiles should handle download of non-existent file`() = runTest {
+            // Given
+            val fileId = "nonexistent123"
+            val userId = "user456"
+            val downloadOperation = FileOperation.Download(fileId, userId)
+            
+            val accessCheck = AccessCheck(hasAccess = true, reason = "")
+            val expectedResult = FileResult.Error(RuntimeException("File not found"))
+
+            every { mockSecurityManager.validateFileAccess(fileId, userId) } returns accessCheck
+            coEvery { mockCloudStorageProvider.downloadFile(fileId) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(downloadOperation)
+
+            // Then
+            assertTrue(result is FileResult.Error)
+            val errorResult = result as FileResult.Error
+            assertEquals("File not found", errorResult.exception.message)
+        }
+    }
+
+    @Nested
+    @DisplayName("File Deletion Tests")
+    inner class FileDeletionTests {
+
+        @Test
+        @DisplayName("Should successfully delete file when authorized")
+        fun `manageFiles should delete file successfully when authorized`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val deleteOperation = FileOperation.Delete(fileId, userId)
+            
+            val deletionValidation = DeletionValidation(isAuthorized = true, reason = "")
+            val expectedResult = FileResult.Success("Deletion successful")
+
+            every { mockSecurityManager.validateDeletion(fileId, userId) } returns deletionValidation
+            coEvery { mockCloudStorageProvider.deleteFile(fileId) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(deleteOperation)
+
+            // Then
+            assertEquals(expectedResult, result)
+            assertTrue(result is FileResult.Success)
+            verify(exactly = 1) { mockSecurityManager.validateDeletion(fileId, userId) }
+            coVerify(exactly = 1) { mockCloudStorageProvider.deleteFile(fileId) }
+        }
+
+        @Test
+        @DisplayName("Should reject deletion when unauthorized")
+        fun `manageFiles should reject deletion when unauthorized`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val deleteOperation = FileOperation.Delete(fileId, userId)
+            
+            val deletionValidation = DeletionValidation(isAuthorized = false, reason = "User is not file owner")
+
+            every { mockSecurityManager.validateDeletion(fileId, userId) } returns deletionValidation
+
+            // When
+            val result = oracleDriveManager.manageFiles(deleteOperation)
+
+            // Then
+            assertTrue(result is FileResult.UnauthorizedDeletion)
+            val unauthorizedResult = result as FileResult.UnauthorizedDeletion
+            assertEquals("User is not file owner", unauthorizedResult.reason)
+            
+            verify(exactly = 1) { mockSecurityManager.validateDeletion(fileId, userId) }
+            coVerify(exactly = 0) { mockCloudStorageProvider.deleteFile(any()) }
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["Read-only access", "Insufficient permissions", "File is protected", "System file"])
+        @DisplayName("Should handle various unauthorized deletion reasons")
+        fun `manageFiles should handle different unauthorized deletion reasons`(reason: String) = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val deleteOperation = FileOperation.Delete(fileId, userId)
+            val deletionValidation = DeletionValidation(isAuthorized = false, reason = reason)
+
+            every { mockSecurityManager.validateDeletion(fileId, userId) } returns deletionValidation
+
+            // When
+            val result = oracleDriveManager.manageFiles(deleteOperation)
+
+            // Then
+            assertTrue(result is FileResult.UnauthorizedDeletion)
+            assertEquals(reason, (result as FileResult.UnauthorizedDeletion).reason)
+        }
+
+        @Test
+        @DisplayName("Should handle deletion failure from storage provider")
+        fun `manageFiles should handle deletion failure from storage provider`() = runTest {
+            // Given
+            val fileId = "file123"
+            val userId = "user456"
+            val deleteOperation = FileOperation.Delete(fileId, userId)
+            
+            val deletionValidation = DeletionValidation(isAuthorized = true, reason = "")
+            val expectedException = IOException("Storage service unavailable")
+
+            every { mockSecurityManager.validateDeletion(fileId, userId) } returns deletionValidation
+            coEvery { mockCloudStorageProvider.deleteFile(fileId) } throws expectedException
+
+            // When & Then
+            val exception = assertThrows<IOException> {
+                oracleDriveManager.manageFiles(deleteOperation)
+            }
+            assertEquals("Storage service unavailable", exception.message)
+        }
+    }
+
+    @Nested
+    @DisplayName("File Synchronization Tests")
+    inner class FileSynchronizationTests {
+
+        @Test
+        @DisplayName("Should successfully perform intelligent sync")
+        fun `manageFiles should perform intelligent sync successfully`() = runTest {
+            // Given
+            val syncConfig = SyncConfiguration(
+                bidirectional = true,
+                conflictResolution = ConflictStrategy.AI_DECIDE,
+                bandwidth = BandwidthSettings(100, 5)
+            )
+            val syncOperation = FileOperation.Sync(syncConfig)
+            val expectedResult = FileResult.Success("Sync completed")
+
+            coEvery { mockCloudStorageProvider.intelligentSync(syncConfig) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(syncOperation)
+
+            // Then
+            assertEquals(expectedResult, result)
+            assertTrue(result is FileResult.Success)
+            coVerify(exactly = 1) { mockCloudStorageProvider.intelligentSync(syncConfig) }
+        }
+
+        @ParameterizedTest
+        @EnumSource(ConflictStrategy::class)
+        @DisplayName("Should handle sync with different conflict resolution strategies")
+        fun `manageFiles should handle sync with various conflict strategies`(strategy: ConflictStrategy) = runTest {
+            // Given
+            val syncConfig = SyncConfiguration(
+                bidirectional = true,
+                conflictResolution = strategy,
+                bandwidth = BandwidthSettings(50, 3)
+            )
+            val syncOperation = FileOperation.Sync(syncConfig)
+            val expectedResult = FileResult.Success("Sync with $strategy completed")
+
+            coEvery { mockCloudStorageProvider.intelligentSync(syncConfig) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(syncOperation)
+
+            // Then
+            assertTrue(result is FileResult.Success)
+            assertEquals(strategy, syncConfig.conflictResolution)
+        }
+
+        @Test
+        @DisplayName("Should handle unidirectional sync")
+        fun `manageFiles should perform unidirectional sync correctly`() = runTest {
+            // Given
+            val syncConfig = SyncConfiguration(
+                bidirectional = false,
+                conflictResolution = ConflictStrategy.NEWEST_WINS,
+                bandwidth = BandwidthSettings(25, 1)
+            )
+            val syncOperation = FileOperation.Sync(syncConfig)
+            val expectedResult = FileResult.Success("Unidirectional sync completed")
+
+            coEvery { mockCloudStorageProvider.intelligentSync(syncConfig) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(syncOperation)
+
+            // Then
+            assertTrue(result is FileResult.Success)
+            assertFalse(syncConfig.bidirectional)
+            assertEquals(25, syncConfig.bandwidth.maxMbps)
+            assertEquals(1, syncConfig.bandwidth.priorityLevel)
+        }
+
+        @Test
+        @DisplayName("Should handle sync with bandwidth limitations")
+        fun `manageFiles should handle sync with various bandwidth settings`() = runTest {
+            // Given
+            val lowBandwidthConfig = SyncConfiguration(
+                bidirectional = true,
+                conflictResolution = ConflictStrategy.MANUAL_RESOLVE,
+                bandwidth = BandwidthSettings(10, 1)
+            )
+            val syncOperation = FileOperation.Sync(lowBandwidthConfig)
+            val expectedResult = FileResult.Success("Low bandwidth sync completed")
+
+            coEvery { mockCloudStorageProvider.intelligentSync(lowBandwidthConfig) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(syncOperation)
+
+            // Then
+            assertTrue(result is FileResult.Success)
+            assertEquals(10, lowBandwidthConfig.bandwidth.maxMbps)
+            assertEquals(1, lowBandwidthConfig.bandwidth.priorityLevel)
+        }
+
+        @Test
+        @DisplayName("Should handle sync operation failure")
+        fun `manageFiles should handle sync operation failure`() = runTest {
+            // Given
+            val syncConfig = SyncConfiguration(
+                bidirectional = true,
+                conflictResolution = ConflictStrategy.AI_DECIDE,
+                bandwidth = BandwidthSettings(100, 5)
+            )
+            val syncOperation = FileOperation.Sync(syncConfig)
+            val expectedException = TimeoutException("Sync operation timed out")
+
+            coEvery { mockCloudStorageProvider.intelligentSync(syncConfig) } throws expectedException
+
+            // When & Then
+            val exception = assertThrows<TimeoutException> {
+                oracleDriveManager.manageFiles(syncOperation)
+            }
+            assertEquals("Sync operation timed out", exception.message)
+        }
+    }
+
+    @Nested
+    @DisplayName("Oracle Database Synchronization Tests")
+    inner class OracleSyncTests {
 
         @Test
         @DisplayName("Should successfully sync with Oracle database")
-        fun `syncWithOracle returns successful result`() = runTest {
+        fun `syncWithOracle should return successful sync result`() = runTest {
             // Given
-            val expectedResult = OracleSyncResult(
+            val expectedSyncResult = OracleSyncResult(
                 success = true,
                 recordsUpdated = 150,
                 errors = emptyList()
             )
 
-            every { oracleDriveApi.syncDatabaseMetadata() } returns expectedResult
+            coEvery { mockOracleDriveApi.syncDatabaseMetadata() } returns expectedSyncResult
 
             // When
             val result = oracleDriveManager.syncWithOracle()
 
             // Then
-            assertEquals(expectedResult, result)
-            verify { oracleDriveApi.syncDatabaseMetadata() }
+            assertEquals(expectedSyncResult, result)
+            assertTrue(result.success)
+            assertEquals(150, result.recordsUpdated)
+            assertTrue(result.errors.isEmpty())
+            coVerify(exactly = 1) { mockOracleDriveApi.syncDatabaseMetadata() }
         }
 
         @Test
-        @DisplayName("Should handle Oracle sync with partial errors")
-        fun `syncWithOracle returns result with errors when sync encounters issues`() = runTest {
+        @DisplayName("Should handle Oracle sync with errors")
+        fun `syncWithOracle should handle sync with errors`() = runTest {
             // Given
-            val expectedResult = OracleSyncResult(
+            val expectedSyncResult = OracleSyncResult(
                 success = false,
                 recordsUpdated = 75,
-                errors = listOf("Table metadata_cache locked", "Connection timeout on shard 3")
+                errors = listOf("Connection timeout", "Invalid schema")
             )
 
-            every { oracleDriveApi.syncDatabaseMetadata() } returns expectedResult
+            coEvery { mockOracleDriveApi.syncDatabaseMetadata() } returns expectedSyncResult
 
             // When
             val result = oracleDriveManager.syncWithOracle()
 
             // Then
-            assertEquals(expectedResult, result)
-            assertEquals(2, result.errors.size)
+            assertEquals(expectedSyncResult, result)
             assertFalse(result.success)
-            verify { oracleDriveApi.syncDatabaseMetadata() }
+            assertEquals(75, result.recordsUpdated)
+            assertEquals(2, result.errors.size)
+            assertTrue(result.errors.contains("Connection timeout"))
+            assertTrue(result.errors.contains("Invalid schema"))
+        }
+
+        @Test
+        @DisplayName("Should handle Oracle sync with partial success")
+        fun `syncWithOracle should handle partial sync success`() = runTest {
+            // Given
+            val partialSyncResult = OracleSyncResult(
+                success = true,
+                recordsUpdated = 120,
+                errors = listOf("Warning: Some metadata incomplete")
+            )
+
+            coEvery { mockOracleDriveApi.syncDatabaseMetadata() } returns partialSyncResult
+
+            // When
+            val result = oracleDriveManager.syncWithOracle()
+
+            // Then
+            assertTrue(result.success)
+            assertEquals(120, result.recordsUpdated)
+            assertEquals(1, result.errors.size)
+            assertTrue(result.errors.first().startsWith("Warning:"))
+        }
+
+        @Test
+        @DisplayName("Should handle Oracle sync API failure")
+        fun `syncWithOracle should propagate API exceptions`() = runTest {
+            // Given
+            val expectedException = RuntimeException("Oracle database unreachable")
+
+            coEvery { mockOracleDriveApi.syncDatabaseMetadata() } throws expectedException
+
+            // When & Then
+            val exception = assertThrows<RuntimeException> {
+                oracleDriveManager.syncWithOracle()
+            }
+            assertEquals("Oracle database unreachable", exception.message)
+        }
+
+        @Test
+        @DisplayName("Should handle zero records updated scenario")
+        fun `syncWithOracle should handle zero records updated`() = runTest {
+            // Given
+            val noUpdatesSyncResult = OracleSyncResult(
+                success = true,
+                recordsUpdated = 0,
+                errors = emptyList()
+            )
+
+            coEvery { mockOracleDriveApi.syncDatabaseMetadata() } returns noUpdatesSyncResult
+
+            // When
+            val result = oracleDriveManager.syncWithOracle()
+
+            // Then
+            assertTrue(result.success)
+            assertEquals(0, result.recordsUpdated)
+            assertTrue(result.errors.isEmpty())
         }
     }
 
@@ -376,34 +773,33 @@ class OracleDriveManagerTest {
     inner class DriveConsciousnessStateTests {
 
         @Test
-        @DisplayName("Should return consciousness state flow from API")
-        fun `getDriveConsciousnessState returns state flow from API`() {
+        @DisplayName("Should return consciousness state flow")
+        fun `getDriveConsciousnessState should return state flow from API`() {
             // Given
-            val expectedState = DriveConsciousnessState(
+            val consciousnessState = DriveConsciousnessState(
                 isActive = true,
-                currentOperations = listOf("file_upload", "metadata_sync"),
-                performanceMetrics = mapOf(
-                    "cpu_usage" to 45.5,
-                    "memory_usage" to 67.2,
-                    "active_connections" to 12
-                )
+                currentOperations = listOf("upload", "sync"),
+                performanceMetrics = mapOf("cpu" to 45.5, "memory" to 60.2)
             )
-            val stateFlow = MutableStateFlow(expectedState)
+            val stateFlow = MutableStateFlow(consciousnessState)
 
-            every { oracleDriveApi.consciousnessState } returns stateFlow
+            every { mockOracleDriveApi.consciousnessState } returns stateFlow
 
             // When
             val result = oracleDriveManager.getDriveConsciousnessState()
 
             // Then
             assertEquals(stateFlow, result)
-            assertEquals(expectedState, result.value)
-            verify { oracleDriveApi.consciousnessState }
+            assertEquals(consciousnessState, result.value)
+            assertTrue(result.value.isActive)
+            assertEquals(2, result.value.currentOperations.size)
+            assertEquals(2, result.value.performanceMetrics.size)
+            verify(exactly = 1) { mockOracleDriveApi.consciousnessState }
         }
 
         @Test
         @DisplayName("Should handle inactive consciousness state")
-        fun `getDriveConsciousnessState handles inactive state`() {
+        fun `getDriveConsciousnessState should handle inactive state`() {
             // Given
             val inactiveState = DriveConsciousnessState(
                 isActive = false,
@@ -412,159 +808,318 @@ class OracleDriveManagerTest {
             )
             val stateFlow = MutableStateFlow(inactiveState)
 
-            every { oracleDriveApi.consciousnessState } returns stateFlow
+            every { mockOracleDriveApi.consciousnessState } returns stateFlow
 
             // When
             val result = oracleDriveManager.getDriveConsciousnessState()
 
             // Then
+            assertEquals(stateFlow, result)
             assertFalse(result.value.isActive)
             assertTrue(result.value.currentOperations.isEmpty())
             assertTrue(result.value.performanceMetrics.isEmpty())
         }
+
+        @Test
+        @DisplayName("Should handle consciousness state with high activity")
+        fun `getDriveConsciousnessState should handle high activity state`() {
+            // Given
+            val highActivityState = DriveConsciousnessState(
+                isActive = true,
+                currentOperations = listOf("upload", "download", "sync", "optimize", "backup"),
+                performanceMetrics = mapOf(
+                    "cpu" to 95.2,
+                    "memory" to 87.5,
+                    "disk_io" to 75.3,
+                    "network" to 68.9
+                )
+            )
+            val stateFlow = MutableStateFlow(highActivityState)
+
+            every { mockOracleDriveApi.consciousnessState } returns stateFlow
+
+            // When
+            val result = oracleDriveManager.getDriveConsciousnessState()
+
+            // Then
+            assertTrue(result.value.isActive)
+            assertEquals(5, result.value.currentOperations.size)
+            assertEquals(4, result.value.performanceMetrics.size)
+            assertTrue(result.value.performanceMetrics["cpu"] as Double > 90.0)
+        }
     }
 
     @Nested
-    @DisplayName("Edge Cases and Error Conditions")
-    inner class EdgeCasesAndErrorConditions {
+    @DisplayName("Edge Cases and Error Handling")
+    inner class EdgeCasesTests {
 
         @Test
         @DisplayName("Should handle null or empty file operations gracefully")
-        fun `manageFiles handles edge cases for different operation types`() = runTest {
-            // Test with minimal valid data
+        fun `manageFiles should handle edge cases in file operations`() = runTest {
+            // Given
             val emptyFile = DriveFile("", "", ByteArray(0), 0L, "")
             val emptyMetadata = FileMetadata("", emptyList(), false, AccessLevel.PUBLIC)
             val uploadOperation = FileOperation.Upload(emptyFile, emptyMetadata)
+            
+            val optimizedFile = emptyFile.copy()
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Empty file uploaded")
 
-            val optimizedFile = emptyFile
-            val securityValidation = mockk<SecurityValidation> {
-                every { isSecure } returns true
-            }
-            val uploadResult = FileResult.Success("Empty file uploaded")
-
-            every { cloudStorageProvider.optimizeForUpload(emptyFile) } returns optimizedFile
-            every { securityManager.validateFileUpload(optimizedFile) } returns securityValidation
-            every { cloudStorageProvider.uploadFile(optimizedFile, emptyMetadata) } returns uploadResult
+            coEvery { mockCloudStorageProvider.optimizeForUpload(emptyFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, emptyMetadata) } returns expectedResult
 
             // When
             val result = oracleDriveManager.manageFiles(uploadOperation)
 
             // Then
-            assertEquals(uploadResult, result)
+            assertEquals(expectedResult, result)
+            assertTrue(result is FileResult.Success)
         }
 
         @Test
-        @DisplayName("Should handle large file uploads")
-        fun `manageFiles handles large file uploads`() = runTest {
+        @DisplayName("Should handle large file operations")
+        fun `manageFiles should handle large file uploads`() = runTest {
             // Given
-            val largeContent = ByteArray(1024 * 1024 * 100) // 100MB
-            val largeFile = DriveFile("large123", "large_file.zip", largeContent, largeContent.size.toLong(), "application/zip")
-            val metadata = FileMetadata("user1", listOf("large", "archive"), true, AccessLevel.PRIVATE)
-            val operation = FileOperation.Upload(largeFile, metadata)
+            val largeFile = DriveFile(
+                "large1", 
+                "huge_dataset.csv", 
+                ByteArray(1000000), 
+                1000000L, 
+                "text/csv"
+            )
+            val metadata = FileMetadata("user1", listOf("dataset", "large"), true, AccessLevel.RESTRICTED)
+            val uploadOperation = FileOperation.Upload(largeFile, metadata)
+            
+            val optimizedFile = largeFile.copy(size = 750000L) // Compressed
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Large file uploaded successfully")
 
-            val optimizedFile = largeFile.copy(size = largeContent.size.toLong() / 2) // Compressed
-            val securityValidation = mockk<SecurityValidation> {
-                every { isSecure } returns true
-            }
-            val uploadResult = FileResult.Success("Large file uploaded with compression")
-
-            every { cloudStorageProvider.optimizeForUpload(largeFile) } returns optimizedFile
-            every { securityManager.validateFileUpload(optimizedFile) } returns securityValidation
-            every { cloudStorageProvider.uploadFile(optimizedFile, metadata) } returns uploadResult
+            coEvery { mockCloudStorageProvider.optimizeForUpload(largeFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) } returns expectedResult
 
             // When
-            val result = oracleDriveManager.manageFiles(operation)
+            val result = oracleDriveManager.manageFiles(uploadOperation)
 
             // Then
-            assertEquals(uploadResult, result)
+            assertEquals(expectedResult, result)
+            assertTrue(optimizedFile.size < largeFile.size) // Verify compression occurred
+            assertEquals(1000000L, largeFile.size)
+            assertEquals(750000L, optimizedFile.size)
         }
 
         @Test
-        @DisplayName("Should handle concurrent operations")
-        fun `multiple concurrent operations are handled properly`() = runTest {
-            // This test ensures the manager can handle multiple operations
-            // In a real scenario, we'd test with actual coroutines
-            val operations = listOf(
-                FileOperation.Download("file1", "user1"),
-                FileOperation.Download("file2", "user1"),
-                FileOperation.Download("file3", "user1")
+        @DisplayName("Should handle concurrent operations gracefully")
+        fun `manager should handle multiple concurrent operations`() = runTest {
+            // Given
+            val securityCheck = SecurityCheck(isValid = true, reason = "")
+            val driveConsciousness = DriveConsciousness(true, 85, listOf("Kai", "Genesis", "Aura"))
+            val storageOptimization = StorageOptimization(0.8f, 2048L, true)
+
+            every { mockSecurityManager.validateDriveAccess() } returns securityCheck
+            coEvery { mockOracleDriveApi.awakeDriveConsciousness() } returns driveConsciousness
+            coEvery { mockCloudStorageProvider.optimizeStorage() } returns storageOptimization
+
+            // When - Simulate concurrent initialization calls
+            val result1 = oracleDriveManager.initializeDrive()
+            val result2 = oracleDriveManager.initializeDrive()
+
+            // Then
+            assertTrue(result1 is DriveInitResult.Success)
+            assertTrue(result2 is DriveInitResult.Success)
+            
+            // Verify all methods were called for both operations
+            verify(exactly = 2) { mockSecurityManager.validateDriveAccess() }
+            coVerify(exactly = 2) { mockOracleDriveApi.awakeDriveConsciousness() }
+            coVerify(exactly = 2) { mockCloudStorageProvider.optimizeStorage() }
+        }
+
+        @Test
+        @DisplayName("Should handle file operations with special characters")
+        fun `manageFiles should handle files with special characters in names`() = runTest {
+            // Given
+            val specialFile = DriveFile(
+                "special1",
+                "файл с пробелами & спецсимволами.txt",
+                "content with special chars: åÅöÖ".toByteArray(),
+                100L,
+                "text/plain"
+            )
+            val metadata = FileMetadata("user1", listOf("special", "unicode"), false, AccessLevel.PRIVATE)
+            val uploadOperation = FileOperation.Upload(specialFile, metadata)
+            
+            val optimizedFile = specialFile.copy()
+            val securityValidation = SecurityValidation(isSecure = true, SecurityThreat("", 0, ""))
+            val expectedResult = FileResult.Success("Special character file uploaded")
+
+            coEvery { mockCloudStorageProvider.optimizeForUpload(specialFile) } returns optimizedFile
+            every { mockSecurityManager.validateFileUpload(optimizedFile) } returns securityValidation
+            coEvery { mockCloudStorageProvider.uploadFile(optimizedFile, metadata) } returns expectedResult
+
+            // When
+            val result = oracleDriveManager.manageFiles(uploadOperation)
+
+            // Then
+            assertTrue(result is FileResult.Success)
+            assertTrue(specialFile.name.contains("спецсимволами"))
+        }
+
+        @Test
+        @DisplayName("Should handle operations with null file IDs")
+        fun `manageFiles should handle operations with invalid file IDs`() = runTest {
+            // Given
+            val downloadOperation = FileOperation.Download("", "user123")
+            val accessCheck = AccessCheck(hasAccess = false, reason = "Invalid file ID")
+
+            every { mockSecurityManager.validateFileAccess("", "user123") } returns accessCheck
+
+            // When
+            val result = oracleDriveManager.manageFiles(downloadOperation)
+
+            // Then
+            assertTrue(result is FileResult.AccessDenied)
+            assertEquals("Invalid file ID", (result as FileResult.AccessDenied).reason)
+        }
+    }
+
+    @Nested
+    @DisplayName("Data Class Validation Tests")
+    inner class DataClassTests {
+
+        @Test
+        @DisplayName("Should create and validate DriveFile data class")
+        fun `DriveFile should handle data correctly`() {
+            // Given
+            val content = "Test file content".toByteArray()
+            val driveFile = DriveFile(
+                id = "file123",
+                name = "test.txt",
+                content = content,
+                size = content.size.toLong(),
+                mimeType = "text/plain"
             )
 
-            val accessCheck = mockk<AccessCheck> {
-                every { hasAccess } returns true
-            }
-            val downloadResult = FileResult.Success("Download completed")
-
-            every { securityManager.validateFileAccess(any(), any()) } returns accessCheck
-            every { cloudStorageProvider.downloadFile(any()) } returns downloadResult
-
-            // When & Then
-            operations.forEach { operation ->
-                val result = oracleDriveManager.manageFiles(operation)
-                assertEquals(downloadResult, result)
-            }
-
-            verify(exactly = 3) { securityManager.validateFileAccess(any(), any()) }
-            verify(exactly = 3) { cloudStorageProvider.downloadFile(any()) }
+            // Then
+            assertEquals("file123", driveFile.id)
+            assertEquals("test.txt", driveFile.name)
+            assertArrayEquals(content, driveFile.content)
+            assertEquals(content.size.toLong(), driveFile.size)
+            assertEquals("text/plain", driveFile.mimeType)
         }
 
         @Test
-        @DisplayName("Should handle all access levels properly")
-        fun `manageFiles handles all access levels`() = runTest {
-            val accessLevels = AccessLevel.values()
-            
-            accessLevels.forEach { accessLevel ->
-                val file = DriveFile("file_$accessLevel", "test.txt", "content".toByteArray(), 7L, "text/plain")
-                val metadata = FileMetadata("user1", emptyList(), true, accessLevel)
-                val operation = FileOperation.Upload(file, metadata)
+        @DisplayName("Should create and validate FileMetadata data class")
+        fun `FileMetadata should handle different access levels`() {
+            // Given
+            val metadata = FileMetadata(
+                userId = "user123",
+                tags = listOf("important", "work", "project"),
+                isEncrypted = true,
+                accessLevel = AccessLevel.CLASSIFIED
+            )
 
-                val securityValidation = mockk<SecurityValidation> {
-                    every { isSecure } returns true
-                }
-                val uploadResult = FileResult.Success("Upload completed for $accessLevel")
+            // Then
+            assertEquals("user123", metadata.userId)
+            assertEquals(3, metadata.tags.size)
+            assertTrue(metadata.tags.contains("important"))
+            assertTrue(metadata.isEncrypted)
+            assertEquals(AccessLevel.CLASSIFIED, metadata.accessLevel)
+        }
 
-                every { cloudStorageProvider.optimizeForUpload(file) } returns file
-                every { securityManager.validateFileUpload(file) } returns securityValidation
-                every { cloudStorageProvider.uploadFile(file, metadata) } returns uploadResult
+        @ParameterizedTest
+        @EnumSource(ConflictStrategy::class)
+        @DisplayName("Should validate SyncConfiguration with different strategies")
+        fun `SyncConfiguration should support all conflict strategies`(strategy: ConflictStrategy) {
+            // Given
+            val config = SyncConfiguration(
+                bidirectional = true,
+                conflictResolution = strategy,
+                bandwidth = BandwidthSettings(100, 5)
+            )
 
-                // When
-                val result = oracleDriveManager.manageFiles(operation)
+            // Then
+            assertEquals(strategy, config.conflictResolution)
+            assertTrue(config.bandwidth.maxMbps > 0)
+            assertTrue(config.bandwidth.priorityLevel >= 1)
+        }
 
-                // Then
-                assertEquals(uploadResult, result)
+        @Test
+        @DisplayName("Should validate SecurityThreat severity levels")
+        fun `SecurityThreat should handle different severity levels`() {
+            // Given
+            val threats = listOf(
+                SecurityThreat("LOW", 1, "Minor security concern"),
+                SecurityThreat("MEDIUM", 5, "Moderate security risk"),
+                SecurityThreat("HIGH", 8, "Serious security threat"),
+                SecurityThreat("CRITICAL", 10, "Critical security breach")
+            )
+
+            // Then
+            threats.forEach { threat ->
+                assertTrue(threat.severity in 1..10)
+                assertTrue(threat.type.isNotEmpty())
+                assertTrue(threat.description.isNotEmpty())
             }
         }
 
         @Test
-        @DisplayName("Should handle all conflict strategies in sync operations")
-        fun `sync operations handle all conflict resolution strategies`() = runTest {
-            val strategies = ConflictStrategy.values()
+        @DisplayName("Should validate DriveConsciousness data integrity")
+        fun `DriveConsciousness should maintain data integrity`() {
+            // Given
+            val consciousness = DriveConsciousness(
+                isAwake = true,
+                intelligenceLevel = 90,
+                activeAgents = listOf("Kai", "Genesis", "Aura", "Nova")
+            )
 
-            strategies.forEach { strategy ->
-                val syncConfig = SyncConfiguration(
-                    bidirectional = true,
-                    conflictResolution = strategy,
-                    bandwidth = BandwidthSettings(50, 1)
-                )
-                val operation = FileOperation.Sync(syncConfig)
-                val syncResult = FileResult.Success("Sync with $strategy completed")
-
-                every { cloudStorageProvider.intelligentSync(syncConfig) } returns syncResult
-
-                // When
-                val result = oracleDriveManager.manageFiles(operation)
-
-                // Then
-                assertEquals(syncResult, result)
+            // Then
+            assertTrue(consciousness.isAwake)
+            assertTrue(consciousness.intelligenceLevel in 0..100)
+            assertEquals(4, consciousness.activeAgents.size)
+            consciousness.activeAgents.forEach { agent ->
+                assertTrue(agent.isNotEmpty())
             }
+        }
 
-            verify(exactly = strategies.size) { cloudStorageProvider.intelligentSync(any()) }
+        @Test
+        @DisplayName("Should validate StorageOptimization metrics")
+        fun `StorageOptimization should have valid metrics`() {
+            // Given
+            val optimization = StorageOptimization(
+                compressionRatio = 0.65f,
+                deduplicationSavings = 5120L,
+                intelligentTiering = true
+            )
+
+            // Then
+            assertTrue(optimization.compressionRatio in 0.0f..1.0f)
+            assertTrue(optimization.deduplicationSavings >= 0L)
+            assertTrue(optimization.intelligentTiering)
+        }
+
+        @Test
+        @DisplayName("Should validate BandwidthSettings constraints")
+        fun `BandwidthSettings should enforce valid constraints`() {
+            // Given
+            val bandwidthSettings = listOf(
+                BandwidthSettings(10, 1),
+                BandwidthSettings(100, 5),
+                BandwidthSettings(1000, 10)
+            )
+
+            // Then
+            bandwidthSettings.forEach { settings ->
+                assertTrue(settings.maxMbps > 0)
+                assertTrue(settings.priorityLevel >= 1)
+                assertTrue(settings.priorityLevel <= 10)
+            }
         }
     }
 }
 
-// Mock data classes for testing - these would typically be in the actual implementation
-data class SecurityCheck(val isValid: Boolean, val reason: String = "")
-data class SecurityValidation(val isSecure: Boolean, val threat: SecurityThreat = SecurityThreat("", 0, ""))
-data class AccessCheck(val hasAccess: Boolean, val reason: String = "")
-data class DeletionValidation(val isAuthorized: Boolean, val reason: String = "")
+// Mock data classes for security components (these would normally be in separate files)
+data class SecurityCheck(val isValid: Boolean, val reason: String)
+data class SecurityValidation(val isSecure: Boolean, val threat: SecurityThreat)
+data class AccessCheck(val hasAccess: Boolean, val reason: String)
+data class DeletionValidation(val isAuthorized: Boolean, val reason: String)
