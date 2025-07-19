@@ -40,9 +40,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Validates the associated Gradle `libs.versions.toml` file for structure, format, and content correctness.
      *
-     * Checks for file existence, required sections, valid version and module formats, duplicate keys, reference integrity, compatibility issues, and known security vulnerabilities.
+     * Performs checks for file existence, required sections, version and module formats, duplicate keys, reference integrity, compatibility issues, and known security vulnerabilities.
      *
-     * @return A [ValidationResult] containing the validity status, any errors or warnings found, and the validation timestamp.
+     * @return A [ValidationResult] containing the validation outcome, errors, warnings, and the validation timestamp.
      */
     fun validate(): ValidationResult {
         val errors = mutableListOf<String>()
@@ -74,7 +74,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Performs comprehensive validation of a Gradle `libs.versions.toml` file's structure, format, and content.
      *
-     * Runs a series of checks for required sections, version and module formats, duplicate keys, reference integrity, critical dependency presence, compatibility issues, bundle correctness, and known security vulnerabilities. Validation errors and warnings are appended to the provided lists.
+     * Executes checks for required sections, version and module formats, duplicate keys, reference integrity, critical dependency presence, version compatibility, bundle correctness, and known security vulnerabilities. Validation errors and warnings are appended to the provided lists.
      *
      * @param content The TOML file content to validate.
      * @param errors List to which validation error messages are added.
@@ -129,10 +129,11 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Validates that all version entries in the TOML content use an accepted version string format.
      *
-     * Adds an error for each version entry whose value does not match semantic versioning, plus versions, or version range patterns.
+     * Adds an error message for each version entry with an invalid format.
      *
      * @param content The TOML file content to validate.
-     * @param errors The list to which error messages are added for invalid version formats.
+     * @param errors The list to which error messages for invalid version formats are added.
+     * @param warnings Unused in this method.
      */
     private fun validateVersionFormats(content: String, errors: MutableList<String>, warnings: MutableList<String>) {
         val versionPattern = Regex("""(\w+)\s*=\s*"([^"]+)"""")
@@ -146,9 +147,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Adds an error message for each duplicate key found in the TOML content.
+     * Detects duplicate keys in the TOML content and appends an error message for each occurrence.
      *
-     * Scans the TOML string for keys that appear more than once and appends an error message for each duplicate to the provided error list.
+     * Scans the provided TOML string for keys that are defined more than once and adds an error to the list for each duplicate found.
      */
     private fun validateDuplicateKeys(content: String, errors: MutableList<String>) {
         val keys = mutableSetOf<String>()
@@ -163,9 +164,13 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks that all version references in the TOML content correspond to defined versions and warns about any defined versions that are not referenced.
+     * Validates that all version references in the TOML content correspond to defined versions and warns about unreferenced versions.
      *
      * Adds an error for each version reference that does not match a defined version, and a warning for each defined version that is not referenced by any library.
+     *
+     * @param content The TOML file content to validate.
+     * @param errors The list to which error messages will be added.
+     * @param warnings The list to which warning messages will be added.
      */
     private fun validateVersionReferences(content: String, errors: MutableList<String>, warnings: MutableList<String>) {
         // Extract defined versions
@@ -197,7 +202,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
      * Adds an error message for each module entry that does not conform to the required format.
      *
      * @param content The TOML file content to validate.
-     * @param errors The list to which error messages are added for invalid module formats.
+     * @param errors The list to which error messages are appended for invalid module formats.
      */
     private fun validateLibraryModules(content: String, errors: MutableList<String>) {
         val modulePattern = Regex("""module\s*=\s*"([^"]+)"""")
@@ -212,7 +217,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Validates that all plugin IDs in the TOML content conform to the expected format.
      *
-     * Adds an error for each plugin ID that does not match the required pattern.
+     * Adds an error message for each plugin ID that does not match the required pattern.
      */
     private fun validatePluginIds(content: String, errors: MutableList<String>) {
         val pluginIdPattern = Regex("""id\s*=\s*"([^"]+)"""")
@@ -225,9 +230,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Adds a warning if none of the predefined critical testing dependencies are found in the TOML content.
+     * Warns if the TOML file does not include any critical testing dependencies.
      *
-     * Warns when essential testing libraries (such as junit or mockk) are missing from the dependencies.
+     * Adds a warning to the list if none of the predefined critical dependencies are found in the content.
      */
     private fun validateCriticalDependencies(content: String, warnings: MutableList<String>) {
         val hasTestDependencies = CRITICAL_DEPENDENCIES.any { content.contains(it) }
@@ -238,9 +243,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks for known incompatible version combinations in the TOML content and adds errors for unsupported pairs.
+     * Checks for known incompatible version combinations in the TOML content and adds errors for any detected issues.
      *
-     * Adds an error if AGP 8.11.1 is used with Kotlin 1.8.0, as this combination is not supported.
+     * Specifically, adds an error if AGP 8.11.1 is used with Kotlin 1.8.0, as this combination is not supported.
      */
     private fun validateVersionCompatibility(content: String, errors: MutableList<String>, warnings: MutableList<String>) {
         // Check for known incompatible version combinations
@@ -252,7 +257,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Validates that all library references in bundles exist as defined library keys.
      *
-     * Adds an error for each bundle reference that does not correspond to a key in the `[libraries]` section.
+     * Adds an error for each bundle entry that references a library key not present in the `[libraries]` section.
      */
     private fun validateBundles(content: String, errors: MutableList<String>) {
         val bundlePattern = Regex("""(\w+)\s*=\s*\[(.*?)\]""")
@@ -272,10 +277,10 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Adds warnings for any dependencies in the TOML content that match known vulnerable versions.
+     * Adds warnings for each dependency in the TOML content that matches a known vulnerable version.
      *
      * @param content The TOML file content to scan for vulnerable dependencies.
-     * @param warnings The list to which vulnerability warnings will be appended.
+     * @param warnings The list to which warnings about detected vulnerabilities will be appended.
      */
     private fun validateSecurityVulnerabilities(content: String, warnings: MutableList<String>) {
         VULNERABLE_VERSIONS.forEach { (dependency, vulnerableVersions) ->
@@ -303,10 +308,10 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Extracts the set of library keys defined with a `module` entry in the `[libraries]` section of the TOML content.
+     * Extracts the names of all libraries defined with a `module` entry in the `[libraries]` section of the TOML content.
      *
      * @param content The TOML file content as a string.
-     * @return A set of library key names found in the `[libraries]` section.
+     * @return A set of library keys that have a `module` entry.
      */
     private fun extractLibraryKeys(content: String): Set<String> {
         val libraryKeys = mutableSetOf<String>()
@@ -320,7 +325,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Checks if the provided version string matches accepted version formats.
      *
-     * Accepts semantic versioning, plus versions, and version ranges.
+     * Accepts semantic versioning (e.g., "1.2.3"), plus versions (e.g., "1.2.+"), and version ranges (e.g., "[1.0,2.0)").
      *
      * @param version The version string to validate.
      * @return `true` if the version string is valid; `false` otherwise.
