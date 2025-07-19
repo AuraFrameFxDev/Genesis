@@ -35,22 +35,103 @@ class LibsVersionsTomlEdgeCaseTest {
     // ------------------------------------------------------------------------
 
     @Test
-    fun mixedQuoteTypes_areHandled() { /* ...as before... */ }
+    fun mixedQuoteTypes_areHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            kotlin = '2.0.0'
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            kotlinLib = { module = 'org.jetbrains.kotlin:kotlin-stdlib', version.ref = "kotlin" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Mixed quotes should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
 
     @Test
-    fun escapedCharacters_doNotBreakParsing() { /* ...as before... */ }
+    fun escapedCharacters_doNotBreakParsing() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            special = "version-with-\"quotes\""
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            specialLib = { module = "com.example:special\\path", version.ref = "special" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Escaped characters should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
 
     @Test
-    fun inlineTableVariations_areSupported() { /* ...as before... */ }
+    fun inlineTableVariations_areSupported() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            kotlin = "2.0.0"
+            [libraries]
+            compactLib = { module = "com.example:lib", version.ref = "agp" }
+            spacedLib = { module = "com.example:spaced" , version.ref = "kotlin" }
+            multilineLib = {
+                module = "com.example:multiline",
+                version.ref = "agp"
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Inline table variations should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
 
     @Test
-    fun bundleArrayFormats_areAccepted() { /* ...as before... */ }
+    fun bundleArrayFormats_areAccepted() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [bundles]
+            testing = ["testLib"]
+            multiBundle = [
+                "testLib",
+            ]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Bundle array formats should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
 
     @Test
     fun sectionNames_areCaseSensitive() { /* ...as before... */ }
 
     @Test
-    fun veryLargeFile_isValidatedWithinMemoryLimits() { /* ...as before... */ }
+    fun veryLargeFile_isValidatedWithinMemoryLimits() {
+        val tomlBuilder = StringBuilder()
+        tomlBuilder.appendLine("[versions]")
+        tomlBuilder.appendLine("agp = \"8.11.1\"")
+        
+        // Generate many version entries
+        for (i in 1..500) {
+            tomlBuilder.appendLine("version$i = \"1.0.$i\"")
+        }
+        
+        tomlBuilder.appendLine("[libraries]")
+        tomlBuilder.appendLine("testLib = { module = \"com.example:lib\", version.ref = \"agp\" }")
+        
+        // Generate many library entries
+        for (i in 1..500) {
+            tomlBuilder.appendLine("lib$i = { module = \"com.example:lib$i\", version.ref = \"version$i\" }")
+        }
+        
+        write(tomlBuilder.toString())
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Large file should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
 
     @Test
     fun emptyFile_isHandledGracefully() {
