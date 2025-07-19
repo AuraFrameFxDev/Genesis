@@ -7,23 +7,7 @@ extra["kotlinVersion"] = libs.versions.kotlin.get()
 
 val javaVersion = JavaVersion.VERSION_24
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
-        classpath("com.google.gms:google-services:${libs.versions.googleServices.get()}")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebaseCrashlyticsPlugin.get()}")
-        classpath("com.google.firebase:perf-plugin:${libs.versions.firebasePerfPlugin.get()}")
-        classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${libs.versions.ksp.get()}")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:${libs.versions.firebaseCrashlyticsPlugin.get()}")
-        classpath("org.openapi.generator:org.openapi.generator.gradle.plugin:${libs.versions.openapiGeneratorPlugin.get()}")
-    }
-}
+// buildscript block removed - using modern version catalog plugin management
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
