@@ -150,13 +150,13 @@ class LibsVersionsTomlEdgeCaseTest {
         assertTrue(result.isValid)
         assertTrue("Validator should not use > 75 MB extra", used < 75 * 1024 * 1024)
     }
-}
+
     @Test
     fun emptyFile_isHandledGracefully() {
         write("")
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Empty file should be invalid", result.isValid)
-        assertTrue("Should contain helpful error message", 
+        assertTrue("Should contain helpful error message",
             result.errors.any { it.contains("Empty") || it.contains("invalid") })
     }
 
@@ -165,7 +165,7 @@ class LibsVersionsTomlEdgeCaseTest {
         write("   \n\t  \n   ")
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Whitespace-only file should be invalid", result.isValid)
-        assertTrue("Should contain error about empty/invalid file", 
+        assertTrue("Should contain error about empty/invalid file",
             result.errors.any { it.contains("Empty") || it.contains("invalid") })
     }
 
@@ -174,15 +174,15 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Invalid TOML syntax should fail validation", result.isValid)
-        assertTrue("Should mention syntax error", 
+        assertTrue("Should mention syntax error",
             result.errors.any { it.contains("Syntax error") })
     }
 
@@ -192,11 +192,11 @@ class LibsVersionsTomlEdgeCaseTest {
             [libraries]
             testLib = { module = "com.example:lib", version = "1.0.0" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Missing [versions] section should fail", result.isValid)
-        assertTrue("Should mention missing versions section", 
+        assertTrue("Should mention missing versions section",
             result.errors.any { it.contains("versions section is required") })
     }
 
@@ -206,11 +206,11 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]
             agp = "8.11.1"
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Missing [libraries] section should fail", result.isValid)
-        assertTrue("Should mention missing libraries section", 
+        assertTrue("Should mention missing libraries section",
             result.errors.any { it.contains("libraries section is required") })
     }
 
@@ -221,17 +221,17 @@ class LibsVersionsTomlEdgeCaseTest {
             agp = "8.11.1"
             unused = "1.0.0"
             kotlin = "2.0.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("File should be valid despite unreferenced versions", result.isValid)
-        assertTrue("Should warn about unreferenced version", 
+        assertTrue("Should warn about unreferenced version",
             result.warnings.any { it.contains("Unreferenced version: unused") })
-        assertTrue("Should warn about kotlin version too", 
+        assertTrue("Should warn about kotlin version too",
             result.warnings.any { it.contains("Unreferenced version: kotlin") })
     }
 
@@ -240,15 +240,15 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "nonexistent" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Invalid version reference should fail", result.isValid)
-        assertTrue("Should mention missing version reference", 
+        assertTrue("Should mention missing version reference",
             result.errors.any { it.contains("Missing version reference: nonexistent") })
     }
 
@@ -259,15 +259,15 @@ class LibsVersionsTomlEdgeCaseTest {
             agp = "8.11.1"
             kotlin = "2.0.0"
             agp = "8.11.2"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Duplicate version keys should fail", result.isValid)
-        assertTrue("Should mention duplicate key", 
+        assertTrue("Should mention duplicate key",
             result.errors.any { it.contains("Duplicate key: agp") })
     }
 
@@ -276,17 +276,17 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
             kotlin-lib = { module = "com.example:kotlin", version.ref = "agp" }
             testLib = { module = "com.example:other", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Duplicate library keys should fail", result.isValid)
-        assertTrue("Should mention duplicate library key", 
+        assertTrue("Should mention duplicate library key",
             result.errors.any { it.contains("Duplicate key: testLib") })
     }
 
@@ -295,15 +295,15 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             badModule = { module = "invalid-module-format", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Invalid module format should fail", result.isValid)
-        assertTrue("Should mention invalid module format", 
+        assertTrue("Should mention invalid module format",
             result.errors.any { it.contains("Invalid module format: invalid-module-format") })
     }
 
@@ -312,14 +312,14 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             validLib1 = { module = "com.example:lib", version.ref = "agp" }
             validLib2 = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "agp" }
             validLib3 = { module = "androidx.core:core-ktx", version.ref = "agp" }
             validLib4 = { module = "io.github.user:my-lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Valid module formats should be accepted", result.isValid)
@@ -332,17 +332,17 @@ class LibsVersionsTomlEdgeCaseTest {
             invalidVersion1 = "not-a-version"
             invalidVersion2 = "1.2.3.4.5"
             validVersion = "1.0.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "validVersion" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Invalid version formats should fail", result.isValid)
-        assertTrue("Should mention first invalid version format", 
+        assertTrue("Should mention first invalid version format",
             result.errors.any { it.contains("Invalid version format: not-a-version") })
-        assertTrue("Should mention second invalid version format", 
+        assertTrue("Should mention second invalid version format",
             result.errors.any { it.contains("Invalid version format: 1.2.3.4.5") })
     }
 
@@ -355,11 +355,11 @@ class LibsVersionsTomlEdgeCaseTest {
             plusVersion = "1.2.+"
             range = "[1.0,2.0)"
             snapshot = "1.0.0-SNAPSHOT"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "semantic" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Valid version formats should be accepted", result.isValid)
@@ -370,18 +370,18 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             existingLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             [bundles]
             testBundle = ["existingLib", "nonexistentLib"]
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Bundle with nonexistent library should fail", result.isValid)
-        assertTrue("Should mention invalid bundle reference", 
+        assertTrue("Should mention invalid bundle reference",
             result.errors.any { it.contains("Invalid bundle reference: nonexistentLib in bundle testBundle") })
     }
 
@@ -390,14 +390,14 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             [bundles]
             emptyBundle = []
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Empty bundles should be valid", result.isValid)
@@ -409,15 +409,15 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]
             agp = "8.11.1"
             kotlin = "2.0.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             [plugins]
             android = { id = "com.android.application", version.ref = "agp" }
             kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Valid plugins section should pass", result.isValid)
@@ -428,18 +428,18 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             [plugins]
             invalid = { id = "com.example.plugin", version.ref = "nonexistent" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Plugin with invalid version reference should fail", result.isValid)
-        assertTrue("Should mention missing version reference", 
+        assertTrue("Should mention missing version reference",
             result.errors.any { it.contains("Missing version reference: nonexistent") })
     }
 
@@ -448,18 +448,18 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             [plugins]
             invalidPlugin = { id = "invalid-plugin-id", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Invalid plugin ID format should fail", result.isValid)
-        assertTrue("Should mention invalid plugin ID format", 
+        assertTrue("Should mention invalid plugin ID format",
             result.errors.any { it.contains("Invalid plugin ID format: invalid-plugin-id") })
     }
 
@@ -469,15 +469,15 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]
             agp = "8.11.1"
             kotlin = "1.8.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Incompatible AGP and Kotlin versions should fail", result.isValid)
-        assertTrue("Should mention version incompatibility", 
+        assertTrue("Should mention version incompatibility",
             result.errors.any { it.contains("Version incompatibility: AGP 8.11.1 requires Kotlin 1.9.0+") })
     }
 
@@ -487,15 +487,15 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]
             junit = "4.12"
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("File should be valid despite vulnerable dependency", result.isValid)
-        assertTrue("Should warn about vulnerable version", 
+        assertTrue("Should warn about vulnerable version",
             result.warnings.any { it.contains("Potentially vulnerable version: junit 4.12") })
     }
 
@@ -504,15 +504,15 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             regularLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("File should be valid without critical dependencies", result.isValid)
-        assertTrue("Should warn about missing testing dependencies", 
+        assertTrue("Should warn about missing testing dependencies",
             result.warnings.any { it.contains("Missing critical dependency: No testing dependencies found") })
     }
 
@@ -521,17 +521,17 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val beforeTime = System.currentTimeMillis()
         val result = LibsVersionsTomlValidator(tempToml).validate()
         val afterTime = System.currentTimeMillis()
-        
-        assertTrue("Timestamp should be within validation window", 
+
+        assertTrue("Timestamp should be within validation window",
             result.timestamp >= beforeTime && result.timestamp <= afterTime)
     }
 
@@ -539,9 +539,9 @@ class LibsVersionsTomlEdgeCaseTest {
     fun nonexistentFile_isHandledGracefully() {
         val nonexistentFile = File("nonexistent.toml")
         val result = LibsVersionsTomlValidator(nonexistentFile).validate()
-        
+
         assertFalse("Nonexistent file should be invalid", result.isValid)
-        assertTrue("Should mention file not existing", 
+        assertTrue("Should mention file not existing",
             result.errors.any { it.contains("TOML file does not exist") })
     }
 
@@ -554,28 +554,28 @@ class LibsVersionsTomlEdgeCaseTest {
             kotlin = "2.0.0"
             junit = "5.8.2"
             mockk = "1.13.2"
-            
+
             [libraries]
             # Core Android libraries
             androidx-core = { module = "androidx.core:core-ktx", version.ref = "kotlin" }
             androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.2" }
-            
+
             # Testing libraries
             junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
             mockk-lib = { module = "io.mockk:mockk", version.ref = "mockk" }
-            
+
             [plugins]
             android-application = { id = "com.android.application", version.ref = "agp" }
             kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-            
+
             [bundles]
             testing = ["junit-jupiter", "mockk-lib"]
             androidx = ["androidx-core", "androidx-lifecycle"]
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        
+
         assertTrue("Complex valid file should pass all validations", result.isValid)
         assertTrue("Should have no errors", result.errors.isEmpty())
         // Might have warnings about unreferenced versions, which is acceptable
@@ -599,7 +599,7 @@ class LibsVersionsTomlEdgeCaseTest {
                 version.ref = "agp"
             }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Multiline inline table formats should be valid", result.isValid)
@@ -610,12 +610,12 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             groupNameLib = { group = "androidx.core", name = "core-ktx", version.ref = "agp" }
             moduleLib = { module = "androidx.core:core-ktx", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Libraries with group/name format should be valid", result.isValid)
@@ -641,7 +641,7 @@ class LibsVersionsTomlEdgeCaseTest {
                 "c"
             ]
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Nested bundle arrays should be valid", result.isValid)
@@ -661,11 +661,11 @@ class LibsVersionsTomlEdgeCaseTest {
             rangeOpen = "[1.0.0,)"
             rangeClosed = "[1.0.0,2.0.0]"
             rangeHalfOpen = "[1.0.0,2.0.0)"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "minimal" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         // Test depends on validator's version format validation strictness
@@ -676,28 +676,28 @@ class LibsVersionsTomlEdgeCaseTest {
     fun tomlWithExtraWhitespaceAndComments_isValid() {
         val toml = """
             # This is a comment at the top
-            
+
             [versions]  # Versions section
             agp = "8.11.1"    # Android Gradle Plugin  
             kotlin = "2.0.0"  # Kotlin version
-            
-            
+
+
             [libraries]  # Libraries section
-            
+
             # Main library
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            
+
             # Another library with extra spacing
             kotlinLib = {   module = "org.jetbrains.kotlin:kotlin-stdlib"  ,  version.ref = "kotlin"   }
-            
-            
+
+
             [plugins]  # Plugins section
-            
+
             android = { id = "com.android.application", version.ref = "agp" }
-            
+
             # End of file
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("TOML with extra whitespace and comments should be valid", result.isValid)
@@ -711,27 +711,27 @@ class LibsVersionsTomlEdgeCaseTest {
             kotlin = "1.8.0"
             unused1 = "1.0.0"
             unused2 = "2.0.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "nonexistent1" }
             badModule = { module = "invalid-format", version.ref = "nonexistent2" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        
+
         assertFalse("Multiple issues should fail validation", result.isValid)
         assertTrue("Should have multiple errors", result.errors.size >= 3)
         assertTrue("Should have multiple warnings", result.warnings.size >= 2)
-        
+
         // Check for specific error types
-        assertTrue("Should report version incompatibility", 
+        assertTrue("Should report version incompatibility",
             result.errors.any { it.contains("Version incompatibility") })
-        assertTrue("Should report missing version references", 
+        assertTrue("Should report missing version references",
             result.errors.any { it.contains("Missing version reference") })
-        assertTrue("Should report invalid module format", 
+        assertTrue("Should report invalid module format",
             result.errors.any { it.contains("Invalid module format") })
-        assertTrue("Should warn about unreferenced versions", 
+        assertTrue("Should warn about unreferenced versions",
             result.warnings.any { it.contains("Unreferenced version") })
     }
 
@@ -740,16 +740,16 @@ class LibsVersionsTomlEdgeCaseTest {
         val toml = """
             [versions]
             agp = "8.11.1"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
-        
+
         val results = mutableListOf<Boolean>()
         val threads = mutableListOf<Thread>()
-        
+
         repeat(3) {
             val thread = Thread {
                 val validator = LibsVersionsTomlValidator(tempToml)
@@ -761,9 +761,9 @@ class LibsVersionsTomlEdgeCaseTest {
             threads.add(thread)
             thread.start()
         }
-        
+
         threads.forEach { it.join() }
-        
+
         assertEquals("All concurrent validations should complete", 3, results.size)
         assertTrue("All results should be valid", results.all { it })
     }
@@ -774,20 +774,20 @@ class LibsVersionsTomlEdgeCaseTest {
             [versions]
             agp = "8.11.1"
             unused = "1.0.0"
-            
+
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
-        
+
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        
+
         // Test that all required properties are present and valid
         assertNotNull("Result should not be null", result)
         assertNotNull("Errors list should not be null", result.errors)
         assertNotNull("Warnings list should not be null", result.warnings)
         assertTrue("Timestamp should be positive", result.timestamp > 0)
-        
+
         // Test that validation status matches error count
         if (result.errors.isEmpty()) {
             assertTrue("Should be valid when no errors", result.isValid)
@@ -795,3 +795,4 @@ class LibsVersionsTomlEdgeCaseTest {
             assertFalse("Should be invalid when errors present", result.isValid)
         }
     }
+}
