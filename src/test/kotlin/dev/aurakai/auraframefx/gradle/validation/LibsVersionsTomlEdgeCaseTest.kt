@@ -402,7 +402,7 @@ class LibsVersionsTomlEdgeCaseTest {
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        assertFalse(result.isValid)
+        assertFalse("Library without module should be invalid", result.isValid)
         assertTrue(result.errors.any { it.contains("module") })
     }
 
@@ -506,7 +506,7 @@ class LibsVersionsTomlEdgeCaseTest {
             noModule = { version.ref = "agp" }
         """.trimIndent()
         write(toml)
-        val result = LibsVersionsTomlValidator(tempToml).validate()
+        LibsVersionsTomlValidator(tempToml).validate()
         // Library without module property - validation should complete
         assertTrue("Validation should complete without throwing exceptions", true)
     }
@@ -627,7 +627,7 @@ class LibsVersionsTomlEdgeCaseTest {
         val finalMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
         val memoryIncrease = finalMemory - initialMemory
 
-        // Memory increase should be reasonable (less than 50MB)
+        // Memory increase should stay reasonable (less than 50MB)
         assertTrue("Memory usage should stay reasonable", memoryIncrease < 50 * 1024 * 1024)
     }
 }
