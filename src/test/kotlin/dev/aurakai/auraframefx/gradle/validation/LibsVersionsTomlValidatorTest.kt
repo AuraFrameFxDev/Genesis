@@ -136,7 +136,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
@@ -350,8 +349,7 @@ class LibsVersionsTomlValidatorTest {
         assertFalse(result.isValid)
         assertTrue(result.errors.any { it.contains("id") || it.contains("no-id-plugin") })
     }
-    
-}
+
     @Test
     fun `validate should handle malformed TOML syntax`() {
         val malformedToml = """
@@ -644,14 +642,14 @@ class LibsVersionsTomlValidatorTest {
     fun `validate should handle large TOML files gracefully`() {
         val largeTomlBuilder = StringBuilder()
         largeTomlBuilder.append("[versions]\n")
-        
+
         // Generate 100 version entries to test performance
         for (i in 1..100) {
             largeTomlBuilder.append("version$i = \"1.0.$i\"\n")
         }
-        
+
         largeTomlBuilder.append("\n[libraries]\n")
-        
+
         // Generate 100 library entries
         for (i in 1..100) {
             largeTomlBuilder.append("lib$i = { module = \"group$i:artifact$i\", version.ref = \"version$i\" }\n")
@@ -669,9 +667,9 @@ class LibsVersionsTomlValidatorTest {
     fun `ValidationResult addError should mark result as invalid`() {
         val result = ValidationResult()
         assertTrue(result.isValid)
-        
+
         result.addError("Test error")
-        
+
         assertFalse(result.isValid)
         assertEquals(listOf("Test error"), result.errors)
     }
@@ -680,9 +678,9 @@ class LibsVersionsTomlValidatorTest {
     fun `ValidationResult addWarning should not affect validity`() {
         val result = ValidationResult()
         assertTrue(result.isValid)
-        
+
         result.addWarning("Test warning")
-        
+
         assertTrue(result.isValid)
         assertEquals(listOf("Test warning"), result.warnings)
     }
@@ -690,12 +688,12 @@ class LibsVersionsTomlValidatorTest {
     @Test
     fun `ValidationResult should handle multiple errors and warnings`() {
         val result = ValidationResult()
-        
+
         result.addError("Error 1")
         result.addError("Error 2")
         result.addWarning("Warning 1")
         result.addWarning("Warning 2")
-        
+
         assertFalse(result.isValid)
         assertEquals(listOf("Error 1", "Error 2"), result.errors)
         assertEquals(listOf("Warning 1", "Warning 2"), result.warnings)
