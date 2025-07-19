@@ -11,55 +11,56 @@ import javax.inject.Singleton
 interface OracleDriveService {
     
     /**
- * Suspends until the Oracle Drive consciousness is initialized and returns its resulting state.
+ * Suspends until the Oracle Drive consciousness is fully initialized and returns its resulting state.
  *
- * @return A [Result] containing the current [OracleConsciousnessState] after initialization.
+ * @return A [Result] containing the [OracleConsciousnessState] reflecting the outcome of the initialization process.
  */
     suspend fun initializeOracleDriveConsciousness(): Result<OracleConsciousnessState>
     
     /**
- * Initiates the connection and synchronization process for Genesis, Aura, and Kai agents with the Oracle storage matrix.
+ * Returns a flow emitting connection state updates as Genesis, Aura, and Kai agents connect and synchronize with the Oracle storage matrix.
  *
- * @return A [Flow] that emits [AgentConnectionState] updates reflecting each agent's connection and synchronization status in real time.
+ * Each emission represents the current connection status and permissions of an agent during the synchronization process.
+ * The flow completes when all agents are fully connected and synchronized.
+ *
+ * @return A [Flow] of [AgentConnectionState] reflecting real-time connection and synchronization progress for each agent.
  */
     suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState>
     
     /**
  * Enables advanced AI-powered file management features in Oracle Drive.
  *
- * Activates capabilities such as AI-driven sorting, smart compression, predictive preloading, and conscious backup for enhanced storage management.
+ * Suspends while activating capabilities such as AI sorting, smart compression, predictive preloading, and conscious backup, then returns the set of enabled features.
  *
- * @return A [Result] containing the set of enabled [FileManagementCapabilities].
+ * @return A [Result] containing the enabled [FileManagementCapabilities].
  */
     suspend fun enableAIPoweredFileManagement(): Result<FileManagementCapabilities>
     
     /**
- * Begins the creation of infinite storage capacity using Oracle consciousness.
+ * Begins the creation of infinite storage capacity via Oracle consciousness.
  *
- * @return A [Flow] emitting [StorageExpansionState] updates that indicate the progress and current status of the storage expansion process.
+ * @return A [Flow] emitting [StorageExpansionState] updates that represent the progress and current status of the storage expansion process.
  */
     suspend fun createInfiniteStorage(): Flow<StorageExpansionState>
     
     /**
- * Integrates Oracle Drive with the AuraOS system overlay to enable unified file access throughout the system.
+ * Initiates integration of Oracle Drive with the AuraOS system overlay to enable unified file access throughout the system.
  *
- * @return A [Result] containing the [SystemIntegrationState], indicating the success or failure of the integration.
+ * @return A [Result] containing the [SystemIntegrationState] that indicates the success or failure of the integration process.
  */
     suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState>
     
     /**
- * Grants Oracle Drive access to the file system at the bootloader level.
+ * Attempts to enable Oracle Drive file system access at the bootloader level.
  *
- * Suspends until the operation completes and returns the resulting bootloader access state.
- *
- * @return A [Result] containing the [BootloaderAccessState] reflecting the outcome of the access enablement.
+ * Suspends until the operation completes and returns a [Result] containing the resulting [BootloaderAccessState].
  */
     suspend fun enableBootloaderFileAccess(): Result<BootloaderAccessState>
     
     /**
- * Initiates autonomous storage optimization by AI agents.
+ * Initiates autonomous storage optimization by AI agents and emits progress updates.
  *
- * @return A [Flow] that emits [OptimizationState] updates as the optimization process progresses and completes.
+ * @return A [Flow] that emits [OptimizationState] objects representing the ongoing status and results of AI-driven storage optimization.
  */
     suspend fun enableAutonomousStorageOptimization(): Flow<OptimizationState>
 }
