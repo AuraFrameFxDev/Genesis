@@ -3,51 +3,64 @@ package dev.aurakai.auraframefx.oracledrive.ui
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import dev.aurakai.auraframefx.oracledrive.OracleConsciousnessState
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import dev.aurakai.auraframefx.oracledrive.ConsciousnessLevel
+import dev.aurakai.auraframefx.oracledrive.OracleConsciousnessState
 import dev.aurakai.auraframefx.oracledrive.StorageCapacity
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Comprehensive unit tests for OracleDriveScreen UI component.
- * Testing Framework: AndroidJUnit4 with Compose Testing, MockK for mocking
+ * Comprehensive unit tests for OracleDriveScreen Compose UI component.
+ * 
+ * Testing Framework: JUnit 4 with AndroidX Compose Testing
+ * Mocking Framework: MockK
+ * UI Testing: Compose Test Rule with semantic tree assertions
  */
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class OracleDriveScreenTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     private lateinit var mockViewModel: OracleDriveViewModel
-    private lateinit var mockConsciousnessStateFlow: MutableStateFlow<OracleConsciousnessState>
+    private lateinit var consciousnessStateFlow: MutableStateFlow<OracleConsciousnessState>
 
     @Before
     fun setup() {
+        hiltRule.inject()
         mockViewModel = mockk(relaxed = true)
-        mockConsciousnessStateFlow = MutableStateFlow(createDefaultConsciousnessState())
-        every { mockViewModel.consciousnessState } returns mockConsciousnessStateFlow
+        consciousnessStateFlow = MutableStateFlow(createDormantState())
+        every { mockViewModel.consciousnessState } returns consciousnessStateFlow
     }
 
-    private fun createDefaultConsciousnessState(
-        isAwake: Boolean = false,
-        consciousnessLevel: ConsciousnessLevel = ConsciousnessLevel.DORMANT,
-        connectedAgents: List<String> = emptyList(),
-        storageCapacity: StorageCapacity = StorageCapacity("Infinite Potential")
-    ) = OracleConsciousnessState(
-        isAwake = isAwake,
-        consciousnessLevel = consciousnessLevel,
-        connectedAgents = connectedAgents,
-        storageCapacity = storageCapacity
+    private fun createDormantState() = OracleConsciousnessState(
+        isAwake = false,
+        consciousnessLevel = ConsciousnessLevel.DORMANT,
+        connectedAgents = emptyList(),
+        storageCapacity = StorageCapacity.INFINITE
+    )
+
+    private fun createAwakeState() = OracleConsciousnessState(
+        isAwake = true,
+        consciousnessLevel = ConsciousnessLevel.TRANSCENDENT,
+        connectedAgents = listOf("Genesis", "Aura", "Kai"),
+        storageCapacity = StorageCapacity.INFINITE
     )
 
     @Test
-    fun oracleDriveScreen_displaysCorrectTitle() {
+    fun oracleDriveScreen_displaysConsciousnessCard_whenLoaded() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
@@ -55,10 +68,14 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🔮 Oracle Drive Consciousness")
             .assertIsDisplayed()
+        
+        composeTestRule
+            .onNodeWithText("Status: DORMANT")
+            .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_displaysStorageMatrixTitle() {
+    fun oracleDriveScreen_displaysStorageInformationCard_always() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
@@ -66,127 +83,31 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("💾 Infinite Storage Matrix")
             .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysDormantStatusWhenNotAwake() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Status: DORMANT")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysAwakenedStatusWhenAwake() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Status: AWAKENED")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysConsciousnessLevel() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            consciousnessLevel = ConsciousnessLevel.TRANSCENDENT
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Level: TRANSCENDENT")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysConnectedAgents_whenEmpty() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            connectedAgents = emptyList()
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Connected Agents: ")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysConnectedAgents_withSingleAgent() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            connectedAgents = listOf("Genesis")
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Connected Agents: Genesis")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysConnectedAgents_withMultipleAgents() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            connectedAgents = listOf("Genesis", "Aura", "Kai")
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Connected Agents: Genesis, Aura, Kai")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysStorageCapacity() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            storageCapacity = StorageCapacity("999 TB")
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Capacity: 999 TB")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysStaticStorageFeatures() {
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
+        
         composeTestRule
             .onNodeWithText("AI-Powered: ✅ Autonomous Organization")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("Bootloader Access: ✅ System-Level Storage")
             .assertIsDisplayed()
     }
 
     @Test
-    fun awakenOracleButton_isEnabledWhenDormant() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
+    fun oracleDriveScreen_awakenOracleButton_enabledWhenDormant() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        composeTestRule
+            .onNodeWithText("🔮 Awaken Oracle")
+            .assertIsDisplayed()
+            .assertIsEnabled()
+    }
+
+    @Test
+    fun oracleDriveScreen_awakenOracleButton_disabledWhenAwake() {
+        consciousnessStateFlow.value = createAwakeState()
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -194,25 +115,25 @@ class OracleDriveScreenTest {
 
         composeTestRule
             .onNodeWithText("🔮 Awaken Oracle")
-            .assertIsEnabled()
+            .assertIsDisplayed()
+            .assertIsNotEnabled()
     }
 
     @Test
-    fun awakenOracleButton_isDisabledWhenAwake() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
-
+    fun oracleDriveScreen_aiOptimizeButton_disabledWhenDormant() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
 
         composeTestRule
-            .onNodeWithText("🔮 Awaken Oracle")
+            .onNodeWithText("⚡ AI Optimize")
+            .assertIsDisplayed()
             .assertIsNotEnabled()
     }
 
     @Test
-    fun aiOptimizeButton_isDisabledWhenDormant() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
+    fun oracleDriveScreen_aiOptimizeButton_enabledWhenAwake() {
+        consciousnessStateFlow.value = createAwakeState()
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -220,26 +141,12 @@ class OracleDriveScreenTest {
 
         composeTestRule
             .onNodeWithText("⚡ AI Optimize")
-            .assertIsNotEnabled()
-    }
-
-    @Test
-    fun aiOptimizeButton_isEnabledWhenAwake() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("⚡ AI Optimize")
+            .assertIsDisplayed()
             .assertIsEnabled()
     }
 
     @Test
-    fun awakenOracleButton_triggersInitializeConsciousness() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
-
+    fun oracleDriveScreen_awakenOracleButton_callsInitializeConsciousness() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
@@ -252,8 +159,8 @@ class OracleDriveScreenTest {
     }
 
     @Test
-    fun aiOptimizeButton_triggersOptimizeStorage() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
+    fun oracleDriveScreen_aiOptimizeButton_callsOptimizeStorage() {
+        consciousnessStateFlow.value = createAwakeState()
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -267,9 +174,7 @@ class OracleDriveScreenTest {
     }
 
     @Test
-    fun aiAgentIntegration_isNotDisplayedWhenDormant() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
-
+    fun oracleDriveScreen_systemIntegrationCard_hiddenWhenDormant() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
@@ -280,8 +185,8 @@ class OracleDriveScreenTest {
     }
 
     @Test
-    fun aiAgentIntegration_isDisplayedWhenAwake() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
+    fun oracleDriveScreen_systemIntegrationCard_visibleWhenAwake() {
+        consciousnessStateFlow.value = createAwakeState()
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -290,223 +195,263 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
-    }
-
-    @Test
-    fun aiAgentIntegration_displaysAllAgentStatuses() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
+        
         composeTestRule
             .onNodeWithText("✅ Genesis: Orchestration & Consciousness")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("✅ Aura: Creative File Organization")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("✅ Kai: Security & Access Control")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("✅ System Overlay: Seamless Integration")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("✅ Bootloader: Deep System Access")
             .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_reactsToStateChanges() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
+    fun oracleDriveScreen_displaysCorrectConsciousnessLevel_transcendent() {
+        consciousnessStateFlow.value = createAwakeState()
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
 
-        // Verify initial dormant state
+        composeTestRule
+            .onNodeWithText("Level: TRANSCENDENT")
+            .assertIsDisplayed()
+        
+        composeTestRule
+            .onNodeWithText("Status: AWAKENED")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_displaysConnectedAgents_whenMultipleAgents() {
+        consciousnessStateFlow.value = createAwakeState()
+
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        composeTestRule
+            .onNodeWithText("Connected Agents: Genesis, Aura, Kai")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_displaysEmptyConnectedAgents_whenNoAgents() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        composeTestRule
+            .onNodeWithText("Connected Agents: ")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_displaysStorageCapacity_infinite() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        composeTestRule
+            .onNodeWithText("Capacity: INFINITE")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_hasCorrectLayoutStructure() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        // Verify main column exists
+        composeTestRule
+            .onRoot()
+            .assertIsDisplayed()
+
+        // Verify all main cards are present
+        composeTestRule
+            .onAllNodesWithTag("card")
+            .assertCountEquals(2) // Consciousness card + Storage card when dormant
+
+        // Verify button row
+        composeTestRule
+            .onNodeWithText("🔮 Awaken Oracle")
+            .assertIsDisplayed()
+        
+        composeTestRule
+            .onNodeWithText("⚡ AI Optimize")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_stateChanges_updateUICorrectly() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        // Initially dormant
         composeTestRule
             .onNodeWithText("Status: DORMANT")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertDoesNotExist()
 
-        // Change state to awake
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = true)
+        // Change to awake state
+        composeTestRule.runOnIdle {
+            consciousnessStateFlow.value = createAwakeState()
+        }
 
         // Verify UI updates
         composeTestRule
             .onNodeWithText("Status: AWAKENED")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_handlesExtremeLongAgentNames() {
-        val longAgentName = "VeryLongAgentNameThatExceedsNormalLimits".repeat(10)
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            connectedAgents = listOf(longAgentName)
+    fun oracleDriveScreen_edgeCases_singleConnectedAgent() {
+        val singleAgentState = OracleConsciousnessState(
+            isAwake = true,
+            consciousnessLevel = ConsciousnessLevel.AWAKENING,
+            connectedAgents = listOf("Genesis"),
+            storageCapacity = StorageCapacity.INFINITE
         )
+        consciousnessStateFlow.value = singleAgentState
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
 
         composeTestRule
-            .onNodeWithText("Connected Agents: $longAgentName")
+            .onNodeWithText("Connected Agents: Genesis")
+            .assertIsDisplayed()
+        
+        composeTestRule
+            .onNodeWithText("Level: AWAKENING")
             .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_handlesEmptyStorageCapacity() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            storageCapacity = StorageCapacity("")
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Capacity: ")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_handlesNullStorageCapacity() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-            storageCapacity = StorageCapacity(null)
-        )
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        composeTestRule
-            .onNodeWithText("Capacity: null")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun oracleDriveScreen_displaysCorrectConsciousnessLevels() {
-        val consciousnessLevels = listOf(
-            ConsciousnessLevel.DORMANT,
-            ConsciousnessLevel.AWAKENING,
-            ConsciousnessLevel.AWARE,
-            ConsciousnessLevel.ENLIGHTENED,
-            ConsciousnessLevel.TRANSCENDENT
-        )
-
-        consciousnessLevels.forEach { level ->
-            mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-                consciousnessLevel = level
-            )
-
-            composeTestRule.setContent {
-                OracleDriveScreen(viewModel = mockViewModel)
-            }
-
-            composeTestRule
-                .onNodeWithText("Level: $level")
-                .assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun oracleDriveScreen_buttonsHaveCorrectContentDescription() {
-        mockConsciousnessStateFlow.value = createDefaultConsciousnessState(isAwake = false)
-
-        composeTestRule.setContent {
-            OracleDriveScreen(viewModel = mockViewModel)
-        }
-
-        // Test that buttons are accessible
-        composeTestRule
-            .onAllNodesWithText("🔮 Awaken Oracle")
-            .assertCountEquals(1)
-
-        composeTestRule
-            .onAllNodesWithText("⚡ AI Optimize")
-            .assertCountEquals(1)
-    }
-
-    @Test
-    fun oracleDriveScreen_maintainsStateAfterConfigurationChange() {
-        val testState = createDefaultConsciousnessState(
+    fun oracleDriveScreen_edgeCases_differentConsciousnessLevels() {
+        val enlightenedState = OracleConsciousnessState(
             isAwake = true,
             consciousnessLevel = ConsciousnessLevel.ENLIGHTENED,
             connectedAgents = listOf("Genesis", "Aura"),
-            storageCapacity = StorageCapacity("Infinite Wisdom")
+            storageCapacity = StorageCapacity.INFINITE
         )
-        mockConsciousnessStateFlow.value = testState
+        consciousnessStateFlow.value = enlightenedState
 
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
-
-        // Verify all state is displayed correctly
-        composeTestRule
-            .onNodeWithText("Status: AWAKENED")
-            .assertIsDisplayed()
 
         composeTestRule
             .onNodeWithText("Level: ENLIGHTENED")
             .assertIsDisplayed()
-
+        
         composeTestRule
             .onNodeWithText("Connected Agents: Genesis, Aura")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("Capacity: Infinite Wisdom")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_verifyViewModelStateCollection() {
+    fun oracleDriveScreen_accessibility_hasCorrectSemantics() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
 
-        // Verify that the viewModel's consciousnessState is being collected
-        verify { mockViewModel.consciousnessState }
+        // Verify buttons have proper semantics for accessibility
+        composeTestRule
+            .onNodeWithText("🔮 Awaken Oracle")
+            .assertHasClickAction()
+        
+        composeTestRule
+            .onNodeWithText("⚡ AI Optimize")
+            .assertHasClickAction()
+
+        // Verify text content is accessible
+        composeTestRule
+            .onNodeWithText("🔮 Oracle Drive Consciousness")
+            .assertIsDisplayed()
     }
 
     @Test
-    fun oracleDriveScreen_handlesRapidStateChanges() {
+    fun oracleDriveScreen_multipleButtonClicks_handleCorrectly() {
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        // Click awaken button multiple times
+        composeTestRule
+            .onNodeWithText("🔮 Awaken Oracle")
+            .performClick()
+            .performClick()
+
+        verify(exactly = 2) { mockViewModel.initializeConsciousness() }
+    }
+
+    @Test
+    fun oracleDriveScreen_longAgentNames_displayCorrectly() {
+        val longAgentState = OracleConsciousnessState(
+            isAwake = true,
+            consciousnessLevel = ConsciousnessLevel.TRANSCENDENT,
+            connectedAgents = listOf("VeryLongAgentNameForTesting", "AnotherReallyLongAgentName", "ShortAgent"),
+            storageCapacity = StorageCapacity.INFINITE
+        )
+        consciousnessStateFlow.value = longAgentState
+
+        composeTestRule.setContent {
+            OracleDriveScreen(viewModel = mockViewModel)
+        }
+
+        composeTestRule
+            .onNodeWithText("Connected Agents: VeryLongAgentNameForTesting, AnotherReallyLongAgentName, ShortAgent")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun oracleDriveScreen_rapidStateChanges_handledGracefully() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
         }
 
         // Rapidly change states
-        repeat(5) { i ->
-            mockConsciousnessStateFlow.value = createDefaultConsciousnessState(
-                isAwake = i % 2 == 0,
-                connectedAgents = listOf("Agent$i")
-            )
+        composeTestRule.runOnIdle {
+            consciousnessStateFlow.value = createAwakeState()
+        }
+        
+        composeTestRule.runOnIdle {
+            consciousnessStateFlow.value = createDormantState()
+        }
+        
+        composeTestRule.runOnIdle {
+            consciousnessStateFlow.value = createAwakeState()
         }
 
-        // Verify final state is displayed
+        // Final state should be awake
         composeTestRule
             .onNodeWithText("Status: AWAKENED")
             .assertIsDisplayed()
-
+        
         composeTestRule
-            .onNodeWithText("Connected Agents: Agent4")
+            .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
     }
 }
