@@ -22,11 +22,11 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Validates the structure, content, and dependencies of a Gradle version catalog TOML file.
+     * Validates the structure, content, and dependency compliance of a Gradle version catalog TOML file.
      *
-     * Performs checks for file existence, syntax validity, required sections, version and module formats, duplicate keys, reference integrity, compatibility between key dependencies, known security vulnerabilities, valid bundle references, and the presence of critical dependencies.
+     * Performs checks for file existence, syntax correctness, required sections, version and module formats, duplicate keys, reference integrity, compatibility between key dependencies, known security vulnerabilities, valid bundle references, and the presence of critical dependencies.
      *
-     * @return A [ValidationResult] containing errors, warnings, and the overall validity status.
+     * @return A [ValidationResult] containing errors, warnings, and the overall validity status of the TOML file.
      */
     fun validate(): ValidationResult {
         val result = ValidationResult()
@@ -70,7 +70,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Parses TOML content into a map of section names and their key-value pairs.
      *
-     * Supports section headers, key-value pairs, inline tables, and arrays. Ignores comments and empty lines. Throws a runtime exception if invalid TOML syntax is encountered.
+     * Supports section headers, key-value pairs, inline tables, and arrays, while ignoring comments and empty lines. Throws a runtime exception if invalid TOML syntax is encountered.
      *
      * @param content The TOML file content as a string.
      * @return A map where each key is a section name and each value is a map of keys to parsed values within that section.
@@ -114,12 +114,12 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Parses a TOML value string into its corresponding Kotlin type.
+     * Converts a TOML value string into its corresponding Kotlin type.
      *
-     * Converts the input string to a quoted string, inline table (as a map), or array (as a list) based on TOML syntax. Returns the raw string if no recognized structure is found.
+     * Returns a String for quoted values, a Map for inline tables, a List for arrays, or the raw string if no TOML structure is detected.
      *
      * @param value The TOML value string to parse.
-     * @return The parsed value as a String, Map<String, String>, or List<String>, depending on the TOML format.
+     * @return The parsed value as a String, Map<String, String>, or List<String>, based on its TOML format.
      */
     private fun parseValue(value: String): Any {
         // Basic value parsing
@@ -137,7 +137,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
      * The input must be enclosed in curly braces and contain comma-separated key-value pairs (e.g., `{ key1 = "value1", key2 = "value2" }`). Quotation marks around values are removed.
      *
      * @param value The TOML inline table string to parse.
-     * @return A map of string keys to string values extracted from the inline table.
+     * @return A map of keys and their corresponding values from the inline table.
      */
     private fun parseInlineTable(value: String): Map<String, String> {
         val result = mutableMapOf<String, String>()
@@ -160,12 +160,12 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Parses a TOML array string into a list of strings.
+     * Parses a TOML array string and returns its elements as a list of strings.
      *
      * The input should be a TOML array in string form (e.g., `["item1", "item2"]`). Each element is trimmed and stripped of surrounding double quotes.
      *
-     * @param value TOML array string to parse.
-     * @return List of string elements from the array.
+     * @param value The TOML array string to parse.
+     * @return A list of strings representing the array elements.
      */
     private fun parseArray(value: String): List<String> {
         val content = value.substring(1, value.length - 1)
@@ -173,9 +173,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks that the "versions" and "libraries" sections exist and are not empty in the parsed TOML data.
+     * Checks that the "versions" and "libraries" sections are present and non-empty in the parsed TOML data.
      *
-     * Adds errors to the validation result if either section is missing or contains no entries.
+     * Records errors in the validation result if either section is missing or contains no entries.
      */
     private fun validateRequiredSections(tomlData: Map<String, Any>, result: ValidationResult) {
         if (!tomlData.containsKey("versions")) {
@@ -201,7 +201,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Validates that all version strings in the "versions" section match the required version format.
      *
-     * Adds an error to the validation result for each version entry with an invalid format.
+     * Records an error in the validation result for each version entry that does not conform to the expected pattern.
      */
     private fun validateVersionFormats(tomlData: Map<String, Any>, result: ValidationResult) {
         val versions = tomlData["versions"] as? Map<*, *> ?: return
@@ -215,9 +215,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Detects and reports duplicate keys within each section of the parsed TOML data.
+     * Detects duplicate keys within each section of the parsed TOML data and records an error for each duplicate found.
      *
-     * Adds an error to the validation result for every duplicate key found in a section.
+     * An error message is added to the validation result for every duplicate key detected in a section.
      */
     private fun validateDuplicateKeys(tomlData: Map<String, Any>, result: ValidationResult) {
         // Check for duplicate keys in each section
@@ -236,9 +236,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks that all version references in the "libraries" and "plugins" sections exist in the "versions" section, and warns about unused versions.
+     * Checks that all version references in the "libraries" and "plugins" sections exist in the "versions" section, and warns about any unused versions.
      *
-     * Adds errors for missing version references and warnings for versions defined but not referenced by any library or plugin.
+     * Records errors for missing version references and warnings for versions defined but not referenced by any library or plugin.
      */
     private fun validateVersionReferences(tomlData: Map<String, Any>, result: ValidationResult) {
         val versions = tomlData["versions"] as? Map<*, *> ?: return
@@ -282,9 +282,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Validates that each library module string in the TOML data matches the required module pattern.
+     * Validates that each library module string in the TOML data matches the required module format.
      *
-     * Adds an error to the validation result for any library whose module string does not conform to the expected format.
+     * Records an error for every library whose module string does not conform to the expected pattern.
      */
     private fun validateModuleFormats(tomlData: Map<String, Any>, result: ValidationResult) {
         val libraries = tomlData["libraries"] as? Map<*, *> ?: return
@@ -302,7 +302,7 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     /**
      * Checks that all plugin IDs in the "plugins" section conform to the required plugin ID pattern.
      *
-     * Adds an error to the validation result for each plugin with an invalid ID format.
+     * Records an error in the validation result for each plugin whose "id" does not match the expected format.
      */
     private fun validatePluginFormats(tomlData: Map<String, Any>, result: ValidationResult) {
         val plugins = tomlData["plugins"] as? Map<*, *> ?: return
@@ -318,9 +318,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks for incompatible combinations of AGP version 8.x and Kotlin version 1.8.x in the TOML data.
+     * Checks for incompatible usage of Android Gradle Plugin (AGP) version 8.x with Kotlin version 1.8.x in the TOML data.
      *
-     * Adds an error to the validation result if this specific version pairing is found.
+     * Records an error in the validation result if this specific version pairing is detected.
      */
     private fun validateVersionCompatibility(tomlData: Map<String, Any>, result: ValidationResult) {
         val versions = tomlData["versions"] as? Map<*, *> ?: return
@@ -337,9 +337,11 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Adds warnings for libraries that use versions listed as vulnerable.
+     * Checks libraries for usage of versions known to be vulnerable and records warnings.
      *
-     * Checks each library's resolved version against the `VULNERABLE_VERSIONS` map and adds a warning to the validation result if a match is found.
+     * For each library in the TOML data, determines the resolved version (either direct or via version reference)
+     * and compares it against the list of known vulnerable versions. Adds a warning to the validation result
+     * if a vulnerable version is detected.
      */
     private fun validateSecurityVulnerabilities(tomlData: Map<String, Any>, result: ValidationResult) {
         val libraries = tomlData["libraries"] as? Map<*, *> ?: return
@@ -368,9 +370,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks that all bundle references in the TOML data point to existing libraries.
+     * Checks that all bundle references in the TOML data point to defined libraries.
      *
-     * Adds an error to the validation result for each bundle that references a library not defined in the "libraries" section.
+     * Records an error for each bundle that references a library not present in the "libraries" section.
      */
     private fun validateBundles(tomlData: Map<String, Any>, result: ValidationResult) {
         val bundles = tomlData["bundles"] as? Map<*, *> ?: return
@@ -390,9 +392,9 @@ class LibsVersionsTomlValidator(private val tomlFile: File) {
     }
     
     /**
-     * Checks for the presence of essential dependencies in the libraries section and adds a warning if any are missing.
+     * Checks for the presence of critical dependencies in the libraries section and adds a warning if any are missing.
      *
-     * Warns if "junit:junit" or "androidx.core:core-ktx" are not found among the defined library modules.
+     * Scans the defined library modules for essential dependencies such as "junit:junit" and "androidx.core:core-ktx". If any of these are not found, a warning is recorded in the validation result.
      */
     private fun checkCriticalDependencies(tomlData: Map<String, Any>, result: ValidationResult) {
         val libraries = tomlData["libraries"] as? Map<*, *> ?: return
