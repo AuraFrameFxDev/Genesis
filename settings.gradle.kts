@@ -19,4 +19,8 @@ dependencyResolutionManagement {
 rootProject.name = "AuraFrameFX"
 include(":app")
 include(":oracle-drive-integration")
+include(":oracle-drive-integration")
+include(":oracle-drive-integration")
+include(":oracledrive")
+include(":oracledrive")
 include(":oracledrive")
