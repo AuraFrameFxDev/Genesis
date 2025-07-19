@@ -58,6 +58,10 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_24
     targetCompatibility = JavaVersion.VERSION_24
