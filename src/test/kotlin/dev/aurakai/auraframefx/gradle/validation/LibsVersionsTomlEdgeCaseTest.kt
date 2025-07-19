@@ -38,18 +38,15 @@ class LibsVersionsTomlEdgeCaseTest {
 
     @Test
     fun mixedQuoteTypes_areHandled() {
-        val toml = """
-            [versions]
-            single = '1.0.0'
-            double = "2.0.0"
-            multiSingle = '''3.0.0'''
-            multiDouble = """
-            4.0.0
-            """
-            
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "double" }
-        """.trimIndent()
+        val toml = "[versions]\n" +
+                "single = '1.0.0'\n" +
+                "double = \"2.0.0\"\n" +
+                "multiSingle = '''3.0.0'''\n" +
+                "multiDouble = \"\"\"\n" +
+                "4.0.0\n" +
+                "\"\"\"\n\n" +
+                "[libraries]\n" +
+                "testLib = { module = \"com.example:lib\", version.ref = \"double\" }\n"
 
         write(toml)
 
