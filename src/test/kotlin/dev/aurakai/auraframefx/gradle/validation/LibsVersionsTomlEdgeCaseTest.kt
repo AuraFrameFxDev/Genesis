@@ -229,9 +229,9 @@ class LibsVersionsTomlEdgeCaseTest {
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("File should be valid despite unreferenced versions", result.isValid)
-        assertTrue("Should warn about unreferenced version",
+        assertTrue("Should.warn about unreferenced version",
             result.warnings.any { it.contains("Unreferenced version: unused") })
-        assertTrue("Should warn about kotlin version too",
+        assertTrue("Should.warn about.kotlin version too",
             result.warnings.any { it.contains("Unreferenced version: kotlin") })
     }
 
