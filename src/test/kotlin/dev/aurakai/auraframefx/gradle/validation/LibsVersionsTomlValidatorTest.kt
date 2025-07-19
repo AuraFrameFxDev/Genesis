@@ -376,7 +376,6 @@ class LibsVersionsTomlValidatorTest {
     @Test
     fun `validate should handle syntax errors gracefully`() {
         testFile.writeText("invalid toml content [[[")
-
         val result = validator.validate()
 
         assertFalse(result.isValid)
@@ -628,15 +627,10 @@ class LibsVersionsTomlValidatorTest {
     fun `validate should handle very large TOML files efficiently`() {
         val largeTomlBuilder = StringBuilder()
         largeTomlBuilder.append("[versions]\n")
-
-        // Add 500 version entries to test performance
         for (i in 1..500) {
             largeTomlBuilder.append("version$i = \"1.0.$i\"\n")
         }
-
         largeTomlBuilder.append("\n[libraries]\n")
-
-        // Add 500 library entries
         for (i in 1..500) {
             largeTomlBuilder.append("lib$i = { module = \"group:artifact$i\", version.ref = \"version$i\" }\n")
         }
@@ -704,7 +698,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // This should be caught as invalid version format or circular reference
         assertFalse(result.isValid)
     }
 
@@ -820,7 +813,6 @@ class LibsVersionsTomlValidatorTest {
 
         testFile.writeText(validToml)
 
-        // Run validation multiple times
         val result1 = validator.validate()
         val result2 = validator.validate()
         val result3 = validator.validate()
@@ -829,14 +821,12 @@ class LibsVersionsTomlValidatorTest {
         assertTrue(result2.isValid)
         assertTrue(result3.isValid)
 
-        // Timestamps should be different for each validation
         assertTrue(result1.timestamp <= result2.timestamp)
         assertTrue(result2.timestamp <= result3.timestamp)
     }
 
     @Test
     fun `validate should handle file permission errors gracefully`() {
-        // Create a file in a read-only directory
         val readOnlyDir = tempDir.resolve("readonly").toFile()
         readOnlyDir.mkdirs()
         readOnlyDir.setReadOnly()
@@ -849,7 +839,6 @@ class LibsVersionsTomlValidatorTest {
         assertFalse(result.isValid)
         assertEquals(listOf("TOML file does not exist"), result.errors)
 
-        // Clean up
         readOnlyDir.setWritable(true)
     }
 
@@ -912,7 +901,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // Should handle long strings gracefully
         assertTrue(result.isValid || result.errors.isNotEmpty())
     }
 
@@ -934,7 +922,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // Should be valid but might warn about inconsistent naming patterns
         assertTrue(result.isValid)
     }
 
@@ -957,7 +944,6 @@ class LibsVersionsTomlValidatorTest {
 
         testFile.writeText(trailingCommaToml)
 
-        // TOML spec allows trailing commas in arrays
         val result = validator.validate()
 
         assertTrue(result.isValid)
@@ -1056,34 +1042,28 @@ class LibsVersionsTomlValidatorTest {
 
         testFile.writeText(validToml)
 
-        // Simulate concurrent validation (though in single-threaded test environment)
         val results = mutableListOf<ValidationResult>()
         repeat(10) {
             results.add(validator.validate())
         }
 
-        // All results should be valid
         assertTrue(results.all { it.isValid })
         assertTrue(results.all { it.errors.isEmpty() })
     }
 
     @Test
     fun `validate should handle files with BOM (Byte Order Mark)`() {
-        // UTF-8 BOM followed by valid TOML
         val bomToml = "\uFEFF[versions]\ntest = \"1.0.0\"\n\n[libraries]\nlib = { module = \"group:artifact\", version.ref = \"test\" }"
-
         testFile.writeText(bomToml)
 
         val result = validator.validate()
 
-        // Should handle BOM gracefully
         assertTrue(result.isValid || result.errors.any { it.contains("Syntax error") })
     }
 
     @Test
     fun `validate should handle TOML with Windows line endings`() {
         val windowsLineEndingsToml = "[versions]\r\ntest = \"1.0.0\"\r\n\r\n[libraries]\r\nlib = { module = \"group:artifact\", version.ref = \"test\" }"
-
         testFile.writeText(windowsLineEndingsToml)
 
         val result = validator.validate()
@@ -1095,7 +1075,6 @@ class LibsVersionsTomlValidatorTest {
     @Test
     fun `validate should handle mixed line endings gracefully`() {
         val mixedLineEndingsToml = "[versions]\ntest = \"1.0.0\"\r\n\n[libraries]\r\nlib = { module = \"group:artifact\", version.ref = \"test\" }\n"
-
         testFile.writeText(mixedLineEndingsToml)
 
         val result = validator.validate()
@@ -1108,19 +1087,13 @@ class LibsVersionsTomlValidatorTest {
     fun `validate should handle stress test with maximum practical TOML size`() {
         val stressTestBuilder = StringBuilder()
         stressTestBuilder.append("[versions]\n")
-
-        // Create 1000 versions to stress test parsing and validation
         for (i in 1..1000) {
             stressTestBuilder.append("stress-version-$i = \"1.0.$i\"\n")
         }
-
         stressTestBuilder.append("\n[libraries]\n")
-
-        // Create 1000 corresponding libraries
         for (i in 1..1000) {
             stressTestBuilder.append("stress-lib-$i = { module = \"com.stress:lib$i\", version.ref = \"stress-version-$i\" }\n")
         }
-
         stressTestBuilder.append("\n[bundles]\n")
         stressTestBuilder.append("stress-bundle = [")
         for (i in 1..1000) {
@@ -1135,7 +1108,6 @@ class LibsVersionsTomlValidatorTest {
         val result = validator.validate()
         val endTime = System.currentTimeMillis()
 
-        // Should complete validation within reasonable time (less than 10 seconds)
         assertTrue(endTime - startTime < 10000, "Validation took too long: ${'$'}{endTime - startTime}ms")
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
@@ -1190,7 +1162,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // Should pass compatibility checks for properly matched versions
         assertTrue(result.isValid)
         assertFalse(result.errors.any { it.contains("Version incompatibility") })
     }
@@ -1202,7 +1173,6 @@ class LibsVersionsTomlValidatorTest {
             errors = emptyList(),
             warnings = emptyList()
         )
-
         val nullishResult = ValidationResult(
             isValid = false,
             errors = listOf(),
@@ -1267,15 +1237,12 @@ class LibsVersionsTomlValidatorTest {
 
         testFile.writeText(initialToml)
 
-        // Simulate file being modified during validation
         val result1 = validator.validate()
 
-        // Modify file between validations
         testFile.writeText("[versions]\ninvalid = \"broken\"\n")
 
         val result2 = validator.validate()
 
-        // Both results should be consistent with their respective file states
         assertTrue(result1.isValid)
         assertFalse(result2.isValid)
     }
@@ -1297,7 +1264,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // Should handle various number formats appropriately
         assertTrue(result.isValid || result.errors.any { it.contains("Invalid version format") })
     }
 
@@ -1392,7 +1358,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // TOML spec allows multiple section definitions - they should merge
         assertTrue(result.isValid || result.errors.any { it.contains("Syntax error") || it.contains("Duplicate") })
     }
 
@@ -1467,7 +1432,6 @@ class LibsVersionsTomlValidatorTest {
 
         val result = validator.validate()
 
-        // Should handle long lines gracefully without crashing
         assertTrue(result.isValid || result.errors.isNotEmpty())
     }
 }
