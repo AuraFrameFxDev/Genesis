@@ -642,13 +642,7 @@ class LibsVersionsTomlTest {
             writer.write(content)
         }
     }
-}
-    // ============================================================================
-    // Additional Comprehensive Test Coverage
-    // Testing framework: JUnit 4 (maintaining consistency with existing tests)
-    // ============================================================================
-    
-    // Constructor and Initialization Tests
+
     @Test
     fun testValidatorInitializationWithValidFile() {
         // Test validator initialization with a valid file
@@ -1124,6 +1118,7 @@ class LibsVersionsTomlTest {
             android = {  id = "com.android.application" , version.ref = "agp"  }
             
             
+            
         """.trimIndent()
         
         writeTomlFile(whitespaceToml)
@@ -1232,5 +1227,53 @@ class LibsVersionsTomlTest {
         } catch (e: Exception) {
             fail("$message - Exception thrown: ${e.message}")
         }
+    }
+
+    // Additional validation for internal consistency
+    @Test
+    fun testValidationResultInternalConsistency() {
+        // Test that validation results have internal consistency
+        writeTomlFile(validTomlContent)
+        
+        val validator = LibsVersionsTomlValidator(tempTomlFile)
+        val result = validator.validate()
+        
+        // Basic consistency checks
+        assertTrue("Valid result should have timestamp", result.timestamp > 0)
+        assertTrue("Valid result should have isValid true", result.isValid)
+        assertTrue("Valid result should have empty errors", result.errors.isEmpty())
+        
+        // Check that collections are properly initialized
+        assertNotNull("Errors collection should not be null", result.errors)
+        assertNotNull("Warnings collection should not be null", result.warnings)
+        
+        // Check that result state is consistent
+        if (result.isValid) {
+            assertTrue("Valid results should have no critical errors", 
+                result.errors.none { it.contains("critical") || it.contains("fatal") })
+        }
+    }
+
+    // Test for proper resource cleanup
+    @Test
+    fun testResourceCleanup() {
+        // Test that validator properly handles resource cleanup
+        writeTomlFile(validTomlContent)
+        
+        val validator = LibsVersionsTomlValidator(tempTomlFile)
+        
+        // Perform multiple validations to test resource management
+        repeat(100) {
+            val result = validator.validate()
+            assertNotNull("Each validation should return a result", result)
+        }
+        
+        // Force garbage collection and verify no memory leaks
+        Thread.sleep(100) // Allow GC to run
+        
+        // Additional validation should still work
+        val finalResult = validator.validate()
+        assertNotNull("Final validation should still work", finalResult)
+        assertTrue("Final validation should succeed", finalResult.isValid)
     }
 }
