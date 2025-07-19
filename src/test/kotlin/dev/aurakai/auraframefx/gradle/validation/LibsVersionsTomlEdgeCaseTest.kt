@@ -21,7 +21,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
     @After
     fun tearDown() {
-        tempToml.delete()
+        if (::tempToml.isInitialized) {
+            tempToml.delete()
+        }
     }
 
     // Helper
@@ -454,6 +456,7 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun validatorWithNullFile_isHandledGracefully() {
         try {
+            @Suppress("CAST_NEVER_SUCCEEDS")
             val result = LibsVersionsTomlValidator(null as File?).validate()
             assertFalse("Null file should be invalid", result.isValid)
             assertTrue("Should report null file error",
