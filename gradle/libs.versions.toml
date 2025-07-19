@@ -139,12 +139,11 @@ compose = [
     "compose-ui",
     "compose-ui-graphics",
     "compose-ui-tooling-preview",
-    "compose-material3",
-    "androidx-activity-compose",
+    "
+        1E3androidx-activity-compose",
     "navigation-compose",
     "lifecycle-viewmodel-compose",
     "lifecycle-runtime-compose",
     "accompanistPager",
     "accompanistPermissions",
-    "accompanistSystemuicontroller"
-]
+    "a]
