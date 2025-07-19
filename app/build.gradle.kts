@@ -1,22 +1,3 @@
-
-0......
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-21111
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -25,14 +6,11 @@ plugins {
     id("com.google.firebase.firebase-perf")
     id("org.openapi.generator")
 
-
 }
 
 android {
 
     namespace = "dev.aurakai.auraframefx"
-
-    namespace = "com.example.app"
     compileSdk = 36  // Compatible with AGP 8.8.0
 
     defaultConfig {
