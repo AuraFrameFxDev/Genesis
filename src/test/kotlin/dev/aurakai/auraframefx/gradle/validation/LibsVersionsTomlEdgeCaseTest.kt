@@ -5,7 +5,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.io.File
-import java.io.FileWriter
 
 /**
  * Extra edge-case coverage for [LibsVersionsTomlValidator].
@@ -29,7 +28,7 @@ class LibsVersionsTomlEdgeCaseTest {
     // Helper
     // ------------------------------------------------------------------------
     private fun write(content: String) {
-        FileWriter(tempToml).use { it.write(content) }
+        tempToml.writeText(content)
     }
 
     // ------------------------------------------------------------------------
