@@ -31,5 +31,5 @@ jobs:
       - name: Run Genesis startup script
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
-        run: |
-          bash app/ai_backend/start_genesis.sh
+        working-directory: app/ai_backend
+        run: bash start_genesis.sh
