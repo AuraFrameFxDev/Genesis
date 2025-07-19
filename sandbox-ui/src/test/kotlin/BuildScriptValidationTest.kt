@@ -273,8 +273,6 @@ class BuildScriptValidationTest {
         assertTrue("Build script should use version catalog syntax", buildScript.contains("libs."))
     }
 
-    // ... [other tests unchanged] ...
-
     @Test
     fun `should validate build script with concurrent execution`() {
         val buildScript = createBasicBuildScript()
@@ -283,7 +281,7 @@ class BuildScriptValidationTest {
         val results = mutableListOf<Boolean>()
         val threads = mutableListOf<Thread>()
         
-        repeat(3) { index ->
+        repeat(3) {
             val thread = Thread {
                 try {
                     val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
