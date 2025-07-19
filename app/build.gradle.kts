@@ -1,22 +1,3 @@
-
-0......
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-21111
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -24,7 +5,6 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.firebase.firebase-perf")
     id("org.openapi.generator")
-
 
 }
 
