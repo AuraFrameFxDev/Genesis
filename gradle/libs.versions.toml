@@ -118,6 +118,7 @@ accompanistSystemuicontroller = { module = "com.google.accompanist:accompanist-s
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -138,24 +139,11 @@ compose = [
     "compose-ui",
     "compose-ui-graphics",
     "compose-ui-tooling-preview",
-    "compose-material3",
-    "androidx-activity-compose",
+    "
+        1E3androidx-activity-compose",
     "navigation-compose",
     "lifecycle-viewmodel-compose",
     "lifecycle-runtime-compose",
     "accompanistPager",
     "accompanistPermissions",
-    "accompanistSystemuicontroller"
-]
-
-[plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
-openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
+    "a]
