@@ -1,3 +1,7 @@
+// Gradle configuration for AuraFrameFX with Java 24 and Gradle 8.14.3
+// Note: buildSrc may need to be temporarily disabled to resolve JDK 24 circular dependency issue
+// Will re-enable once main build environment is stable
+
 extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 extra["compileSdkVersion"] = 36
@@ -56,10 +60,12 @@ allprojects {
         options.encoding = "UTF-8"
         options.isIncremental = true
         options.release.set(javaVersion.majorVersion.toInt())
-        options.compilerArgs.addAll(listOf(
-            "--enable-preview",
-            "--add-modules", "jdk.incubator.vector"
-        ))
+        options.compilerArgs.addAll(
+            listOf(
+                "--enable-preview",
+                "--add-modules", "jdk.incubator.vector"
+            )
+        )
     }
 
     // Configure test tasks
@@ -78,7 +84,8 @@ tasks.register<Delete>("clean") {
 }
 
 // Apply custom initialization script to root project if it exists
-val customInitScript = file("$rootDir/custom-init.gradle.kts")
-if (customInitScript.exists()) {
-    apply(from = customInitScript)
-}
+// Temporarily disabled due to Kotlin plugin conflicts with version catalog approach
+// val customInitScript = file("$rootDir/custom-init.gradle.kts")
+// if (customInitScript.exists()) {
+//     apply(from = customInitScript)
+// }
