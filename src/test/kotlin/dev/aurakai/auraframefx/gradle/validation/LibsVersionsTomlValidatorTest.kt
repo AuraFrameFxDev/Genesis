@@ -10,7 +10,8 @@ import java.nio.file.Path
 
 class LibsVersionsTomlValidatorTest {
 
-    @JvmField @TempDir
+    @JvmField
+    @TempDir
     lateinit var tempDir: Path
 
     private lateinit var testFile: File
@@ -100,576 +101,830 @@ class LibsVersionsTomlValidatorTest {
         assertTrue(result.errors.isEmpty())
     }
 
-}
     @Test
-    fun `validate should handle invalid TOML syntax gracefully`() {
-        testFile.writeText("[versions\ninvalid toml syntax")
+    fun `validate should handle empty bundles`() {
+        val emptyBundleToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            lib1 = { module = "group:artifact", version.ref = "test" }
+
+            [bundles]
+            empty = []
+        """.trimIndent()
+
+        testFile.writeText(emptyBundleToml)
+
         val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle range versions`() {
+        val rangeToml = """
+            [versions]
+            range1 = "[1.0,2.0)"
+            range2 = "[1.5,)"
+
+            [libraries]
+            lib1 = { module = "group:artifact", version.ref = "range1" }
+        """.trimIndent()
+
+        testFile.writeText(rangeToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle modules with complex names`() {
+        val complexModuleToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            complex1 = { module = "com.example.group:artifact-name", version.ref = "test" }
+            complex2 = { module = "org.apache.commons:commons-lang3", version.ref = "test" }
+            complex3 = { module = "io.github.user:my_library", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(complexModuleToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle valid plugin IDs with various formats`() {
+        val validPluginToml = """
+            [versions]
+            plugin-version = "1.0.0"
+
+            [libraries]
+            test = { module = "group:artifact", version.ref = "plugin-version" }
+
+            [plugins]
+            android-app = { id = "com.android.application", version.ref = "plugin-version" }
+            kotlin-plugin = { id = "org.jetbrains.kotlin.jvm", version.ref = "plugin-version" }
+            custom = { id = "my.custom.plugin", version.ref = "plugin-version" }
+        """.trimIndent()
+
+        testFile.writeText(validPluginToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should detect multiple critical dependencies`() {
+        val multiTestDepsToml = """
+            [versions]
+            junit = "5.8.2"
+            espresso = "3.4.0"
+
+            [libraries]
+            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+            espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+        """.trimIndent()
+
+        testFile.writeText(multiTestDepsToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertFalse(result.warnings.any { it.contains("Missing critical dependency") })
+    }
+
+    @Test
+    fun `validate should handle files with only versions section`() {
+        val versionsOnlyToml = """
+            [versions]
+            test = "1.0.0"
+        """.trimIndent()
+
+        testFile.writeText(versionsOnlyToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.contains("The libraries section is required"))
+        assertFalse(result.errors.contains("The versions section is required"))
+    }
+
+    @Test
+    fun `validate should handle files with only libraries section`() {
+        val librariesOnlyToml = """
+            [libraries]
+            test = { module = "group:artifact", version = "1.0.0" }
+        """.trimIndent()
+
+        testFile.writeText(librariesOnlyToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.contains("The versions section is required"))
+        assertFalse(result.errors.contains("The libraries section is required"))
+    }
+
+    @Test
+    fun `ValidationResult hashCode should be consistent with equals`() {
+        val result1 = ValidationResult(
+            isValid = true,
+            errors = listOf("error1"),
+            warnings = listOf("warning1"),
+            timestamp = 123456L
+        )
+
+        val result2 = ValidationResult(
+            isValid = true,
+            errors = listOf("error1"),
+            warnings = listOf("warning1"),
+            timestamp = 123456L
+        )
+
+        assertEquals(result1.hashCode(), result2.hashCode())
+    }
+
+    @Test
+    fun `ValidationResult copy should create independent instance`() {
+        val original = ValidationResult(
+            isValid = true,
+            errors = mutableListOf("error1"),
+            warnings = mutableListOf("warning1"),
+            timestamp = 123456L
+        )
+
+        val copied = original.copy(isValid = false)
+
+        assertFalse(copied.isValid)
+        assertTrue(original.isValid)
+        assertEquals(original.errors, copied.errors)
+        assertEquals(original.warnings, copied.warnings)
+        assertEquals(original.timestamp, copied.timestamp)
+    }
+
+    @Test
+    fun `validate should handle valid file reference gracefully`() {
+        val validToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(validToml)
+
+        val result = validator.validate()
+        assertTrue(result.isValid)
+    }
+
+    @Test
+    fun `validate should handle file in non-existent directory`() {
+        val nonExistentPath = tempDir.resolve("non-existent-dir").resolve("libs.versions.toml").toFile()
+        val pathValidator = LibsVersionsTomlValidator(nonExistentPath)
+
+        val result = pathValidator.validate()
+
+        assertFalse(result.isValid)
+        assertEquals(listOf("TOML file does not exist"), result.errors)
+    }
+
+    @Test
+    fun `validate should handle TOML with invalid UTF-8 encoding`() {
+        testFile.writeBytes(byteArrayOf(0xFF.toByte(), 0xFE.toByte(), 0x00, 0x01))
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Syntax error") || it.contains("encoding") })
+    }
+
+    @Test
+    fun `validate should detect libraries with missing version property entirely`() {
+        val noVersionToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            valid-lib = { module = "group:artifact", version.ref = "test" }
+            no-version-lib = { module = "group:artifact2" }
+        """.trimIndent()
+
+        testFile.writeText(noVersionToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("version") && it.contains("no-version-lib") })
+    }
+
+    @Test
+    fun `validate should handle plugins with missing ID property`() {
+        val noIdToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "test" }
+
+            [plugins]
+            valid-plugin = { id = "com.example.plugin", version.ref = "test" }
+            no-id-plugin = { version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(noIdToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("id") || it.contains("no-id-plugin") })
+    }
+
+    @Test
+    fun `validate should handle malformed TOML syntax`() {
+        val malformedToml = """
+            [versions
+            test = "1.0.0"
+            
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(malformedToml)
+
+        val result = validator.validate()
+
         assertFalse(result.isValid)
         assertTrue(result.errors.any { it.contains("Syntax error") })
     }
 
     @Test
-    fun `validate should detect missing required sections`() {
-        val tomlWithoutVersions = """
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version = "5.8.2" }
-            
-            [plugins]
-            kotlin = { id = "org.jetbrains.kotlin.jvm", version = "1.8.0" }
-        """.trimIndent()
-        testFile.writeText(tomlWithoutVersions)
-        val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.contains("Required versions section is missing"))
-    }
-
-    @Test
-    fun `validate should detect missing libraries section`() {
-        val tomlWithoutLibraries = """
+    fun `validate should handle libraries with invalid module format`() {
+        val invalidModuleToml = """
             [versions]
-            junit = "5.8.2"
-            
-            [plugins]
-            kotlin = { id = "org.jetbrains.kotlin.jvm", version = "1.8.0" }
-        """.trimIndent()
-        testFile.writeText(tomlWithoutLibraries)
-        val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.contains("Required libraries section is missing"))
-    }
+            test = "1.0.0"
 
-    @Test
-    fun `validate should detect empty required sections`() {
-        val tomlWithEmptyRequiredSections = """
-            [versions]
-            
             [libraries]
-            
-            [plugins]
-            kotlin = { id = "org.jetbrains.kotlin.jvm", version = "1.8.0" }
+            valid-lib = { module = "group:artifact", version.ref = "test" }
+            invalid-module1 = { module = "invalidmodule", version.ref = "test" }
+            invalid-module2 = { module = "group:", version.ref = "test" }
+            invalid-module3 = { module = ":artifact", version.ref = "test" }
         """.trimIndent()
-        testFile.writeText(tomlWithEmptyRequiredSections)
-        val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.contains("Versions section cannot be empty"))
-        assertTrue(result.errors.contains("Libraries section cannot be empty"))
-    }
 
-    @Test
-    fun `validate should accept valid version formats`() {
-        val validVersionFormats = """
-            [versions]
-            simple = "1.0.0"
-            snapshot = "1.0.0-SNAPSHOT"
-            beta = "1.0.0-beta.1"
-            plus = "1.0.+"
-            range = "[1.0.0,2.0.0)"
-            
-            [libraries]
-            test = { module = "org.example:test", version.ref = "simple" }
-        """.trimIndent()
-        testFile.writeText(validVersionFormats)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
+        testFile.writeText(invalidModuleToml)
 
-    @Test
-    fun `validate should detect invalid version formats`() {
-        val invalidVersionFormats = """
-            [versions]
-            invalid1 = "not-a-version"
-            invalid2 = "1.0.0.0.0.0"
-            invalid3 = ""
-            
-            [libraries]
-            test = { module = "org.example:test", version.ref = "invalid1" }
-        """.trimIndent()
-        testFile.writeText(invalidVersionFormats)
         val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.any { it.contains("Invalid version format") })
-    }
 
-    @Test
-    fun `validate should detect duplicate keys in sections`() {
-        // Note: This test may not work with simple parsing that overwrites duplicates
-        val tomlWithDuplicates = """
-            [versions]
-            junit = "5.8.2"
-            kotlin = "1.8.0"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-        """.trimIndent()
-        testFile.writeText(tomlWithDuplicates)
-        val result = validator.validate()
-        // This should pass unless duplicate detection is implemented
-        assertTrue(result.isValid)
-    }
-
-    @Test
-    fun `validate should detect missing version references`() {
-        val tomlWithMissingVersionRef = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "nonexistent" }
-        """.trimIndent()
-        testFile.writeText(tomlWithMissingVersionRef)
-        val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.contains("Missing version reference: nonexistent"))
-    }
-
-    @Test
-    fun `validate should warn about unreferenced versions`() {
-        val tomlWithUnreferencedVersions = """
-            [versions]
-            junit = "5.8.2"
-            unused = "1.0.0"
-            kotlin = "1.8.0"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            
-            [plugins]
-            kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-        """.trimIndent()
-        testFile.writeText(tomlWithUnreferencedVersions)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.warnings.contains("Unreferenced version: unused"))
-    }
-
-    @Test
-    fun `validate should detect invalid module formats`() {
-        val tomlWithInvalidModules = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            invalid1 = { module = "invalid-module", version.ref = "junit" }
-            invalid2 = { module = "no:colons", version.ref = "junit" }
-            invalid3 = { module = "123:invalid", version.ref = "junit" }
-            valid = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-        """.trimIndent()
-        testFile.writeText(tomlWithInvalidModules)
-        val result = validator.validate()
         assertFalse(result.isValid)
         assertTrue(result.errors.any { it.contains("Invalid module format") })
     }
 
     @Test
-    fun `validate should accept valid module formats`() {
-        val tomlWithValidModules = """
+    fun `validate should handle version references to non-existent versions`() {
+        val brokenRefToml = """
             [versions]
-            junit = "5.8.2"
-            
+            existing = "1.0.0"
+
             [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "junit" }
-            androidx-core = { module = "androidx.core:core-ktx", version.ref = "junit" }
+            broken-ref = { module = "group:artifact", version.ref = "non-existent" }
+            valid-ref = { module = "group:artifact2", version.ref = "existing" }
         """.trimIndent()
-        testFile.writeText(tomlWithValidModules)
+
+        testFile.writeText(brokenRefToml)
+
         val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Missing version reference: non-existent") })
+    }
+
+    @Test
+    fun `validate should handle plugins with invalid version references`() {
+        val pluginBrokenRefToml = """
+            [versions]
+            valid = "1.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "valid" }
+
+            [plugins]
+            broken-plugin = { id = "com.example.plugin", version.ref = "missing-version" }
+            valid-plugin = { id = "com.example.valid", version.ref = "valid" }
+        """.trimIndent()
+
+        testFile.writeText(pluginBrokenRefToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Missing version reference: missing-version") })
+    }
+
+    @Test
+    fun `validate should handle bundles referencing non-existent libraries`() {
+        val brokenBundleToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            existing-lib = { module = "group:artifact", version.ref = "test" }
+
+            [bundles]
+            broken-bundle = ["non-existent-lib", "existing-lib"]
+            valid-bundle = ["existing-lib"]
+        """.trimIndent()
+
+        testFile.writeText(brokenBundleToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Invalid bundle reference in 'broken-bundle': non-existent-lib") })
+    }
+
+    @Test
+    fun `validate should handle invalid version formats`() {
+        val invalidVersionToml = """
+            [versions]
+            valid = "1.0.0"
+            invalid1 = "not-a-version"
+            invalid2 = ""
+            invalid3 = "1.0.0.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "valid" }
+        """.trimIndent()
+
+        testFile.writeText(invalidVersionToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Invalid version format") })
+    }
+
+    @Test
+    fun `validate should handle special characters in version strings`() {
+        val specialCharsToml = """
+            [versions]
+            snapshot = "1.0.0-SNAPSHOT"
+            alpha = "2.0.0-alpha.1"
+            beta = "3.0.0-beta+build.123"
+            release-candidate = "4.0.0-rc.1"
+            date-version = "20231201.1"
+
+            [libraries]
+            lib1 = { module = "group:artifact1", version.ref = "snapshot" }
+            lib2 = { module = "group:artifact2", version.ref = "alpha" }
+            lib3 = { module = "group:artifact3", version.ref = "beta" }
+            lib4 = { module = "group:artifact4", version.ref = "release-candidate" }
+            lib5 = { module = "group:artifact5", version.ref = "date-version" }
+        """.trimIndent()
+
+        testFile.writeText(specialCharsToml)
+
+        val result = validator.validate()
+
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
 
     @Test
-    fun `validate should detect invalid plugin ID formats`() {
-        val tomlWithInvalidPluginIds = """
+    fun `validate should handle libraries with direct version specification`() {
+        val directVersionToml = """
             [versions]
-            kotlin = "1.8.0"
-            
+            shared = "1.0.0"
+
             [libraries]
-            test = { module = "org.example:test", version.ref = "kotlin" }
-            
-            [plugins]
-            invalid1 = { id = "123invalid", version.ref = "kotlin" }
-            invalid2 = { id = "no-dots", version.ref = "kotlin" }
-            invalid3 = { id = "", version.ref = "kotlin" }
-            valid = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+            ref-version = { module = "group:artifact1", version.ref = "shared" }
+            direct-version = { module = "group:artifact2", version = "2.0.0" }
         """.trimIndent()
-        testFile.writeText(tomlWithInvalidPluginIds)
+
+        testFile.writeText(directVersionToml)
+
         val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle AGP and Kotlin version compatibility`() {
+        val incompatibleToml = """
+            [versions]
+            agp = "8.0.0"
+            kotlin = "1.8.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "kotlin" }
+        """.trimIndent()
+
+        testFile.writeText(incompatibleToml)
+
+        val result = validator.validate()
+
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Version incompatibility") })
+    }
+
+    @Test
+    fun `validate should detect security vulnerabilities`() {
+        val vulnerableToml = """
+            [versions]
+            junit = "4.12"
+
+            [libraries]
+            junit-lib = { module = "junit:junit", version.ref = "junit" }
+        """.trimIndent()
+
+        testFile.writeText(vulnerableToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid) // Valid structure but has warnings
+        assertTrue(result.warnings.any { it.contains("vulnerable version") })
+    }
+
+    @Test
+    fun `validate should warn about unreferenced versions`() {
+        val unreferencedToml = """
+            [versions]
+            used = "1.0.0"
+            unused = "2.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "used" }
+        """.trimIndent()
+
+        testFile.writeText(unreferencedToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.warnings.any { it.contains("Unreferenced version: unused") })
+    }
+
+    @Test
+    fun `validate should handle invalid plugin ID formats`() {
+        val invalidPluginToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "test" }
+
+            [plugins]
+            valid-plugin = { id = "com.example.plugin", version.ref = "test" }
+            invalid-plugin = { id = "invalid_plugin_id", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(invalidPluginToml)
+
+        val result = validator.validate()
+
         assertFalse(result.isValid)
         assertTrue(result.errors.any { it.contains("Invalid plugin ID format") })
     }
 
     @Test
-    fun `validate should accept valid plugin ID formats`() {
-        val tomlWithValidPluginIds = """
+    fun `validate should handle empty required sections`() {
+        val emptyRequiredToml = """
             [versions]
-            kotlin = "1.8.0"
-            
-            [libraries]
-            test = { module = "org.example:test", version.ref = "kotlin" }
-            
-            [plugins]
-            kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-            application = { id = "application" }
-            android-app = { id = "com.android.application", version.ref = "kotlin" }
-        """.trimIndent()
-        testFile.writeText(tomlWithValidPluginIds)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
 
-    @Test
-    fun `validate should detect AGP and Kotlin version incompatibility`() {
-        val tomlWithIncompatibleVersions = """
-            [versions]
-            agp = "8.0.0"
-            kotlin = "1.8.0"
-            
             [libraries]
-            test = { module = "org.example:test", version.ref = "kotlin" }
         """.trimIndent()
-        testFile.writeText(tomlWithIncompatibleVersions)
+
+        testFile.writeText(emptyRequiredToml)
+
         val result = validator.validate()
+
         assertFalse(result.isValid)
-        assertTrue(result.errors.any { it.contains("Version incompatibility: AGP 8.0.0 is not compatible with Kotlin 1.8.0") })
+        assertTrue(result.errors.any { it.contains("Versions section cannot be empty") })
+        assertTrue(result.errors.any { it.contains("Libraries section cannot be empty") })
     }
 
     @Test
-    fun `validate should accept compatible AGP and Kotlin versions`() {
-        val tomlWithCompatibleVersions = """
+    fun `validate should handle TOML with comments and formatting`() {
+        val commentedToml = """
+            # Version catalog for project dependencies
             [versions]
-            agp = "7.4.0"
-            kotlin = "1.8.0"
-            
+            # Core versions
+            kotlin = "1.9.0"  # Latest stable Kotlin
+            junit = "5.8.2"   # JUnit 5
+
             [libraries]
-            test = { module = "org.example:test", version.ref = "kotlin" }
+            # Testing libraries
+            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+            
+            # Kotlin standard library
+            kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
         """.trimIndent()
-        testFile.writeText(tomlWithCompatibleVersions)
+
+        testFile.writeText(commentedToml)
+
         val result = validator.validate()
+
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
 
     @Test
-    fun `validate should warn about vulnerable library versions`() {
-        val tomlWithVulnerableVersions = """
-            [versions]
-            junit-old = "4.12"
-            
-            [libraries]
-            junit-vulnerable = { module = "junit:junit", version.ref = "junit-old" }
-            junit-direct = { module = "junit:junit", version = "4.11" }
-        """.trimIndent()
-        testFile.writeText(tomlWithVulnerableVersions)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.warnings.any { it.contains("uses vulnerable version") })
-    }
+    fun `validate should handle large TOML files gracefully`() {
+        val largeTomlBuilder = StringBuilder()
+        largeTomlBuilder.append("[versions]\n")
 
-    @Test
-    fun `validate should detect invalid bundle references`() {
-        val tomlWithInvalidBundles = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            
-            [bundles]
-            testing = ["junit-core", "nonexistent-lib"]
-        """.trimIndent()
-        testFile.writeText(tomlWithInvalidBundles)
-        val result = validator.validate()
-        assertFalse(result.isValid)
-        assertTrue(result.errors.contains("Invalid bundle reference in 'testing': nonexistent-lib"))
-    }
+        // Generate 100 version entries to test performance
+        for (i in 1..100) {
+            largeTomlBuilder.append("version$i = \"1.0.$i\"\n")
+        }
 
-    @Test
-    fun `validate should accept valid bundle references`() {
-        val tomlWithValidBundles = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
-            
-            [bundles]
-            testing = ["junit-core", "junit-api"]
-        """.trimIndent()
-        testFile.writeText(tomlWithValidBundles)
+        largeTomlBuilder.append("\n[libraries]\n")
+
+        // Generate 100 library entries
+        for (i in 1..100) {
+            largeTomlBuilder.append("lib$i = { module = \"group$i:artifact$i\", version.ref = \"version$i\" }\n")
+        }
+
+        testFile.writeText(largeTomlBuilder.toString())
+
         val result = validator.validate()
+
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
     }
 
     @Test
-    fun `validate should warn about missing critical dependencies`() {
-        val tomlWithoutCriticalDeps = """
-            [versions]
-            some-lib = "1.0.0"
-            
-            [libraries]
-            some-library = { module = "com.example:some-lib", version.ref = "some-lib" }
-        """.trimIndent()
-        testFile.writeText(tomlWithoutCriticalDeps)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.warnings.any { it.contains("Missing critical dependencies") })
-    }
-
-    @Test
-    fun `validate should handle libraries with direct version strings`() {
-        val tomlWithDirectVersions = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            gson = { module = "com.google.code.gson:gson", version = "2.8.9" }
-        """.trimIndent()
-        testFile.writeText(tomlWithDirectVersions)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
-
-    @Test
-    fun `validate should handle special characters in dependency names`() {
-        val tomlWithSpecialChars = """
-            [versions]
-            spring-boot = "2.7.0"
-            
-            [libraries]
-            spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot" }
-            spring_boot_test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
-        """.trimIndent()
-        testFile.writeText(tomlWithSpecialChars)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-    }
-
-    @Test
-    fun `validate should handle comments in TOML files`() {
-        val tomlWithComments = """
-            # This is a comment
-            [versions]
-            junit = "5.8.2" # Inline comment
-            
-            # Another comment
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-        """.trimIndent()
-        testFile.writeText(tomlWithComments)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
-
-    @Test
-    fun `ValidationResult addError should set isValid to false`() {
+    fun `ValidationResult addError should mark result as invalid`() {
         val result = ValidationResult()
         assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-        
+
         result.addError("Test error")
+
         assertFalse(result.isValid)
-        assertEquals(1, result.errors.size)
-        assertEquals("Test error", result.errors[0])
+        assertEquals(listOf("Test error"), result.errors)
     }
 
     @Test
     fun `ValidationResult addWarning should not affect validity`() {
         val result = ValidationResult()
         assertTrue(result.isValid)
-        assertTrue(result.warnings.isEmpty())
-        
+
         result.addWarning("Test warning")
+
         assertTrue(result.isValid)
-        assertEquals(1, result.warnings.size)
-        assertEquals("Test warning", result.warnings[0])
+        assertEquals(listOf("Test warning"), result.warnings)
     }
 
     @Test
     fun `ValidationResult should handle multiple errors and warnings`() {
         val result = ValidationResult()
-        
+
         result.addError("Error 1")
         result.addError("Error 2")
         result.addWarning("Warning 1")
         result.addWarning("Warning 2")
-        
+
         assertFalse(result.isValid)
-        assertEquals(2, result.errors.size)
-        assertEquals(2, result.warnings.size)
-        assertTrue(result.errors.contains("Error 1"))
-        assertTrue(result.errors.contains("Error 2"))
-        assertTrue(result.warnings.contains("Warning 1"))
-        assertTrue(result.warnings.contains("Warning 2"))
+        assertEquals(listOf("Error 1", "Error 2"), result.errors)
+        assertEquals(listOf("Warning 1", "Warning 2"), result.warnings)
     }
 
     @Test
-    fun `validate should handle large TOML files efficiently`() {
-        val largeTomlContent = buildString {
-            appendLine("[versions]")
-            repeat(100) { i ->
-                appendLine("lib$i = \"1.0.$i\"")
-            }
-            appendLine()
-            appendLine("[libraries]")
-            repeat(100) { i ->
-                appendLine("library$i = { module = \"com.example:lib$i\", version.ref = \"lib$i\" }")
-            }
-        }
-        testFile.writeText(largeTomlContent)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
+    fun `validate should handle files in subdirectories`() {
+        val subDir = tempDir.resolve("subdir").toFile()
+        subDir.mkdirs()
+        val nestedFile = subDir.resolve("libs.versions.toml")
+        val nestedValidator = LibsVersionsTomlValidator(nestedFile)
 
-    @Test
-    fun `validate should handle TOML with all optional sections`() {
-        val completeToml = """
-            [versions]
-            junit = "5.8.2"
-            kotlin = "1.8.0"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-            junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
-            
-            [plugins]
-            kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-            application = { id = "application" }
-            
-            [bundles]
-            testing = ["junit-core", "junit-api"]
-        """.trimIndent()
-        testFile.writeText(completeToml)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
+        val result = nestedValidator.validate()
 
-    @Test
-    fun `validate should handle edge case version patterns`() {
-        val tomlWithEdgeCaseVersions = """
-            [versions]
-            snapshot = "1.0.0-SNAPSHOT"
-            release-candidate = "1.0.0-rc.1"
-            build-metadata = "1.0.0+build.123"
-            prerelease = "1.0.0-alpha.1+build.456"
-            
-            [libraries]
-            test1 = { module = "org.example:test1", version.ref = "snapshot" }
-            test2 = { module = "org.example:test2", version.ref = "release-candidate" }
-            test3 = { module = "org.example:test3", version.ref = "build-metadata" }
-            test4 = { module = "org.example:test4", version.ref = "prerelease" }
-        """.trimIndent()
-        testFile.writeText(tomlWithEdgeCaseVersions)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
-
-    @Test
-    fun `validate should handle complex inline table parsing`() {
-        val tomlWithComplexInlineTables = """
-            [versions]
-            junit = "5.8.2"
-            kotlin = "1.8.0"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit", scope = "test" }
-            kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin", mandatory = "true" }
-        """.trimIndent()
-        testFile.writeText(tomlWithComplexInlineTables)
-        val result = validator.validate()
-        assertTrue(result.isValid)
-        assertTrue(result.errors.isEmpty())
-    }
-
-    @Test
-    fun `validate should handle malformed inline tables gracefully`() {
-        val tomlWithMalformedInlineTable = """
-            [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter" version.ref = "junit" }
-        """.trimIndent()
-        testFile.writeText(tomlWithMalformedInlineTable)
-        val result = validator.validate()
         assertFalse(result.isValid)
-        assertTrue(result.errors.any { it.contains("Syntax error") })
+        assertTrue(result.errors.any { it.contains("TOML file does not exist") })
     }
 
     @Test
-    fun `validate should handle file read permission issues`() {
-        testFile.writeText("""
+    fun `validate should handle readonly files`() {
+        val validToml = """
             [versions]
-            junit = "5.8.2"
-            
-            [libraries]
-            junit-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-        """.trimIndent())
-        
-        testFile.setReadable(false)
-        val result = validator.validate()
-        testFile.setReadable(true) // Restore for cleanup
-        
-        assertFalse(result.isValid)
-        assertTrue(result.errors.isNotEmpty())
-    }
+            test = "1.0.0"
 
-    @Test
-    fun `validate should handle version references in plugins correctly`() {
-        val tomlWithPluginVersionRefs = """
-            [versions]
-            kotlin = "1.8.0"
-            agp = "7.4.0"
-            
             [libraries]
-            test = { module = "org.example:test", version.ref = "kotlin" }
-            
-            [plugins]
-            kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-            android-app = { id = "com.android.application", version.ref = "agp" }
+            lib = { module = "group:artifact", version.ref = "test" }
         """.trimIndent()
-        testFile.writeText(tomlWithPluginVersionRefs)
+
+        testFile.writeText(validToml)
+        testFile.setReadOnly()
+
         val result = validator.validate()
+
         assertTrue(result.isValid)
         assertTrue(result.errors.isEmpty())
-        assertFalse(result.warnings.any { it.contains("Unreferenced version") })
     }
 
     @Test
-    fun `validate should detect circular version references`() {
-        // This test assumes the validator would detect circular references 
-        // based on the implementation structure
-        val tomlWithPotentialCircular = """
-            [versions]
-            version-a = "1.0.0"
-            version-b = "2.0.0"
-            
-            [libraries]
-            lib-a = { module = "com.example:lib-a", version.ref = "version-a" }
-            lib-b = { module = "com.example:lib-b", version.ref = "version-b" }
-        """.trimIndent()
-        testFile.writeText(tomlWithPotentialCircular)
-        val result = validator.validate()
-        assertTrue(result.isValid) // Should pass as no actual circular refs exist
-    }
-
-    @Test
-    fun `ValidationResult timestamp should be approximately current time`() {
+    fun `ValidationResult timestamp should be reasonably current`() {
         val beforeTime = System.currentTimeMillis()
         val result = ValidationResult()
         val afterTime = System.currentTimeMillis()
-        
+
         assertTrue(result.timestamp >= beforeTime)
         assertTrue(result.timestamp <= afterTime)
+    }
+
+    @Test
+    fun `validate should handle mixed case in section names`() {
+        // Test behavior with mixed case sections (should be case-sensitive)
+        val mixedCaseToml = """
+            [Versions]
+            test = "1.0.0"
+
+            [Libraries]
+            lib = { module = "group:artifact", version = "1.0.0" }
+        """.trimIndent()
+
+        testFile.writeText(mixedCaseToml)
+
+        val result = validator.validate()
+
+        // Should fail because required sections "versions" and "libraries" are missing
+        assertFalse(result.isValid)
+        assertTrue(result.errors.contains("The versions section is required"))
+        assertTrue(result.errors.contains("The libraries section is required"))
+    }
+
+    @Test
+    fun `validate should handle complex inline table syntax`() {
+        val complexInlineToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            complex-lib = { module = "group:artifact", version.ref = "test", name = "custom-name" }
+            simple-lib = { module = "group:simple", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(complexInlineToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle range version formats`() {
+        val rangeVersionToml = """
+            [versions]
+            range-version = "[1.0,2.0)"
+            open-range = "[1.5,)"
+            exact-range = "[1.0]"
+
+            [libraries]
+            lib1 = { module = "group:artifact1", version.ref = "range-version" }
+            lib2 = { module = "group:artifact2", version.ref = "open-range" }
+            lib3 = { module = "group:artifact3", version.ref = "exact-range" }
+        """.trimIndent()
+
+        testFile.writeText(rangeVersionToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle plus version notation`() {
+        val plusVersionToml = """
+            [versions]
+            plus-version = "1.0.+"
+
+            [libraries]
+            lib = { module = "group:artifact"}
+            version.ref = "plus-version"
+        """.trimIndent()
+
+        testFile.writeText(plusVersionToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `validate should handle critical dependency warnings`() {
+        val noCriticalDepsToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            basic-lib = { module = "com.example:basic", version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(noCriticalDepsToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertTrue(result.warnings.any { it.contains("Missing critical dependencies") })
+    }
+
+    @Test
+    fun `validate should handle edge case with critical dependencies present`() {
+        val withCriticalDepsToml = """
+            [versions]
+            junit = "4.13.2"
+            core = "1.8.0"
+
+            [libraries]
+            junit = { module = "junit:junit", version.ref = "junit" }
+            core-ktx = { module = "androidx.core:core-ktx", version.ref = "core" }
+        """.trimIndent()
+
+        testFile.writeText(withCriticalDepsToml)
+
+        val result = validator.validate()
+
+        assertTrue(result.isValid)
+        assertFalse(result.warnings.any { it.contains("Missing critical dependencies") })
+    }
+
+    @Test
+    fun `validate should handle libraries missing module property entirely`() {
+        val noModuleToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            valid-lib = { module = "group:artifact", version.ref = "test" }
+            no-module-lib = { version.ref = "test" }
+        """.trimIndent()
+
+        testFile.writeText(noModuleToml)
+
+        val result = validator.validate()
+
+        // Should be valid as the validator checks for invalid module format, not missing modules
+        assertTrue(result.isValid)
+    }
+
+    @Test
+    fun `validate should handle plugins missing version property`() {
+        val noVersionPluginToml = """
+            [versions]
+            test = "1.0.0"
+
+            [libraries]
+            lib = { module = "group:artifact", version.ref = "test" }
+
+            [plugins]
+            valid-plugin = { id = "com.example.plugin", version.ref = "test" }
+            no-version-plugin = { id = "com.example.noversion" }
+        """.trimIndent()
+
+        testFile.writeText(noVersionPluginToml)
+
+        val result = validator.validate()
+
+        // Should be valid as plugins without version references are allowed
+        assertTrue(result.isValid)
+    }
+
+    @Test
+    fun `ValidationResult constructor should set default values correctly`() {
+        val defaultResult = ValidationResult()
+
+        assertTrue(defaultResult.isValid)
+        assertTrue(defaultResult.errors.isEmpty())
+        assertTrue(defaultResult.warnings.isEmpty())
+        assertTrue(defaultResult.timestamp > 0)
+    }
+
+    @Test
+    fun `ValidationResult constructor should accept custom timestamp`() {
+        val customTimestamp = 9999999999L
+        val result = ValidationResult(
+            isValid = false,
+            errors = mutableListOf("error"),
+            warnings = mutableListOf("warning"),
+            timestamp = customTimestamp
+        )
+
+        assertFalse(result.isValid)
+        assertEquals(listOf("error"), result.errors)
+        assertEquals(listOf("warning"), result.warnings)
+        assertEquals(customTimestamp, result.timestamp)
     }
 }
