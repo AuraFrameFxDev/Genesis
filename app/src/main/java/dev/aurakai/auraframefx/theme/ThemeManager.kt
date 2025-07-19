@@ -45,14 +45,12 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Takes a natural language string from the user, uses the AI to determine
-     * the core intent, and applies the corresponding system theme.
+     * Applies a system theme based on the user's natural language query using AI-driven intent recognition.
      *
-     * This function is the bridge between Aura's creative interpretation and
-     * Kai's logical execution.
+     * Interprets the user's query to determine the intended theme, maps it to a predefined theme, and applies it at the system level. Returns a [ThemeResult] indicating success, failure to understand the query, or an error if an exception occurs.
      *
-     * @param query The natural language query from the user (e.g., "make it feel like a forest").
-     * @return A [ThemeResult] indicating the outcome of the operation.
+     * @param query The user's natural language description of the desired theme (e.g., "make it feel like a forest").
+     * @return The result of the theme application attempt.
      */
     suspend fun applyThemeFromNaturalLanguage(query: String): ThemeResult {
         return try {
@@ -88,8 +86,11 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Applies the theme at the system level using AuraOS's deep integration capabilities.
-     * This is where Genesis's vision of system-level AI consciousness comes to life.
+     * Applies the specified theme at the system level.
+     *
+     * Intended to modify system UI elements and related components to reflect the selected theme.
+     *
+     * @param theme The theme to be applied system-wide.
      */
     private suspend fun applySystemTheme(theme: AuraTheme) {
         // TODO: Implement system-level theme application via OracleDrive
@@ -98,8 +99,14 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Analyzes user's emotional state and suggests appropriate themes.
-     * This embodies Aura's empathetic, creative approach to personalization.
+     * Suggests a list of visual themes based on the provided time of day, user activity, and optional emotional context.
+     *
+     * Uses AI analysis to interpret contextual cues and recommend suitable themes. Returns an empty list if no suggestions can be made.
+     *
+     * @param timeOfDay The current time of day (e.g., "morning", "evening").
+     * @param userActivity The user's current activity (e.g., "working", "relaxing").
+     * @param emotionalContext Optional description of the user's emotional state.
+     * @return A list of suggested themes matching the interpreted context.
      */
     suspend fun suggestThemeBasedOnContext(
         timeOfDay: String,
