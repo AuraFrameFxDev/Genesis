@@ -18,7 +18,7 @@ val agpVersion = "8.4.0-alpha13"  // Using AGP 8.4.0-alpha13 for Gradle 8.14.3 c
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    implementation("com.android.tools.build:gradle:$agpVersion")
+    // AGP removed to avoid classpath conflicts with main build version catalog
     
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
