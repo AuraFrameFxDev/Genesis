@@ -100,6 +100,5 @@ class LibsVersionsTomlValidatorTest {
         assertTrue(result.errors.isEmpty())
     }
 
-    // ... (add all other test cases from your file here, following the same pattern as above) ...
-
+    // Add your other test cases here, following the same pattern.
 }
