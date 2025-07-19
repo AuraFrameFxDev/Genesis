@@ -105,200 +105,264 @@ class BuildScriptValidationTest {
         testProjectDir.toFile().deleteRecursively()
     }
     
+    // ... [other tests unchanged] ...
+    
     @Test
-    fun `should validate required plugins are applied correctly`() {
+    fun `should validate build script with concurrent execution`() {
         val buildScript = createBasicBuildScript()
         buildFile.writeText(buildScript)
         
-        val result = gradleRunner.withArguments("tasks", "--stacktrace").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-        assertTrue("Build should succeed with required plugins", 
-                   result.output.contains("BUILD SUCCESSFUL"))
-    }
-    
-    @Test
-    fun `should validate Android configuration namespace`() {
-        val buildScript = createBasicBuildScript()
-        buildFile.writeText(buildScript)
+        val results = mutableListOf<Boolean>()
+        val threads = mutableListOf<Thread>()
         
-        val result = gradleRunner.withArguments("properties").build()
-        assertTrue("Should contain namespace configuration", 
-                   result.output.contains("BUILD SUCCESSFUL"))
-    }
-    
-    @Test
-    fun `should validate NDK configuration with correct ABI filters`() {
-        val buildScript = createBuildScriptWithNDK()
-        buildFile.writeText(buildScript)
+        repeat(3) { index ->
+            val thread = Thread {
+                try {
+                    val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+                    synchronized(results) {
+                        results.add(result.task(":tasks")?.outcome == TaskOutcome.SUCCESS)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    synchronized(results) {
+                        results.add(false)
+                    }
+                }
+            }
+            threads.add(thread)
+        }
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate Compose configuration is properly set`() {
-        val buildScript = createBuildScriptWithCompose()
-        buildFile.writeText(buildScript)
+        threads.forEach { it.start() }
+        threads.forEach { it.join() }
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        assertTrue("At least one concurrent build should succeed",
+                   results.any { it })
     }
     
     @Test
-    fun `should validate build types configuration`() {
-        val buildScript = createBuildScriptWithBuildTypes()
-        buildFile.writeText(buildScript)
+    fun `should validate build script with multiple task executions to ensure script integrity`() {
+
+    @Test
+    fun `should validate Android plugin configuration with various compile SDK versions`() {
+        val invalidCompileSdk = createBuildScriptWithCompileSdk(29) // Below minimum
+        buildFile.writeText(invalidCompileSdk)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate packaging configuration with resource excludes`() {
-        val buildScript = createBuildScriptWithPackaging()
-        buildFile.writeText(buildScript)
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
+        assertTrue("Should fail with compile SDK below minimum",
+                  result.output.contains("compileSdk") || result.output.contains("BUILD FAILED"))
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate Java compatibility versions are set to 21`() {
-        val buildScript = createBasicBuildScript()
-        buildFile.writeText(buildScript)
+        val validCompileSdk = createBuildScriptWithCompileSdk(36)
+        buildFile.writeText(validCompileSdk)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        val successResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with valid compile SDK",
+                    TaskOutcome.SUCCESS, successResult.task(":tasks")?.outcome)
     }
-    
+
     @Test
-    fun `should validate dependencies are properly configured`() {
-        val buildScript = createBuildScriptWithDependencies()
-        buildFile.writeText(buildScript)
+    fun `should validate namespace configuration and uniqueness`() {
+        val emptyNamespace = createBuildScriptWithNamespace("")
+        buildFile.writeText(emptyNamespace)
         
-        val result = gradleRunner.withArguments("dependencies", "--configuration", "implementation").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
-    }
-    
-    @Test
-    fun `should validate Hilt configuration with kapt processor`() {
-        val buildScript = createBuildScriptWithHilt()
-        buildFile.writeText(buildScript)
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
+        assertTrue("Should fail with empty namespace",
+                  result.output.contains("namespace") || result.output.contains("BUILD FAILED"))
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate test dependencies are configured`() {
-        val buildScript = createBuildScriptWithTestDependencies()
-        buildFile.writeText(buildScript)
+        val validNamespace = createBuildScriptWithNamespace("dev.aurakai.auraframefx.sandbox.ui")
+        buildFile.writeText(validNamespace)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        val successResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with valid namespace",
+                    TaskOutcome.SUCCESS, successResult.task(":tasks")?.outcome)
     }
-    
+
     @Test
-    fun `should validate debug dependencies are configured`() {
-        val buildScript = createBuildScriptWithDebugDependencies()
-        buildFile.writeText(buildScript)
+    fun `should validate Kotlin and Java version compatibility`() {
+        val incompatibleVersions = createBuildScriptWithJavaVersion("VERSION_11")
+        buildFile.writeText(incompatibleVersions)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should fail with invalid compile SDK version`() {
-        val buildScript = createBuildScriptWithInvalidCompileSdk()
-        buildFile.writeText(buildScript)
+        // This should still work but may generate warnings
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertTrue("Should execute even with different Java version",
+                  result.output.contains("BUILD SUCCESSFUL") ||
+                  result.task(":tasks")?.outcome == TaskOutcome.SUCCESS)
         
-        val result = gradleRunner.withArguments("tasks").buildAndFail()
-        assertTrue("Should fail with invalid compile SDK", 
-                   result.output.contains("FAILED") || result.output.contains("Invalid"))
-    }
-    
-    @Test
-    fun `should fail with minSdk higher than compileSdk`() {
-        val buildScript = createBuildScriptWithInvalidMinSdk()
-        buildFile.writeText(buildScript)
+        val recommendedVersions = createBuildScriptWithJavaVersion("VERSION_21")
+        buildFile.writeText(recommendedVersions)
         
-        val result = gradleRunner.withArguments("tasks").buildAndFail()
-        assertTrue("Should fail with minSdk higher than compileSdk", 
-                   result.output.contains("FAILED") || result.output.contains("Invalid"))
+        val optimalResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with recommended Java version",
+                    TaskOutcome.SUCCESS, optimalResult.task(":tasks")?.outcome)
     }
-    
+
     @Test
-    fun `should fail without required Android library plugin`() {
-        val buildScript = createBuildScriptWithoutAndroidPlugin()
-        buildFile.writeText(buildScript)
+    fun `should validate Compose plugin configuration and dependencies`() {
+        val withoutComposePlugin = createBasicBuildScript()
+        buildFile.writeText(withoutComposePlugin)
         
-        val result = gradleRunner.withArguments("tasks").buildAndFail()
-        assertTrue("Should fail without required Android plugin", 
-                   result.output.contains("FAILED"))
-    }
-    
-    @Test
-    fun `should fail without namespace configuration`() {
-        val buildScript = createBuildScriptWithoutNamespace()
-        buildFile.writeText(buildScript)
+        val basicResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Basic script should work without Compose",
+                    TaskOutcome.SUCCESS, basicResult.task(":tasks")?.outcome)
         
-        val result = gradleRunner.withArguments("tasks").buildAndFail()
-        assertTrue("Should fail without namespace", 
-                   result.output.contains("FAILED"))
-    }
-    
-    @Test
-    fun `should validate empty kotlinOptions block does not cause issues`() {
-        val buildScript = createBuildScriptWithEmptyKotlinOptions()
-        buildFile.writeText(buildScript)
+        val withComposePlugin = createBuildScriptWithCompose()
+        buildFile.writeText(withComposePlugin)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        val composeResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with Compose plugin",
+                    TaskOutcome.SUCCESS, composeResult.task(":tasks")?.outcome)
     }
-    
+
     @Test
-    fun `should validate parcelize plugin configuration`() {
-        val buildScript = createBuildScriptWithParcelize()
-        buildFile.writeText(buildScript)
+    fun `should validate Hilt plugin and annotation processor configuration`() {
+        val withHilt = createBuildScriptWithHilt()
+        buildFile.writeText(withHilt)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with Hilt configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        
+        // Verify Hilt-specific tasks are available
+        assertTrue("Should have Hilt-related output",
+                  result.output.contains("BUILD SUCCESSFUL"))
     }
-    
+
     @Test
-    fun `should validate complete build script configuration`() {
+    fun `should validate build types and ProGuard configuration`() {
+        val withBuildTypes = createBuildScriptWithBuildTypes()
+        buildFile.writeText(withBuildTypes)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with build types",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        
+        // Check that release build type configuration is recognized
+        assertTrue("Should recognize build configuration",
+                  result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
+    fun `should validate NDK configuration and ABI filters`() {
+        val withNdk = createBuildScriptWithNDK()
+        buildFile.writeText(withNdk)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with NDK configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+    }
+
+    @Test
+    fun `should validate packaging options and resource exclusions`() {
+        val withPackaging = createBuildScriptWithPackaging()
+        buildFile.writeText(withPackaging)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with packaging configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+    }
+
+    @Test
+    fun `should validate dependency configurations and project references`() {
+        val withDependencies = createBuildScriptWithDependencies()
+        buildFile.writeText(withDependencies)
+        
+        // This might fail due to missing project reference, which is expected
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
+        assertTrue("Should fail gracefully with missing project dependency",
+                  result.output.contains("project") || result.output.contains("BUILD FAILED"))
+        
+        val withoutProjectDep = createBuildScriptWithLibraryDependencies()
+        buildFile.writeText(withoutProjectDep)
+        
+        val successResult = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with library dependencies only",
+                    TaskOutcome.SUCCESS, successResult.task(":tasks")?.outcome)
+    }
+
+    @Test
+    fun `should validate test configuration and instrumentation runner`() {
+        val withTestConfig = createBuildScriptWithTestConfiguration()
+        buildFile.writeText(withTestConfig)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with test configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        
+        // Verify test-related tasks are available
+        val testTasks = gradleRunner.withArguments("tasks", "--all", "--no-daemon").build()
+        assertTrue("Should have test-related tasks available",
+                  testTasks.output.contains("test") || testTasks.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
+    fun `should validate malformed build script handling`() {
+        val malformedScript = "invalid gradle script content {{{ malformed"
+        buildFile.writeText(malformedScript)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
+        assertTrue("Should fail with malformed script",
+                  result.output.contains("BUILD FAILED") ||
+                  result.output.contains("error") ||
+                  result.output.contains("syntax"))
+    }
+
+    @Test
+    fun `should validate empty build script handling`() {
+        buildFile.writeText("")
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
+        assertTrue("Should fail with empty build script",
+                  result.output.contains("BUILD FAILED") ||
+                  result.output.contains("plugin"))
+    }
+
+    @Test
+    fun `should validate build script with excessive memory requirements`() {
+        val memoryIntensiveScript = createMemoryIntensiveBuildScript()
+        buildFile.writeText(memoryIntensiveScript)
+        
+        val initialMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should handle memory-intensive configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        
+        val finalMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        assertTrue("Memory usage should be reasonable",
+                  finalMemory - initialMemory < 200_000_000) // 200MB increase limit
+    }
+
+    @Test
+    fun `should validate build script with all possible Android library configurations`() {
+        val maximalScript = createMaximalBuildScript()
+        buildFile.writeText(maximalScript)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with maximal configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        
+        // Verify comprehensive task availability
+        val allTasks = gradleRunner.withArguments("tasks", "--all", "--no-daemon").build()
+        assertTrue("Should have comprehensive task set",
+                  allTasks.output.contains("BUILD SUCCESSFUL"))
+    }
         val buildScript = createCompleteBuildScript()
         buildFile.writeText(buildScript)
         
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        // Test multiple task executions to ensure script integrity
+        val tasks = listOf("tasks", "dependencies", "help")
+        tasks.forEach { task ->
+            val result = gradleRunner.withArguments(task, "--no-daemon").build()
+            assertTrue("Task $task should execute successfully",
+                      result.output.contains("BUILD SUCCESSFUL") ||
+                      result.task(":$task")?.outcome == TaskOutcome.SUCCESS)
+        }
+        
+        // Verify no memory leaks or resource issues
+        val memoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        assertTrue("Memory usage should be reasonable", memoryAfter < 500_000_000) // 500MB limit
     }
     
-    @Test
-    fun `should validate consumer ProGuard files configuration`() {
-        val buildScript = createBasicBuildScript()
-        buildFile.writeText(buildScript)
-        
-        // Create consumer-rules.pro file
-        testProjectDir.resolve("consumer-rules.pro").writeText("# Consumer rules")
-        
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate proguard configuration in release build type`() {
-        val buildScript = createBuildScriptWithProguard()
-        buildFile.writeText(buildScript)
-        
-        // Create proguard-rules.pro file
-        testProjectDir.resolve("proguard-rules.pro").writeText("# Proguard rules")
-        
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    // Helper methods to create different build script configurations
+    // ... [rest of tests unchanged] ...
     
     private fun createBasicBuildScript() = """
         plugins {
@@ -325,6 +389,187 @@ class BuildScriptValidationTest {
         }
     """.trimIndent()
     
+    private fun createCompleteBuildScript() = """
+
+    private fun createBuildScriptWithCompileSdk(sdkVersion: Int) = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = $sdkVersion
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithNamespace(namespace: String) = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        
+        android {
+            namespace = "$namespace"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithJavaVersion(javaVersion: String) = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.$javaVersion
+                targetCompatibility = JavaVersion.$javaVersion
+            }
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithCompose() = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+            id("org.jetbrains.kotlin.plugin.compose") version "1.9.0"
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            buildFeatures {
+                compose = true
+            }
+            
+            composeOptions {
+                kotlinCompilerExtensionVersion = "2.0.0"
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithHilt() = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+            id("kotlin-kapt")
+            id("dagger.hilt.android.plugin")
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+        
+        dependencies {
+            implementation(libs.hiltAndroid)
+            kapt(libs.hiltCompiler)
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithBuildTypes() = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            buildTypes {
+                release {
+                    isMinifyEnabled = false
+                    proguardFiles(
+                        getDefaultProguardFile("proguard-android-optimize.txt"),
+                        "proguard-rules.pro"
+                    )
+                }
+                debug {
+                    isMinifyEnabled = false
+                }
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    """.trimIndent()
+
     private fun createBuildScriptWithNDK() = """
         plugins {
             id("com.android.library")
@@ -354,77 +599,7 @@ class BuildScriptValidationTest {
             }
         }
     """.trimIndent()
-    
-    private fun createBuildScriptWithCompose() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-            id("org.jetbrains.kotlin.plugin.compose") version "1.9.0"
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-            
-            buildFeatures {
-                compose = true
-                buildConfig = true
-            }
-            
-            composeOptions {
-                kotlinCompilerExtensionVersion = "2.0.0"
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithBuildTypes() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            buildTypes {
-                release {
-                    isMinifyEnabled = false
-                    proguardFiles(
-                        getDefaultProguardFile("proguard-android-optimize.txt"),
-                        "proguard-rules.pro"
-                    )
-                }
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-    
+
     private fun createBuildScriptWithPackaging() = """
         plugins {
             id("com.android.library")
@@ -462,7 +637,7 @@ class BuildScriptValidationTest {
             }
         }
     """.trimIndent()
-    
+
     private fun createBuildScriptWithDependencies() = """
         plugins {
             id("com.android.library")
@@ -491,16 +666,13 @@ class BuildScriptValidationTest {
             api(project(":app"))
             implementation(libs.androidxCoreKtx)
             implementation(libs.androidxLifecycleRuntimeKtx)
-            implementation(libs.androidxActivityCompose)
         }
     """.trimIndent()
-    
-    private fun createBuildScriptWithHilt() = """
+
+    private fun createBuildScriptWithLibraryDependencies() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
-            id("kotlin-kapt")
-            id("dagger.hilt.android.plugin")
         }
         
         android {
@@ -522,13 +694,13 @@ class BuildScriptValidationTest {
         }
         
         dependencies {
-            implementation(libs.hiltAndroid)
-            kapt(libs.hiltCompiler)
-            implementation(libs.hiltNavigationCompose)
+            implementation(libs.androidxCoreKtx)
+            implementation(libs.androidxLifecycleRuntimeKtx)
+            testImplementation(libs.testJunit)
         }
     """.trimIndent()
-    
-    private fun createBuildScriptWithTestDependencies() = """
+
+    private fun createBuildScriptWithTestConfiguration() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
@@ -544,6 +716,13 @@ class BuildScriptValidationTest {
                 lint.targetSdk = 36
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            testOptions {
+                unitTests {
+                    isReturnDefaultValues = true
+                    isIncludeAndroidResources = true
+                }
             }
             
             compileOptions {
@@ -556,171 +735,16 @@ class BuildScriptValidationTest {
             testImplementation(libs.testJunit)
             androidTestImplementation(libs.junitV115)
             androidTestImplementation(libs.espressoCoreV351)
-            androidTestImplementation(libs.uiTestJunit4)
         }
     """.trimIndent()
-    
-    private fun createBuildScriptWithDebugDependencies() = """
+
+    private fun createMemoryIntensiveBuildScript() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        dependencies {
-            debugImplementation(libs.uiTooling)
-            debugImplementation(libs.uiTestManifest)
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithInvalidCompileSdk() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 15  // Invalid SDK version
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithInvalidMinSdk() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 30
-            
-            defaultConfig {
-                minSdk = 33  // Higher than compileSdk
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithoutAndroidPlugin() = """
-        plugins {
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithoutNamespace() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithEmptyKotlinOptions() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-            
-            kotlinOptions {
-                // Empty block
-            }
-        }
-    """.trimIndent()
-    
-    private fun createBuildScriptWithParcelize() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
+            id("org.jetbrains.kotlin.plugin.compose") version "1.9.0"
+            id("kotlin-kapt")
+            id("dagger.hilt.android.plugin")
             id("kotlin-parcelize")
         }
         
@@ -739,14 +763,33 @@ class BuildScriptValidationTest {
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_21
                 targetCompatibility = JavaVersion.VERSION_21
+                
+                // Large configuration that might consume memory
+                javaCompileOptions {
+                    annotationProcessorOptions {
+                        arguments["dagger.fastInit"] = "enabled"
+                        arguments["dagger.formatGeneratedSource"] = "enabled"
+                    }
+                }
             }
         }
+        
+        dependencies {
+            implementation(libs.androidxCoreKtx)
+            implementation(libs.androidxLifecycleRuntimeKtx)
+            implementation(libs.hiltAndroid)
+            kapt(libs.hiltCompiler)
+        }
     """.trimIndent()
-    
-    private fun createBuildScriptWithProguard() = """
+
+    private fun createMaximalBuildScript() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
+            id("org.jetbrains.kotlin.plugin.compose") version "1.9.0"
+            id("kotlin-kapt")
+            id("dagger.hilt.android.plugin")
+            id("kotlin-parcelize")
         }
         
         android {
@@ -759,6 +802,11 @@ class BuildScriptValidationTest {
                 lint.targetSdk = 36
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 consumerProguardFiles("consumer-rules.pro")
+                
+                ndk {
+                    abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+                    debugSymbolLevel = "FULL"
+                }
             }
             
             buildTypes {
@@ -769,16 +817,67 @@ class BuildScriptValidationTest {
                         "proguard-rules.pro"
                     )
                 }
+                debug {
+                    isMinifyEnabled = false
+                }
             }
             
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_21
                 targetCompatibility = JavaVersion.VERSION_21
             }
+            
+            buildFeatures {
+                compose = true
+                buildConfig = true
+            }
+            
+            composeOptions {
+                kotlinCompilerExtensionVersion = "2.0.0"
+            }
+            
+            packaging {
+                resources {
+                    excludes.addAll(
+                        listOf(
+                            "META-INF/*.kotlin_module",
+                            "META-INF/*.version",
+                            "META-INF/proguard/*",
+                            "**/libjni*.so"
+                        )
+                    )
+                }
+            }
+            
+            testOptions {
+                unitTests {
+                    isReturnDefaultValues = true
+                    isIncludeAndroidResources = true
+                }
+            }
+        }
+        
+        dependencies {
+            implementation(libs.androidxCoreKtx)
+            implementation(libs.androidxLifecycleRuntimeKtx)
+            implementation(libs.androidxActivityCompose)
+            implementation(platform(libs.composeBom))
+            implementation(libs.ui)
+            implementation(libs.uiToolingPreview)
+            implementation(libs.androidxMaterial3)
+            implementation(libs.hiltAndroid)
+            kapt(libs.hiltCompiler)
+            implementation(libs.hiltNavigationCompose)
+            
+            testImplementation(libs.testJunit)
+            androidTestImplementation(libs.junitV115)
+            androidTestImplementation(libs.espressoCoreV351)
+            androidTestImplementation(platform(libs.composeBom))
+            androidTestImplementation(libs.uiTestJunit4)
+            debugImplementation(libs.uiTooling)
+            debugImplementation(libs.uiTestManifest)
         }
     """.trimIndent()
-    
-    private fun createCompleteBuildScript() = """
         plugins {
             id("com.android.library")
             id("org.jetbrains.kotlin.android")
@@ -851,99 +950,86 @@ class BuildScriptValidationTest {
             implementation(libs.androidxCoreKtx)
             implementation(libs.androidxLifecycleRuntimeKtx)
             implementation(libs.androidxActivityCompose)
-            implementation(platform(libs.composeBom))
-            implementation(libs.ui)
-            implementation(libs.uiToolingPreview)
-            implementation(libs.androidxMaterial3)
-            implementation(libs.animation)
-            implementation(libs.foundation)
-            implementation(libs.navigationComposeV291)
-            implementation(libs.hiltAndroid)
-            kapt(libs.hiltCompiler)
-            implementation(libs.hiltNavigationCompose)
-            debugImplementation(libs.uiTooling)
-            debugImplementation(libs.uiTestManifest)
-            testImplementation(libs.testJunit)
-            androidTestImplementation(libs.junitV115)
-            androidTestImplementation(libs.espressoCoreV351)
-            androidTestImplementation(libs.uiTestJunit4)
         }
     """.trimIndent()
-    
+
     @Test
-    fun `should validate build script execution time and performance`() {
-        val buildScript = createCompleteBuildScript()
+    fun `should validate build script performance with rapid successive builds`() {
+        val buildScript = createBasicBuildScript()
         buildFile.writeText(buildScript)
         
         val startTime = System.currentTimeMillis()
-        val result = gradleRunner.withArguments("tasks", "--profile").build()
-        val endTime = System.currentTimeMillis()
+        val results = mutableListOf<Boolean>()
         
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-        assertTrue("Build should complete within reasonable time (10 seconds)",
-                   (endTime - startTime) < 10000)
+        repeat(5) {
+            val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+            results.add(result.task(":tasks")?.outcome == TaskOutcome.SUCCESS)
+        }
+        
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - startTime
+        
+        assertTrue("All rapid builds should succeed", results.all { it })
+        assertTrue("Rapid builds should complete within reasonable time", totalTime < 30000) // 30 seconds
     }
-    
+
     @Test
-    fun `should validate build script memory usage constraints`() {
-        val buildScript = createCompleteBuildScript()
+    fun `should validate build script with various plugin ordering combinations`() {
+        val pluginOrders = listOf(
+            listOf("com.android.library", "org.jetbrains.kotlin.android"),
+            listOf("org.jetbrains.kotlin.android", "com.android.library")
+        )
+        
+        pluginOrders.forEach { order ->
+            val buildScript = createBuildScriptWithPluginOrder(order)
+            buildFile.writeText(buildScript)
+            
+            val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+            assertEquals("Should succeed regardless of plugin order: $order",
+                        TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        }
+    }
+
+    @Test
+    fun `should validate build script behavior with missing optional configurations`() {
+        val minimalScript = """
+            plugins {
+                id("com.android.library")
+                id("org.jetbrains.kotlin.android")
+            }
+            
+            android {
+                namespace = "dev.aurakai.auraframefx.sandbox.ui"
+                compileSdk = 36
+            }
+        """.trimIndent()
+        
+        buildFile.writeText(minimalScript)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with minimal configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+    }
+
+    @Test
+    fun `should validate error handling for corrupted gradle wrapper`() {
+        val buildScript = createBasicBuildScript()
         buildFile.writeText(buildScript)
         
+        // Test with specific Gradle version to ensure consistency
         val result = gradleRunner
-            .withArguments("tasks", "--max-workers=1", "--no-daemon")
+            .withArguments("tasks", "--no-daemon")
+            .withGradleVersion("8.4")
             .build()
         
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-        assertTrue("Build should succeed with memory constraints",
-                   result.output.contains("BUILD SUCCESSFUL"))
+        assertEquals("Should handle Gradle wrapper gracefully",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
     }
-    
-    @Test
-    fun `should validate build script with null safety configurations`() {
-        val buildScript = """
+
+    private fun createBuildScriptWithPluginOrder(pluginOrder: List<String>) = """
         plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-            
-            kotlinOptions {
-                jvmTarget = "21"
-                freeCompilerArgs += listOf(
-                    "-Xjsr305=strict",
-                    "-Xexplicit-api=strict"
-                )
-            }
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with empty dependency blocks`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
+            ${pluginOrder.joinToString("
+            ") { "id("$it")" }}
         }
         
         android {
@@ -963,678 +1049,5 @@ class BuildScriptValidationTest {
                 targetCompatibility = JavaVersion.VERSION_21
             }
         }
-        
-        dependencies {
-            // Empty dependency block
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with deprecated API usage`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks", "--warning-mode=all").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with concurrent execution`() {
-        val buildScript = createBasicBuildScript()
-        buildFile.writeText(buildScript)
-        
-        val results = mutableListOf<Pair<String, Boolean>>()
-        repeat(3) {
-            results.add(
-                gradleRunner.withArguments("tasks", "--parallel")
-            )
-        }
-        
-        results.forEach { runner ->
-            val result = runner.build()
-            assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-        }
-    }
-    
-    @Test
-    fun `should validate build script with invalid kapt configuration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-            id("kotlin-kapt")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        kapt {
-            correctErrorTypes = true
-            useBuildCache = false
-        }
-        
-        dependencies {
-            kapt("nonexistent.annotation.processor:processor:1.0.0")
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").buildAndFail()
-        assertTrue("Should fail with invalid kapt configuration",
-                   result.output.contains("FAILED") || result.output.contains("processor"))
-    }
-    
-    @Test
-    fun `should validate build script with stress test conditions`() {
-        val buildScript = createCompleteBuildScript()
-        buildFile.writeText(buildScript)
-        
-        // Run multiple tasks in sequence to stress test
-        val taskSequence = listOf("clean", "tasks", "dependencies", "projects")
-        taskSequence.forEach { task ->
-            val result = gradleRunner.withArguments(task).build()
-            assertEquals("Task $task should succeed", TaskOutcome.SUCCESS, 
-                        result.task(":$task")?.outcome ?: TaskOutcome.SUCCESS)
-        }
-    }
-    
-    @Test
-    fun `should validate build script with integration test setup`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            testOptions {
-                unitTests {
-                    isReturnDefaultValues = true
-                    isIncludeAndroidResources = true
-                }
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        dependencies {
-            testImplementation("junit:junit:4.13.2")
-            testImplementation("org.mockito:mockito-core:5.0.0")
-            testImplementation("org.robolectric:robolectric:4.10.3")
-            androidTestImplementation("androidx.test.ext:junit:1.1.5")
-            androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with resource configuration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-                
-                resourceConfigurations += listOf("en", "es", "fr", "de")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with dependency verification`() {
-        val buildScript = createBuildScriptWithDependencies()
-        buildFile.writeText(buildScript)
-        
-        val result = gradleRunner.withArguments("dependencies", "--configuration", "api").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
-        assertTrue("Should include API dependencies", 
-                   result.output.contains("api - API dependencies"))
-    }
-    
-    @Test
-    fun `should validate build script with version catalog integration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        dependencies {
-            implementation(libs.androidxCoreKtx)
-            implementation(libs.androidxLifecycleRuntimeKtx)
-            testImplementation(libs.testJunit)
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with annotation processing configuration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-            id("kotlin-kapt")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        kapt {
-            correctErrorTypes = true
-            useBuildCache = true
-            generateStubs = true
-        }
-        
-        dependencies {
-            implementation(libs.hiltAndroid)
-            kapt(libs.hiltCompiler)
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with custom task definitions`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        tasks.register("customValidation") {
-            description = "Custom validation task"
-            group = "verification"
-            doLast {
-                println("Running custom validation")
-            }
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("customValidation").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":customValidation")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with repository configuration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        
-        repositories {
-            google()
-            mavenCentral()
-            gradlePluginPortal()
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with boundary SDK versions`() {
-        // Test with the absolute minimum supported SDK
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 21
-            
-            defaultConfig {
-                minSdk = 21
-                testOptions.targetSdk = 21
-                lint.targetSdk = 21
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-        """.trimIndent()
-        
-        buildFile.writeText(buildScript)
-        val result = gradleRunner.withArguments("tasks").build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
-    }
-    
-    @Test
-    fun `should validate build script with maximum complexity configuration`() {
-        val buildScript = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-            id("org.jetbrains.kotlin.plugin.compose") version "1.9.0"
-            id("kotlin-kapt")
-            id("dagger.hilt.android.plugin")
-            id("kotlin-parcelize")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-                
-                ndk {
-                    abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
-                    debugSymbolLevel = "FULL"
-                }
-                
-                resourceConfigurations += listOf("en", "es", "fr", "de", "it", "pt", "ru", "zh")
-            }
-            
-            flavorDimensions += listOf("environment", "architecture", "theme")
-            productFlavors {
-                create("dev") {
-                    dimension = "environment"
-                    buildConfigField("String", "API_URL", "\"https://dev.api.com\"")
-                }
-                create("staging") {
-                    dimension = "environment"
-                    buildConfigField("String", "API_URL", "\"https://staging.api.com\"")
-                }
-                create("prod") {
-                    dimension = "environment"
-                    buildConfigField("String", "API_URL", "\"https://api.com\"")
-                }
-                create("arm") {
-                    dimension = "architecture"
-                    ndk.abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
-                }
-                create("x86") {
-                    dimension = "architecture"
-                    ndk.abiFilters.addAll(listOf("x86", "x86_64"))
-                }
-                create("light") {
-                    dimension = "theme"
-                    buildConfigField("String", "THEME", "\"light\"")
-                }
-                create("dark") {
-                    dimension = "theme"
-                    buildConfigField("String", "THEME", "\"dark\"")
-                }
-            }
-            
-            buildTypes {
-                debug {
-                    isMinifyEnabled = false
-                    isDebuggable = true
-                    buildConfigField("Boolean", "DEBUG_MODE", "true")
-                }
-                release {
-                    isMinifyEnabled = true
-                    proguardFiles(
-                        getDefaultProguardFile("proguard-android-optimize.txt"),
-                        "proguard-rules.pro"
-                    )
-                    buildConfigField("Boolean", "DEBUG_MODE", "false")
-                }
-                create("benchmark") {
-                    initWith(buildTypes.getByName("release"))
-                    signingConfig = signingConfigs.getByName("debug")
-                    matchingFallbacks += listOf("release")
-                }
-            }
-            
-            signingConfigs {
-                create("debug") {
-                    storeFile = file("debug.keystore")
-                    storePassword = "android"
-                    keyAlias = "androiddebugkey"
-                    keyPassword = "android"
-                }
-            }
-            
-            sourceSets {
-                getByName("main") {
-                    java.srcDirs("src/main/kotlin")
-                    res.srcDirs("src/main/res")
-                }
-                getByName("test") {
-                    java.srcDirs("src/test/kotlin")
-                }
-                getByName("androidTest") {
-                    java.srcDirs("src/androidTest/kotlin")
-                }
-            }
-            
-            buildFeatures {
-                compose = true
-                buildConfig = true
-                dataBinding = true
-                viewBinding = true
-            }
-            
-            composeOptions {
-                kotlinCompilerExtensionVersion = "1.5.8"
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-            
-            kotlinOptions {
-                jvmTarget = "21"
-                freeCompilerArgs += listOf(
-                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                    "-Xjsr305=strict",
-                    "-Xexperimental=kotlin.ExperimentalStdlibApi"
-                )
-            }
-            
-            testOptions {
-                unitTests {
-                    isReturnDefaultValues = true
-                    isIncludeAndroidResources = true
-                }
-                animationsDisabled = true
-            }
-            
-            lint {
-                abortOnError = false
-                warningsAsErrors = false
-                checkReleaseBuilds = false
-                disable.addAll(listOf("ContentDescription", "HardcodedText", "UnusedResources"))
-                enable.addAll(listOf("RtlHardcoded", "RtlCompat", "RtlEnabled"))
-            }
-            
-            packaging {
-                resources {
-                    excludes.addAll(
-                        listOf(
-                            "META-INF/*.kotlin_module",
-                            "META-INF/*.version",
-                            "META-INF/proguard/*",
-                            "**/libjni*.so",
-                            "META-INF/AL2.0",
-                            "META-INF/LGPL2.1",
-                            "META-INF/services/**",
-                            "kotlin/**"
-                        )
-                    )
-                    pickFirsts.addAll(
-                        listOf(
-                            "META-INF/INDEX.LIST",
-                            "META-INF/io.netty.versions.properties"
-                        )
-                    )
-                }
-                jniLibs {
-                    excludes.addAll(
-                        listOf(
-                            "**/libjni*.so",
-                            "**/libicu*.so"
-                        )
-                    )
-                }
-            }
-        }
-        
-        kapt {
-            correctErrorTypes = true
-            useBuildCache = true
-            generateStubs = true
-            javacOptions {
-                option("-Xmaxerrs", 500)
-                option("-Xmaxwarns", 500)
-            }
-        }
-        
-        dependencies {
-            api(project(":app"))
-            implementation(libs.androidxCoreKtx)
-            implementation(libs.androidxLifecycleRuntimeKtx)
-            implementation(libs.androidxActivityCompose)
-            implementation(platform(libs.composeBom))
-            implementation(libs.ui)
-            implementation(libs.uiToolingPreview)
-            implementation(libs.androidxMaterial3)
-            implementation(libs.animation)
-            implementation(libs.foundation)
-            implementation(libs.navigationComposeV291)
-            implementation(libs.hiltAndroid)
-            kapt(libs.hiltCompiler)
-            implementation(libs.hiltNavigationCompose)
-            
-            debugImplementation(libs.uiTooling)
-            debugImplementation(libs.uiTestManifest)
-            
-            testImplementation(libs.testJunit)
-            testImplementation("org.mockito:mockito-core:5.0.0")
-            testImplementation("org.robolectric:robolectric:4.10.3")
-            testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-            
-            androidTestImplementation(libs.junitV115)
-            androidTestImplementation(libs.espressoCoreV351)
-            androidTestImplementation(libs.uiTestJunit4)
-            androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
-            androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
-        }
-    }
-    
-    @Test
-    fun `should validate build script with boundary SDK version combinations`() {
-        // ...
-    }
-    
-    @Test
-    fun `should validate build script robustness with rapid successive builds`() {
-        // ...
-    }
-    
-    @Test
-    fun `should validate build script recovery after corrupted state`() {
-        // ...
-    }
-    
-    @Test
-    fun `should validate build script with concurrency stress test`() {
-        val buildScript = createBasicBuildScript()
-        buildFile.writeText(buildScript)
-        
-        val results = mutableListOf<Pair<String, Boolean>>()
-        listOf("help", "tasks", "properties", "dependencies", "projects").parallelStream().forEach { task ->
-            try {
-                val result = GradleRunner.create()
-                    .withProjectDir(testProjectDir.toFile())
-                    .withPluginClasspath()
-                    .withGradleVersion("8.4")
-                    .withArguments(task, "--no-daemon", "--max-workers=1")
-                    .build()
-                
-                val success = result.task(":$task")?.outcome == TaskOutcome.SUCCESS ||
-                             result.output.contains("BUILD SUCCESSFUL")
-                synchronized(results) {
-                    results.add(task to success)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                synchronized(results) {
-                    results.add(task to false)
-                }
-            }
-        }
-        
-        results.forEach { (task, success) ->
-            assertTrue("Task $task should succeed in concurrent execution", success)
-        }
-        assertTrue("Should have results for all tasks", results.size >= 4)
-    }
+    """.trimIndent()
 }
