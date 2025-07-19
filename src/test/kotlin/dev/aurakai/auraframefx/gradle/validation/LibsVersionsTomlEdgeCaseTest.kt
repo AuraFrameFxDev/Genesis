@@ -35,7 +35,6 @@ class LibsVersionsTomlEdgeCaseTest {
     // ------------------------------------------------------------------------
     // Tests
     // ------------------------------------------------------------------------
-
     @Test
     fun mixedQuoteTypes_areHandled() {
         val toml = "[versions]\n" +
