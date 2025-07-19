@@ -1,11 +1,11 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
     id("com.google.firebase.firebase-perf")
     id("org.openapi.generator")
-
 }
 
 android {
@@ -14,7 +14,7 @@ android {
     compileSdk = 36  // Compatible with AGP 8.8.0
 
     defaultConfig {
-        applicationId = "com.example.app"
+        applicationId = "dev.aurakai.auraframefx"
         minSdk = 33
         targetSdk = 36  // Compatible with AGP 8.8.0
         versionCode = 1
@@ -67,16 +67,13 @@ android {
     // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
 
     compileOptions {
-        // Use Java 17, the standard for modern Android development
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        // Use Java 21, compatible with AGP 8.4.2 and Android development
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    }
+    // kotlinOptions removed - using compilerOptions from root build.gradle.kts
 
     externalNativeBuild {
         cmake {

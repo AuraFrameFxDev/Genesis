@@ -9,7 +9,7 @@ extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
 extra["kotlinVersion"] = libs.versions.kotlin.get()
 
-val javaVersion = JavaVersion.VERSION_24
+val javaVersion = JavaVersion.VERSION_21
 
 // buildscript block removed - using modern version catalog plugin management
 
@@ -31,9 +31,8 @@ allprojects {
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
         configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
+                languageVersion.set(JavaLanguageVersion.of(24)) // Use available JDK 24
                 vendor.set(JvmVendorSpec.ADOPTIUM)
-                version = "1.0.0"
             }
         }
     }
