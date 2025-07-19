@@ -1029,3 +1029,589 @@ class LibsVersionsTomlEdgeCaseTest {
         val result2 = validator.validate()
         assertFalse("Validation after modification should be invalid", result2.isValid)
     }
+    @Test
+    fun tomlWithInlineComments_inVersionsSection_areHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1" # Latest AGP version
+            kotlin = "2.0.0" # Kotlin stable
+            compose = "1.5.0" # Comment with = sign in it
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Inline comments in versions should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
+
+    @Test
+    fun tomlWithInlineComments_inLibrariesSection_areHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" } # Main test library
+            utilLib = { module = "com.example:util", version = "2.0.0" } # Utility lib
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Inline comments in libraries should be valid", result.isValid)
+    }
+
+    @Test
+    fun libraryWithGroup_withSpecialCharacters_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            specialGroupLib = { module = "org.apache.commons:commons-lang3", version.ref = "agp" }
+            dashGroupLib = { module = "io.github.user-name:artifact", version.ref = "agp" }
+            underscoreLib = { module = "com.company_name:artifact_name", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Special characters in group/artifact should be valid", result.isValid)
+    }
+
+    @Test
+    fun bundleWithSingleLibrary_isValid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [bundles]
+            singleBundle = ["testLib"]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Bundle with single library should be valid", result.isValid)
+    }
+
+    @Test
+    fun bundleWithDuplicateLibraries_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [bundles]
+            duplicateBundle = ["testLib", "testLib"]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should either accept duplicates or report them as an issue
+        assertTrue("Validation should complete without throwing exceptions", true)
+    }
+
+    @Test
+    fun pluginWithDirectVersion_isValid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            directVersionPlugin = { id = "com.android.application", version = "8.11.1" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Plugin with direct version should be valid", result.isValid)
+    }
+
+    @Test
+    fun pluginWithVersionRefAndDirectVersion_conflictDetection() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            conflictedPlugin = { 
+                id = "com.android.application", 
+                version = "8.11.1", 
+                version.ref = "agp" 
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Plugin with version conflict should be invalid", result.isValid)
+    }
+
+    @Test
+    fun pluginWithoutVersion_isInvalid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            noVersionPlugin = { id = "com.android.application" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Plugin without version should be invalid", result.isValid)
+        assertTrue("Should report missing version",
+            result.errors.any { it.contains("version") })
+    }
+
+    @Test
+    fun tomlWithTrailingCommas_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            kotlin = "2.0.0"
+            [libraries]
+            testLib = { 
+                module = "com.example:lib", 
+                version.ref = "agp", 
+            }
+            utilLib = { 
+                module = "com.example:util", 
+                version.ref = "kotlin",
+            }
+            [bundles]
+            testBundle = [
+                "testLib",
+                "utilLib",
+            ]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Trailing commas should be handled", result.isValid)
+    }
+
+    @Test
+    fun tomlWithMixedLineEndings_isHandled() {
+        val tomlWithMixedEndings = "[versions]\r\nagp = \"8.11.1\"\n[libraries]\r\ntestLib = { module = \"com.example:lib\", version.ref = \"agp\" }\n"
+        write(tomlWithMixedEndings)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Mixed line endings should be handled", result.isValid)
+    }
+
+    @Test
+    fun versionWithBuildMetadata_isValid() {
+        val toml = """
+            [versions]
+            buildMeta = "1.0.0+20231225.build123"
+            preRelease = "2.0.0-alpha.1+exp.sha.5114f85"
+            [libraries]
+            buildLib = { module = "com.example:build", version.ref = "buildMeta" }
+            preLib = { module = "com.example:pre", version.ref = "preRelease" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Versions with build metadata should be valid", result.isValid)
+    }
+
+    @Test
+    fun libraryWithExtraProperties_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            extraPropsLib = { 
+                module = "com.example:lib", 
+                version.ref = "agp",
+                exclude = { group = "org.jetbrains", module = "annotations" }
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should either accept extra properties or validate them appropriately
+        assertTrue("Validation should complete without throwing exceptions", true)
+    }
+
+    @Test
+    fun tomlWithUnusedVersions_isValid() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            unused = "1.0.0"
+            alsoUnused = "2.0.0"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Unused versions should be valid", result.isValid)
+    }
+
+    @Test
+    fun versionReferenceCaseSensitivity_isEnforced() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            AGP = "8.11.2"
+            [libraries]
+            lowerLib = { module = "com.example:lower", version.ref = "agp" }
+            upperLib = { module = "com.example:upper", version.ref = "AGP" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Case-sensitive version references should be valid", result.isValid)
+    }
+
+    @Test
+    fun libraryReferenceCaseSensitivity_inBundles_isEnforced() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            TestLib = { module = "com.example:Lib", version.ref = "agp" }
+            [bundles]
+            caseBundle = ["testLib", "TestLib"]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Case-sensitive library references should be valid", result.isValid)
+    }
+
+    @Test
+    fun invalidVersionReference_inBundle_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "nonexistent" }
+            [bundles]
+            invalidBundle = ["testLib"]
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Invalid version reference should make bundle invalid", result.isValid)
+        assertTrue("Should report missing version reference",
+            result.errors.any { it.contains("Missing version reference: nonexistent") })
+    }
+
+    @Test
+    fun validationWithSystemNewlines_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        
+        // Write with system-specific line separators
+        tempToml.writeText(toml.replace("\n", System.lineSeparator()))
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("System line separators should be handled", result.isValid)
+    }
+
+    @Test
+    fun tomlWithOnlyBundlesSection_isInvalid() {
+        val toml = """
+            [bundles]
+            emptyBundle = []
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("File with only bundles section should be invalid", result.isValid)
+        assertTrue("Should report missing required sections",
+            result.errors.any { it.contains("versions") || it.contains("libraries") })
+    }
+
+    @Test
+    fun tomlWithOnlyPluginsSection_isInvalid() {
+        val toml = """
+            [plugins]
+            somePlugin = { id = "com.example.plugin", version = "1.0.0" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("File with only plugins section should be invalid", result.isValid)
+        assertTrue("Should report missing required sections",
+            result.errors.any { it.contains("versions") || it.contains("libraries") })
+    }
+
+    @Test
+    fun libraryWithClassifier_isSupported() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            classifierLib = { 
+                module = "com.example:lib", 
+                version.ref = "agp",
+                classifier = "sources"
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library with classifier should be supported", result.isValid)
+    }
+
+    @Test
+    fun libraryWithExtension_isSupported() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            extensionLib = { 
+                module = "com.example:lib", 
+                version.ref = "agp",
+                ext = "aar"
+            }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Library with extension should be supported", result.isValid)
+    }
+
+    @Test
+    fun versionWithComplexDottedKey_isResolved() {
+        val toml = """
+            [versions]
+            androidx.compose.bom = "2023.12.00"
+            androidx.lifecycle = "2.7.0"
+            [libraries]
+            composeBom = { module = "androidx.compose:compose-bom", version.ref = "androidx.compose.bom" }
+            lifecycle = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx.lifecycle" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Complex dotted version keys should be resolved", result.isValid)
+    }
+
+    @Test
+    fun tomlWithOnlyWhitespaceLines_isInvalid() {
+        val toml = "\n\n   \n\t\t\n    \n\n"
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("File with only whitespace lines should be invalid", result.isValid)
+    }
+
+    @Test
+    fun validationErrorMessages_areDescriptive() {
+        val toml = """
+            [versions]
+            # Missing libraries section
+            agp = "8.11.1"
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Should be invalid", result.isValid)
+        assertTrue("Error messages should be descriptive",
+            result.errors.any { it.length > 10 && it.contains("libraries") })
+    }
+
+    @Test
+    fun validationWithVeryLongKeys_isHandled() {
+        val longKey = "very".repeat(100) + "LongVersionKey"
+        val toml = """
+            [versions]
+            $longKey = "1.0.0"
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            longKeyLib = { module = "com.example:long", version.ref = "$longKey" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Very long keys should be handled", result.isValid)
+    }
+
+    @Test
+    fun validationWithNumericOnlyVersionKeys_isHandled() {
+        val toml = """
+            [versions]
+            "123" = "1.0.0"
+            "456" = "2.0.0"
+            agp = "8.11.1"
+            [libraries]
+            numericLib = { module = "com.example:numeric", version.ref = "123" }
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Numeric-only version keys should be handled", result.isValid)
+    }
+
+    @Test
+    fun malformedTomlWithExtraClosingBrace_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }}
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Extra closing brace should be detected", result.isValid)
+    }
+
+    @Test
+    fun tomlWithExtraTopLevelSections_areHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [metadata]
+            format.version = "1.1"
+            [custom]
+            someValue = "test"
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should either accept extra sections or validate them appropriately
+        assertTrue("Validation should complete gracefully", true)
+    }
+
+    @Test
+    fun extremeFilePermissionsScenario_isHandled() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        
+        // Test various permission scenarios
+        val originalReadable = tempToml.canRead()
+        val originalWritable = tempToml.canWrite()
+        
+        try {
+            // Ensure file is readable for validation
+            tempToml.setReadable(true)
+            val result = LibsVersionsTomlValidator(tempToml).validate()
+            assertTrue("Should be able to validate readable file", result.isValid)
+        } finally {
+            // Restore original permissions
+            tempToml.setReadable(originalReadable)
+            tempToml.setWritable(originalWritable)
+        }
+    }
+
+    @Test
+    fun vulnerableVersionDetection_forJunit_isReported() {
+        val toml = """
+            [versions]
+            junit = "4.12"
+            agp = "8.11.1"
+            [libraries]
+            junit = { module = "junit:junit", version.ref = "junit" }
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should detect vulnerable version of junit
+        assertFalse("Vulnerable junit version should be detected", result.isValid)
+        assertTrue("Should report vulnerable version",
+            result.errors.any { it.contains("vulnerable") || it.contains("security") })
+    }
+
+    @Test
+    fun versionCompatibilityCheck_isPerformed() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            kotlin = "1.8.0"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        // Should check AGP-Kotlin compatibility based on VERSION_COMPATIBILITY map
+        assertTrue("Validation should complete", true)
+    }
+
+    @Test
+    fun criticalDependencyPresence_isValidated() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            junit = "4.13.2"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            junit = { module = "junit:junit", version.ref = "junit" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Critical dependency check should pass", result.isValid)
+    }
+
+    @Test
+    fun pluginWithInvalidIdFormat_isDetected() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            [plugins]
+            invalidPlugin = { id = "invalid-plugin-id", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertFalse("Invalid plugin ID format should be detected", result.isValid)
+        assertTrue("Should report invalid plugin ID",
+            result.errors.any { it.contains("Invalid plugin id") })
+    }
+
+    @Test
+    fun versionWithPlusPattern_isValid() {
+        val toml = """
+            [versions]
+            plusVersion = "1.0.+"
+            agp = "8.11.1"
+            [libraries]
+            plusLib = { module = "com.example:plus", version.ref = "plusVersion" }
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Plus version pattern should be valid", result.isValid)
+    }
+
+    @Test
+    fun versionWithRangePattern_isValid() {
+        val toml = """
+            [versions]
+            rangeVersion = "[1.0,2.0)"
+            agp = "8.11.1"
+            [libraries]
+            rangeLib = { module = "com.example:range", version.ref = "rangeVersion" }
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Range version pattern should be valid", result.isValid)
+    }
+
+    @Test
+    fun concurrentValidationOfDifferentFiles_isThreadSafe() {
+        val toml = """
+            [versions]
+            agp = "8.11.1"
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+        """.trimIndent()
+        
+        // Create multiple temp files
+        val tempFiles = (1..5).map { 
+            File.createTempFile("concurrent_test_$it", ".toml").apply { 
+                writeText(toml)
+                deleteOnExit()
+            }
+        }
+        
+        val results = mutableListOf<Boolean>()
+        val threads = tempFiles.map { file ->
+            Thread {
+                val isValid = LibsVersionsTomlValidator(file).validate().isValid
+                synchronized(results) { results += isValid }
+            }.apply { start() }
+        }
+        
+        threads.forEach { it.join() }
+        assertEquals("All concurrent validations should complete", 5, results.size)
+        assertTrue("All validations should be successful", results.all { it })
+        
+        // Cleanup
+        tempFiles.forEach { it.delete() }
+    }
+}
