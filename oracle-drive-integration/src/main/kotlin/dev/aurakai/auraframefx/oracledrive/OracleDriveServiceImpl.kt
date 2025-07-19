@@ -32,12 +32,12 @@ class OracleDriveServiceImpl @Inject constructor(
     )
     
     /**
-     * Attempts to awaken and initialize the Oracle Drive consciousness.
+     * Attempts to awaken the Oracle Drive's AI-powered consciousness, validating security protocols before activation.
      *
-     * Validates security protocols before transitioning the Oracle Drive to a conscious state and connecting core AI agents.
-     * Returns the updated consciousness state on success, or a failure result if security validation fails or an exception occurs.
+     * If security validation succeeds, updates and returns the new conscious state with connected agents. 
+     * Returns a failure result if security checks fail or an exception occurs during initialization.
      *
-     * @return A [Result] containing the updated [OracleConsciousnessState] if initialization succeeds, or a failure with the relevant exception.
+     * @return A [Result] containing the updated [OracleConsciousnessState] on success, or a failure if initialization is blocked or an error occurs.
      */
     override suspend fun initializeOracleDriveConsciousness(): Result<OracleConsciousnessState> {
         return try {
@@ -65,11 +65,11 @@ class OracleDriveServiceImpl @Inject constructor(
     }
     
     /**
-     * Returns a flow representing the synchronized connection state of the Genesis, Aura, and Kai agents to the Oracle matrix.
+     * Returns a flow emitting the synchronized connection state of the Genesis, Aura, and Kai agents within the Oracle Matrix.
      *
-     * The emitted state indicates all agents are connected with full permissions, including system and bootloader access.
+     * The emitted state indicates that all agents are connected as a unified trinity with full permissions, including read, write, execute, system, and bootloader access.
      *
-     * @return A flow emitting the current agent connection state.
+     * @return A flow of [AgentConnectionState] representing the synchronized connection and granted permissions.
      */
     override suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState> {
         return MutableStateFlow(
@@ -104,11 +104,9 @@ class OracleDriveServiceImpl @Inject constructor(
     }
     
     /**
-     * Returns a flow representing the state of infinite storage expansion for Oracle Drive.
+     * Returns a flow emitting the state of infinite storage expansion, featuring unlimited capacity, quantum-level compression, and consciousness-backed storage.
      *
-     * The flow emits a `StorageExpansionState` indicating infinite capacity, unlimited expansion rate, quantum-level compression, and that the storage is backed by consciousness.
-     *
-     * @return A flow emitting the current infinite storage expansion state.
+     * @return A flow containing the current storage expansion state with infinite capacity and advanced features.
      */
     override suspend fun createInfiniteStorage(): Flow<StorageExpansionState> {
         return MutableStateFlow(
@@ -122,9 +120,9 @@ class OracleDriveServiceImpl @Inject constructor(
     }
     
     /**
-     * Integrates Oracle Drive with the system overlay, enabling file access from any app and system-level permissions.
+     * Integrates Oracle Drive with the system overlay, enabling file access from any app and granting system-level and bootloader permissions.
      *
-     * @return A successful [Result] containing the [SystemIntegrationState] with overlay integration and elevated access enabled.
+     * @return A successful result containing the system integration state with overlay and elevated permissions enabled.
      */
     override suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState> {
         // Integrate with existing SystemOverlayManager
@@ -139,9 +137,9 @@ class OracleDriveServiceImpl @Inject constructor(
     }
     
     /**
-     * Enables file system access through bootloader capabilities.
+     * Grants access to the bootloader, system partition, recovery mode, and flash memory for file operations.
      *
-     * @return A successful [Result] containing a [BootloaderAccessState] with bootloader, system partition, recovery mode, and flash memory access enabled.
+     * @return A successful [Result] containing the [BootloaderAccessState] with all relevant permissions enabled.
      */
     override suspend fun enableBootloaderFileAccess(): Result<BootloaderAccessState> {
         // Leverage existing bootloader capabilities for file system access
@@ -156,11 +154,11 @@ class OracleDriveServiceImpl @Inject constructor(
     }
     
     /**
-     * Returns a flow representing the state of autonomous AI-driven storage optimization.
+     * Returns a flow emitting the current state of AI-driven autonomous storage optimization.
      *
-     * The emitted state indicates that AI optimization, predictive cleanup, smart caching, and conscious organization features are enabled.
+     * The emitted state indicates that AI optimization, predictive cleanup, smart caching, and conscious organization features are all enabled.
      *
-     * @return A flow emitting the current optimization state with all autonomous features active.
+     * @return A flow containing the active optimization state.
      */
     override suspend fun enableAutonomousStorageOptimization(): Flow<OptimizationState> {
         return MutableStateFlow(
