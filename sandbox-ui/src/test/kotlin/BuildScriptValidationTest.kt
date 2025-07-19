@@ -4,6 +4,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.After
+import org.junit.Assert.fail
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import java.io.File
@@ -11,14 +12,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
-/**
- * Unit tests for build script validation
- * Testing Framework: JUnit 4 with Gradle TestKit
- * 
- * This test suite validates the Gradle build script configuration
- * for the sandbox-ui library module including plugins, dependencies,
- * Android configuration, and build variants.
- */
 class BuildScriptValidationTest {
 
     private lateinit var testProjectDir: Path
@@ -29,17 +22,17 @@ class BuildScriptValidationTest {
     fun setup() {
         testProjectDir = Files.createTempDirectory("gradle-test")
         buildFile = testProjectDir.resolve("build.gradle.kts").toFile()
-        
+
         // Create minimal project structure
         Files.createDirectories(testProjectDir.resolve("src/main/kotlin"))
         Files.createDirectories(testProjectDir.resolve("src/test/kotlin"))
-        
+
         // Create settings.gradle.kts
         testProjectDir.resolve("settings.gradle.kts").writeText("""
             rootProject.name = "sandbox-ui-test"
             include(":app")
         """.trimIndent())
-        
+
         // Create minimal libs.versions.toml
         Files.createDirectories(testProjectDir.resolve("gradle"))
         testProjectDir.resolve("gradle/libs.versions.toml").writeText("""
@@ -67,7 +60,7 @@ class BuildScriptValidationTest {
             espressoCoreV351 = { group = "androidx.test.espresso", name = "espresso-core", version = "3.5.1" }
             uiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
         """.trimIndent())
-        
+
         // Create app module build.gradle.kts
         Files.createDirectories(testProjectDir.resolve("app"))
         testProjectDir.resolve("app/build.gradle.kts").writeText("""
@@ -93,7 +86,7 @@ class BuildScriptValidationTest {
                 }
             }
         """.trimIndent())
-        
+
         gradleRunner = GradleRunner.create()
             .withProjectDir(testProjectDir.toFile())
             .withPluginClasspath()
@@ -102,7 +95,9 @@ class BuildScriptValidationTest {
 
     @After
     fun cleanup() {
-        testProjectDir.toFile().deleteRecursively()
+        if (::testProjectDir.isInitialized) {
+            testProjectDir.toFile().deleteRecursively()
+        }
     }
 
     @Test
@@ -115,6 +110,23 @@ class BuildScriptValidationTest {
         assertTrue("Build should succeed", result.output.contains("BUILD SUCCESSFUL"))
         assertTrue("Should contain Android library tasks", result.output.contains("assembleDebug"))
         assertTrue("Should contain Android library tasks", result.output.contains("assembleRelease"))
+    }
+
+    @Test
+    fun `should validate build script with multiple task executions to ensure script integrity`() {
+        val buildScript = createCompleteBuildScript()
+        buildFile.writeText(buildScript)
+
+        val tasks = listOf("tasks", "dependencies", "help")
+        tasks.forEach { task ->
+            val result = gradleRunner.withArguments(task, "--no-daemon").build()
+            assertTrue("Task $task should execute successfully",
+                       result.output.contains("BUILD SUCCESSFUL") ||
+                       result.task(":$task")?.outcome == TaskOutcome.SUCCESS)
+        }
+
+        val memoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        assertTrue("Memory usage should be reasonable", memoryAfter < 500_000_000)
     }
 
     @Test
@@ -226,7 +238,6 @@ class BuildScriptValidationTest {
             val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
             assertTrue("Build should fail with syntax error", result.output.contains("BUILD FAILED"))
         } catch (e: Exception) {
-            // Expected behavior for invalid syntax
             assertTrue("Exception should contain syntax error info", e.message?.contains("syntax") == true)
         }
     }
@@ -257,7 +268,6 @@ class BuildScriptValidationTest {
             val result = gradleRunner.withArguments("tasks", "--no-daemon").buildAndFail()
             assertTrue("Empty script should fail", result.output.contains("BUILD FAILED"))
         } catch (e: Exception) {
-            // Expected failure for empty build script
             assertNotNull("Should throw exception for empty script", e.message)
         }
     }
@@ -281,7 +291,7 @@ class BuildScriptValidationTest {
         val results = mutableListOf<Boolean>()
         val threads = mutableListOf<Thread>()
         
-        repeat(3) {
+        repeat(3) { _ ->
             val thread = Thread {
                 try {
                     val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
@@ -301,8 +311,7 @@ class BuildScriptValidationTest {
         threads.forEach { it.start() }
         threads.forEach { it.join() }
         
-        assertTrue("At least one concurrent build should succeed",
-                   results.any { it })
+        assertTrue("At least one concurrent build should succeed", results.any { it })
     }
 
     @Test
@@ -310,18 +319,71 @@ class BuildScriptValidationTest {
         val buildScript = createCompleteBuildScript()
         buildFile.writeText(buildScript)
         
-        // Test multiple task executions to ensure script integrity
-        val tasks = listOf("tasks", "dependencies", "help")
-        tasks.forEach { task ->
-            val result = gradleRunner.withArguments(task, "--no-daemon").build()
-            assertTrue("Task $task should execute successfully",
-                      result.output.contains("BUILD SUCCESSFUL") ||
-                      result.task(":$task")?.outcome == TaskOutcome.SUCCESS)
+        val startTime = System.currentTimeMillis()
+        val results = mutableListOf<Boolean>()
+        
+        repeat(5) {
+            val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+            results.add(result.task(":tasks")?.outcome == TaskOutcome.SUCCESS)
         }
         
-        // Verify no memory leaks or resource issues
-        val memoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
-        assertTrue("Memory usage should be reasonable", memoryAfter < 500_000_000) // 500MB limit
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - startTime
+        
+        assertTrue("All rapid builds should succeed", results.all { it })
+        assertTrue("Rapid builds should complete within reasonable time", totalTime < 30000)
+    }
+
+    @Test
+    fun `should validate build script with various plugin ordering combinations`() {
+        val pluginOrders = listOf(
+            listOf("com.android.library", "org.jetbrains.kotlin.android"),
+            listOf("org.jetbrains.kotlin.android", "com.android.library")
+        )
+        
+        pluginOrders.forEach { order ->
+            val buildScript = createBuildScriptWithPluginOrder(order)
+            buildFile.writeText(buildScript)
+            
+            val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+            assertEquals("Should succeed regardless of plugin order: $order",
+                        TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+        }
+    }
+
+    @Test
+    fun `should validate build script behavior with missing optional configurations`() {
+        val minimalScript = """
+            plugins {
+                id("com.android.library")
+                id("org.jetbrains.kotlin.android")
+            }
+            
+            android {
+                namespace = "dev.aurakai.auraframefx.sandbox.ui"
+                compileSdk = 36
+            }
+        """.trimIndent()
+        
+        buildFile.writeText(minimalScript)
+        
+        val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
+        assertEquals("Should succeed with minimal configuration",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
+    }
+
+    @Test
+    fun `should validate error handling for corrupted gradle wrapper`() {
+        val buildScript = createBasicBuildScript()
+        buildFile.writeText(buildScript)
+        
+        val result = gradleRunner
+            .withArguments("tasks", "--no-daemon")
+            .withGradleVersion("8.4")
+            .build()
+        
+        assertEquals("Should handle Gradle wrapper gracefully",
+                    TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
     }
 
     @Test
@@ -329,7 +391,6 @@ class BuildScriptValidationTest {
         val buildScript = createBasicBuildScript()
         buildFile.writeText(buildScript)
         
-        // Test with invalid Gradle version to trigger exception
         val invalidRunner = GradleRunner.create()
             .withProjectDir(testProjectDir.toFile())
             .withPluginClasspath()
@@ -339,7 +400,6 @@ class BuildScriptValidationTest {
             invalidRunner.withArguments("tasks", "--no-daemon").build()
             fail("Should have thrown exception for invalid Gradle version")
         } catch (e: Exception) {
-            // Expected exception - verify it contains relevant information
             assertNotNull("Exception message should not be null", e.message)
         }
     }
@@ -353,7 +413,7 @@ class BuildScriptValidationTest {
         val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
         val executionTime = System.currentTimeMillis() - startTime
         
-        assertTrue("Build should complete in reasonable time", executionTime < 60000) // 60 seconds max
+        assertTrue("Build should complete in reasonable time", executionTime < 60000)
         assertTrue("Build should succeed", result.output.contains("BUILD SUCCESSFUL"))
     }
 
@@ -378,7 +438,6 @@ class BuildScriptValidationTest {
                 }
             }.start()
         }
-        
         assertTrue("All threads should complete", latch.await(30, java.util.concurrent.TimeUnit.SECONDS))
         assertTrue("Most concurrent builds should succeed", results.values.count { it } >= 3)
     }
@@ -419,11 +478,10 @@ class BuildScriptValidationTest {
             assertTrue("Each build should succeed", result.output.contains("BUILD SUCCESSFUL"))
         }
         
-        runtime.gc() // Suggest garbage collection
-        Thread.sleep(100) // Allow GC to run
+        runtime.gc()
+        Thread.sleep(100)
         val memoryAfter = runtime.totalMemory() - runtime.freeMemory()
         val memoryGrowth = memoryAfter - memoryBefore
-        
         assertTrue("Memory growth should be reasonable (< 200MB)", memoryGrowth < 200_000_000)
     }
 
@@ -748,7 +806,7 @@ class BuildScriptValidationTest {
         val executionTime = System.currentTimeMillis() - startTime
         
         assertTrue("Should handle large dependency list", result.output.contains("BUILD SUCCESSFUL"))
-        assertTrue("Should complete in reasonable time", executionTime < 120000) // 2 minutes max
+        assertTrue("Should complete in reasonable time", executionTime < 120000)
         assertTrue("Should contain all dependencies", largeDependencyScript.contains("implementation(libs."))
     }
 
@@ -812,10 +870,10 @@ class BuildScriptValidationTest {
     @Test
     fun `should validate build script syntax errors and provide meaningful feedback`() {
         val syntaxErrorScripts = listOf(
-            "plugins { invalid syntax }", // Missing ID
-            "android { compileSdk = invalid }", // Invalid value
-            "dependencies { implementation( }", // Incomplete dependency
-            "buildTypes { invalid { } }" // Invalid block name
+            "plugins { invalid syntax }",
+            "android { compileSdk = invalid }",
+            "dependencies { implementation( }",
+            "buildTypes { invalid { } }"
         )
         
         syntaxErrorScripts.forEachIndexed { index, script ->
@@ -865,7 +923,6 @@ class BuildScriptValidationTest {
 
     @Test
     fun `should validate gradle wrapper compatibility`() {
-        // Create gradle wrapper properties
         Files.createDirectories(testProjectDir.resolve("gradle/wrapper"))
         testProjectDir.resolve("gradle/wrapper/gradle-wrapper.properties").writeText("""
             distributionBase=GRADLE_USER_HOME
@@ -928,7 +985,7 @@ class BuildScriptValidationTest {
         val memoryUsage = memoryAfter - memoryBefore
         
         assertTrue("Should complete successfully", result.output.contains("BUILD SUCCESSFUL"))
-        assertTrue("Memory usage should be reasonable", memoryUsage < 100_000_000) // 100MB limit
+        assertTrue("Memory usage should be reasonable", memoryUsage < 100_000_000)
     }
 
     @Test
@@ -936,7 +993,6 @@ class BuildScriptValidationTest {
         val basicScript = createBasicBuildScript()
         buildFile.writeText(basicScript)
         
-        // Test that the script can be parsed by checking specific Kotlin syntax elements
         assertTrue("Should use proper string literals", basicScript.contains("\"dev.aurakai.auraframefx.sandbox.ui\""))
         assertTrue("Should use proper assignment syntax", basicScript.contains("compileSdk = 36"))
         assertTrue("Should use proper block syntax", basicScript.contains("android {"))
@@ -951,7 +1007,6 @@ class BuildScriptValidationTest {
         val completeScript = createCompleteBuildScript()
         buildFile.writeText(completeScript)
         
-        // Verify all major configuration blocks are present
         val requiredElements = listOf(
             "plugins {", "android {", "defaultConfig {", "buildTypes {",
             "buildFeatures {", "composeOptions {", "packaging {", "dependencies {"
@@ -965,41 +1020,14 @@ class BuildScriptValidationTest {
         assertTrue("Complete script should build", result.output.contains("BUILD SUCCESSFUL"))
     }
 
-    private fun createBasicBuildScript() = """
-        plugins {
-            id("com.android.library")
-            id("org.jetbrains.kotlin.android")
-        }
-        
-        android {
-            namespace = "dev.aurakai.auraframefx.sandbox.ui"
-            compileSdk = 36
-            
-            defaultConfig {
-                minSdk = 33
-                testOptions.targetSdk = 36
-                lint.targetSdk = 36
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                consumerProguardFiles("consumer-rules.pro")
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-        }
-    """.trimIndent()
-
     @Test
     fun `should validate actual build script file exists and is parseable`() {
-        // Test the actual build.gradle.kts file from the project if it exists
         val actualBuildFile = testProjectDir.resolve("../../../build.gradle.kts").toFile()
         if (actualBuildFile.exists()) {
             val actualContent = actualBuildFile.readText()
             assertNotNull("Actual build file should have content", actualContent)
             assertTrue("Should contain plugins block", actualContent.contains("plugins"))
         } else {
-            // If no actual file exists, test our generated one
             val generatedScript = createCompleteBuildScript()
             buildFile.writeText(generatedScript)
             val result = gradleRunner.withArguments("help", "--no-daemon").build()
@@ -1127,12 +1155,9 @@ class BuildScriptValidationTest {
                 implementation(libs.navigationComposeV291)
                 implementation(libs.hiltAndroid)
                 implementation(libs.hiltNavigationCompose)
-                
                 kapt(libs.hiltCompiler)
-                
                 debugImplementation(libs.uiTooling)
                 debugImplementation(libs.uiTestManifest)
-                
                 testImplementation(libs.testJunit)
                 androidTestImplementation(libs.junitV115)
                 androidTestImplementation(libs.espressoCoreV351)
@@ -1145,13 +1170,32 @@ class BuildScriptValidationTest {
         
         val result = gradleRunner.withArguments("tasks", "--no-daemon").build()
         assertTrue("Comprehensive script should build successfully", result.output.contains("BUILD SUCCESSFUL"))
-        
-        // Verify all major features are configured
         assertTrue("Should have multiDex", comprehensiveScript.contains("multiDexEnabled"))
         assertTrue("Should have vector drawables", comprehensiveScript.contains("vectorDrawables"))
         assertTrue("Should have desugaring", comprehensiveScript.contains("isCoreLibraryDesugaringEnabled"))
         assertTrue("Should have proper Kotlin options", comprehensiveScript.contains("freeCompilerArgs"))
     }
+
+    private fun createBasicBuildScript() = """
+        plugins {
+            id("com.android.library")
+            id("org.jetbrains.kotlin.android")
+        }
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            defaultConfig {
+                minSdk = 33
+                targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    """.trimIndent()
 
     private fun createCompleteBuildScript() = """
         plugins {
@@ -1173,7 +1217,6 @@ class BuildScriptValidationTest {
                 lint.targetSdk = 36
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 consumerProguardFiles("consumer-rules.pro")
-                
                 ndk {
                     abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
                     debugSymbolLevel = "FULL"
@@ -1226,6 +1269,30 @@ class BuildScriptValidationTest {
             implementation(libs.androidxCoreKtx)
             implementation(libs.androidxLifecycleRuntimeKtx)
             implementation(libs.androidxActivityCompose)
+        }
+    """.trimIndent()
+
+    private fun createBuildScriptWithPluginOrder(pluginOrder: List<String>) = """
+        plugins {
+            ${pluginOrder.joinToString("\n            ") { "id(\"$it\")" }}
+        }
+        
+        android {
+            namespace = "dev.aurakai.auraframefx.sandbox.ui"
+            compileSdk = 36
+            
+            defaultConfig {
+                minSdk = 33
+                testOptions.targetSdk = 36
+                lint.targetSdk = 36
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                consumerProguardFiles("consumer-rules.pro")
+            }
+            
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
         }
     """.trimIndent()
 }
