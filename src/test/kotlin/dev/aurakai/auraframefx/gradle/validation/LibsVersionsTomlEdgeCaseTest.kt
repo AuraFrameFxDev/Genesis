@@ -57,7 +57,7 @@ class LibsVersionsTomlEdgeCaseTest {
             special = "version-with-\"quotes\""
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            specialLib = { module = "com.example:special\\path", version.ref = "special" }
+            specialLib = { module = "com.example:special\path", version.ref = "special" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -601,8 +601,6 @@ class LibsVersionsTomlEdgeCaseTest {
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Valid plugins section should be accepted", result.isValid)
     }
-
-// ... rest of tests unchanged ...
 
     @Test
     fun validatorMemoryUsage_staysReasonable() {
