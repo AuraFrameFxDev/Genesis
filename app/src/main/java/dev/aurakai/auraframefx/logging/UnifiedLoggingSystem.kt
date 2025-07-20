@@ -39,7 +39,7 @@ class UnifiedLoggingSystem @Inject constructor(
     private val _systemHealth = MutableStateFlow(SystemHealth.HEALTHY)
     val systemHealth: StateFlow<SystemHealth> = _systemHealth.asStateFlow()
     
-    private val logChannel = Channel<LogEntry>(Channel.UNLIMITED)
+    private val logChannel = Channel<LogEntry>(capacity = 10000, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val logDirectory = File(context.filesDir, "aura_logs")
     
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
