@@ -1,24 +1,19 @@
 // Gradle configuration for AuraFrameFX with Java 24 and Gradle 8.14.3
-// Note: buildSrc may need to be temporarily disabled to resolve JDK 24 circular dependency issue
-// Will re-enable once main build environment is stable
 
+// Project properties
 extra["ndkVersion"] = "27.0.12077973"
 extra["cmakeVersion"] = "3.22.1"
 extra["compileSdkVersion"] = 36
 extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
-extra["kotlinVersion"] = libs.versions.kotlin.get()
 
-val javaVersion = JavaVersion.VERSION_24
-
-// buildscript block removed - using modern version catalog plugin management
-
+// Plugin management using version catalog
 plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
@@ -26,46 +21,42 @@ plugins {
     alias(libs.plugins.openapi.generator) apply false
 }
 
+// Configure all projects
 allprojects {
-    // Configure Java toolchain for all projects
-    plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
+    // Apply Java toolchain for Java projects
+    plugins.withType<JavaBasePlugin> {
         configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
-                vendor.set(JvmVendorSpec.ADOPTIUM)
-                version = "1.0.0"
+                languageVersion = JavaLanguageVersion.of(24)
+                vendor = JvmVendorSpec.ADOPTIUM
             }
         }
     }
 
-    // Configure Kotlin compilation for all projects
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-            freeCompilerArgs.addAll(
+    // Configure Kotlin compilation
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "24"
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-Xjvm-target=24",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xcontext-receivers",
                 "-Xjvm-default=all",
-                "-Xskip-prerelease-check"
+                "-Xskip-prerelease-check",
+                "-Xexplicit-api=strict"
             )
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
+            apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
         }
     }
 
     // Configure Java compilation for all projects
-    tasks.withType<JavaCompile> {
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = "24"
+        targetCompatibility = "24"
         options.encoding = "UTF-8"
         options.isIncremental = true
-        options.release.set(javaVersion.majorVersion.toInt())
-        options.compilerArgs.addAll(
-            listOf(
-                "--enable-preview",
-                "--add-modules", "jdk.incubator.vector"
-            )
-        )
+        options.compilerArgs.add("--enable-preview")
     }
 
     // Configure test tasks
