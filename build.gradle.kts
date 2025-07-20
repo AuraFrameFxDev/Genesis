@@ -89,3 +89,18 @@ tasks.register<Delete>("clean") {
 // if (customInitScript.exists()) {
 //     apply(from = customInitScript)
 // }
+// Oracle Drive specific dependencies
+dependencies {
+    // Testing dependencies for Oracle Drive
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.1")
+    
+    // Dagger Hilt for dependency injection
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+    
+    // Coroutines for async operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+}
