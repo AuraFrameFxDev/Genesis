@@ -6,7 +6,7 @@ pluginManagement {
         mavenCentral()
         mavenLocal()
     }
-    
+
     // Configure resolution strategy for plugins
     resolutionStrategy {
         eachPlugin {
@@ -19,13 +19,13 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
+
     repositories {
         google()
         mavenCentral()
         mavenLocal()
     }
-    
+
     // Enable reproducible builds
     // This is automatically loaded from gradle/libs.versions.toml in Gradle 8.1+
 }
@@ -37,6 +37,8 @@ rootProject.name = "AuraFrameFX"
 include(":app")
 include(":oracle-drive-integration")
 include(":oracledrive")
+include(":buildsrv")
+include(":sandbox-ui")
 
 // Configure Java toolchain for all projects
 configure<org.gradle.api.initialization.Settings> {
