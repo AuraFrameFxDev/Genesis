@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ AuraOS ]
   pull_request:
-    branches: [ main ]
+    branches: [ AuraOS ]
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 24
+      - name: Set up JDK 24 (OpenJDK/Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -38,6 +38,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      # --------- PREBUILD & GENERATION STEPS ---------
+      - name: Run Prebuild Tasks
+        run: ./gradlew prebuild # <-- Replace with your actual prebuild command
+
+      - name: Generate OpenAPI files for main
+        run: ./gradlew :app:generateOpenApiDocs # <-- Replace with your actual task
+
+      - name: Generate OpenAPI files for buildSrc
+        run: ./gradlew :buildSrc:generateOpenApiDocs # <-- Replace with your actual task
+
+      # --------- LPOSED & AI BACKEND SETUP ---------
+      - name: Setup Lposed module
+        if: exists('./scripts/setup-lposed.sh')
+        run: ./scripts/setup-lposed.sh # <-- Replace with your actual Lposed setup script
+
+      - name: Setup AI backend
+        if: exists('./scripts/setup-ai-backend.sh')
+        run: ./scripts/setup-ai-backend.sh # <-- Replace with your actual AI backend setup script
+
+      # --------- FINAL BUILD & ARTIFACTS ---------
       - name: Build all modules (Release)
         run: ./gradlew assembleRelease
 
