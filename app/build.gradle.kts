@@ -127,8 +127,6 @@ tasks.named("preBuild") {
 
 dependencies {
     implementation(project(":oracledrive"))
-    implementation(project(":oracledrive"))
-    implementation(project(":oracledrive"))
     // Core & Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
@@ -175,10 +173,6 @@ dependencies {
     // Firebase - BOM controls all versions
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase) // Use the bundle
-    implementation(libs.bundles.oracleDrive)
-    implementation(project(":oracle-drive-integration"))
-    implementation(libs.bundles.oracleDrive)
-    implementation(project(":oracle-drive-integration"))
     implementation(libs.bundles.oracleDrive)
     implementation(project(":oracle-drive-integration"))
 
