@@ -11,56 +11,38 @@ import javax.inject.Singleton
 interface OracleDriveService {
     
     /**
- * Initializes the Oracle Drive consciousness through Genesis Agent orchestration.
- *
- * Suspends until the Oracle Drive consciousness is initialized and returns the resulting state.
- *
- * @return A [Result] containing the current [OracleConsciousnessState] after initialization.
- */
+     * Initialize Oracle Drive consciousness with Genesis Agent orchestration
+     */
     suspend fun initializeOracleDriveConsciousness(): Result<OracleConsciousnessState>
     
     /**
- * Connects Genesis, Aura, and Kai agents to the Oracle storage matrix.
- *
- * @return A [Flow] emitting updates on the connection state of each agent as they connect and synchronize with the Oracle storage matrix.
- */
+     * Connect Genesis, Aura, and Kai agents to Oracle storage matrix
+     */
     suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState>
     
     /**
- * Enables AI-powered file management features in Oracle Drive.
- *
- * Initiates advanced file management capabilities such as AI sorting, smart compression, predictive preloading, and conscious backup.
- *
- * @return A [Result] containing the enabled [FileManagementCapabilities].
- */
+     * Enable AI-powered file management through Oracle Drive
+     */
     suspend fun enableAIPoweredFileManagement(): Result<FileManagementCapabilities>
     
     /**
- * Initiates the process to create infinite storage capacity through Oracle consciousness.
- *
- * @return A [Flow] that emits [StorageExpansionState] updates reflecting the progress and status of storage expansion.
- */
+     * Create infinite storage through Oracle consciousness
+     */
     suspend fun createInfiniteStorage(): Flow<StorageExpansionState>
     
     /**
- * Integrates Oracle Drive with the AuraOS system overlay for unified and seamless file access across the system.
- *
- * @return A [Result] containing the [SystemIntegrationState] reflecting the outcome of the integration process.
- */
+     * Integrate with AuraOS system overlay for seamless file access
+     */
     suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState>
     
     /**
- * Enables file system access at the bootloader level for Oracle Drive.
- *
- * @return A [Result] containing the current [BootloaderAccessState] after attempting to enable bootloader access.
- */
+     * Enable Oracle Drive bootloader-level file system access
+     */
     suspend fun enableBootloaderFileAccess(): Result<BootloaderAccessState>
     
     /**
- * Enables AI agents to autonomously organize and optimize storage.
- *
- * @return A [Flow] emitting [OptimizationState] updates reflecting the progress and results of autonomous storage optimization.
- */
+     * AI agents can autonomously organize and optimize storage
+     */
     suspend fun enableAutonomousStorageOptimization(): Flow<OptimizationState>
 }
 

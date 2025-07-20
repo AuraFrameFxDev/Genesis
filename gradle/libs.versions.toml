@@ -71,6 +71,12 @@ oracleStorage = "1.5.0"
 oracleCore = "2.0.0"
 oracleDrive = "1.0.0"
 
+mockk = "1.14.5"
+material3 = "1.3.2"
+material = "1.12.0"
+composeCompiler = "1.5.3"
+
+
 [plugins]
 # Android
 android-application = "com.android.application:${agp}"
@@ -162,6 +168,7 @@ lottie = [
     "lottie-compose"
 ]
 
+
 [libraries]
 # AndroidX Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -220,8 +227,13 @@ lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", versio
 # Logging
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
-# Material
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+# OracleDrive Integration
+oracle-drive-core = { group = "dev.aurakai.oracledrive", name = "oracle-core", version.ref = "oracleCore" }
+oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
+oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
 
 # Testing
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
@@ -234,7 +246,3 @@ mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "moc
 # Detekt
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 
-# Oracle Drive
-oracle-drive-core = { group = "dev.aurakai.oracledrive", name = "oracle-core", version.ref = "oracleCore" }
-oracle-drive-storage = { group = "dev.aurakai.oracledrive", name = "oracle-storage", version.ref = "oracleStorage" }
-oracle-drive-ai = { group = "dev.aurakai.oracledrive", name = "oracle-ai", version.ref = "oracleDrive" }
