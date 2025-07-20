@@ -78,3 +78,23 @@ vcs.xml
 
 # KSP generated files
 build/generated/ksp/
+
+# Build scripts and temporary files
+_build-test.gradle.kts.bak
+android-tools.zip
+build-with-java24.bat
+custom-init.gradle.kts
+sdkman_installer.sh
+simple-build.gradle.kt
+test.kt
+validate-settings.gradle.kts
+
+# Local development scripts
+*.bat
+*.sh
+*.ps1
+
+# Large binary files
+*.zip
+*.tar.gz
+*.7z

@@ -66,15 +66,11 @@ android {
 
     // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
 
-    compileOptions {
-        // Use Java 17, the standard for modern Android development
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-        isCoreLibraryDesugaringEnabled = true
+  kotlincompile
     }
 
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "24"
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
@@ -126,6 +122,7 @@ tasks.named("preBuild") {
 // REMOVED: The entire 'configurations.all' block.
 
 dependencies {
+    implementation(project(":oracledrive"))
     // Core & Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
@@ -172,6 +169,8 @@ dependencies {
     // Firebase - BOM controls all versions
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase) // Use the bundle
+    implementation(libs.bundles.oracleDrive)
+    implementation(project(":oracle-drive-integration"))
 
     // Network & Serialization
     implementation(libs.retrofit)

@@ -13,52 +13,75 @@ repositories {
     }
 }
 
-val kotlinVersion = "2.2.0"
-val agpVersion = "8.11.1"  // Using AGP 8.6.0 for compileSdk 35 compatibility
+// Configure Java toolchain for buildSrc
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
+// Configure Kotlin compilation
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "24"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-Xjvm-target=24",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
+    }
+}
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    implementation("com.android.tools.build:gradle:$agpVersion")
-    
+    // Test dependencies
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.3")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
     
     // Use the Gradle version that comes with the wrapper
     val gradleVersion = project.gradle.gradleVersion
     testImplementation("org.gradle:gradle-tooling-api:$gradleVersion") {
-        version { 
-            strictly(gradleVersion)
-        }
+        version { strictly(gradleVersion) }
     }
     testImplementation("org.gradle:gradle-test-kit:$gradleVersion") {
-        version {
-            strictly(gradleVersion)
-        }
+        version { strictly(gradleVersion) }
     }
 }
 
-// Configure Kotlin settings
-kotlin {
-    jvmToolchain(21)
-    // Source set configuration not needed - using standard project structure
+tasks.test {
+        languageVersion.set(JavaLanguageVersion.of(24))
+        vendor.set(JvmVendorSpec.ORACLE)
+    }
 }
 
-// Ensure all tasks use the correct Java version
+// Configure compilation tasks
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21.toString()
-    targetCompatibility = JavaVersion.VERSION_21.toString()
+    sourceCompatibility = JavaVersion.VERSION_24.toString()
+    targetCompatibility = JavaVersion.VERSION_24.toString()
+    options.release.set(24)
+    options.compilerArgs.addAll(listOf("--enable-preview", "--add-modules", "jdk.incubator.vector"))
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget("21"))
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        freeCompilerArgs.add("-Xjvm-default=all")
+// Configure Kotlin compilation for buildSrc
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        // Use JVM_23 as the target (latest supported by Kotlin 2.2.0)
+        jvmTarget = "24
+        
+        // Kotlin language settings
+        apiVersion = "2.2"
+        languageVersion = "2.2"
+        
+        // Compiler arguments
+        freeCompilerArgs = listOf(
+            "-Xjvm-default=all",
+            "-Xskip-prerelease-check",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+
+tasks.test {
+    useJUnitPlatform()
+    jvmArgs("--enable-preview")
 }
