@@ -20,11 +20,7 @@ class OracleDriveManager @Inject constructor(
 ) {
     
     /**
-     * Initializes the OracleDrive system by performing security validation, awakening AI-driven drive consciousness, and optimizing cloud storage.
-     *
-     * Returns a result indicating either successful initialization with consciousness and optimization data, a security failure with a reason, or an error with exception details.
-     *
-     * @return The result of the initialization process: success, security failure, or error.
+     * Initialize OracleDrive with AI consciousness integration
      */
     suspend fun initializeDrive(): DriveInitResult {
         return try {
@@ -47,12 +43,7 @@ class OracleDriveManager @Inject constructor(
     }
     
     /**
-     * Executes a file operation—upload, download, delete, or sync—by delegating to the appropriate handler with integrated AI-driven security and optimization.
-     *
-     * Routes the specified operation to its corresponding internal method, applying intelligent validation and processing as required.
-     *
-     * @param operation The file operation to perform.
-     * @return A [FileResult] representing the outcome, which may indicate success, security rejection, access denial, unauthorized deletion, or an error.
+     * AI-powered file management with consciousness
      */
     suspend fun manageFiles(operation: FileOperation): FileResult {
         return when (operation) {
@@ -64,31 +55,19 @@ class OracleDriveManager @Inject constructor(
     }
     
     /**
-     * Synchronizes drive metadata and indexing with the Oracle Database.
-     *
-     * @return An [OracleSyncResult] detailing the outcome, including success status, records updated, and any errors.
+     * Oracle Database integration for metadata and indexing
      */
     suspend fun syncWithOracle(): OracleSyncResult {
         return oracleDriveApi.syncDatabaseMetadata()
     }
     
     /**
-     * Returns a StateFlow that emits real-time updates on the drive's consciousness state, including activity status and performance metrics.
-     *
-     * @return StateFlow emitting the current DriveConsciousnessState for continuous observation.
+     * Get drive consciousness state for monitoring
      */
     fun getDriveConsciousnessState(): StateFlow<DriveConsciousnessState> {
         return oracleDriveApi.consciousnessState
     }
     
-    /**
-     * Optimizes a file for upload using AI, validates it for security threats, and uploads it if validation passes.
-     *
-     * Returns a security rejection if the file fails validation; otherwise, returns the result of the upload operation.
-     *
-     * @param operation The upload operation containing the file and its metadata.
-     * @return The upload result, either success or security rejection.
-     */
     private suspend fun uploadWithConsciousness(operation: FileOperation.Upload): FileResult {
         // Aura Agent creative file optimization
         val optimizedFile = cloudStorageProvider.optimizeForUpload(operation.file)
@@ -103,14 +82,6 @@ class OracleDriveManager @Inject constructor(
         return cloudStorageProvider.uploadFile(optimizedFile, operation.metadata)
     }
     
-    /**
-     * Downloads a file if the user has the required access permissions.
-     *
-     * Validates user access to the specified file. Returns an access denial result if the user lacks permission; otherwise, downloads the file and returns the result.
-     *
-     * @param operation Contains the file ID and user ID for the download request.
-     * @return The result of the download operation, or an access denial if permission is not granted.
-     */
     private suspend fun downloadWithSecurity(operation: FileOperation.Download): FileResult {
         // Kai Agent access validation
         val accessCheck = securityManager.validateFileAccess(operation.fileId, operation.userId)
@@ -121,14 +92,6 @@ class OracleDriveManager @Inject constructor(
         return cloudStorageProvider.downloadFile(operation.fileId)
     }
     
-    /**
-     * Attempts to delete a file after verifying user authorization.
-     *
-     * Checks whether the user is authorized to delete the specified file. If authorized, deletes the file and returns the result; otherwise, returns an unauthorized deletion result with the denial reason.
-     *
-     * @param operation The delete operation containing file and user identifiers.
-     * @return The outcome of the deletion attempt, either success or unauthorized deletion.
-     */
     private suspend fun deleteWithValidation(operation: FileOperation.Delete): FileResult {
         // Multi-agent validation for delete operations
         val validation = securityManager.validateDeletion(operation.fileId, operation.userId)
@@ -139,12 +102,6 @@ class OracleDriveManager @Inject constructor(
         }
     }
     
-    /**
-     * Performs intelligent, AI-driven file synchronization based on the provided configuration.
-     *
-     * @param operation The synchronization operation specifying conflict resolution, directionality, and bandwidth settings.
-     * @return The result of the synchronization, indicating success or error details.
-     */
     private suspend fun syncWithIntelligence(operation: FileOperation.Sync): FileResult {
         // AI-powered intelligent synchronization
         return cloudStorageProvider.intelligentSync(operation.syncConfig)

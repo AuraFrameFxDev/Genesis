@@ -14,11 +14,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule {
     
-    /**
-     * Binds OracleDriveServiceImpl to OracleDriveService as a singleton for dependency injection.
-     *
-     * Ensures a single shared instance of OracleDriveService is provided throughout the application.
-     */
     @Binds
     @Singleton
     abstract fun bindOracleDriveService(
