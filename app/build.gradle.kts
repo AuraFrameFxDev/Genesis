@@ -66,15 +66,11 @@ android {
 
     // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
 
-    compileOptions {
-        // Use Java 17, the standard for modern Android development
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-        isCoreLibraryDesugaringEnabled = true
+  kotlincompile
     }
 
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "24"
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 

@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.oracledrive"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
-        targetSdk = 35
+        minSdk = 33
+        targetSdk = 36
         
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
