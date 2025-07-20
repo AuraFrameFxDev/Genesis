@@ -12,13 +12,13 @@ plugins {
 
 // Set the Java compatibility versions
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
 }
 
 // Configure the Kotlin compiler
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(24)
     
     // Enable explicit API mode for the JVM target
     explicitApi()
