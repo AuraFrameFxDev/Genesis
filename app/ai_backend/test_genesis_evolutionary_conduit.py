@@ -12,14 +12,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from app.ai_backend.genesis_evolutionary_conduit import (
     EvolutionaryConduit,
-    GenesisEvolutionaryConduit,
-    EvolutionaryParameters,
     MutationStrategy,
     SelectionStrategy,
     FitnessFunction,
     EvolutionaryException,
     PopulationManager,
-    GeneticOperations
+    GeneticOperations,
+    EvolutionaryParameters,
+    GenesisEvolutionaryConduit
 )
 
 

@@ -29,10 +29,15 @@ import javax.inject.Singleton
  * SecurityContext manages the security aspects of the AuraFrameFx system.
  * This class is tied to the KAI agent persona and handles all security-related operations.
  */
+import dev.aurakai.auraframefx.core.logging.TimberInitializer
+import javax.inject.Inject
+import javax.inject.Singleton
+
 @Singleton
 class SecurityContext @Inject constructor(
     @ApplicationContext private val context: Context,
     private val keystoreManager: KeystoreManager, // Added KeystoreManager
+    private val timberInitializer: TimberInitializer,
 ) {
     companion object {
         private const val TAG = "SecurityContext"
@@ -425,11 +430,13 @@ class SecurityContext @Inject constructor(
      */
     fun logSecurityEvent(event: SecurityEvent) {
         scope.launch {
-            Log.d(
-                TAG,
-                "Security event logged: " + Json.encodeToString(SecurityEvent.serializer(), event)
-            )
-            // In a real implementation, this would store events securely
+            val eventJson = Json.encodeToString(SecurityEvent.serializer(), event)
+            when (event.severity) {
+                EventSeverity.INFO -> timberInitializer.logHealthMetric("SecurityEvent", eventJson)
+                EventSeverity.WARNING -> Timber.tag("SecurityEvent").w(eventJson)
+                EventSeverity.ERROR -> Timber.tag("SecurityEvent").e(eventJson)
+                EventSeverity.CRITICAL -> Timber.tag("SecurityEvent").wtf(eventJson)
+            }
         }
     }
 

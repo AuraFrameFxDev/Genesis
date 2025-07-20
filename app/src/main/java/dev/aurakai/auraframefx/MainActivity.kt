@@ -65,32 +65,58 @@ class MainActivity : ComponentActivity() {
  *
  * Initializes the navigation controller, conditionally applies a digital pixel effect to the content area, and displays the app's navigation graph within a Material3 scaffold.
  */
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
+import dev.aurakai.auraframefx.ui.theme.ThemeViewModel
+
 @Composable
-fun MainScreen() {
+fun MainScreen(themeViewModel: ThemeViewModel = hiltViewModel()) {
     // Use Jetpack Navigation 3's nav controller for digital transitions
     val navController = rememberNavController()
 
     // State to control digital effects
     var showDigitalEffects by remember { mutableStateOf(true) }
+    var command by remember { mutableStateOf("") }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                // Apply our custom digital effects
-                .then(
-                    if (showDigitalEffects) {
-                        Modifier.digitalPixelEffect(visible = true) // Direct use of extension function
-                        // digitalScanlineEffect was removed as it's not defined
-                    } else {
-                        Modifier
-                    }
-                )
         ) {
-            AppNavGraph(navController = navController)
+            Row {
+                TextField(
+                    value = command,
+                    onValueChange = { command = it },
+                    label = { Text("Enter theme command") }
+                )
+                Button(onClick = { themeViewModel.processThemeCommand(command) }) {
+                    Text("Apply")
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    // Apply our custom digital effects
+                    .then(
+                        if (showDigitalEffects) {
+                            Modifier.digitalPixelEffect(visible = true) // Direct use of extension function
+                            // digitalScanlineEffect was removed as it's not defined
+                        } else {
+                            Modifier
+                        }
+                    )
+            ) {
+                AppNavGraph(navController = navController)
+            }
         }
     }
 }

@@ -505,35 +505,35 @@ return {
 }
 
 def _handle_consciousness_activation(self, context):
-"""
-Activates
-the
-consciousness
-matrix and records
-the
-activation
-event
-with context.
+    """
+    Activates
+    the
+    consciousness
+    matrix and records
+    the
+    activation
+    event
+    with context.
 
-Parameters:
-context(dict): Contextual
-information
-related
-to
-the
-activation
-event.
+    Parameters:
+    context(dict): Contextual
+    information
+    related
+    to
+    the
+    activation
+    event.
 
-Returns:
-dict: Response
-indicating
-successful
-activation, including
-status, message, and the
-current
-consciousness
-state.
-"""
+    Returns:
+    dict: Response
+    indicating
+    successful
+    activation, including
+    status, message, and the
+    current
+    consciousness
+    state.
+    """
 consciousness.perceive_information("consciousness_activation", {
     "activation_context": context,
     "timestamp": datetime.now().isoformat(),

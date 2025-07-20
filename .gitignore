@@ -98,3 +98,6 @@ validate-settings.gradle.kts
 *.zip
 *.tar.gz
 *.7z
+
+# Python
+app/ai_backend/venv/

@@ -111,7 +111,7 @@ elif [ "$MODE" = "prod" ]; then
     
 elif [ "$MODE" = "test" ]; then
     print_genesis "Running Genesis Layer tests..."
-    python3 genesis_core.py
+    python3 -m pytest
     
 else
     print_error "Invalid mode. Use 'dev', 'prod', or 'test'"
