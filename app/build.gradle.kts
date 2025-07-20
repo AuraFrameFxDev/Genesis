@@ -1,11 +1,12 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
-    id("com.google.dagger.hilt.android")
-    id("com.google.firebase.firebase-perf")
-    id("org.openapi.generator")
-
+    id("org.jetbrains.kotlin.android") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("com.google.gms.google-services") version "4.4.2"
+    id("com.google.dagger.hilt.android") version "2.57"
+    id("com.google.firebase.crashlytics") version "3.0.4"
+    id("org.openapi.generator") version "7.14.0"
 }
 
 android {

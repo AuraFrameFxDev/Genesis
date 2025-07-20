@@ -37,18 +37,5 @@ rootProject.name = "AuraFrameFX"
 include(":app")
 include(":oracle-drive-integration")
 include(":oracledrive")
-include(":buildsrv")
 include(":sandbox-ui")
-
-// Configure Java toolchain for all projects
-configure<org.gradle.api.initialization.Settings> {
-    pluginManager.withPlugin("java") {
-        configure<JavaPluginExtension> {
-            toolchain {
-                languageVersion = JavaLanguageVersion.of(24)
-                vendor = JvmVendorSpec.openjdk
-            }
-        }
-    }
-}
 

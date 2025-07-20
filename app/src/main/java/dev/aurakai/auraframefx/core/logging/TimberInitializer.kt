@@ -29,14 +29,25 @@ class TimberInitializer @Inject constructor() {
      */
     private class CrashReportingTree : Timber.Tree() {
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+            if (priority < Log.INFO) {
                 return
             }
 
-            // Here you can add your crash reporting logic, e.g., Firebase Crashlytics
+            // You can replace this with your actual crash reporting logic
+            when (priority) {
+                Log.INFO -> { /* Log informational messages */ }
+                Log.WARN -> { /* Log warnings */ }
+                Log.ERROR -> { /* Log errors */ }
+                Log.ASSERT -> { /* Log asserts */ }
+            }
             // FirebaseCrashlytics.getInstance().log("$tag: $message")
             // t?.let { FirebaseCrashlytics.getInstance().recordException(it) }
         }
+    }
+
+    fun logHealthMetric(metricName: String, value: String) {
+        // Here you can add your system health tracking logic
+        Timber.tag("HealthTracker").i("$metricName: $value")
     }
 }
 
