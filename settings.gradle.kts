@@ -46,7 +46,7 @@ configure<org.gradle.api.initialization.Settings> {
         configure<JavaPluginExtension> {
             toolchain {
                 languageVersion = JavaLanguageVersion.of(24)
-                vendor = JvmVendorSpec.ADOPTIUM
+                vendor = JvmVendorSpec.openjdk
             }
         }
     }
