@@ -108,8 +108,12 @@ class OracleDriveSandbox @Inject constructor(
             
             SandboxResult(
                 success = true,
-                message = "Sandbox system initialized successfully",
-                warnings = listOf("Remember: All modifications are virtualized and safe to experiment with")
+                message = "Sandbox system initialized with limited functionality",
+                warnings = listOf(
+                    "WARNING: Virtualization hooks not yet implemented",
+                    "WARNING: Sandbox persistence not yet implemented",
+                    "Modifications are NOT actually isolated from the system"
+                )
             )
             
         } catch (e: Exception) {
