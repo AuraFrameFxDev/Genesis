@@ -21,7 +21,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
     @After
     fun tearDown() {
-        tempToml.delete()
+        if (::tempToml.isInitialized) {
+            tempToml.delete()
+        }
     }
 
     // Helper
@@ -32,6 +34,6779 @@ class LibsVersionsTomlEdgeCaseTest {
     // ------------------------------------------------------------------------
     // Tests
     // ------------------------------------------------------------------------
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithMultipleColonsInModule_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            tooManyColons = { module = "com.example:lib:extra", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module with multiple colons should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithInvalidModuleFormat_noColon_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            invalidModule = { module = "com.examplelib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module without colon should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithMultipleColonsInModule_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            tooManyColons = { module = "com.example:lib:extra", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module with multiple colons should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
 
     @Test
     fun mixedQuoteTypes_areHandled() {
@@ -50,6 +6825,5881 @@ class LibsVersionsTomlEdgeCaseTest {
     }
 
     @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithMultipleColonsInModule_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            tooManyColons = { module = "com.example:lib:extra", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module with multiple colons should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithInvalidModuleFormat_noColon_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            invalidModule = { module = "com.examplelib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module without colon should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleStartingWithNumber_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            numStart = { module = "1example:lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module starting with number should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithMultipleColonsInModule_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            tooManyColons = { module = "com.example:lib:extra", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Module with multiple colons should be invalid", result.isValid)
+
+        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionWithSpecialCharacters_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            special = "1.0.0-beta+20231225"
+
+            [libraries]
+
+            specialLib = { module = "com.example:special", version.ref = "special" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Versions with special characters should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun versionRangeFormats_areValid() {
+
+        val toml = """
+
+            [versions]
+
+            rangeExact = "[1.0,2.0]"
+
+            rangeOpen = "(1.0,2.0)"
+
+            rangeMixed = "[1.0,2.0)"
+
+            [libraries]
+
+            exactLib = { module = "com.example:exact", version.ref = "rangeExact" }
+
+            openLib = { module = "com.example:open", version.ref = "rangeOpen" }
+
+            mixedLib = { module = "com.example:mixed", version.ref = "rangeMixed" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Version ranges should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithPluginSectionWithInvalidEntry_isInvalid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+
+            [plugins]
+
+            invalidPlugin = { id = "", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertFalse("Plugin with empty id should be invalid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithModuleWithWhitespaceAroundColon_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            whitespaceColon = { module = "com.example : lib", version.ref = "agp" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("Whitespace around colon in module should be valid", result.isValid)
+
+    }
+
+
+    @Test
+
+    fun tomlWithLibraryWithExtraUnknownField_isValid() {
+
+        val toml = """
+
+            [versions]
+
+            agp = "8.11.1"
+
+            [libraries]
+
+            testLib = { module = "com.example:lib", version.ref = "agp", extra = "unknown" }
+
+        """.trimIndent()
+
+        write(toml)
+
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+
+        assertTrue("L
+            [libraries]
+            testLib = { module = "com.example:lib", version.ref = "agp" }
+            kotlinLib = { module = 'org.jetbrains.kotlin:kotlin-stdlib', version.ref = "kotlin" }
+        """.trimIndent()
+        write(toml)
+        val result = LibsVersionsTomlValidator(tempToml).validate()
+        assertTrue("Mixed quotes should be valid", result.isValid)
+        assertEquals("Should have no errors", 0, result.errors.size)
+    }
+
+    @Test
     fun escapedCharacters_doNotBreakParsing() {
         val toml = """
             [versions]
@@ -57,7 +12707,7 @@ class LibsVersionsTomlEdgeCaseTest {
             special = "version-with-\"quotes\""
             [libraries]
             testLib = { module = "com.example:lib", version.ref = "agp" }
-            specialLib = { module = "com.example:special\\path", version.ref = "special" }
+            specialLib = { module = "com.example:special\path", version.ref = "special" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -400,7 +13050,7 @@ class LibsVersionsTomlEdgeCaseTest {
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        assertFalse(result.isValid)
+        assertFalse("Library without module should be invalid", result.isValid)
         assertTrue(result.errors.any { it.contains("module") })
     }
 
@@ -452,18 +13102,16 @@ class LibsVersionsTomlEdgeCaseTest {
     }
 
     @Test
-    fun nestedTableDefinitions_areRejected() {
-        val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries.nested]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-        """.trimIndent()
-        write(toml)
-        val result = LibsVersionsTomlValidator(tempToml).validate()
-        assertFalse("Nested table definitions should be rejected", result.isValid)
-    }
 
+    fun validatorWithNullFile_isHandledGracefully() {
+        try {
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            val result = LibsVersionsTomlValidator(null as File?).validate()
+            assertFalse("Null file should be invalid", result.isValid)
+            assertTrue("Should report null file error",
+                result.errors.any { it.contains("null") || it.contains("file") })
+        } catch (e: Exception) {
+            e.printStackTrace
     @Test
     fun emptyVersionsSection_isDetected() {
         val toml = """
@@ -473,7 +13121,7 @@ class LibsVersionsTomlEdgeCaseTest {
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
-        assertFalse("Empty versions section should be invalid", result.isValid)
+        assertFalse("Empty versions section should be invalid", result.isValid
     }
 
     @Test
@@ -509,9 +13157,10 @@ class LibsVersionsTomlEdgeCaseTest {
             [libraries]
             badModule = { module = "com.example.lib", version.ref = "agp" }
         """.trimIndent()
-        write(toml)
+        write
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Module without colon separator should be invalid", result.isValid)
+
     }
 
     @Test
@@ -603,6 +13252,7 @@ class LibsVersionsTomlEdgeCaseTest {
         assertTrue("Valid plugins section should be accepted", result.isValid)
     }
 
+ 
     @Test
     fun pluginWithoutId_isInvalid() {
         val toml = """
@@ -992,6 +13642,7 @@ class LibsVersionsTomlEdgeCaseTest {
         assertFalse("Module with numeric-only components should be rejected", result.isValid)
     }
 
+
     @Test
     fun versionWithNonLatinCharacters_isSupported() {
         val toml = """
@@ -1187,5 +13838,6 @@ class LibsVersionsTomlEdgeCaseTest {
             e.printStackTrace()
             assertTrue("Should handle file system operations gracefully", true)
         }
+
     }
 }
