@@ -173,10 +173,10 @@ object ForestTheme : AuraTheme {
 }
 
 /**
- * Retrieves the Material3 color scheme for this theme, selecting dark or light mode based on the provided flag.
+ * Returns the appropriate Material3 color scheme for this theme based on the dark mode flag.
  *
- * @param isDarkTheme Whether to use the dark color scheme.
- * @return The selected color scheme for the current theme and mode.
+ * @param isDarkTheme If true, returns the dark color scheme; otherwise, returns the light color scheme.
+ * @return The color scheme corresponding to the selected mode.
  */
 @Composable
 fun AuraTheme.getColorScheme(isDarkTheme: Boolean): ColorScheme {
