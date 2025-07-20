@@ -8,6 +8,14 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import java.io.File
 import java.nio.file.Path
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Timeout
+import java.util.concurrent.TimeUnit
 
 /**
  * Integration tests for Gradle settings configuration with actual Gradle execution.
@@ -409,6 +417,325 @@ class SettingsGradleIntegrationTest {
             // The help task should still succeed even with missing module directory
             assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome, 
                 "Should handle missing module directories gracefully")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Plugin Management Configuration")
+    inner class PluginManagementTests {
+        
+        @Test
+        @DisplayName("Should resolve Android plugin from plugin management")
+        fun testAndroidPluginResolution() {
+            // Create a build file that uses Android plugin
+            val androidBuildFile = testProjectDir.resolve("android-test/build.gradle.kts").toFile()
+            androidBuildFile.parentFile.mkdirs()
+            androidBuildFile.writeText("""
+                plugins {
+                    id("com.android.application") version "8.0.0" apply false
+                }
+            """.trimIndent())
+            
+            // Update settings to include the android test module
+            settingsFile.appendText("\ninclude(":android-test")")
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--dry-run")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Plugin management should resolve Android plugin correctly")
+        }
+        
+        @Test
+        @DisplayName("Should access all configured plugin repositories")
+        fun testPluginRepositoryAccess() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--debug")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome)
+            
+            // Verify that plugin repositories are accessible in debug output
+            val debugOutput = result.output
+            assertTrue(debugOutput.contains("gradlePluginPortal") ||
+                      debugOutput.contains("plugins.gradle.org") ||
+                      debugOutput.contains("google") ||
+                      debugOutput.contains("mavenCentral"),
+                "Should be able to access configured plugin repositories")
+        }
+        
+        @Test
+        @DisplayName("Should handle plugin resolution strategy correctly")
+        fun testPluginResolutionStrategy() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--info")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Plugin resolution strategy should not interfere with basic tasks")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Advanced Dependency Resolution")
+    inner class AdvancedDependencyResolutionTests {
+        
+        @Test
+        @DisplayName("Should handle version catalog integration")
+        fun testVersionCatalogIntegration() {
+            // Create a version catalog for testing
+            val gradleDir = testProjectDir.resolve("gradle").toFile()
+            gradleDir.mkdirs()
+            
+            val versionCatalog = File(gradleDir, "libs.versions.toml")
+            versionCatalog.writeText("""
+                [versions]
+                kotlin = "1.9.10"
+                
+                [libraries]
+                kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--info")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Should handle version catalog integration without issues")
+        }
+        
+        @Test
+        @DisplayName("Should resolve complex dependency graphs")
+        fun testComplexDependencyGraphs() {
+            // Add complex dependencies to test resolution
+            val buildFile = testProjectDir.resolve("build.gradle.kts").toFile()
+            buildFile.appendText("""
+                
+                dependencies {
+                    implementation("com.google.guava:guava:32.1.2-jre")
+                    implementation("org.apache.commons:commons-lang3:3.12.0")
+                    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("dependencies", "--configuration", "compileClasspath")
+                .build()
+            
+            assertTrue(result.output.contains("guava") && result.output.contains("commons-lang3"),
+                "Should resolve complex dependency graphs correctly")
+            assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
+        }
+    }
+    
+    @Nested
+    @DisplayName("Advanced Java Toolchain Configuration")
+    inner class AdvancedJavaToolchainTests {
+        
+        @Test
+        @DisplayName("Should configure Java 24 toolchain correctly")
+        fun testJava24ToolchainConfiguration() {
+            // Create a Java project to test toolchain
+            val javaBuildFile = testProjectDir.resolve("app/build.gradle.kts").toFile()
+            javaBuildFile.writeText("""
+                plugins {
+                    kotlin("jvm")
+                    java
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments(":app:javaToolchains")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":app:javaToolchains")?.outcome,
+                "Should successfully configure Java toolchain")
+        }
+        
+        @Test
+        @DisplayName("Should validate toolchain vendor configuration")
+        fun testToolchainVendorValidation() {
+            // Create Java project and validate vendor
+            val javaBuildFile = testProjectDir.resolve("app/build.gradle.kts").toFile()
+            javaBuildFile.writeText("""
+                plugins {
+                    java
+                }
+                
+                tasks.register("validateToolchain") {
+                    doLast {
+                        val javaExtension = extensions.getByType<JavaPluginExtension>()
+                        println("Toolchain Language Version: " + javaExtension.toolchain.languageVersion.get())
+                        println("Toolchain Vendor: " + javaExtension.toolchain.vendor.get())
+                    }
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments(":app:validateToolchain")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":app:validateToolchain")?.outcome)
+            assertTrue(result.output.contains("Language Version: 24"),
+                "Should configure Java 24 language version")
+            assertTrue(result.output.contains("Vendor: ADOPTIUM") ||
+                      result.output.contains("adoptium"),
+                "Should configure Adoptium vendor")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Cross-Platform and Performance Testing")
+    inner class CrossPlatformAndPerformanceTests {
+        
+        @Test
+        @DisplayName("Should support parallel execution")
+        fun testParallelExecution() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--parallel", "--max-workers=2")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Should support parallel execution")
+        }
+        
+        @Test
+        @DisplayName("Should work with configuration cache")
+        fun testConfigurationCache() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--configuration-cache")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Should work with configuration cache")
+        }
+        
+        @Test
+        @Timeout(60, unit = TimeUnit.SECONDS)
+        @DisplayName("Should complete complex builds within time limits")
+        fun testComplexBuildPerformance() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "projects", "properties", "--parallel")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome)
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome)
+            assertEquals(TaskOutcome.SUCCESS, result.task(":properties")?.outcome)
+        }
+    }
+    
+    @Nested
+    @DisplayName("Edge Cases and Stress Testing")
+    inner class EdgeCasesAndStressTests {
+        
+        @Test
+        @DisplayName("Should handle very long project names")
+        fun testVeryLongProjectNames() {
+            // Create module with very long name
+            val longName = "very-long-module-name-with-many-hyphens-and-descriptive-text-that-goes-on"
+            testProjectDir.resolve(longName).toFile().mkdirs()
+            
+            testProjectDir.resolve("$longName/build.gradle.kts").toFile().writeText("""
+                plugins { kotlin("jvm") }
+            """.trimIndent())
+            
+            settingsFile.appendText("\ninclude(":$longName")")
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("projects")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome)
+            assertTrue(result.output.contains(longName),
+                "Should handle very long project names")
+        }
+        
+        @RepeatedTest(3)
+        @DisplayName("Should be consistent across multiple executions")
+        fun testConsistentExecution() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("projects")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome,
+                "Should be consistent across multiple executions")
+        }
+        
+        @Test
+        @DisplayName("Should handle special characters in module paths")
+        fun testSpecialCharactersInModulePaths() {
+            // Test with underscores and numbers
+            val specialModuleName = "module_123_test"
+            testProjectDir.resolve(specialModuleName).toFile().mkdirs()
+            
+            testProjectDir.resolve("$specialModuleName/build.gradle.kts").toFile().writeText("""
+                plugins { kotlin("jvm") }
+            """.trimIndent())
+            
+            settingsFile.appendText("\ninclude(":$specialModuleName")")
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("projects")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome)
+            assertTrue(result.output.contains(specialModuleName),
+                "Should handle special characters in module paths")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Security and Validation")
+    inner class SecurityAndValidationTests {
+        
+        @Test
+        @DisplayName("Should validate repository URLs are accessible")
+        fun testRepositoryUrlValidation() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--debug")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Repository URLs should be accessible")
+            
+            // Should not contain any connection errors
+            assertFalse(result.output.contains("Connection refused") ||
+                       result.output.contains("UnknownHostException"),
+                "Should not have network connection issues")
+        }
+        
+        @Test
+        @DisplayName("Should validate settings syntax is correct")
+        fun testSettingsSyntaxValidation() {
+            // Basic syntax validation through successful execution
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "--stacktrace")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Settings syntax should be valid")
+            
+            // Should not contain syntax error indicators
+            assertFalse(result.output.contains("SyntaxException") ||
+                       result.output.contains("ParseException") ||
+                       result.output.contains("Could not compile settings"),
+                "Should not have syntax errors")
         }
     }
 }

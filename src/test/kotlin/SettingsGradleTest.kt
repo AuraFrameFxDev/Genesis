@@ -565,6 +565,404 @@ class SettingsGradleTest {
         return if (start >= 0 && end > start) content.substring(start, end) else ""
     }
     
+    @Nested
+    @DisplayName("Advanced Configuration Validation")
+    inner class AdvancedConfigurationTests {
+        
+        @Test
+        @DisplayName("Should validate settings.gradle.kts syntax and execution")
+        fun testSettingsFileExecution() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("projects", "--quiet")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome,
+                "Settings file should execute successfully")
+            
+            val output = result.output
+            assertTrue(output.contains("Root project 'AuraFrameFX'"),
+                "Should display correct root project name in output")
+            assertTrue(output.contains("Project ':pp'"),
+                "Should display app module in project list")
+            assertTrue(output.contains("Project ':oracle-drive-integration'"),
+                "Should display oracle-drive-integration module in project list")
+            assertTrue(output.contains("Project ':oracledrive'"),
+                "Should display oracledrive module in project list")
+        }
+        
+        @Test
+        @DisplayName("Should validate plugin resolution with actual plugin request")
+        fun testPluginResolutionIntegration() {
+            // Create a build file that requests Android plugin to test resolution strategy
+            val androidBuildFile = testProjectDir.resolve("android-build.gradle.kts").toFile()
+            androidBuildFile.writeText("""
+                plugins {
+                    id("com.android.application") version "8.1.0" apply false
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "-b", androidBuildFile.absolutePath, "--quiet")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Android plugin resolution should work through settings configuration")
+        }
+        
+        @Test
+        @DisplayName("Should validate repository accessibility and connectivity")
+        fun testRepositoryAccessibility() {
+            // Test that the configured repositories are accessible
+            val dependencyTestBuildFile = testProjectDir.resolve("dependency-test.gradle.kts").toFile()
+            dependencyTestBuildFile.writeText("""
+                plugins {
+                    kotlin("jvm") version "1.9.10"
+                }
+                dependencies {
+                    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("dependencies", "-b", dependencyTestBuildFile.absolutePath, "--quiet")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome,
+                "Dependencies should resolve successfully through configured repositories")
+        }
+        
+        @Test
+        @DisplayName("Should validate Java toolchain configuration with actual Java code")
+        fun testJavaToolchainIntegration() {
+            // Create Java source file with Java 24 features
+            val javaSourceDir = testProjectDir.resolve("src/main/java").toFile()
+            javaSourceDir.mkdirs()
+            
+            val javaFile = File(javaSourceDir, "TestClass.java")
+            javaFile.writeText("""
+                public class TestClass {
+                    // Using modern Java features
+                    public static void main(String[] args) {
+                        var message = "Java toolchain working";
+                        System.out.println(message);
+                    }
+                }
+            """.trimIndent())
+            
+            // Create a Java-enabled build file
+            val javaBuildFile = testProjectDir.resolve("java-build.gradle.kts").toFile()
+            javaBuildFile.writeText("""
+                plugins {
+                    java
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("compileJava", "-b", javaBuildFile.absolutePath, "--info")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":compileJava")?.outcome,
+                "Java compilation should succeed with configured toolchain")
+            
+            // Verify that Java 24 toolchain is being used
+            assertTrue(result.output.contains("24") || result.output.contains("Adoptium"),
+                "Should use Java 24 toolchain from Adoptium")
+        }
+        
+        @Test
+        @DisplayName("Should validate settings file parsing with Kotlin DSL specifics")
+        fun testKotlinDslSpecificFeatures() {
+            val settingsContent = settingsFile.readText()
+            
+            // Validate Kotlin DSL specific patterns
+            assertTrue(settingsContent.contains("repositoriesMode.set("),
+                "Should use Kotlin property setter syntax")
+            assertTrue(settingsContent.contains("configure<"),
+                "Should use generic configure syntax")
+            assertTrue(settingsContent.contains("JavaLanguageVersion.of("),
+                "Should use type-safe API for language version")
+            assertTrue(settingsContent.contains("JvmVendorSpec.ADOPTIUM"),
+                "Should use enum constant for vendor specification")
+            
+            // Validate no legacy Groovy patterns
+            assertFalse(settingsContent.contains("gradle.settingsEvaluated"),
+                "Should not use legacy Groovy callback syntax")
+            assertFalse(settingsContent.contains("project("),
+                "Should use include() instead of project() for modules")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Security and Compliance Validation")
+    inner class SecurityComplianceTests {
+        
+        @Test
+        @DisplayName("Should validate secure repository URLs")
+        fun testSecureRepositoryUrls() {
+            val settingsContent = settingsFile.readText()
+            
+            // Ensure only trusted repositories are used
+            assertTrue(settingsContent.contains("gradlePluginPortal()"),
+                "Should use official Gradle Plugin Portal")
+            assertTrue(settingsContent.contains("google()"),
+                "Should use official Google repository")
+            assertTrue(settingsContent.contains("mavenCentral()"),
+                "Should use official Maven Central repository")
+            
+            // Validate no insecure HTTP repositories
+            assertFalse(settingsContent.contains("http://"),
+                "Should not use insecure HTTP repositories")
+            
+            // Validate no unknown or potentially malicious repositories
+            val allowedRepositories = listOf(
+                "gradlePluginPortal()", "google()", "mavenCentral()", "mavenLocal()"
+            )
+            val repositoryPattern = Regex("\w+Repository\(|maven\s*\{")
+            val customRepositories = repositoryPattern.findAll(settingsContent)
+                .filter { match ->
+                    allowedRepositories.none { allowed ->
+                        settingsContent.substring(match.range.first, match.range.last + 10).contains(allowed)
+                    }
+                }.toList()
+            
+            assertTrue(customRepositories.isEmpty(),
+                "Should only use well-known, trusted repositories")
+        }
+        
+        @Test
+        @DisplayName("Should validate FAIL_ON_PROJECT_REPOS for security compliance")
+        fun testRepositoryComplianceMode() {
+            val settingsContent = settingsFile.readText()
+            
+            assertTrue(settingsContent.contains("FAIL_ON_PROJECT_REPOS"),
+                "Should enforce centralized repository management for security")
+            
+            // Validate that this prevents project-level repository declarations
+            val projectWithReposBuild = testProjectDir.resolve("with-repos.gradle.kts").toFile()
+            projectWithReposBuild.writeText("""
+                plugins {
+                    kotlin("jvm") version "1.9.10"
+                }
+                repositories {
+                    mavenCentral()
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "-b", projectWithReposBuild.absolutePath)
+                .buildAndFail()
+            
+            assertTrue(result.output.contains("repositories") || result.output.contains("FAIL_ON_PROJECT_REPOS"),
+                "Should fail when project declares its own repositories")
+        }
+        
+        @Test
+        @DisplayName("Should validate version catalog security and consistency")
+        fun testVersionCatalogSecurity() {
+            val settingsContent = settingsFile.readText()
+            
+            // Validate version catalog reference
+            assertTrue(settingsContent.contains("gradle/libs.versions.toml"),
+                "Should reference version catalog for centralized version management")
+            
+            // Create a sample version catalog to test integration
+            val gradleDir = testProjectDir.resolve("gradle").toFile()
+            gradleDir.mkdirs()
+            val versionCatalog = File(gradleDir, "libs.versions.toml")
+            versionCatalog.writeText("""
+                [versions]
+                kotlin = "1.9.10"
+                
+                [libraries]
+                kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+            """.trimIndent())
+            
+            val catalogTestBuild = testProjectDir.resolve("catalog-test.gradle.kts").toFile()
+            catalogTestBuild.writeText("""
+                plugins {
+                    kotlin("jvm") version "1.9.10"
+                }
+                dependencies {
+                    implementation(libs.kotlin.stdlib)
+                }
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("dependencies", "-b", catalogTestBuild.absolutePath, "--quiet")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome,
+                "Version catalog should work with settings configuration")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Boundary Conditions and Error Scenarios")
+    inner class BoundaryConditionTests {
+        
+        @Test
+        @DisplayName("Should handle settings file with maximum complexity")
+        fun testMaxComplexitySettings() {
+            // Create a complex settings file to test limits
+            val complexSettingsFile = testProjectDir.resolve("complex-settings.gradle.kts").toFile()
+            val complexContent = StringBuilder()
+            complexContent.append(settingsFile.readText())
+            
+            // Add many modules to test scale
+            repeat(10) { i ->
+                complexContent.append("\ninclude(\":test-module-$i")")
+            }
+            
+            complexSettingsFile.writeText(complexContent.toString())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("projects", "-c", complexSettingsFile.absolutePath, "--quiet")
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":projects")?.outcome,
+                "Complex settings should parse and execute successfully")
+            
+            // Verify all modules are included
+            repeat(10) { i ->
+                assertTrue(result.output.contains("test-module-$i"),
+                    "Should include test-module-$i in project list")
+            }
+        }
+        
+        @Test
+        @DisplayName("Should validate settings with Unicode and special characters")
+        fun testUnicodeAndSpecialCharacters() {
+            val unicodeSettingsFile = testProjectDir.resolve("unicode-settings.gradle.kts").toFile()
+            unicodeSettingsFile.writeText("""
+                pluginManagement {
+                    repositories {
+                        gradlePluginPortal()
+                        mavenCentral()
+                    }
+                }
+                
+                // Test Unicode in comments: 测试 тест テスト
+                rootProject.name = "AuraFrameFX-测试"
+                include(":app")
+            """.trimIndent())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "-c", unicodeSettingsFile.absolutePath)
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Settings with Unicode characters should work")
+        }
+        
+        @Test
+        @DisplayName("Should handle settings file size limits gracefully")
+        fun testSettingsFileSizeLimits() {
+            val largeSettingsFile = testProjectDir.resolve("large-settings.gradle.kts").toFile()
+            val baseContent = settingsFile.readText()
+            
+            // Add extensive comments to increase file size
+            val largeContent = StringBuilder(baseContent)
+            largeContent.append("\n\n// Large comment section\n")
+            repeat(100) { i ->
+                largeContent.append("// Comment line $i with detailed explanation of configuration\n")
+            }
+            
+            largeSettingsFile.writeText(largeContent.toString())
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("help", "-c", largeSettingsFile.absolutePath)
+                .build()
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome,
+                "Large settings file should parse successfully")
+            
+            // Verify file size
+            assertTrue(largeSettingsFile.length() > baseContent.length * 2,
+                "Large settings file should be significantly larger than base")
+        }
+    }
+    
+    @Nested
+    @DisplayName("Performance and Benchmarking")
+    inner class PerformanceBenchmarkTests {
+        
+        @Test
+        @DisplayName("Should measure settings evaluation performance")
+        fun testSettingsEvaluationPerformance() {
+            val iterations = 3
+            val executionTimes = mutableListOf<Long>()
+            
+            repeat(iterations) {
+                val startTime = System.currentTimeMillis()
+                
+                val result = GradleRunner.create()
+                    .withProjectDir(testProjectDir.toFile())
+                    .withArguments("help", "--quiet")
+                    .build()
+                
+                val endTime = System.currentTimeMillis()
+                executionTimes.add(endTime - startTime)
+                
+                assertEquals(TaskOutcome.SUCCESS, result.task(":help")?.outcome)
+            }
+            
+            val averageTime = executionTimes.average()
+            val maxTime = executionTimes.maxOrNull() ?: 0L
+            
+            // Performance expectations (should complete within reasonable time)
+            assertTrue(averageTime < 30000, // 30 seconds
+                "Settings evaluation should complete within 30 seconds on average (was ${averageTime}ms)")
+            assertTrue(maxTime < 60000, // 60 seconds
+                "No single settings evaluation should exceed 60 seconds (was ${maxTime}ms)")
+            
+            println("Settings evaluation performance: avg=${averageTime}ms, max=${maxTime}ms")
+        }
+        
+        @Test
+        @DisplayName("Should validate repository resolution performance")
+        fun testRepositoryResolutionPerformance() {
+            val performanceTestBuild = testProjectDir.resolve("perf-test.gradle.kts").toFile()
+            performanceTestBuild.writeText("""
+                plugins {
+                    kotlin("jvm") version "1.9.10"
+                }
+                dependencies {
+                    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+                }
+            """.trimIndent())
+            
+            val startTime = System.currentTimeMillis()
+            
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir.toFile())
+                .withArguments("dependencies", "-b", performanceTestBuild.absolutePath, "--quiet")
+                .build()
+            
+            val endTime = System.currentTimeMillis()
+            val resolutionTime = endTime - startTime
+            
+            assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome,
+                "Dependency resolution should succeed")
+            
+            // Repository resolution should be reasonably fast
+            assertTrue(resolutionTime < 120000, // 2 minutes
+                "Dependency resolution should complete within 2 minutes (was ${resolutionTime}ms)")
+            
+            println("Repository resolution performance: ${resolutionTime}ms")
+        }
+    }
+    
     @AfterEach
     fun cleanup() {
         // Cleanup is handled automatically by @TempDir
