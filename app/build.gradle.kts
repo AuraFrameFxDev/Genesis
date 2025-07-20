@@ -24,13 +24,11 @@ android {
 
         multiDexEnabled = true
 
-        // MOVED: NDK ABI filters are part of the top-level ndk block
         vectorDrawables {
             useSupportLibrary = true
         }
     }
 
-    // MOVED: Packaging options are a top-level block
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -65,13 +63,6 @@ android {
     }
 
     // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
-
-  kotlincompile
-    }
-
-    kotlinOptions {
-        jvmTarget = "24"
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     externalNativeBuild {
@@ -118,8 +109,6 @@ android.sourceSets.getByName("main") {
 tasks.named("preBuild") {
     dependsOn("openApiGenerate")
 }
-
-// REMOVED: The entire 'configurations.all' block.
 
 dependencies {
     implementation(project(":oracledrive"))
@@ -175,7 +164,7 @@ dependencies {
     // Network & Serialization
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
-    implementation(libs.okhttp.logging.interceptor) // Should be debugImplementation
+    debugImplementation(libs.okhttp.logging.interceptor) // Should be debugImplementation
     implementation(libs.kotlinx.serialization.json)
 
     // DataStore & Security
@@ -185,6 +174,10 @@ dependencies {
     // UI & Other
     implementation(libs.coil.compose)
     implementation(libs.timber)
+
+    // NLP
+    implementation "edu.stanford.nlp:stanford-corenlp:4.4.0"
+    implementation "edu.stanford.nlp:stanford-corenlp:4.4.0:models"
 
     // --- TESTING ---
     // Unit Tests
