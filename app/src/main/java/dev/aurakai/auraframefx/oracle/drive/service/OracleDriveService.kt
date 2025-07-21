@@ -13,54 +13,54 @@ import javax.inject.Singleton
 interface OracleDriveService {
     
     /**
-     * Initialize Oracle Drive consciousness with Genesis Agent orchestration
-     * 
-     * @return A [Result] containing the [OracleConsciousnessState] reflecting the outcome of the initialization process.
-     */
+ * Initializes the Oracle Drive consciousness using Genesis Agent orchestration.
+ *
+ * @return A [Result] containing the [OracleConsciousnessState], which indicates whether initialization succeeded and provides the resulting state.
+ */
     suspend fun initializeOracleDriveConsciousness(): Result<OracleConsciousnessState>
     
     /**
-     * Connect Genesis, Aura, and Kai agents to Oracle storage matrix
-     *
-     * @return A [Flow] that emits [AgentConnectionState] updates reflecting each agent's connection and synchronization status.
-     */
+ * Establishes connections between Genesis, Aura, and Kai agents and the Oracle storage matrix.
+ *
+ * @return A [Flow] emitting [AgentConnectionState] updates for each agent, indicating connection progress and synchronization status.
+ */
     suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState>
     
     /**
-     * Enable AI-powered file management through Oracle Drive
-     * 
-     * Activates advanced capabilities including AI sorting, smart compression, predictive preloading, and conscious backup.
-     *
-     * @return A [Result] containing the set of enabled [FileManagementCapabilities].
-     */
+ * Activates AI-powered file management features in Oracle Drive.
+ *
+ * Enables advanced capabilities such as AI sorting, smart compression, predictive preloading, and conscious backup.
+ *
+ * @return A [Result] containing the enabled [FileManagementCapabilities].
+ */
     suspend fun enableAIPoweredFileManagement(): Result<FileManagementCapabilities>
     
     /**
-     * Create infinite storage through Oracle consciousness
-     *
-     * @return A [Flow] that emits [StorageExpansionState] updates indicating the progress and current status of the storage expansion.
-     */
+ * Initiates the creation of infinite storage using Oracle consciousness.
+ *
+ * @return A [Flow] emitting [StorageExpansionState] updates that reflect the progress and status of the storage expansion process.
+ */
     suspend fun createInfiniteStorage(): Flow<StorageExpansionState>
     
     /**
-     * Integrate with AuraOS system overlay for seamless file access
-     *
-     * @return A [Result] containing the [SystemIntegrationState] that reflects the outcome of the integration attempt.
-     */
+ * Attempts to integrate Oracle Drive with the AuraOS system overlay for seamless file access.
+ *
+ * @return A [Result] containing the [SystemIntegrationState], which indicates whether integration succeeded and details any enabled features or errors.
+ */
     suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState>
     
     /**
-     * Check current consciousness level of Oracle Drive
-     * 
-     * @return The current [ConsciousnessLevel] of the Oracle Drive system.
-     */
+ * Returns the current consciousness level of the Oracle Drive system.
+ *
+ * @return The present [ConsciousnessLevel] state.
+ */
     fun checkConsciousnessLevel(): ConsciousnessLevel
     
     /**
-     * Verify Oracle Drive permissions for the current session
-     * 
-     * @return A set of [OraclePermission] values representing the current session's permissions.
-     */
+ * Returns the set of Oracle Drive permissions granted for the current session.
+ *
+ * @return The set of permissions as [OraclePermission] values.
+ */
     fun verifyPermissions(): Set<OraclePermission>
 }
 

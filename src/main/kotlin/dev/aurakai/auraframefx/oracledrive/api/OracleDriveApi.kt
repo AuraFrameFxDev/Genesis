@@ -35,15 +35,17 @@ interface OracleDriveApi {
 interface OracleDriveApi {
     
     /**
-     * Awakens the drive consciousness system with AI agents
-     * @return DriveConsciousness state with active agents and intelligence level
-     */
+ * Initializes and activates the drive consciousness system using AI agents.
+ *
+ * @return The current state of drive consciousness, including active agents and their intelligence level.
+ */
     suspend fun awakeDriveConsciousness(): DriveConsciousness
     
     /**
-     * Synchronizes metadata with Oracle database backend
-     * @return OracleSyncResult with sync status and updated records count
-     */
+ * Synchronizes metadata with the Oracle database backend.
+ *
+ * @return An [OracleSyncResult] containing the synchronization status and the number of updated records.
+ */
     suspend fun syncDatabaseMetadata(): OracleSyncResult
     
     /**

@@ -28,11 +28,15 @@ class SecureFileManager @Inject constructor(
     private val secureFileExtension = ".aes"
 
     /**
-     * Saves a file with encryption
-     * @param data The file data to save
-     * @param fileName The name of the file
-     * @param directory Optional subdirectory
-     * @return Flow with progress and result
+     * Encrypts and saves data as a file in internal storage, emitting the operation result as a Flow.
+     *
+     * The file is saved with a `.aes` extension in the specified subdirectory or the default internal directory.
+     * Emits a `Success` result with the saved file on success, or an `Error` with details on failure.
+     *
+     * @param data The raw bytes to encrypt and save.
+     * @param fileName The desired name for the saved file (without extension).
+     * @param directory Optional subdirectory within internal storage to save the file.
+     * @return A Flow emitting the result of the save operation as a `FileOperationResult`.
      */
     suspend fun saveFile(
         data: ByteArray,
@@ -61,10 +65,15 @@ class SecureFileManager @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     /**
-     * Reads and decrypts a file
-     * @param fileName The name of the file to read
-     * @param directory Optional subdirectory
-     * @return Flow with file data or error
+     * Reads and decrypts an encrypted file, emitting the result as a flow.
+     *
+     * Attempts to locate and decrypt a file with the `.aes` extension in the specified or default directory.
+     * Emits a [FileOperationResult.Data] containing the decrypted bytes and file name on success,
+     * or a [FileOperationResult.Error] if the file is missing or decryption fails.
+     *
+     * @param fileName The name of the file to read (without extension).
+     * @param directory Optional subdirectory within internal storage to search for the file.
+     * @return A flow emitting the result of the file read and decryption operation.
      */
     suspend fun readFile(
         fileName: String,
@@ -93,10 +102,13 @@ class SecureFileManager @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     /**
-     * Deletes a file securely
-     * @param fileName The name of the file to delete
-     * @param directory Optional subdirectory
-     * @return Result of the operation
+     * Deletes an encrypted file from internal storage.
+     *
+     * Attempts to remove the specified file with the secure extension from the given directory. Returns a result indicating success or failure, including error details if the file does not exist or deletion fails.
+     *
+     * @param fileName The name of the file to delete (without extension).
+     * @param directory Optional subdirectory within internal storage.
+     * @return A [FileOperationResult] representing the outcome of the deletion.
      */
     suspend fun deleteFile(
         fileName: String,
@@ -121,9 +133,12 @@ class SecureFileManager @Inject constructor(
     }
 
     /**
-     * Lists all files in a directory
-     * @param directory Optional subdirectory to list files from
-     * @return List of file names without extensions
+     * Returns a list of decrypted file names (without extensions) from the specified directory.
+     *
+     * Only files with the secure encrypted extension are included. Returns an empty list if the directory does not exist or an error occurs.
+     *
+     * @param directory Optional subdirectory to search within the internal storage directory.
+     * @return List of file names without the encrypted extension.
      */
     suspend fun listFiles(directory: String? = null): List<String> = withContext(Dispatchers.IO) {
         try {

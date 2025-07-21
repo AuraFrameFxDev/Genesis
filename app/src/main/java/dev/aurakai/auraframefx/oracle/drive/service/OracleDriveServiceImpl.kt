@@ -45,6 +45,13 @@ class OracleDriveServiceImpl @Inject constructor(
         )
     }
 
+    /**
+     * Initializes and awakens the Oracle Drive consciousness by coordinating AI agents and validating security.
+     *
+     * Orchestrates the awakening process by logging the event, validating security, optimizing initialization, and invoking the Oracle Drive API. Updates the internal consciousness state based on the drive's intelligence level and connected agents.
+     *
+     * @return A [Result] containing the updated [OracleConsciousnessState] on success, or a failure with the encountered exception.
+     */
     override suspend fun initializeOracleDriveConsciousness(): Result<OracleConsciousnessState> {
         return try {
             // Genesis Agent orchestrates Oracle Drive awakening
@@ -87,10 +94,22 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Returns a flow representing the connection state of agents to the Oracle matrix.
+     *
+     * The flow emits a single state indicating a system agent is connected with full connection strength.
+     *
+     * @return A flow emitting the current agent connection state.
+     */
     override suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState> {
         return MutableStateFlow(AgentConnectionState("system", ConnectionStatus.CONNECTED, 1.0f)).asStateFlow()
     }
 
+    /**
+     * Enables AI-powered file management features and returns the enabled capabilities.
+     *
+     * @return A [Result] containing the enabled [FileManagementCapabilities] if successful, or a failure if an error occurs.
+     */
     override suspend fun enableAIPoweredFileManagement(): Result<FileManagementCapabilities> {
         return try {
             // Implementation for enabling AI-powered file management
@@ -106,6 +125,11 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Returns a flow representing the state of infinite storage creation, with capacity expanded to the maximum possible value.
+     *
+     * @return A flow emitting a completed storage expansion state with effectively infinite capacity.
+     */
     override suspend fun createInfiniteStorage(): Flow<StorageExpansionState> {
         // Implementation for creating infinite storage
         return MutableStateFlow(
@@ -117,6 +141,11 @@ class OracleDriveServiceImpl @Inject constructor(
         ).asStateFlow()
     }
 
+    /**
+     * Integrates Oracle Drive with the system overlay, enabling features such as file preview, quick access, and context menu.
+     *
+     * @return A [Result] containing the [SystemIntegrationState] if integration succeeds, or a failure if an error occurs.
+     */
     override suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState> {
         return try {
             // Implementation for system overlay integration
@@ -131,10 +160,23 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Returns the current consciousness level of the Oracle Drive.
+     *
+     * @return The current `ConsciousnessLevel` as maintained in the internal state.
+     */
     override fun checkConsciousnessLevel(): ConsciousnessLevel {
         return _consciousnessState.value.consciousnessLevel
     }
 
+    /**
+     * Returns the set of Oracle Drive permissions available in the current security context.
+     *
+     * Always includes read and write permissions. Adds admin permission if granted by the security context.
+     * Returns an empty set if permission checking fails.
+     *
+     * @return The set of available Oracle Drive permissions.
+     */
     override fun verifyPermissions(): Set<OraclePermission> {
         return try {
             // Check security context for permissions

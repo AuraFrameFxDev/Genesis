@@ -19,7 +19,14 @@ internal object FileOperationUtils {
     private val logger = Logger.getLogger(TAG)
     
     /**
-     * Safely creates a directory if it doesn't exist.
+     * Ensures that the specified directory exists, creating it if necessary.
+     *
+     * Attempts to create the directory and any missing parent directories if they do not already exist.
+     * Returns a [Result] indicating success or containing an [IOException] if creation fails.
+     *
+     * @param directory The directory to check or create.
+     * @param coroutineContext The coroutine dispatcher to use for IO operations.
+     * @return [Result.success] if the directory exists or was created successfully, or [Result.failure] with an [IOException] on failure.
      */
     suspend fun ensureDirectoryExists(
         directory: File,
@@ -42,7 +49,9 @@ internal object FileOperationUtils {
     }
     
     /**
-     * Safely deletes a file or directory recursively.
+     * Recursively deletes the specified file or directory and all its contents.
+     *
+     * Performs the deletion operation on the provided coroutine dispatcher. Returns a [Result] indicating success or containing an [IOException] if deletion fails.
      */
     suspend fun deleteFileOrDirectory(
         file: File,
@@ -68,7 +77,15 @@ internal object FileOperationUtils {
     }
     
     /**
-     * Safely copies a file with progress monitoring.
+     * Copies a file from the source to the destination with optional progress reporting.
+     *
+     * Performs the copy operation asynchronously on the specified coroutine dispatcher. Progress can be tracked via a callback that receives the number of bytes copied and the total bytes. Returns a [Result] indicating success or failure; failure includes an [IOException] if the source file does not exist or an error occurs during copying.
+     *
+     * @param source The file to copy from.
+     * @param destination The file to copy to.
+     * @param bufferSize The size of the buffer used for copying, in bytes.
+     * @param progressCallback Optional callback invoked with the number of bytes copied and the total bytes after each write.
+     * @return [Result.success] if the copy completes successfully, or [Result.failure] with an [IOException] on error.
      */
     suspend fun copyFileWithProgress(
         source: File,
@@ -115,7 +132,13 @@ internal object FileOperationUtils {
     }
     
     /**
-     * Validates a file name according to security policies.
+     * Validates a file name to ensure it does not contain unsafe or disallowed patterns.
+     *
+     * Checks for directory traversal sequences, path separators, null characters, and empty or whitespace-only names.
+     * Returns a successful result with the file name if valid, or a failure with an exception if invalid.
+     *
+     * @param fileName The file name to validate.
+     * @return A Result containing the valid file name or a failure with the validation exception.
      */
     fun validateFileName(fileName: String): Result<String> {
         return try {
@@ -138,7 +161,12 @@ internal object FileOperationUtils {
     }
     
     /**
-     * Gets the MIME type of a file based on its extension.
+     * Returns the MIME type corresponding to the file extension of the given file name.
+     *
+     * If the extension is unrecognized, returns "application/octet-stream".
+     *
+     * @param fileName The name of the file whose MIME type is to be determined.
+     * @return The MIME type as a string.
      */
     fun getMimeType(fileName: String): String {
         return when (fileName.substringAfterLast('.').lowercase()) {

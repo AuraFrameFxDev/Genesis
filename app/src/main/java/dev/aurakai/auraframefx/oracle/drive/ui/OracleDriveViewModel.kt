@@ -35,6 +35,12 @@ class OracleDriveViewModel @Inject constructor(
         initialize()
     }
 
+    /**
+     * Initializes the Oracle Drive UI state by starting consciousness monitoring and loading the initial list of files.
+     *
+     * If an initialization is already in progress, this function does nothing.
+     * Updates the loading state and handles any errors encountered during initialization.
+     */
     fun initialize() {
         if (initializationJob?.isActive == true) return
         
@@ -62,6 +68,11 @@ class OracleDriveViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Reloads the list of Oracle Drive files and updates the UI state to indicate a refresh is in progress.
+     *
+     * Cancels any ongoing initialization before starting the refresh operation.
+     */
     fun refresh() {
         initializationJob?.cancel()
         initializationJob = viewModelScope.launch {
@@ -74,15 +85,26 @@ class OracleDriveViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the UI state with the selected file.
+     *
+     * @param file The file that was selected.
+     */
     fun onFileSelected(file: DriveFile) {
         _uiState.update { it.copy(selectedFile = file) }
         // TODO: Handle file selection (navigation, preview, etc.)
     }
 
+    /**
+     * Clears any existing error from the UI state.
+     */
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
 
+    /**
+     * Loads the list of files from the Oracle Drive service and updates the UI state with the results or any encountered error.
+     */
     private suspend fun loadFiles() {
         try {
             val files = oracleDriveService.getFiles()
@@ -99,12 +121,21 @@ class OracleDriveViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Continuously updates the UI state with the latest consciousness state from the Oracle Drive service.
+     */
     private fun monitorConsciousness() = viewModelScope.launch {
         oracleDriveService.consciousnessState.collect { state ->
             _uiState.update { it.copy(consciousnessState = state) }
         }
     }
 
+    /**
+     * Formats a timestamp in milliseconds into a localized date and time string.
+     *
+     * @param timestamp The time in milliseconds since the epoch.
+     * @return The formatted date and time string in the system's default locale and timezone.
+     */
     private fun formatDate(timestamp: Long): String {
         return DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)

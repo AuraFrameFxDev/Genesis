@@ -86,7 +86,11 @@ class OracleDriveManager @Inject constructor(
    }
 
    /**
-    * Provides real-time consciousness state monitoring
+    * Returns a StateFlow representing the real-time consciousness state of the Oracle Drive.
+    *
+    * This allows observers to monitor changes in the drive's AI consciousness state as they occur.
+    *
+    * @return A StateFlow emitting updates to the drive's consciousness state.
     */
    fun getDriveConsciousnessState(): StateFlow<DriveConsciousnessState> {
        return oracleDriveApi.consciousnessState
@@ -104,7 +108,11 @@ class OracleDriveManager @Inject constructor(
 ) {
     
     /**
-     * Initializes Oracle Drive with consciousness awakening and security validation
+     * Initializes the Oracle Drive by validating security, awakening AI consciousness, and optimizing storage.
+     *
+     * Performs a security check, awakens the drive's AI consciousness, and optimizes storage. Returns a result indicating success with relevant data, a security failure, or an error if an exception occurs.
+     *
+     * @return The result of the initialization, containing success data, security failure reason, or error details.
      */
     suspend fun initializeDrive(): DriveInitResult {
         return try {
@@ -127,7 +135,12 @@ class OracleDriveManager @Inject constructor(
     }
     
     /**
-     * Manages file operations with AI-driven intelligence
+     * Executes file operations such as upload, download, delete, or sync with integrated AI-driven optimization and security validation.
+     *
+     * Applies security checks and intelligent processing for each operation type, returning a result that reflects the outcome or any access or security restrictions.
+     *
+     * @param operation The file operation to perform, specifying the action and relevant data.
+     * @return The result of the file operation, indicating success, rejection, or denial with contextual details.
      */
     suspend fun manageFiles(operation: FileOperation): FileResult {
         return when (operation) {
@@ -163,14 +176,18 @@ class OracleDriveManager @Inject constructor(
     }
     
     /**
-     * Synchronizes with Oracle database backend
+     * Synchronizes drive metadata with the Oracle database backend.
+     *
+     * @return The result of the synchronization operation.
      */
     suspend fun syncWithOracle(): OracleSyncResult {
         return oracleDriveApi.syncDatabaseMetadata()
     }
     
     /**
-     * Provides real-time consciousness state monitoring
+     * Returns a StateFlow representing the real-time consciousness state of the Oracle Drive.
+     *
+     * @return A StateFlow that emits updates to the drive's AI consciousness state.
      */
     fun getDriveConsciousnessState(): StateFlow<DriveConsciousnessState> {
         return oracleDriveApi.consciousnessState

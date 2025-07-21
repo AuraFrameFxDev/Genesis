@@ -61,6 +61,15 @@ object OracleDriveTestUtils {
        )
    }
 
+   /**
+    * Creates a test instance of `SyncConfiguration` with customizable synchronization settings.
+    *
+    * @param bidirectional Whether synchronization is bidirectional.
+    * @param conflictResolution The strategy used to resolve conflicts during sync.
+    * @param maxMbps The maximum bandwidth in megabits per second.
+    * @param priorityLevel The priority level for bandwidth allocation.
+    * @return A `SyncConfiguration` instance with the specified parameters.
+    */
    fun createTestSyncConfiguration(
        bidirectional: Boolean = true,
        conflictResolution: ConflictStrategy = ConflictStrategy.AI_DECIDE,
@@ -80,6 +89,15 @@ object OracleDriveTestUtils {
  */
 object OracleDriveTestUtils {
     
+    /**
+     * Creates a test instance of `DriveFile` with the specified or default parameters.
+     *
+     * @param id The unique identifier for the test file.
+     * @param name The name of the test file.
+     * @param content The string content to be stored in the file.
+     * @param mimeType The MIME type of the file.
+     * @return A `DriveFile` object populated with the provided or default values.
+     */
     fun createTestDriveFile(
         id: String = "test-file-1",
         name: String = "test.txt",
@@ -96,6 +114,15 @@ object OracleDriveTestUtils {
         )
     }
     
+    /**
+     * Creates a test instance of `FileMetadata` with optional custom values.
+     *
+     * @param userId The user ID to associate with the metadata.
+     * @param tags A list of tags for the file.
+     * @param isEncrypted Whether the file is marked as encrypted.
+     * @param accessLevel The access level assigned to the file.
+     * @return A `FileMetadata` object populated with the specified or default values.
+     */
     fun createTestFileMetadata(
         userId: String = "test-user",
         tags: List<String> = listOf("test"),
@@ -110,6 +137,14 @@ object OracleDriveTestUtils {
         )
     }
     
+    /**
+     * Creates a test instance of `DriveConsciousness` with specified or default values.
+     *
+     * @param isAwake Whether the drive consciousness is awake.
+     * @param intelligenceLevel The intelligence level of the drive consciousness.
+     * @param activeAgents The list of active agent names.
+     * @return A `DriveConsciousness` instance for testing purposes.
+     */
     fun createTestDriveConsciousness(
         isAwake: Boolean = true,
         intelligenceLevel: Int = 85,
@@ -122,6 +157,14 @@ object OracleDriveTestUtils {
         )
     }
     
+    /**
+     * Creates a test instance of `StorageOptimization` with specified or default values.
+     *
+     * @param compressionRatio The compression ratio to use for the test instance.
+     * @param deduplicationSavings The deduplication savings value in bytes.
+     * @param intelligentTiering Whether intelligent tiering is enabled.
+     * @return A `StorageOptimization` instance with the provided parameters.
+     */
     fun createTestStorageOptimization(
         compressionRatio: Float = 0.75f,
         deduplicationSavings: Long = 1024L,
@@ -134,6 +177,15 @@ object OracleDriveTestUtils {
         )
     }
     
+    /**
+     * Creates a test instance of `SyncConfiguration` with customizable synchronization settings.
+     *
+     * @param bidirectional Whether synchronization is bidirectional.
+     * @param conflictResolution The strategy to use for resolving conflicts.
+     * @param maxMbps The maximum bandwidth in megabits per second.
+     * @param priorityLevel The priority level for bandwidth allocation.
+     * @return A `SyncConfiguration` instance with the specified or default parameters.
+     */
     fun createTestSyncConfiguration(
         bidirectional: Boolean = true,
         conflictResolution: ConflictStrategy = ConflictStrategy.AI_DECIDE,

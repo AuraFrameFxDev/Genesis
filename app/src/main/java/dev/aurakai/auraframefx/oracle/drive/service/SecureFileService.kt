@@ -10,11 +10,14 @@ import java.io.File
 interface SecureFileService {
     
     /**
-     * Saves data securely to a file.
-     * @param data The data to save
-     * @param fileName The name of the file
-     * @param directory Optional subdirectory
-     * @return Flow with operation result
+     * Saves encrypted data to a file, optionally within a specified subdirectory.
+     *
+     * Emits the result of the save operation as a flow, including success or error states.
+     *
+     * @param data The byte array to be securely saved.
+     * @param fileName The target file name.
+     * @param directory The optional subdirectory in which to save the file.
+     * @return A flow emitting the result of the file save operation.
      */
     suspend fun saveFile(
         data: ByteArray,
@@ -23,10 +26,11 @@ interface SecureFileService {
     ): Flow<FileOperationResult>
     
     /**
-     * Reads and decrypts a file.
-     * @param fileName The name of the file to read
-     * @param directory Optional subdirectory
-     * @return Flow with file data or error
+     * Reads and decrypts the specified file, optionally from a subdirectory.
+     *
+     * @param fileName The name of the file to read.
+     * @param directory The subdirectory to read from, or null for the root directory.
+     * @return A Flow emitting the file data or an error result.
      */
     suspend fun readFile(
         fileName: String,
@@ -34,10 +38,11 @@ interface SecureFileService {
     ): Flow<FileOperationResult>
     
     /**
-     * Deletes a file securely.
-     * @param fileName The name of the file to delete
-     * @param directory Optional subdirectory
-     * @return Result of the operation
+     * Securely deletes the specified file, optionally from a given subdirectory.
+     *
+     * @param fileName The name of the file to delete.
+     * @param directory The subdirectory containing the file, or null for the root directory.
+     * @return The result of the delete operation.
      */
     suspend fun deleteFile(
         fileName: String,
@@ -45,10 +50,13 @@ interface SecureFileService {
     ): FileOperationResult
     
     /**
-     * Lists all files in a directory.
-     * @param directory Optional subdirectory to list files from
-     * @return List of file names without extensions
-     */
+ * Returns a list of file names (without extensions) in the specified directory.
+ *
+ * If no directory is provided, lists files in the root directory.
+ *
+ * @param directory The optional subdirectory to list files from.
+ * @return A list of file names without their extensions.
+ */
     suspend fun listFiles(directory: String? = null): List<String>
 }
 
@@ -60,6 +68,14 @@ sealed class FileOperationResult {
     data class Data(val data: ByteArray, val fileName: String) : FileOperationResult()
     data class Error(val message: String, val exception: Exception? = null) : FileOperationResult()
     
+    /**
+     * Determines whether this [FileOperationResult] is equal to another object.
+     *
+     * Compares the type and relevant properties of the instances, including deep content comparison for byte arrays in [Data].
+     *
+     * @param other The object to compare with.
+     * @return `true` if the objects are of the same type and have equal properties; otherwise, `false`.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -73,6 +89,11 @@ sealed class FileOperationResult {
         }
     }
     
+    /**
+     * Returns a hash code value for the `FileOperationResult` instance based on its type and contained data.
+     *
+     * Ensures that equal instances produce the same hash code, supporting correct usage in hash-based collections.
+     */
     override fun hashCode(): Int {
         return when (this) {
             is Success -> file.hashCode()

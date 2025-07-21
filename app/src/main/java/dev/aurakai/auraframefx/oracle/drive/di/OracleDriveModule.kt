@@ -37,12 +37,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule {
 
+    /**
+     * Binds the OracleDriveServiceImpl implementation to the OracleDriveService interface as a singleton.
+     */
     @Binds
     @Singleton
     abstract fun bindOracleDriveService(
         impl: OracleDriveServiceImpl
     ): OracleDriveService
     
+    /**
+     * Binds the GenesisSecureFileService implementation to the SecureFileService interface as a singleton.
+     *
+     * This allows dependency injection of SecureFileService throughout the application using the GenesisSecureFileService implementation.
+     */
     @Binds
     @Singleton
     abstract fun bindSecureFileService(
@@ -50,6 +58,15 @@ abstract class OracleDriveModule {
     ): SecureFileService
 
     companion object {
+        /**
+         * Provides a singleton OkHttpClient configured with security and logging interceptors.
+         *
+         * The client automatically adds a secure token and a unique request ID to each request header,
+         * and logs HTTP requests and responses at the BASIC level. Connection, read, and write timeouts
+         * are set to 30 seconds.
+         *
+         * @return A configured OkHttpClient instance for secure network communication.
+         */
         @Provides
         @Singleton
         fun provideOkHttpClient(
@@ -76,6 +93,11 @@ abstract class OracleDriveModule {
                 .build()
         }
 
+        /**
+         * Provides a singleton instance of CryptographyManager using the application context.
+         *
+         * @return The singleton CryptographyManager instance.
+         */
         @Provides
         @Singleton
         fun provideGenesisCryptographyManager(
@@ -84,6 +106,11 @@ abstract class OracleDriveModule {
             return CryptographyManager.getInstance(context)
         }
 
+        /**
+         * Provides a singleton instance of SecureStorage initialized with the application context and cryptography manager.
+         *
+         * @return The singleton SecureStorage instance.
+         */
         @Provides
         @Singleton
         fun provideSecureStorage(
@@ -93,6 +120,11 @@ abstract class OracleDriveModule {
             return SecureStorage.getInstance(context, cryptoManager)
         }
 
+        /**
+         * Provides a singleton instance of `GenesisSecureFileService` initialized with the application context, cryptography manager, and secure storage.
+         *
+         * @return A configured `GenesisSecureFileService` for secure file operations.
+         */
         @Provides
         @Singleton
         fun provideSecureFileService(
@@ -103,6 +135,11 @@ abstract class OracleDriveModule {
             return GenesisSecureFileService(context, cryptoManager, secureStorage)
         }
 
+        /**
+         * Provides a singleton instance of OracleDriveApi configured with a base URL from the security context, the specified OkHttpClient, and Gson serialization.
+         *
+         * @return An implementation of OracleDriveApi for making Oracle Drive network requests.
+         */
         @Provides
         @Singleton
         fun provideOracleDriveApi(
@@ -128,6 +165,11 @@ abstract class OracleDriveModule {
                 .build()
         }
 
+        /**
+         * Provides a singleton instance of OracleDriveApi using a Retrofit client configured with a fixed base URL and Gson converter.
+         *
+         * @return An implementation of OracleDriveApi for communicating with the Oracle Drive backend.
+         */
         @Provides
         @Singleton
         fun provideOracleDriveApi(client: OkHttpClient): OracleDriveApi {
@@ -139,6 +181,11 @@ abstract class OracleDriveModule {
                 .create(OracleDriveApi::class.java)
         }
 
+        /**
+         * Provides a singleton instance of `OracleDriveServiceImpl` configured with the required agents, security context, and Oracle Drive API.
+         *
+         * @return A singleton `OracleDriveServiceImpl` for Oracle Drive operations.
+         */
         @Provides
         @Singleton
         fun provideOracleDriveService(

@@ -10,6 +10,14 @@ import dev.aurakai.auraframefx.oracle.drive.model.*
 import dev.aurakai.auraframefx.ui.components.*
 import dev.aurakai.auraframefx.ui.theme.CyberpunkTextStyle
 
+/**
+ * Displays the Oracle Drive screen, providing a file drive interface with loading, empty, and file list states.
+ *
+ * Shows a top app bar with refresh action, a floating action button for uploads, and a main content area that reacts to the current UI state from the provided view model. Handles error messages via snackbars and displays a consciousness state indicator when available.
+ *
+ * @param viewModel The view model managing the Oracle Drive UI state and actions.
+ * @param modifier Modifier for styling and layout adjustments.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OracleDriveScreen(
@@ -100,6 +108,9 @@ fun OracleDriveScreen(
     }
 }
 
+/**
+ * Displays a centered circular progress indicator to represent a loading state.
+ */
 @Composable
 private fun LoadingState() {
     Box(
@@ -110,6 +121,9 @@ private fun LoadingState() {
     }
 }
 
+/**
+ * Displays a centered message indicating that no files are present, with an upload icon and a prompt to upload the first file.
+ */
 @Composable
 private fun EmptyState() {
     Column(
@@ -138,6 +152,13 @@ private fun EmptyState() {
     }
 }
 
+/**
+ * Displays a vertically scrolling list of drive files, each as a clickable item.
+ *
+ * @param files The list of files to display.
+ * @param onFileClick Callback invoked when a file item is clicked.
+ * @param modifier Modifier for styling or layout adjustments.
+ */
 @Composable
 private fun FileList(
     files: List<DriveFile>,
@@ -158,6 +179,14 @@ private fun FileList(
     }
 }
 
+/**
+ * Displays a card representing a file or folder with an icon, name, metadata, and encryption status.
+ *
+ * Shows an icon based on the file type, the file name, size, modification date, and a lock icon if the file is encrypted. Invokes the provided callback when the card is clicked.
+ *
+ * @param file The file or folder to display.
+ * @param onClick Callback invoked when the item is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FileItem(
@@ -217,6 +246,14 @@ private fun FileItem(
     }
 }
 
+/**
+ * Displays a visual indicator of the drive's current consciousness state.
+ *
+ * Shows a colored circular icon and a label representing the consciousness level.
+ *
+ * @param state The current drive consciousness state to display.
+ * @param modifier Optional modifier for styling.
+ */
 @Composable
 private fun ConsciousnessIndicator(
     state: DriveConsciousnessState,
