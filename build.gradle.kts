@@ -6,19 +6,41 @@ extra["cmakeVersion"] = "3.22.1"
 extra["compileSdkVersion"] = 36
 extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
+extra["kotlinVersion"] = libs.versions.kotlin.get()
 
-// Plugin management using version catalog
+val javaVersion = JavaVersion.VERSION_24
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.openapi.generator) apply false
 }
 
 // Configure all projects
 allprojects {
-    // Configure Kotlin compilation
+    // Configure Java toolchain for all projects
+    plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
+        configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
+                vendor.set(org.gradle.jvm.toolchain.JvmVendorSpec.ADOPTIUM)
+            }
+        }
+    }
+
+    // Configure Kotlin compilation for all projects
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
             freeCompilerArgs.addAll(
-                "-Xjvm-target=21",
+                "-Xjvm-target=24",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xcontext-receivers",
                 "-Xjvm-default=all",

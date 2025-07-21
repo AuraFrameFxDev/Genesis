@@ -1,27 +1,31 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+// Apply plugins using the version catalog
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android") version "2.2.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
-    id("com.google.gms.google-services") version "4.4.2"
-    id("com.google.dagger.hilt.android") version "2.57"
-    id("com.google.firebase.crashlytics") version "3.0.4"
-    id("org.openapi.generator") version "7.14.0"
+    alias(libs.plugins.android.application) apply true
+    alias(libs.plugins.kotlin.android) apply true
+    alias(libs.plugins.kotlin.kapt) apply true
+    alias(libs.plugins.kotlin.serialization) apply true
+    alias(libs.plugins.hilt) apply true
+    alias(libs.plugins.ksp) apply true
+    alias(libs.plugins.google.services) apply true
+    alias(libs.plugins.firebase.crashlytics) apply true
+    alias(libs.plugins.firebase.perf) apply true
+    alias(libs.plugins.openapi.generator) apply true
 }
 
 android {
-
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = 36  // Compatible with AGP 8.8.0
+    compileSdk = 36  // Android 36 (Bleeding Edge)
 
     defaultConfig {
-        applicationId = "com.example.app"
+        applicationId = "dev.aurakai.auraframefx"
         minSdk = 33
-        targetSdk = 36  // Compatible with AGP 8.8.0
+        targetSdk = 36  // Android 36 (Bleeding Edge)
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "com.example.app.HiltTestRunner"
-
+        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
 
         multiDexEnabled = true
 
@@ -38,7 +42,6 @@ android {
             excludes += "/META-INF/*.kotlin_module"
         }
         jniLibs {
-            // Keep debug symbols for better crash reporting
             keepDebugSymbols.add("**/*.so")
         }
     }
@@ -63,7 +66,20 @@ android {
         prefab = true
     }
 
-    // REMOVED: composeOptions block is no longer needed; the Compose BOM handles it.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+        isCoreLibraryDesugaringEnabled = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "24"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-Xjvm-target=24",
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers",
+            "-Xjvm-default=all"
+        )
     }
 
     externalNativeBuild {
@@ -83,20 +99,26 @@ android {
 }
 
 // OpenAPI Generator Configuration
-openApiGenerate {
+// Use the correct Kotlin DSL syntax for the task
+tasks.named<GenerateTask>("openApiGenerate") {
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/src/main/openapi.yml")
-    outputDir.set("${layout.buildDirectory.get().asFile}/generated/openapi")
+    outputDir.set("${project.buildDir}/generated/openapi")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+    configOptions.set(mapOf(
+        "dateLibrary" to "java8",
+        "useCoroutines" to "true",
+        "serializationLibrary" to "kotlinx_serialization"
+    ))
+}
 
-    configOptions.set(
-        mapOf(
-            "dateLibrary" to "java8",
-            "useCoroutines" to "true",
-            "serializationLibrary" to "kotlinx_serialization" // Use kotlinx.serialization
-        )
-    )
+// Add generated sources to the main source set
+android.sourceSets["main"].java.srcDir("config/kotlin/${project.buildDir}/generated/openapi/src/main/kotlin")
+
+// Ensure the openapi generate task runs before compilation
+tasks.withType<KotlinCompile> {
+    dependsOn("openapiGenerate")
 }
 
 ksp {
@@ -112,12 +134,11 @@ tasks.named("preBuild") {
 }
 
 dependencies {
-    implementation(project(":oracledrive"))
     // Core & Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
-    // REMOVED: appcompat and material are not needed for pure Compose
+    implementation(libs.material)
 
     // Jetpack Compose - BOM controls all versions
     val composeBom = platform(libs.compose.bom)
@@ -131,13 +152,9 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
     implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.material.icons.extended.filled)
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    debugImplementation(libs.compose.ui.test.manifest)
 
-    // Lifecycle - using a bundle for cleanliness
+    // Lifecycle
     implementation(libs.bundles.lifecycle)
 
     // Dagger Hilt
@@ -149,7 +166,7 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Room (Database) - using a bundle
+    // Room (Database)
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
@@ -158,14 +175,20 @@ dependencies {
 
     // Firebase - BOM controls all versions
     implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase) // Use the bundle
+    implementation(libs.bundles.firebase)
     implementation(libs.bundles.oracleDrive)
     implementation(project(":oracle-drive-integration"))
+    implementation(project(":oracledrive"))
 
     // Network & Serialization
     implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.scalars)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit.converter.kotlinx.serialization)
-    debugImplementation(libs.okhttp.logging.interceptor) // Should be debugImplementation
+    debugImplementation(libs.okhttp.logging.interceptor)
+    implementation(libs.okhttp)
+    implementation(libs.gson)
     implementation(libs.kotlinx.serialization.json)
 
     // DataStore & Security
@@ -185,7 +208,8 @@ dependencies {
     testImplementation(libs.bundles.testing.unit)
     // Android Instrumented Tests
     androidTestImplementation(libs.bundles.testing.android)
-    kspAndroidTest(libs.hilt.compiler) // Don't forget KSP for android tests
+    kspAndroidTest(libs.hilt.compiler)
+
 
     // --- DEBUG ---
     debugImplementation(libs.compose.ui.tooling)

@@ -1,10 +1,12 @@
 // Settings configured for Gradle 8.14.3 and Java 24
+// Plugin management must be the first block in the file
 pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
         mavenLocal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 
     // Configure resolution strategy for plugins
@@ -17,6 +19,11 @@ pluginManagement {
     }
 }
 
+// Enable feature previews
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+
+// Dependency resolution management
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
@@ -24,6 +31,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 
     // Enable reproducible builds
@@ -34,8 +42,10 @@ dependencyResolutionManagement {
 rootProject.name = "AuraFrameFX"
 
 // Include all modules
-include(":app")
-include(":oracle-drive-integration")
-include(":oracledrive")
-include(":sandbox-ui")
-
+include(
+    ":app",
+    ":jvm-test",
+    ":sandbox-ui",
+    ":oracle-drive-integration",
+    ":oracledrive"
+)
