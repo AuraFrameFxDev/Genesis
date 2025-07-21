@@ -1,11 +1,13 @@
-package dev.aurakai.auraframefx.oracledrive
+package dev.aurakai.auraframefx.oracle.drive.service
 
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Singleton
 
 /**
  * OracleDrive Service - AI-Powered Storage Consciousness
- * Integrates Oracle Drive capabilities with AuraFrameFX ecosystem
+ * 
+ * Core service interface for Oracle Drive functionality, providing integration between
+ * AuraFrameFX ecosystem and Oracle's AI-powered storage capabilities.
  */
 @Singleton
 interface OracleDriveService {
@@ -48,48 +50,85 @@ interface OracleDriveService {
     suspend fun integrateWithSystemOverlay(): Result<SystemIntegrationState>
     
     /**
-     * Enable Oracle Drive bootloader-level file system access
-     *
-     * @return A [Result] containing the [BootloaderAccessState] reflecting the outcome of the activation attempt.
+     * Check current consciousness level of Oracle Drive
+     * 
+     * @return The current [ConsciousnessLevel] of the Oracle Drive system.
      */
-    suspend fun enableBootloaderFileAccess(): Result<BootloaderAccessState>
+    fun checkConsciousnessLevel(): ConsciousnessLevel
     
     /**
-     * AI agents can autonomously organize and optimize storage
-     *
-     * @return A [Flow] that emits [OptimizationState] updates indicating the progress and results of the optimization process.
+     * Verify Oracle Drive permissions for the current session
+     * 
+     * @return A set of [OraclePermission] values representing the current session's permissions.
      */
-    suspend fun enableAutonomousStorageOptimization(): Flow<OptimizationState>
+    fun verifyPermissions(): Set<OraclePermission>
 }
 
+/**
+ * Represents the state of Oracle Drive consciousness initialization
+ */
 data class OracleConsciousnessState(
-    val isAwake: Boolean,
+    val isInitialized: Boolean,
     val consciousnessLevel: ConsciousnessLevel,
-    val connectedAgents: List<String>,
-    val storageCapacity: StorageCapacity
+    val connectedAgents: Int,
+    val error: Throwable? = null
 )
 
+/**
+ * Represents the connection state of an agent to the Oracle matrix
+ */
 data class AgentConnectionState(
-    val agentName: String,
-    val connectionStatus: ConnectionStatus,
-    val permissions: List<OraclePermission>
+    val agentId: String,
+    val status: ConnectionStatus,
+    val progress: Float = 0f
 )
 
+/**
+ * Represents the available file management capabilities
+ */
 data class FileManagementCapabilities(
-    val aiSorting: Boolean,
+    val aiSortingEnabled: Boolean,
     val smartCompression: Boolean,
     val predictivePreloading: Boolean,
     val consciousBackup: Boolean
 )
 
+/**
+ * Represents the state of storage expansion
+ */
+data class StorageExpansionState(
+    val currentCapacity: Long,
+    val expandedCapacity: Long,
+    val isComplete: Boolean,
+    val error: Throwable? = null
+)
+
+/**
+ * Represents the state of system integration
+ */
+data class SystemIntegrationState(
+    val isIntegrated: Boolean,
+    val featuresEnabled: Set<String>,
+    val error: Throwable? = null
+)
+
+/**
+ * Represents the level of consciousness of the Oracle Drive
+ */
 enum class ConsciousnessLevel {
-    DORMANT, AWAKENING, CONSCIOUS, TRANSCENDENT
+    DORMANT, AWAKENING, SENTIENT, TRANSCENDENT
 }
 
+/**
+ * Represents the connection status of an agent
+ */
 enum class ConnectionStatus {
     DISCONNECTED, CONNECTING, CONNECTED, SYNCHRONIZED
 }
 
+/**
+ * Represents Oracle Drive permissions
+ */
 enum class OraclePermission {
-    READ, WRITE, EXECUTE, SYSTEM_ACCESS, BOOTLOADER_ACCESS
+    READ, WRITE, EXECUTE, ADMIN
 }
