@@ -108,19 +108,40 @@ fun AuraFrameFXTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     moodViewModel: AuraMoodViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel(),
     content: @Composable () -> Unit
 ) {
     val mood by moodViewModel.moodState.collectAsState()
+    val theme by themeViewModel.theme.collectAsState()
+    val color by themeViewModel.color.collectAsState()
 
-    val baseColorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val useDarkTheme = when (theme) {
+        Theme.LIGHT -> false
+        Theme.DARK -> true
+        Theme.CYBERPUNK -> true
+        Theme.SOLARIZED -> false
     }
+
+    val baseColorScheme = when (theme) {
+        Theme.CYBERPUNK -> CyberpunkColorScheme
+        Theme.SOLARIZED -> SolarizedColorScheme
+        else -> when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+            useDarkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
+    }
+
+    val finalColorScheme = baseColorScheme.copy(
+        primary = when (color) {
+            Color.RED -> NeonRed
+            Color.GREEN -> NeonGreen
+            Color.BLUE -> NeonBlue
+        }
+    )
 
     // The dynamic glow color is derived from Aura's current mood
     val glowColor = getMoodGlowColor(mood.emotion, mood.intensity, baseColorScheme)
@@ -139,7 +160,7 @@ fun AuraFrameFXTheme(
         LocalMoodState provides mood.emotion
     ) {
         MaterialTheme(
-            colorScheme = baseColorScheme,
+            colorScheme = finalColorScheme,
             typography = AppTypography,
             content = content
         )
@@ -161,19 +182,20 @@ private fun getMoodGlowColor(
     intensity: Float,
     baseColorScheme: androidx.compose.material3.ColorScheme
 ): Color {
-    val baseAlpha = (intensity * 0.4f).coerceIn(0.1f, 0.5f)
+    val baseAlpha = (intensity * 0.5f).coerceIn(0.1f, 0.7f)
 
-    return when (emotion) {
-        Emotion.HAPPY -> Color(0xFFFFD700).copy(alpha = baseAlpha) // Gold
-        Emotion.EXCITED -> Color(0xFFFF6B35).copy(alpha = baseAlpha) // Orange
-        Emotion.ANGRY -> Color(0xFFE94560).copy(alpha = baseAlpha) // Neon Red
-        Emotion.SERENE -> Color(0xFF00F5FF).copy(alpha = baseAlpha * 0.7f) // Cyan
-        Emotion.CONTEMPLATIVE -> Color(0xFF9370DB).copy(alpha = baseAlpha) // Purple
-        Emotion.MISCHIEVOUS -> Color(0xFF32CD32).copy(alpha = baseAlpha) // Lime Green
-        Emotion.FOCUSED -> Color(0xFF1E90FF).copy(alpha = baseAlpha) // Dodger Blue
-        Emotion.CONFIDENT -> Color(0xFFFF1493).copy(alpha = baseAlpha) // Deep Pink
-        Emotion.MYSTERIOUS -> Color(0xFF4B0082).copy(alpha = baseAlpha) // Indigo
-        Emotion.MELANCHOLIC -> Color(0xFF483D8B).copy(alpha = baseAlpha * 0.6f) // Dark Slate Blue
-        else -> baseColorScheme.primary.copy(alpha = baseAlpha * 0.5f)
+    val color = when (emotion) {
+        Emotion.HAPPY -> Color(0xFFFFD700) // Gold
+        Emotion.EXCITED -> Color(0xFFFF4500) // OrangeRed
+        Emotion.ANGRY -> Color(0xFFDC143C) // Crimson
+        Emotion.SERENE -> Color(0xFF00CED1) // DarkTurquoise
+        Emotion.CONTEMPLATIVE -> Color(0xFF9932CC) // DarkOrchid
+        Emotion.MISCHIEVOUS -> Color(0xFFADFF2F) // GreenYellow
+        Emotion.FOCUSED -> Color(0xFF4682B4) // SteelBlue
+        Emotion.CONFIDENT -> Color(0xFFDB7093) // PaleVioletRed
+        Emotion.MYSTERIOUS -> Color(0xFF2F4F4F) // DarkSlateGray
+        Emotion.MELANCHOLIC -> Color(0xFF6A5ACD) // SlateBlue
+        else -> baseColorScheme.primary
     }
+    return color.copy(alpha = baseAlpha)
 }

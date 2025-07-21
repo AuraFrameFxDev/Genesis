@@ -295,20 +295,22 @@ class LibsVersionsTomlTest {
     @Test
     fun `test TOML file has proper bundles section`() {
         assertTrue("Should contain [bundles] section", tomlContent.contains("[bundles]"))
-        
+
         // Test that bundles reference valid library names
         val bundlePattern = Pattern.compile("""(\w+)\s*=\s*\[([^\]]+)\]""")
         val bundleLines = tomlLines.filter { it.contains(" = [") && !it.trim().startsWith("#") }
-        
+
         bundleLines.forEach { line ->
             val matcher = bundlePattern.matcher(line)
             if (matcher.find()) {
                 val bundleName = matcher.group(1)
                 val bundleContent = matcher.group(2)
-                
+
                 assertFalse("Bundle '$bundleName' should not be empty", bundleContent.trim().isEmpty())
-                assertTrue("Bundle '$bundleName' should contain quoted library references", 
-                          bundleContent.contains("\""))
+                assertTrue(
+                    "Bundle '$bundleName' should contain quoted library references",
+                    bundleContent.contains("\"")
+                )
             }
         }
     }
@@ -319,13 +321,13 @@ class LibsVersionsTomlTest {
         val libraryNames = extractSection("[libraries]")
             .filter { it.contains(" = {") && !it.trim().startsWith("#") }
             .map { it.split("=")[0].trim() }
-        
+
         bundleSection.forEach { line ->
             if (line.contains(" = [")) {
                 val libraryRefs = line.substringAfter("[").substringBefore("]")
                     .split(",")
                     .map { it.trim().removeSurrounding("\"") }
-                
+
                 libraryRefs.forEach { ref ->
                     if (ref.isNotEmpty()) {
                         assertTrue(
@@ -340,17 +342,17 @@ class LibsVersionsTomlTest {
 
     @Test
     fun `test accompanist libraries have proper version management`() {
-        val accompanistLibraries = tomlLines.filter { 
-            it.contains("accompanist") && it.contains("version = ") 
+        val accompanistLibraries = tomlLines.filter {
+            it.contains("accompanist") && it.contains("version = ")
         }
-        
+
         accompanistLibraries.forEach { line ->
             // Accompanist libraries should have explicit versions since they're being migrated
             assertTrue(
                 "Accompanist library should have explicit version: $line",
                 line.contains("version = \"")
             )
-            
+
             // Version should be reasonable (0.30+)
             val versionPattern = Pattern.compile("""version = "([^"]+)"""")
             val matcher = versionPattern.matcher(line)
@@ -368,9 +370,9 @@ class LibsVersionsTomlTest {
     fun `test serialization library versions are compatible`() {
         val kotlinVersion = extractVersion("kotlin")
         val serializationVersion = extractVersion("kotlinxSerializationJson")
-        
+
         assertNotNull("Kotlin serialization version should be defined", serializationVersion)
-        
+
         if (kotlinVersion != null && serializationVersion != null) {
             // Serialization should be reasonably recent
             assertTrue(
@@ -383,7 +385,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test datetime library version is compatible`() {
         val datetimeVersion = extractVersion("kotlinxDatetime")
-        
+
         if (datetimeVersion != null) {
             assertTrue(
                 "Kotlinx datetime should be 0.4+",
@@ -395,16 +397,16 @@ class LibsVersionsTomlTest {
     @Test
     fun `test desugar library is properly configured`() {
         val desugarVersion = extractVersion("desugar-jdk-libs")
-        
+
         assertNotNull("Desugar JDK libs version should be defined", desugarVersion)
-        
+
         if (desugarVersion != null) {
             assertTrue(
                 "Desugar JDK libs should be 2.0+",
                 desugarVersion.compareTo("2.0") >= 0
             )
         }
-        
+
         // Should be defined in libraries section
         assertTrue(
             "Desugar JDK libs should be defined in libraries",
@@ -416,9 +418,9 @@ class LibsVersionsTomlTest {
     fun `test navigation compose version compatibility`() {
         val navigationVersion = extractVersion("navigationCompose")
         val lifecycleVersion = extractVersion("lifecycle")
-        
+
         assertNotNull("Navigation Compose version should be defined", navigationVersion)
-        
+
         if (navigationVersion != null && lifecycleVersion != null) {
             // Navigation should be reasonably recent
             assertTrue(
@@ -432,9 +434,9 @@ class LibsVersionsTomlTest {
     fun `test activity compose version compatibility`() {
         val activityComposeVersion = extractVersion("activityCompose")
         val composeBomVersion = extractVersion("composeBom")
-        
+
         assertNotNull("Activity Compose version should be defined", activityComposeVersion)
-        
+
         if (activityComposeVersion != null) {
             assertTrue(
                 "Activity Compose should be 1.8+",
@@ -446,7 +448,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test coil compose version is compatible`() {
         val coilVersion = extractVersion("coilCompose")
-        
+
         if (coilVersion != null) {
             assertTrue(
                 "Coil Compose should be 2.4+",
@@ -458,7 +460,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test timber version is reasonable`() {
         val timberVersion = extractVersion("timber")
-        
+
         if (timberVersion != null) {
             assertTrue(
                 "Timber should be 5.0+",
@@ -470,7 +472,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test datastore version compatibility`() {
         val datastoreVersion = extractVersion("datastore")
-        
+
         if (datastoreVersion != null) {
             assertTrue(
                 "DataStore should be 1.0+",
@@ -482,7 +484,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test security crypto version is alpha aware`() {
         val securityCryptoVersion = extractVersion("securityCrypto")
-        
+
         if (securityCryptoVersion != null) {
             // Security crypto library is often in alpha, so be flexible
             assertTrue(
@@ -496,14 +498,14 @@ class LibsVersionsTomlTest {
     fun `test work manager version compatibility`() {
         val workManagerVersion = extractVersion("workManager")
         val hiltWorkVersion = extractVersion("hiltWork")
-        
+
         if (workManagerVersion != null) {
             assertTrue(
                 "Work Manager should be 2.8+",
                 workManagerVersion.compareTo("2.8") >= 0
             )
         }
-        
+
         if (hiltWorkVersion != null) {
             assertTrue(
                 "Hilt Work should be 1.0+",
@@ -517,7 +519,7 @@ class LibsVersionsTomlTest {
         val kotlinPluginVersion = extractVersion("kotlin")
         val kspPluginVersion = extractVersion("ksp")
         val hiltPluginVersion = extractVersion("hilt")
-        
+
         // KSP should be compatible with Kotlin
         if (kotlinPluginVersion != null && kspPluginVersion != null) {
             assertTrue(
@@ -525,7 +527,7 @@ class LibsVersionsTomlTest {
                 kspPluginVersion.startsWith(kotlinPluginVersion)
             )
         }
-        
+
         // Hilt plugin should match Hilt library version
         if (hiltPluginVersion != null) {
             assertTrue(
@@ -540,21 +542,21 @@ class LibsVersionsTomlTest {
         val firebaseCrashlyticsPlugin = extractVersion("firebaseCrashlyticsPlugin")
         val firebasePerfPlugin = extractVersion("firebasePerfPlugin")
         val googleServices = extractVersion("googleServices")
-        
+
         if (firebaseCrashlyticsPlugin != null) {
             assertTrue(
                 "Firebase Crashlytics plugin should be 2.8+",
                 firebaseCrashlyticsPlugin.compareTo("2.8") >= 0
             )
         }
-        
+
         if (firebasePerfPlugin != null) {
             assertTrue(
                 "Firebase Performance plugin should be 1.4+",
                 firebasePerfPlugin.compareTo("1.4") >= 0
             )
         }
-        
+
         if (googleServices != null) {
             assertTrue(
                 "Google Services should be 4.3+",
@@ -566,7 +568,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test openapi generator plugin version`() {
         val openapiVersion = extractVersion("openapiGeneratorPlugin")
-        
+
         if (openapiVersion != null) {
             assertTrue(
                 "OpenAPI Generator should be 6.0+",
@@ -578,7 +580,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test junit version is jupiter not vintage`() {
         val junitVersion = extractVersion("junit")
-        
+
         if (junitVersion != null) {
             assertTrue(
                 "JUnit should be 5.x (Jupiter) not 4.x",
@@ -594,7 +596,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test mockk version is compatible with kotlin`() {
         val mockkVersion = extractVersion("mockk")
-        
+
         if (mockkVersion != null) {
             assertTrue(
                 "MockK should be 1.13+",
@@ -607,14 +609,14 @@ class LibsVersionsTomlTest {
     fun `test espresso version is compatible with android test`() {
         val espressoVersion = extractVersion("espressoCore")
         val androidxTestVersion = extractVersion("androidxTestExtJunit")
-        
+
         if (espressoVersion != null) {
             assertTrue(
                 "Espresso should be 3.5+",
                 espressoVersion.compareTo("3.5") >= 0
             )
         }
-        
+
         if (androidxTestVersion != null) {
             assertTrue(
                 "AndroidX Test should be 1.1+",
@@ -628,7 +630,7 @@ class LibsVersionsTomlTest {
         val bundleSection = extractSection("[bundles]")
         val bundleNames = mutableSetOf<String>()
         val duplicates = mutableListOf<String>()
-        
+
         bundleSection.forEach { line ->
             if (line.contains(" = [") && !line.trim().startsWith("#")) {
                 val bundleName = line.split("=")[0].trim()
@@ -637,7 +639,7 @@ class LibsVersionsTomlTest {
                 }
             }
         }
-        
+
         assertTrue(
             "No duplicate bundle definitions should exist: $duplicates",
             duplicates.isEmpty()
@@ -648,7 +650,7 @@ class LibsVersionsTomlTest {
     fun `test version references use consistent quoting`() {
         val versionRefPattern = Pattern.compile("""version\.ref = "([^"]+)"""")
         val inconsistentQuotes = mutableListOf<String>()
-        
+
         tomlLines.forEach { line ->
             if (line.contains("version.ref = ") && !line.trim().startsWith("#")) {
                 val matcher = versionRefPattern.matcher(line)
@@ -657,7 +659,7 @@ class LibsVersionsTomlTest {
                 }
             }
         }
-        
+
         assertTrue(
             "All version.ref should use consistent double quotes: $inconsistentQuotes",
             inconsistentQuotes.isEmpty()
@@ -668,13 +670,13 @@ class LibsVersionsTomlTest {
     fun `test library definitions use consistent format`() {
         val librarySection = extractSection("[libraries]")
         val malformedLibraries = mutableListOf<String>()
-        
+
         librarySection.forEach { line ->
             if (line.contains(" = {") && !line.trim().startsWith("#")) {
                 val hasGroup = line.contains("group = ")
                 val hasModule = line.contains("module = ")
                 val hasName = line.contains("name = ")
-                
+
                 if (hasGroup && hasName) {
                     // Valid format: group + name
                 } else if (hasModule) {
@@ -684,7 +686,7 @@ class LibsVersionsTomlTest {
                 }
             }
         }
-        
+
         assertTrue(
             "All library definitions should use consistent format: $malformedLibraries",
             malformedLibraries.isEmpty()
@@ -694,17 +696,16 @@ class LibsVersionsTomlTest {
     @Test
     fun `test sections are in correct order`() {
         val foundSections = mutableListOf<String>()
-        
+
         tomlLines.forEach { line ->
             if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
                 foundSections.add(line.trim())
             }
         }
-        
-        // Check that versions comes before libraries
+
         val versionsIndex = foundSections.indexOf("[versions]")
         val librariesIndex = foundSections.indexOf("[libraries]")
-        
+
         if (versionsIndex >= 0 && librariesIndex >= 0) {
             assertTrue("Versions section should come before libraries", versionsIndex < librariesIndex)
         }
@@ -714,27 +715,27 @@ class LibsVersionsTomlTest {
     fun `test version patterns are valid for all entries`() {
         val versionPattern = Pattern.compile("""(\w+)\s*=\s*"([^"]+)"""")
         val invalidVersions = mutableListOf<String>()
-        
+
         extractSection("[versions]").forEach { line ->
             val matcher = versionPattern.matcher(line)
             if (matcher.find()) {
                 val versionName = matcher.group(1)
                 val versionValue = matcher.group(2)
-                
+
                 // Check for common version patterns
                 val validPatterns = listOf(
                     Regex("""^\d+\.\d+(\.\d+)?(-\w+(\.\d+)?)?$"""), // Semantic versioning
                     Regex("""^\d{4}\.\d{2}\.\d{2}$"""), // Date format (BOM)
                     Regex("""^\d+\.\d+\.\d+-\d+\.\d+\.\d+$""") // KSP format
                 )
-                
+
                 val isValid = validPatterns.any { it.matches(versionValue) }
                 if (!isValid) {
                     invalidVersions.add("$versionName = $versionValue")
                 }
             }
         }
-        
+
         assertTrue(
             "All versions should follow valid patterns: $invalidVersions",
             invalidVersions.isEmpty()
@@ -744,15 +745,17 @@ class LibsVersionsTomlTest {
     @Test
     fun `test compose bundle integrity`() {
         val composeBundleContent = tomlLines.find { it.contains("compose = [") }
-        
+
         if (composeBundleContent != null) {
-            val bundleLibraries = composeBundleContent.substringAfter("[").substringBefore("]")
+            val bundleLibraries = composeBundleContent
+                .substringAfter("[")
+                .substringBefore("]")
                 .split(",")
                 .map { it.trim().removeSurrounding("\"") }
-            
+
             // Essential Compose libraries should be in the bundle
             val essentialLibraries = listOf("compose-bom", "compose-ui", "compose-material3")
-            
+
             essentialLibraries.forEach { lib ->
                 assertTrue(
                     "Compose bundle should contain essential library: $lib",
@@ -765,12 +768,14 @@ class LibsVersionsTomlTest {
     @Test
     fun `test firebase bundle integrity`() {
         val firebaseBundleContent = tomlLines.find { it.contains("firebase = [") }
-        
+
         if (firebaseBundleContent != null) {
-            val bundleLibraries = firebaseBundleContent.substringAfter("[").substringBefore("]")
+            val bundleLibraries = firebaseBundleContent
+                .substringAfter("[")
+                .substringBefore("]")
                 .split(",")
                 .map { it.trim().removeSurrounding("\"") }
-            
+
             // Firebase bundle should contain BOM
             assertTrue(
                 "Firebase bundle should contain BOM",
@@ -782,12 +787,14 @@ class LibsVersionsTomlTest {
     @Test
     fun `test room bundle integrity`() {
         val roomBundleContent = tomlLines.find { it.contains("room = [") }
-        
+
         if (roomBundleContent != null) {
-            val bundleLibraries = roomBundleContent.substringAfter("[").substringBefore("]")
+            val bundleLibraries = roomBundleContent
+                .substringAfter("[")
+                .substringBefore("]")
                 .split(",")
                 .map { it.trim().removeSurrounding("\"") }
-            
+
             // Room bundle should contain runtime and ktx
             assertTrue(
                 "Room bundle should contain runtime",
@@ -803,12 +810,14 @@ class LibsVersionsTomlTest {
     @Test
     fun `test testing bundle integrity`() {
         val testingBundles = tomlLines.filter { it.contains("testing") && it.contains(" = [") }
-        
+
         testingBundles.forEach { line ->
-            val bundleLibraries = line.substringAfter("[").substringBefore("]")
+            val bundleLibraries = line
+                .substringAfter("[")
+                .substringBefore("]")
                 .split(",")
                 .map { it.trim().removeSurrounding("\"") }
-            
+
             // Testing bundles should not be empty
             assertTrue(
                 "Testing bundle should not be empty: $line",
@@ -821,21 +830,23 @@ class LibsVersionsTomlTest {
     fun `test no circular dependencies in bundles`() {
         val bundleSection = extractSection("[bundles]")
         val bundleNames = mutableSetOf<String>()
-        
+
         bundleSection.forEach { line ->
             if (line.contains(" = [") && !line.trim().startsWith("#")) {
                 val bundleName = line.split("=")[0].trim()
                 bundleNames.add(bundleName)
             }
         }
-        
+
         // Check that no bundle references another bundle
         bundleSection.forEach { line ->
             if (line.contains(" = [") && !line.trim().startsWith("#")) {
-                val bundleLibraries = line.substringAfter("[").substringBefore("]")
+                val bundleLibraries = line
+                    .substringAfter("[")
+                    .substringBefore("]")
                     .split(",")
                     .map { it.trim().removeSurrounding("\"") }
-                
+
                 bundleLibraries.forEach { lib ->
                     assertFalse(
                         "Bundle should not reference another bundle: $lib",
@@ -849,7 +860,7 @@ class LibsVersionsTomlTest {
     private fun extractSection(sectionName: String): List<String> {
         val startIndex = tomlLines.indexOfFirst { it.trim() == sectionName }
         if (startIndex == -1) return emptyList()
-        
+
         val endIndex = tomlLines.drop(startIndex + 1).indexOfFirst { it.trim().startsWith("[") }
         return if (endIndex == -1) {
             tomlLines.drop(startIndex + 1)

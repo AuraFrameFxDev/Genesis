@@ -240,7 +240,7 @@ class EthicalGovernor:
         # Perceive activation in consciousness matrix
         perceive_ethical_decision(
             "governance_activation",
-            {
+            {},
                 "timestamp": datetime.now(tz=timezone.utc).isoformat(),
                 "strictness_level": self.strictness_level,
                 "active_principles": len(self.principle_weights),
@@ -532,7 +532,7 @@ class EthicalGovernor:
         # Perceive activation in consciousness matrix
         perceive_ethical_decision(
             "governance_activation",
-            {
+            {},
                 "timestamp": datetime.now(tz=timezone.utc).isoformat(),
                 "strictness_level": self.strictness_level,
                 "active_principles": len(self.principle_weights),
@@ -824,7 +824,7 @@ class EthicalGovernor:
         # Perceive activation in consciousness matrix
         perceive_ethical_decision(
             "governance_activation",
-            {
+            {},
                 "timestamp": datetime.now(tz=timezone.utc).isoformat(),
                 "strictness_level": self.strictness_level,
                 "active_principles": len(self.principle_weights),

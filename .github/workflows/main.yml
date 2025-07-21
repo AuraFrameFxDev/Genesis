@@ -2,32 +2,37 @@ name: Android CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ AuraOS ]
   pull_request:
-    branches: [ main ]
+    branches: [ AuraOS ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 24
+      # Set up OpenJDK 24 using Temurin distribution
+      - name: Set up JDK 24 (OpenJDK/Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '24'
 
+      # Make gradlew executable
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Set up Android SDK version 36
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
           sdk-version: '36'
 
+      # Cache Gradle dependencies and wrapper
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -38,13 +43,58 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build all modules (Release)
-        run: ./gradlew assembleRelease
+      # ------------------------------------------
+      # PREBUILD & OPENAPI GENERATION STEPS
+      # ------------------------------------------
 
-      - name: Upload APK/AAB artifacts from all modules
+      # Run prebuild tasks (replace with your actual task if different)
+      - name: Run Prebuild Tasks
+        run: ./gradlew prebuild --no-configuration-cache --debug | tee gradle-prebuild.log
+
+      # Generate OpenAPI files for main app
+      - name: Generate OpenAPI for main app
+        run: ./gradlew :app:generateOpenApiDocs --no-configuration-cache --debug | tee gradle-openapi-main.log
+
+      # Generate OpenAPI files for buildSrc
+      - name: Generate OpenAPI for buildSrc
+        run: ./gradlew :buildSrc:generateOpenApiDocs --no-configuration-cache --debug | tee gradle-openapi-buildsrc.log
+
+      # ------------------------------------------
+      # LPOSED & AI BACKEND SETUP
+      # ------------------------------------------
+
+      # Setup Lposed module (runs only if script exists)
+      - name: Setup Lposed module
+        run: if [ -f ./scripts/setup-lposed.sh ]; then bash ./scripts/setup-lposed.sh; fi
+
+      # Setup AI backend (runs only if script exists)
+      - name: Setup AI backend
+        run: if [ -f ./scripts/setup-ai-backend.sh ]; then bash ./scripts/setup-ai-backend.sh; fi
+
+      # ------------------------------------------
+      # BUILD & ARTIFACTS
+      # ------------------------------------------
+
+      # Build all modules (Release)
+      - name: Build all modules (Release)
+        run: ./gradlew assembleRelease --no-configuration-cache --debug | tee gradle-build.log
+
+      # Upload APK/AAB artifacts from all modules
+      - name: Upload APK/AAB artifacts
         uses: actions/upload-artifact@v4
         with:
           name: AppBuilds
           path: |
             **/build/outputs/apk/release/*.apk
             **/build/outputs/bundle/release/*.aab
+
+      # Upload Gradle logs for debugging
+      - name: Upload Gradle logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-logs
+          path: |
+            gradle-prebuild.log
+            gradle-openapi-main.log
+            gradle-openapi-buildsrc.log
+            gradle-build.log
