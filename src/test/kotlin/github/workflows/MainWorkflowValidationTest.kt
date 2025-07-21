@@ -273,7 +273,7 @@ class MainWorkflowValidationTest {
             val javaVersion = withConfig["java-version"] as String
             
             // JDK 24 should be valid for Android development
-            assertTrue(javaVersion.toInt() >= 11, "JDK version should be 11 or higher")
+            assertTrue(javaVersion.toInt() >= 24, "JDK version should be 24 or higher")
         }
 
         @Test
