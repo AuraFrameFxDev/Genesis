@@ -291,12 +291,16 @@ object KineticIdentityLibrary {
      * @return A list of particles with randomized initial attributes.
      */
     
-    private fun generateParticles(count: Int): List<Particle> {
+    private fun generateParticles(
+        count: Int,
+        canvasWidth: Float = 1000f,
+        canvasHeight: Float = 1000f
+    ): List<Particle> {
         return (0 until count).map {
             Particle(
                 position = Offset(
-                    x = (0..1000).random().toFloat(),
-                    y = (0..1000).random().toFloat()
+                    x = (0..canvasWidth.toInt()).random().toFloat(),
+                    y = (0..canvasHeight.toInt()).random().toFloat()
                 ),
                 velocity = Offset(
                     x = (-2..2).random().toFloat(),
