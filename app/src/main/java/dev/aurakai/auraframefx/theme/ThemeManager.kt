@@ -45,12 +45,12 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Applies a system-wide theme based on a user's natural language description.
+     * Applies a system-wide theme based on a user's natural language query.
      *
-     * Interprets the user's query using AI to determine the intended theme, maps recognized intents to predefined themes, and applies the selected theme. Returns a [ThemeResult] indicating whether the theme was successfully applied, the query could not be understood, or an error occurred.
+     * Uses AI to interpret the user's description, maps recognized theme intents to predefined themes, and applies the selected theme. Returns a [ThemeResult] indicating success, inability to understand the query, or an error.
      *
      * @param query The user's natural language description of the desired theme.
-     * @return The outcome of the theme application attempt.
+     * @return The result of the theme application attempt.
      */
     suspend fun applyThemeFromNaturalLanguage(query: String): ThemeResult {
         return try {
@@ -86,9 +86,9 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Applies the given theme to system-level user interface components.
+     * Applies the specified theme to system-level user interface components.
      *
-     * Intended to update system UI elements, notifications, keyboard themes, and related components to match the selected theme. Implementation is pending.
+     * This function is intended to update system UI elements, notifications, keyboard themes, and related components to reflect the selected theme. Implementation is pending.
      *
      * @param theme The theme to apply to system-level interfaces.
      */
@@ -99,9 +99,9 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Recommends a list of visual themes based on the provided time of day, user activity, and optional emotional context.
+     * Suggests a list of visual themes based on time of day, user activity, and optional emotional context.
      *
-     * Uses AI analysis to interpret the context and returns matching themes. Returns an empty list if no suitable themes are identified or if an error occurs.
+     * Uses AI analysis to interpret the provided context and returns matching themes. Returns an empty list if no suitable themes are identified or if an error occurs.
      *
      * @param timeOfDay The current time of day (e.g., "morning", "evening").
      * @param userActivity The user's current activity (e.g., "working", "relaxing").
