@@ -19,11 +19,15 @@ pluginManagement {
     }
 }
 
+
 // Enable feature previews
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 // Dependency resolution management
+
+// Toolchain auto-download enabled via gradle.properties
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 

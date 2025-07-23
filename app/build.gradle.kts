@@ -1,18 +1,26 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
-// Apply plugins using the version catalog
 plugins {
+    // Android
     alias(libs.plugins.android.application) apply true
     alias(libs.plugins.kotlin.android) apply true
     alias(libs.plugins.kotlin.kapt) apply true
-    alias(libs.plugins.kotlin.serialization) apply true
     alias(libs.plugins.hilt) apply true
     alias(libs.plugins.ksp) apply true
+    
+    // Google Services
     alias(libs.plugins.google.services) apply true
+    
+    // Firebase
     alias(libs.plugins.firebase.crashlytics) apply true
     alias(libs.plugins.firebase.perf) apply true
+    
+    // OpenAPI
     alias(libs.plugins.openapi.generator) apply true
+    
+    // Kotlin Features
+    alias(libs.plugins.kotlin.serialization) apply true
 }
 
 android {
@@ -67,6 +75,7 @@ android {
     }
 
     compileOptions {
+<<<<<<< HEAD
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
         isCoreLibraryDesugaringEnabled = true
@@ -80,7 +89,23 @@ android {
             "-Xcontext-receivers",
             "-Xjvm-default=all"
         )
+=======
+        // Use Java 21, compatible with AGP 8.11.1 and Android development
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+        isCoreLibraryDesugaringEnabled = true
     }
+    
+    // Explicitly configure Java compilation to avoid --release option
+    tasks.withType<JavaCompile>().configureEach {
+        // Remove release option to avoid --release flag conflicts
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
+        options.encoding = "UTF-8"
+>>>>>>> pr-325
+    }
+
+    // kotlinOptions removed - using compilerOptions from root build.gradle.kts
 
     externalNativeBuild {
         cmake {
@@ -102,6 +127,7 @@ android {
 // Use the correct Kotlin DSL syntax for the task
 tasks.named<GenerateTask>("openApiGenerate") {
     generatorName.set("kotlin")
+<<<<<<< HEAD
     inputSpec.set("$projectDir/src/main/openapi.yml")
     outputDir.set("${project.buildDir}/generated/openapi")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
@@ -112,6 +138,13 @@ tasks.named<GenerateTask>("openApiGenerate") {
         "serializationLibrary" to "kotlinx_serialization"
     ))
 }
+=======
+    inputSpec.set("${projectDir}/src/main/openapi.yml".replace("\\", "/"))
+    outputDir.set("${layout.buildDirectory.get().asFile}/generated/openapi")
+    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
+    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
+    validateSpec.set(false) // Disable validation to bypass path issues
+>>>>>>> pr-325
 
 // Add generated sources to the main source set
 android.sourceSets["main"].java.srcDir("config/kotlin/${project.buildDir}/generated/openapi/src/main/kotlin")

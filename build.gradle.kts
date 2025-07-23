@@ -8,7 +8,7 @@ extra["targetSdkVersion"] = 36
 extra["minSdkVersion"] = 33
 extra["kotlinVersion"] = libs.versions.kotlin.get()
 
-val javaVersion = JavaVersion.VERSION_24
+val javaVersion = JavaVersion.VERSION_21
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -29,8 +29,8 @@ allprojects {
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin> {
         configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(javaVersion.majorVersion.toInt()))
-                vendor.set(org.gradle.jvm.toolchain.JvmVendorSpec.ADOPTIUM)
+                languageVersion.set(JavaLanguageVersion.of(24)) // Explicitly set to Java 24
+                vendor.set(JvmVendorSpec.ADOPTIUM)
             }
         }
     }
@@ -58,7 +58,14 @@ allprojects {
         targetCompatibility = "24"
         options.encoding = "UTF-8"
         options.isIncremental = true
-        options.compilerArgs.add("--enable-preview")
+        
+        // Java compiler arguments
+        options.compilerArgs.addAll(
+            listOf(
+                "--enable-preview",
+                "--add-modules", "jdk.incubator.vector"
+            )
+        )
     }
 
     // Configure test tasks
