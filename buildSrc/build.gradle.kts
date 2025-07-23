@@ -1,6 +1,9 @@
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
+    
+    // Apply version catalog accessor plugin
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 repositories {
@@ -16,18 +19,18 @@ repositories {
 // Configure Java toolchain for buildSrc
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
+        languageVersion.set(JavaLanguageVersion.of(21)) // Align with JVM target in root project
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
 
 // Configure Kotlin for buildSrc
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(21) // Align with Java toolchain version
     compilerOptions {
         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+
         freeCompilerArgs.addAll(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xcontext-receivers",
@@ -39,11 +42,11 @@ kotlin {
 
 // Ensure all tasks use the correct Java version
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_24.toString()
-    targetCompatibility = JavaVersion.VERSION_24.toString()
+    sourceCompatibility = JavaVersion.VERSION_21.toString()
+    targetCompatibility = JavaVersion.VERSION_21.toString()
     options.encoding = "UTF-8"
     options.isIncremental = true
-    options.release.set(24)
+    options.release.set(21) // Align with Java toolchain version
 }
 
 // Configure test tasks
@@ -55,16 +58,16 @@ tasks.withType<Test> {
     }
 }
 
-dependencies {
+}dependencies {
     // Core Gradle and Kotlin plugins
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
     implementation("com.android.tools.build:gradle:${libs.versions.agp.get()}")
-    
+
     // Test dependencies
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.kotlin.get()}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    
+
     // Use the Gradle version that comes with the wrapper
     val gradleVersion = project.gradle.gradleVersion
     testImplementation("org.gradle:gradle-tooling-api:$gradleVersion") {
@@ -81,4 +84,3 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
         freeCompilerArgs.add("-Xjvm-default=all")
     }
-}
