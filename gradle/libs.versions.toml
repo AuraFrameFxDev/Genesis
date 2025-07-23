@@ -168,7 +168,7 @@ lottie = [
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-<<<<<<< HEAD
+
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugajdklibs" }
 
 # Lifecycle
@@ -184,13 +184,11 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-<<<<<<< HEAD
-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.6.7" }
-=======
+
+
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-compose-material-icons-extended-filled = { group = "androidx.compose.material", name = "material-icons-extended" }
->>>>>>> pr-325
+
 
 # Navigation
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -217,18 +215,17 @@ firebase-perf = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 
 # Network
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-<<<<<<< HEAD
+
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitConverterGson" }
 retrofit-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofitConverterScalars" }
 retrofit2-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationConverter" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttpLoggingInterceptor" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-=======
+
 retrofit-converter-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerialization" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
->>>>>>> 18ff59cd25f457771fcab6f62daa7e3fa7d56b55
 
 # Image Loading
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
@@ -259,7 +256,6 @@ junit4 = { group = "junit", name = "junit", version = "4.13.2" }
 # Detekt
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 
-<<<<<<< HEAD
 # Compose Accompanist
 accompanistPager = { module = "com.google.accompanist:accompanist-pager", version = "0.36.0" }
 accompanistPermissions = { module = "com.google.accompanist:accompanist-permissions", version = "0.37.3" }
@@ -269,8 +265,6 @@ desugarjdklibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = 
 # Android plugins
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-<<<<<<< HEAD
-=======
 "kotlin-android" = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 "kotlin-compose" = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 "kotlin-serialization" = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -281,9 +275,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 "firebase-perf" = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 "openapi-generator" = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
 auraApp = { id = "dev.aurakai.auraframefx", version = "1.0" }
->>>>>>> pr-325
 
-# Kotlin plugins
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -325,8 +317,5 @@ compose = [
     "accompanistPermissions",
     "accompanistSystemuicontroller"
 ]
-<<<<<<< HEAD
-=======
->>>>>>> 18ff59cd25f457771fcab6f62daa7e3fa7d56b55
-=======
->>>>>>> pr-325
+
+
