@@ -31,7 +31,7 @@ junit = "5.13.3"
 androidxTestExtJunit = "1.2.1"
 espressoCore = "3.6.1"
 mockk = "1.14.5"
-detekt = "1.23.0"
+detekt = "1.23.8"
 
 timber = "5.0.1"
 coilCompose = "2.6.0"
