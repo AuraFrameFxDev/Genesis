@@ -58,7 +58,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
-    testImplementation("com.google.truth:truth:1.4.0")
+    testImplementation("com.google.truth:truth:1.4.4")
 }
 
 // Configure Kotlin compiler options
