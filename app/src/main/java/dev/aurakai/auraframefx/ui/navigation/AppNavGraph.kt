@@ -8,6 +8,7 @@ import dev.aurakai.auraframefx.ui.screens.AiChatScreen
 import dev.aurakai.auraframefx.ui.screens.HomeScreen
 import dev.aurakai.auraframefx.ui.screens.ProfileScreen
 import dev.aurakai.auraframefx.ui.screens.SettingsScreen
+import dev.aurakai.collabcanvas.ui.CanvasScreen
 
 /**
  * Main navigation graph for the AuraFrameFX app with digital transition animations
@@ -45,6 +46,18 @@ fun AppNavGraph(navController: NavHostController) {
             route = NavDestination.Home.route
         ) {
             HomeScreen(navController = navController)
+        }
+
+        composable(
+            route = NavDestination.Settings.route
+        ) {
+            SettingsScreen(navController = navController)
+        }
+        
+        composable(
+            route = NavDestination.Canvas.route
+        ) {
+            CanvasScreen()
         }
 
         composable(

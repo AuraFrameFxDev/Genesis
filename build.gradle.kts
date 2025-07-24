@@ -46,7 +46,7 @@ subprojects {
         configure<com.android.build.gradle.BaseExtension> {
             val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
             
-            compileSdk = libs.findVersion("compileSdk").get().requiredVersion.toInt()
+            // Removed compileSdk as it's not needed in the root build.gradle.kts
             
             defaultConfig {
                 minSdk = libs.findVersion("minSdk").get().requiredVersion.toInt()
@@ -64,32 +64,9 @@ subprojects {
                 isCoreLibraryDesugaringEnabled = true
             }
             
-            buildFeatures {
-                buildConfig = true
-                viewBinding = true
-            }
-            
-            packaging {
-                resources.excludes.addAll(
-                    "/META-INF/{AL2,LGPL2.1}",
-                    "/META-INF/*.md",
-                    "/META-INF/*.txt"
-                )
-            }
+            // Build features are configured in the app module
+            // Packaging options are configured in the app module
         }
-    }
-}
-
-// Apply common configuration to all projects
-allprojects {
-    // Configure build cache
-    buildCache {
-        local {
-            directory = File(rootDir, "build-cache")
-            removeUnusedEntriesAfterDays = 7
-        }
-    }
-}
     }
 }
 
@@ -102,7 +79,7 @@ tasks.whenTaskAdded {
 
 // Clean task for the root project
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    // Clean task is handled by Gradle
     delete("${rootProject.projectDir}/.gradle")
     delete("${rootProject.projectDir}/build")
     delete("${rootProject.projectDir}/.idea")
@@ -111,9 +88,9 @@ tasks.register<Delete>("clean") {
 // Configure Java toolchain for all projects
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
-            freeCompilerArgs = freeCompilerArgs + listOf(
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xjvm-default=all"
             )
