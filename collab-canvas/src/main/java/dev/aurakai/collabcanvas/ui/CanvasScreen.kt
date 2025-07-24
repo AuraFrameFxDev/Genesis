@@ -45,6 +45,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.absoluteValue
 
+/**
+ * Displays an interactive collaborative drawing canvas with support for multiple drawing tools, pan and zoom gestures, and animated path rendering.
+ *
+ * Provides a scaffolded UI with a top app bar, floating action buttons for tool selection (freehand path, rectangle, oval), and a toolbar for color and stroke width adjustment. Users can draw, select, and manipulate elements on the canvas, with real-time gesture handling for drawing, panning, and zooming. The canvas supports animated path transformations and visual selection outlines for elements. Clearing and saving actions are present in the UI but not implemented.
+ */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CanvasScreen() {

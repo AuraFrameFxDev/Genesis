@@ -24,6 +24,19 @@ import kotlin.random.Random
  * @param nodeCount Number of nodes per line (default: 12)
  * @param animationDuration Duration of one animation cycle in milliseconds (default: 10000)
  */
+/**
+ * Displays an animated data visualization background with flowing radial lines and glowing nodes.
+ *
+ * Renders multiple animated radial lines with nodes, alternating between primary and secondary colors, over a customizable background. The nodes and connecting lines animate with sinusoidal motion to create a dynamic, flowing effect. Concentric grid lines are drawn for subtle structure. All visual aspects, including colors, line and node counts, and animation duration, are configurable.
+ *
+ * @param modifier Modifier to be applied to the Canvas.
+ * @param primaryColor The primary color used for alternating data lines and grid lines.
+ * @param secondaryColor The secondary color used for alternating data lines.
+ * @param backgroundColor The background color of the visualization.
+ * @param lineCount The number of radial data lines to display.
+ * @param nodeCount The number of nodes per data line.
+ * @param animationDuration The duration of the animation cycle in milliseconds.
+ */
 @Composable
 fun DataVisualizationBackground(
     modifier: Modifier = Modifier,
@@ -134,7 +147,7 @@ fun DataVisualizationBackground(
 }
 
 /**
- * A preview composable for the DataVisualizationBackground
+ * Displays a preview of the DataVisualizationBackground composable with preset colors and a dark background.
  */
 @Composable
 @Preview
