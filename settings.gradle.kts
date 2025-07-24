@@ -75,14 +75,6 @@ dependencyResolutionManagement {
 rootProject.name = "AuraFrameFX"
 
 // Include all modules
-listOf(
-    ":app",
-    ":jvm-test",
-    ":sandbox-ui",
-    ":oracle-drive-integration",
-    ":oracledrive",
-    ":collab-canvas"
-).forEach { include(it) }
 
 // Configure all projects
 rootProject.children.forEach { project ->
@@ -96,15 +88,43 @@ rootProject.children.forEach { project ->
     }
 }
 
-// Configure build scan
+// Configure Gradle Enterprise with the new settings plugin API
+@Suppress("UnstableApiUsage")
 plugins {
-    id("com.gradle.enterprise") version "3.15.1"
+    id("com.gradle.enterprise") version "3.17"
 }
 
 gradleEnterprise {
+    server = "https://gradle-enterprise.mycompany.com"
     buildScan {
+        publishAlways()
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
-        publishAlways()
+        uploadInBackground = !gradle.startParameter.isContinuous
+        
+        // Capture useful information for build scans
+        tag(if (System.getenv("CI") != null) "CI" else "LOCAL")
+        tag(System.getProperty("os.name"))
+        
+        // Obfuscate personal data
+        obfuscation {
+            ipAddresses { addresses -> 
+                addresses.map { "0.0.0.0" } 
+            }
+        }
     }
 }
+
+// Configure build cache
+buildCache {
+    local {
+        isEnabled = !System.getenv().containsKey("CI")
+    }
+    
+    remote<HttpBuildCache> {
+        isEnabled = true
+        url = uri("${gradleEnterprise.server}/cache/")
+        isPush = true
+    }
+}
+

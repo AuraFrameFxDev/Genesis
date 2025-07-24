@@ -9,7 +9,7 @@ androidxCompileSdk = "36"
 # Core Dependencies
 agp = "8.11.1"
 kotlin = "2.2.0"
-ksp = "2.0.0-1.0.21"
+ksp = "2.2.0-2.0.2"
 composeCompiler = "1.5.15"
 guava = "33.4.8-jre"
 
@@ -43,33 +43,33 @@ composeAnimation = "1.6.7"
 lottie = "6.4.0"
 
 # Database
-room = "2.6.1"
+room = "2.7.2"
 
 # Networking
 retrofit = "2.11.0"
 retrofitKotlinxSerializationConverter = "1.0.0"
 
 # Hilt
-hilt = "2.48.1"
+hilt = "2.57"
 hiltNavigationCompose = "1.2.0"
-hiltWork = "1.2.0"
+hiltWork = "2.10.2"
 
 # Lifecycle
-lifecycle = "2.7.0"
-navigationCompose = "2.7.7"
+lifecycle = "2.9.2"
+navigationCompose = "2.9.2"
 workManager = "2.9.0"
 
 # Firebase
 firebaseBom = "32.8.0"
 googleServices = "4.4.1"
-firebaseCrashlyticsPlugin = "2.9.9"
+firebaseCrashlyticsPlugin = "3.0.5"
 firebasePerfPlugin = "1.4.2"
 
 # Data & Security
-datastore = "1.1.0"
+datastore = "1.1.7"
 securityCrypto = "1.1.0-alpha06"
 
-desugar-jdk-libs = "2.0.4"
+desugar-jdk-libs = "2.1.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -179,18 +179,14 @@ aura-app = { id = "dev.aurakai.auraframefx", version = "1.0" }
 
 [bundles]
 room = ["room-runtime", "room-ktx"]
-lifecycle = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-compose", "lifecycle-runtime-compose"]
+lifecycle = ["lifecycle-runtime-ktx"]
 firebase = ["firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-performance"]
 testing-unit = ["junit-api", "junit-engine", "mockk-agent"]
 testing-android = ["androidx-test-ext-junit", "espresso-core", "mockk-android", "hilt-android-testing"]
 compose = [
     "compose-bom",
-    "compose-ui",
-    "compose-ui-graphics",
-    "compose-ui-tooling-preview",
-    "compose-material3",
     "androidx-activity-compose",
     "navigation-compose",
-    "lifecycle-viewmodel-compose",
     "lifecycle-runtime-compose",
+    "lifecycle-viewmodel-compose"
 ]
