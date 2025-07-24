@@ -1,45 +1,48 @@
 [versions]
-androidxTestExtJunit = "1.2.1"
+# Build Configuration
+compileSdk = "36"
+targetSdk = "36"
+minSdk = "33"
+javaVersion = "24"
+
+# Core Dependencies
 agp = "8.11.1"
-kotlinxSerializationJson = "1.9.0"
-kotlinxCoroutines = "1.10.2"
 kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
-hilt = "2.57"
-hiltNavigationCompose = "1.2.0"
-hiltWork = "1.2.0"
-googleServices = "4.4.3"
-firebaseCrashlyticsPlugin = "3.0.4"
-firebasePerfPlugin = "1.4.2"
-openapiGeneratorPlugin = "7.14.0"
-desugar-jdk-libs = "2.1.5"
-espressoCore = "3.6.1"
-junit = "5.13.3"
-composeBom = "2024.12.01"
-activityCompose = "1.10.1"
-navigationCompose = "2.9.2"
+composeCompiler = "1.5.15"
+guava = "33.4.8-jre"
+
+# AndroidX
 coreKtx = "1.16.0"
-appcompat = "1.7.1"
-lifecycle = "2.9.2"
-room = "2.7.2"
-workManager = "2.10.2"
-datastore = "1.1.7"
-securityCrypto = "1.1.0-beta01"
-firebaseBom = "33.16.0"
-kotlinxDatetime = "0.7.1-0.6.x-compat"
-retrofit = "3.0.0"
-retrofitKotlinxSerializationConverter = "1.0.0"
-okhttp = "5.1.0"
-coilCompose = "2.7.0"
-timber = "5.0.1"
-mockk = "1.14.5"
+activityCompose = "1.10.1"
+composeBom = "2024.12.01"
 material3 = "1.3.2"
-material = "1.12.0"
-composeCompiler = "1.5.3"
+
+# Networking
+okhttp = "5.1.0"
+kotlinxSerializationJson = "1.9.0"
+kotlinxCoroutines = "1.10.2"
+
+# OpenAPI
+openapiGeneratorPlugin = "7.14.0"
+
+# Testing & Quality
+junit = "5.13.3"
+androidxTestExtJunit = "1.2.1"
+espressoCore = "3.6.1"
+mockk = "1.14.5"
+detekt = "1.23.0"
+
+timber = "5.0.1"
+coilCompose = "2.6.0"
+
+# Animation
+accompanist = "0.34.0"
+composeAnimation = "1.6.7"
+lottie = "6.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 
@@ -53,6 +56,11 @@ compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+
+compose-material-icons-extended-filled = { group = "androidx.compose.material", name = "material-icons-extended" }
+
+# Google
+google-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
 # Navigation
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -74,7 +82,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
-# WorkManager (Background Tasks)
+# WorkManager
 work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 
 # Firebase
@@ -86,7 +94,6 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf-kt
 # Kotlin Libraries
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
 # Network
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -94,8 +101,6 @@ retrofit-converter-kotlinx-serialization = { group = "com.jakewharton.retrofit",
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 # Other
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
@@ -105,36 +110,35 @@ junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ver
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+
+# Logging & Quality
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+
+# Animation
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "composeAnimation" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 mockk-agent = { group = "io.mockk", name = "mockk-agent-jvm", version.ref = "mockk" }
-
-material = { module = "com.google.android.material:material", version.ref = "material" }
-# Only one material3 definition, using version.ref
-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-
-# Compose Accompanist
-accompanistPager = { module = "com.google.accompanist:accompanist-pager", version = "0.36.0" }
-accompanistPermissions = { module = "com.google.accompanist:accompanist-permissions", version = "0.37.3" }
-accompanistSystemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.36.0" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-"kotlin-android" = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-"kotlin-compose" = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-"kotlin-serialization" = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-"google-services" = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-"firebase-crashlytics" = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
-"firebase-perf" = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
-"openapi-generator" = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorPlugin" }
 auraApp = { id = "dev.aurakai.auraframefx", version = "1.0" }
 
 [bundles]
 room = ["room-runtime", "room-ktx"]
 lifecycle = ["lifecycle-runtime-ktx", "lifecycle-viewmodel-compose", "lifecycle-runtime-compose"]
 firebase = ["firebase-bom", "firebase-analytics", "firebase-crashlytics", "firebase-performance"]
-testing-unit = ["junit-api", "mockk-agent"]
+testing-unit = ["junit-api", "junit-engine", "mockk-agent"]
 testing-android = ["androidx-test-ext-junit", "espresso-core", "mockk-android", "hilt-android-testing"]
 compose = [
     "compose-bom",
@@ -146,7 +150,4 @@ compose = [
     "navigation-compose",
     "lifecycle-viewmodel-compose",
     "lifecycle-runtime-compose",
-    "accompanistPager",
-    "accompanistPermissions",
-    "accompanistSystemuicontroller"
 ]

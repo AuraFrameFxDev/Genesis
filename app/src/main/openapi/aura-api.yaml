@@ -1,0 +1,309 @@
+openapi: 3.0.3
+info:
+  title: AuraOS API
+  description: |
+    # AuraOS API Documentation
+    
+    This is the OpenAPI specification for the AuraOS backend services.
+    
+    ## Authentication
+    - **Type**: OAuth2
+    - **Flow**: authorizationCode
+    - **Authorization URL**: /oauth/authorize
+    - **Token URL**: /oauth/token
+    - **Scopes**:
+      - read: Read access
+      - write: Write access
+      - admin: Admin access
+  version: 1.0.0
+  contact:
+    name: AuraOS Support
+    url: https://aurafx.dev/support
+    email: support@aurafx.dev
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.aurafx.dev/v1
+    description: Production server
+  - url: https://staging.api.aurafx.dev/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Local development server
+
+# Security scheme definitions
+security:
+  - OAuth2:
+      - read
+      - write
+      - admin
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.aurafx.dev/oauth/authorize
+          tokenUrl: https://auth.aurafx.dev/oauth/token
+          scopes:
+            read: Read access
+            write: Write access
+            admin: Admin access
+    
+  schemas:
+    # Common schemas
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: string
+          nullable: true
+    
+    # User related schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - username
+        - firstName
+        - lastName
+        - createdAt
+        - updatedAt
+
+# API Paths
+paths:
+  # Authentication endpoints
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+              required:
+                - email
+                - username
+                - password
+                - firstName
+                - lastName
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                grant_type:
+                  type: string
+                  default: password
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    default: Bearer
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+        '401':
+          description: Invalid credentials
+  
+  # User endpoints
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: Get current user profile
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+    
+    put:
+      tags:
+        - Users
+      summary: Update current user profile
+      security:
+        - OAuth2: [write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                avatarUrl:
+                  type: string
+                  format: uri
+                  nullable: true
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '400':
+          description: Invalid input
+
+  # AI Service endpoints
+  /ai/generate:
+    post:
+      tags:
+        - AI Services
+      summary: Generate content using AI
+      security:
+        - OAuth2: [write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                maxTokens:
+                  type: integer
+                  default: 500
+                temperature:
+                  type: number
+                  format: float
+                  default: 0.7
+                model:
+                  type: string
+                  default: "gpt-4"
+              required:
+                - prompt
+      responses:
+        '200':
+          description: AI generation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  content:
+                    type: string
+                  model:
+                    type: string
+                  usage:
+                    type: object
+                    properties:
+                      promptTokens:
+                        type: integer
+                      completionTokens:
+                        type: integer
+                      totalTokens:
+                        type: integer
+        '400':
+          description: Invalid request
+        '429':
+          description: Rate limit exceeded
+
+# Tags for the API
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Users
+    description: User management
+  - name: AI Services
+    description: AI-powered services and models

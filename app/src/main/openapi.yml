@@ -34,8 +34,233 @@ tags:
     description: Conference room and agent collaboration
   - name: Tasks
     description: Task scheduling and management
+  - name: Co-lab Canvas
+    description: Collaborative drawing and whiteboarding features
 
 paths:
+  # Co-lab Canvas Endpoints
+  /canvas:
+    get:
+      tags:
+        - Co-lab Canvas
+      summary: List all canvases
+      description: Retrieve a list of all available canvases
+      responses:
+        '200':
+          description: A list of canvases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Canvas'
+    post:
+      tags:
+        - Co-lab Canvas
+      summary: Create a new canvas
+      description: Create a new collaborative canvas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanvasCreateRequest'
+      responses:
+        '201':
+          description: Canvas created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Canvas'
+  
+  /canvas/{canvasId}:
+    get:
+      tags:
+        - Co-lab Canvas
+      summary: Get a canvas by ID
+      description: Retrieve a specific canvas by its ID
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas to retrieve
+      responses:
+        '200':
+          description: Canvas found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Canvas'
+    put:
+      tags:
+        - Co-lab Canvas
+      summary: Update a canvas
+      description: Update an existing canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanvasUpdateRequest'
+      responses:
+        '200':
+          description: Canvas updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Canvas'
+    delete:
+      tags:
+        - Co-lab Canvas
+      summary: Delete a canvas
+      description: Delete a canvas by its ID
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas to delete
+      responses:
+        '204':
+          description: Canvas deleted successfully
+  
+  /canvas/{canvasId}/elements:
+    get:
+      tags:
+        - Co-lab Canvas
+      summary: Get canvas elements
+      description: Retrieve all elements for a specific canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas
+      responses:
+        '200':
+          description: List of canvas elements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CanvasElement'
+    post:
+      tags:
+        - Co-lab Canvas
+      summary: Add element to canvas
+      description: Add a new element to a canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanvasElementCreateRequest'
+      responses:
+        '201':
+          description: Element added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanvasElement'
+  
+  /canvas/{canvasId}/elements/{elementId}:
+    get:
+      tags:
+        - Co-lab Canvas
+      summary: Get canvas element
+      description: Retrieve a specific element from a canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas
+        - name: elementId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the element
+      responses:
+        '200':
+          description: Canvas element found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanvasElement'
+    put:
+      tags:
+        - Co-lab Canvas
+      summary: Update canvas element
+      description: Update an existing element in a canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas
+        - name: elementId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the element to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanvasElementUpdateRequest'
+      responses:
+        '200':
+          description: Element updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanvasElement'
+    delete:
+      tags:
+        - Co-lab Canvas
+      summary: Delete canvas element
+      description: Delete an element from a canvas
+      parameters:
+        - name: canvasId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the canvas
+        - name: elementId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the element to delete
+      responses:
+        '204':
+          description: Element deleted successfully
+
   /ai/generate/text:
     post:
       tags:

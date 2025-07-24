@@ -402,35 +402,6 @@ class UnifiedLoggingSystem @Inject constructor(
     
     /**
      * Updates the system health state based on the severity of the provided log entry.
-     *
-     * Sets the health to CRITICAL for fatal logs, to ERROR for error logs if the current health is HEALTHY, and to WARNING for warning logs if the current health is HEALTHY. Other log levels do not affect the health state.
-     *
-     * @param logEntry The log entry whose severity may trigger a system health update.
-     */
-    private fun analyzeLogForHealth(logEntry: LogEntry) {
-        when (logEntry.level) {
-            LogLevel.FATAL -> _systemHealth.value = SystemHealth.CRITICAL
-            LogLevel.ERROR -> {
-                if (_systemHealth.value == SystemHealth.HEALTHY) {
-                    _systemHealth.value = SystemHealth.ERROR
-                }
-            }
-            LogLevel.WARNING -> {
-                if (_systemHealth.value == SystemHealth.HEALTHY) {
-                    _systemHealth.value = SystemHealth.WARNING
-                }
-            }
-            else -> {} // No immediate health impact
-        }
-    }
-    
-    /**
-     * Checks a log entry for critical security or Genesis Protocol events and generates a fatal system log if detected.
-     *
-     * Triggers a fatal log in the SYSTEM category when a SECURITY or GENESIS_PROTOCOL log entry has a severity of ERROR or higher.
-     */
-    private fun checkCriticalPatterns(logEntry: LogEntry) {
-        // Check for security violations
         if (logEntry.category == LogCategory.SECURITY && logEntry.level >= LogLevel.ERROR) {
             log(LogLevel.FATAL, LogCategory.SYSTEM, "CriticalPatternDetector", 
                 "SECURITY VIOLATION DETECTED: ${logEntry.message}")
