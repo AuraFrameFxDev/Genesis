@@ -44,7 +44,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android-gradle-plugin:2.48")
     
     // KSP (Kotlin Symbol Processing)
-    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.2.0-1.0.21")
+    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.2.0-2.0.2")
     
     // Firebase
     implementation("com.google.gms:google-services:4.4.3")
