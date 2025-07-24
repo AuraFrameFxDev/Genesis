@@ -37,12 +37,16 @@ import kotlin.math.*
  * @param onTypingComplete Callback when typing animation completes
  */
 /**
- * Displays text with a neon glow effect and optional animated typing in a Compose UI.
+ * Displays text with an animated neon glow effect and optional typing animation.
  *
- * The text is rendered with a layered glow that can pulse over time, simulating a neon sign. Optionally, the text can appear one character at a time with a configurable typing speed. The glow and typing animations can be enabled or disabled independently. When the typing animation completes, an optional callback is invoked.
+ * Renders the given text with a glowing neon appearance, animating the glow intensity if enabled.
+ * Optionally reveals the text one character at a time to simulate typing, invoking a callback when typing completes.
  *
- * @param text The string to display with neon effects.
- * @param onTypingComplete Optional callback invoked after the typing animation finishes.
+ * @param text The text to display with neon effects.
+ * @param animateGlow If true, animates the glow intensity for a pulsing neon effect.
+ * @param animateTyping If true, reveals the text incrementally to simulate typing.
+ * @param typingSpeedMs The delay in milliseconds between each character when typing animation is enabled.
+ * @param onTypingComplete Optional callback invoked when the typing animation finishes.
  */
 @Composable
 fun NeonText(
@@ -205,11 +209,11 @@ fun NeonText(
  */
 private class TextMeasurer {
     /**
-     * Measures the layout of the given text with the specified style, returning detailed layout information.
+     * Measures the layout of the given text with the specified style and returns the resulting text layout.
      *
-     * @param text The annotated string to measure.
-     * @param style The text style to apply during measurement.
-     * @return The result containing layout details such as character bounding boxes and overall size.
+     * @param text The text to measure.
+     * @param style The style to apply when measuring the text.
+     * @return The layout result containing size, position, and bounding information for the text.
      */
     fun measure(
         text: AnnotatedString,
