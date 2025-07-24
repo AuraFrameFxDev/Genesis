@@ -43,7 +43,7 @@ dependencies {
     // Firebase
     implementation("com.google.gms:google-services:4.4.3")
     implementation("com.google.firebase:firebase-crashlytics-gradle:3.0.5")
-    implementation("com.google.firebase:perf-plugin:1.4.2")
+    implementation("com.google.firebase:perf-plugin:2.0.0")
     
     // OpenAPI Generator
     implementation("org.openapitools.openapidiff:openapi-diff-core:2.1.2")
