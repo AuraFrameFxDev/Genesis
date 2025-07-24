@@ -23,19 +23,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
         isCoreLibraryDesugaringEnabled = true
     }
-    
-    // Kotlin compiler options
-    kotlinOptions {
-        jvmTarget = libs.versions.javaVersion.get()
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all",
-            "-Xcontext-receivers",
-            "-Xjdk-release=${libs.versions.javaVersion.get()}"
-        )
-        allWarningsAsErrors = true
-    }
-    
+
     // Configure Compose
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -58,8 +46,10 @@ android {
             useSupportLibrary = true
         }
         
-        // Enable resource shrinking and code shrinking in release builds
-        resourceConfigurations.addAll(listOf("en", "xxhdpi"))
+            // Configure Android resources
+        androidResources {
+            localeFilters.add("en")
+        }
         
         // Enable split APKs by ABI for smaller APK sizes
         ndk {
@@ -115,9 +105,9 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
-    // Only needed if you want to override the default compiler extension version
+    // Compose compiler options
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     packaging {
@@ -180,24 +170,28 @@ tasks.named("preBuild") {
 
 dependencies {
     // Core Android
-    implementation(libs.core.ktx)
+    implementation(libs.androidx.core.ktx)
     
     // Compose
     implementation(platform(libs.compose.bom))
-    implementation(libs.material3)
-    implementation(libs.activity.compose)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.activity.compose)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
     
     // Kotlin
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     
     // Networking
-    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
     
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
-    implementation(libs.okhttp.logging.interceptor)
     
     // DataStore & Security
     implementation(libs.datastore.preferences)

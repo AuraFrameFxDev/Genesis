@@ -1,8 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
     id("io.gitlab.arturbosch.detekt") version libs.versions.detekt.get()
 }
 
@@ -41,6 +41,10 @@ android {
     
     kotlinOptions {
         jvmTarget = libs.versions.javaVersion.get()
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all"
+        )
     }
 }
 

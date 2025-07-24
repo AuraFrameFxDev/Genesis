@@ -75,36 +75,59 @@ dependencyResolutionManagement {
 rootProject.name = "AuraFrameFX"
 
 // Include all modules
-listOf(
+
+// Configure build cache
+buildCache {
+    local {
+        isEnabled = !System.getenv().containsKey("CI")
+    }
+    
+    remote<HttpBuildCache> {
+        isEnabled = false
+    }
+}
+
+// Include all modules
+include(
     ":app",
     ":jvm-test",
     ":sandbox-ui",
     ":oracle-drive-integration",
     ":oracledrive",
-    ":collab-canvas"
-).forEach { include(it) }
+    ":collab-canvas")
 
-// Configure all projects
-rootProject.children.forEach { project ->
-    project.buildFileName = "${project.name}.gradle.kts"
-    
-    // Ensure all build files exist
-    if (!project.buildFile.exists()) {
-        project.buildFile.parentFile?.mkdirs()
-        project.buildFile.createNewFile()
-        project.buildFile.writeText("// ${project.name} build configuration\n")
-    }
-}
-
-// Configure build scan
-plugins {
-    id("com.gradle.enterprise") version "3.19.2"
-}
-
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishAlways()
-    }
-}
+// Include all subprojects
+include(
+    ":core",
+    ":core:core-ktx",
+    ":core:core-compose",
+    ":core:core-ui",
+    ":core:core-network",
+    ":core:core-datastore",
+    ":core:core-security",
+    ":core:core-logging",
+    ":core:core-image",
+    ":core:core-ai",
+    ":core:core-ai-openai",
+    ":core:core-ai-vertexai",
+    ":core:core-ai-azure-openai",
+    ":core:core-ai-azure-cogsearch",
+    ":core:core-ai-azure-cogsearch-embeddings",
+    ":core:core-ai-azure-cogsearch-documents",
+    ":core:core-ai-azure-cogsearch-knowledgebases",
+    ":core:core-ai-azure-cogsearch-translation",
+    ":core:core-ai-azure-cogsearch-speech",
+    ":core:core-ai-azure-cogsearch-video",
+    ":core:core-ai-azure-cogsearch-computer-vision",
+    ":core:core-ai-azure-cogsearch-customvision",
+    ":core:core-ai-azure-cogsearch-face",
+    ":core:core-ai-azure-cogsearch-text-analytics",
+    ":core:core-ai-azure-cogsearch-form-recognizer",
+    ":core:core-ai-azure-cogsearch-translation",
+    ":core:core-ai-azure-cogsearch-speech",
+    ":core:core-ai-azure-cogsearch-video",
+    ":core:core-ai-azure-cogsearch-computer-vision",
+    ":core:core-ai-azure-cogsearch-customvision",
+    ":core:core-ai-azure-cogsearch-face",
+    ":core:core-ai-azure-cogsearch-text-analytics",
+    ":core:core-ai-azure-cogsearch-form-recognizer",)

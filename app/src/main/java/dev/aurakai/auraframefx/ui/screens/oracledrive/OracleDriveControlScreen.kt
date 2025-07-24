@@ -124,9 +124,11 @@ fun OracleDriveControlScreen() {
 }
 
 /**
- * Displays a system status panel with neon styling, showing online/offline state and performance metrics.
+ * Displays a neon-styled system status panel with online/offline indicator and animated performance metrics.
  *
- * Simulates an asynchronous status check before indicating system status. Includes animated performance meters for processing power and memory usage.
+ * Simulates an asynchronous status check before showing the current system state. Includes animated meters for processing power and memory usage.
+ *
+ * @param modifier Optional modifier for customizing the panel's layout or appearance.
  */
 @Composable
 private fun StatusPanel(modifier: Modifier = Modifier) {
@@ -211,9 +213,9 @@ private fun StatusPanel(modifier: Modifier = Modifier) {
 /**
  * Displays an animated horizontal progress bar with a label and percentage value.
  *
- * Shows the given label and value as a percentage, with the progress bar filled proportionally to the value relative to maxValue. The fill color uses a horizontal gradient based on the provided color.
+ * The progress bar fills proportionally to the given value relative to maxValue, using a horizontal gradient based on the specified color. The label appears on the left and the percentage on the right.
  *
- * @param label The label describing the metric being measured.
+ * @param label Describes the metric being measured.
  * @param value The current value to display as a percentage.
  * @param maxValue The maximum possible value for the metric.
  * @param color The color used for the progress bar and percentage text.
@@ -288,9 +290,9 @@ data class OracleModule(
 )
 
 /**
- * Displays a vertically arranged list of Oracle modules with their current status and performance.
+ * Displays a vertical list of Oracle modules with interactive status and performance indicators.
  *
- * Each module is shown with its name, active state, and performance indicator, allowing users to view and interact with module statuses.
+ * Each module is presented with its name, active state, and performance percentage, allowing users to toggle module activation and view real-time status.
  */
 @Composable
 fun ModuleManager(modifier: Modifier = Modifier) {
@@ -433,9 +435,11 @@ private fun ModuleListItem(module: OracleModule) {
 }
 
 /**
- * Displays a command input bar for entering and sending AI commands.
+ * Renders an input bar with an outlined text field and send icon for AI command entry.
  *
- * Shows an outlined text field with a placeholder and a send icon button.
+ * Allows users to type AI commands and provides a send icon button for submission.
+ *
+ * @param modifier Optional modifier for customizing the layout or appearance.
  */
 @Composable
 fun AiCommandBar(modifier: Modifier = Modifier) {
@@ -454,9 +458,9 @@ fun AiCommandBar(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a preview of the OracleDriveControlScreen with a dark neon-themed color scheme.
+ * Provides a Compose preview of the OracleDriveControlScreen using a dark neon-themed color scheme.
  *
- * Renders the UI in a Compose preview using a black background and custom Material3 colors for primary, secondary, surface, and text elements.
+ * Applies custom Material3 colors with a black background to showcase the Oracle Drive control interface in preview mode.
  */
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
