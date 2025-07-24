@@ -36,6 +36,14 @@ import kotlin.math.*
  * @param typingSpeedMs The speed of the typing animation in milliseconds per character
  * @param onTypingComplete Callback when typing animation completes
  */
+/**
+ * Displays text with a neon glow effect and optional animated typing in a Compose UI.
+ *
+ * The text is rendered with a layered glow that can pulse over time, simulating a neon sign. Optionally, the text can appear one character at a time with a configurable typing speed. The glow and typing animations can be enabled or disabled independently. When the typing animation completes, an optional callback is invoked.
+ *
+ * @param text The string to display with neon effects.
+ * @param onTypingComplete Optional callback invoked after the typing animation finishes.
+ */
 @Composable
 fun NeonText(
     text: String,
@@ -196,6 +204,13 @@ fun NeonText(
  * A simple TextMeasurer for measuring text layout
  */
 private class TextMeasurer {
+    /**
+     * Measures the layout of the given text with the specified style, returning detailed layout information.
+     *
+     * @param text The annotated string to measure.
+     * @param style The text style to apply during measurement.
+     * @return The result containing layout details such as character bounding boxes and overall size.
+     */
     fun measure(
         text: AnnotatedString,
         style: TextStyle
