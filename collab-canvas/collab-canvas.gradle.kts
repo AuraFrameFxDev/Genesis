@@ -1,0 +1,1 @@
+// collab-canvas build configuration

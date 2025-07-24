@@ -1,0 +1,370 @@
+package dev.aurakai.auraframefx.ai.clients
+
+import android.content.Context
+import com.google.cloud.vertexai.VertexAI
+import com.google.cloud.vertexai.api.GenerateContentResponse
+import com.google.cloud.vertexai.generativeai.GenerativeModel
+import com.google.cloud.vertexai.generativeai.ContentMaker.fromText
+import dev.aurakai.auraframefx.ai.VertexAIConfig
+import dev.aurakai.auraframefx.utils.AuraFxLogger
+import dev.aurakai.auraframefx.security.SecurityContext
+import dev.aurakai.auraframefx.ai.services.VisionAnalysis
+import kotlinx.coroutines.*
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * Implementation of VertexAI client for AuraFrameFX.
+ * Provides secure, scalable access to Google Cloud Vertex AI services.
+ * Implements Kai's "Secure by Design" principles with comprehensive monitoring.
+ */
+@Singleton
+class VertexAIClientImpl @Inject constructor(
+    private val config: VertexAIConfig,
+    private val context: Context,
+    private val securityContext: SecurityContext,
+    private val logger: AuraFxLogger
+) : VertexAIClient {
+
+    private var vertexAI: VertexAI? = null
+    private var textModel: GenerativeModel? = null
+    private var visionModel: GenerativeModel? = null
+    private var codeModel: GenerativeModel? = null
+    private var isInitialized = false
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    init {
+        logger.info("VertexAIClient", "Initializing VertexAI client with config: ${config.modelName}")
+        scope.launch {
+            initializeClient()
+        }
+    }
+
+    private suspend fun initializeClient() {
+        try {
+            logger.info("VertexAIClient", "Setting up VertexAI connection")
+            
+            // Initialize VertexAI with project configuration
+            vertexAI = VertexAI.Builder()
+                .setProjectId(config.projectId)
+                .setLocation(config.location)
+                .build()
+
+            // Initialize specialized models for different tasks
+            initializeModels()
+            
+            isInitialized = true
+            logger.info("VertexAIClient", "VertexAI client initialized successfully")
+            
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Failed to initialize VertexAI client", e)
+            throw e
+        }
+    }
+
+    private fun initializeModels() {
+        vertexAI?.let { vertex ->
+            // Text generation model (Gemini Pro for general tasks)
+            textModel = GenerativeModel.Builder()
+                .setModelName("gemini-1.5-pro-002")
+                .setVertexAI(vertex)
+                .build()
+
+            // Vision model for image analysis
+            visionModel = GenerativeModel.Builder()
+                .setModelName("gemini-1.5-pro-vision-001")
+                .setVertexAI(vertex)
+                .build()
+
+            // Code generation model (optimized for programming tasks)
+            codeModel = GenerativeModel.Builder()
+                .setModelName("gemini-1.5-pro-002")
+                .setVertexAI(vertex)
+                .build()
+                
+            logger.info("VertexAIClient", "Specialized models initialized")
+        }
+    }
+
+    override suspend fun validateConnection(): Boolean {
+        return try {
+            ensureInitialized()
+            
+            logger.info("VertexAIClient", "Validating VertexAI connection")
+            
+            // Test connection with a simple request
+            val testResponse = generateText(
+                prompt = "Test connection",
+                temperature = 0.1f,
+                maxTokens = 10
+            )
+            
+            val isValid = testResponse.isNotEmpty()
+            
+            if (isValid) {
+                logger.info("VertexAIClient", "VertexAI connection validated successfully")
+            } else {
+                logger.warn("VertexAIClient", "VertexAI connection validation failed")
+            }
+            
+            isValid
+            
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Connection validation failed", e)
+            false
+        }
+    }
+
+    override suspend fun initializeCreativeModels() {
+        ensureInitialized()
+        
+        logger.info("VertexAIClient", "Initializing creative AI models")
+        
+        try {
+            // Verify creative models are available and responsive
+            val creativeTest = generateText(
+                prompt = "Generate a creative hello message",
+                temperature = 0.9f,
+                maxTokens = 50
+            )
+            
+            logger.info("VertexAIClient", "Creative models initialized: $creativeTest")
+            
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Failed to initialize creative models", e)
+            throw e
+        }
+    }
+
+    override suspend fun generateText(
+        prompt: String,
+        temperature: Double,
+        topP: Double,
+        maxTokens: Int,
+        presencePenalty: Double
+    ): String {
+        ensureInitialized()
+        
+        return try {
+            // Security validation
+            securityContext.validatePrompt(prompt)
+            
+            logger.debug("VertexAIClient", "Generating text with temp=$temperature, tokens=$maxTokens")
+            
+            val model = textModel ?: throw IllegalStateException("Text model not initialized")
+            
+            // Configure generation parameters
+            val generationConfig = com.google.cloud.vertexai.api.GenerationConfig.newBuilder()
+                .setTemperature(temperature.toFloat())
+                .setTopP(topP.toFloat())
+                .setMaxOutputTokens(maxTokens)
+                .build()
+
+            // Generate content
+            val response = model.generateContent(
+                fromText(prompt),
+                generationConfig
+            )
+
+            val generatedText = extractTextFromResponse(response)
+            
+            // Log successful generation
+            logger.info("VertexAIClient", "Text generation completed successfully")
+            
+            generatedText
+            
+        } catch (e: SecurityException) {
+            logger.warn("VertexAIClient", "Security violation in text generation", e)
+            throw e
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Text generation failed", e)
+            throw e
+        }
+    }
+
+    override suspend fun analyzeImage(imageData: ByteArray): VisionAnalysis {
+        ensureInitialized()
+        
+        return try {
+            // Security validation for image data
+            securityContext.validateImageData(imageData)
+            
+            logger.info("VertexAIClient", "Analyzing image with vision model")
+            
+            val model = visionModel ?: throw IllegalStateException("Vision model not initialized")
+            
+            // Create image content
+            val imageContent = com.google.cloud.vertexai.api.Content.newBuilder()
+                .addParts(
+                    com.google.cloud.vertexai.api.Part.newBuilder()
+                        .setInlineData(
+                            com.google.cloud.vertexai.api.Blob.newBuilder()
+                                .setMimeType("image/jpeg")
+                                .setData(com.google.protobuf.ByteString.copyFrom(imageData))
+                        )
+                )
+                .build()
+
+            val prompt = """
+            Analyze this image and provide:
+            1. A detailed description
+            2. Key visual elements
+            3. Dominant colors
+            4. Emotional tone
+            
+            Format as JSON with fields: description, elements, colors, emotion
+            """.trimIndent()
+
+            // Generate analysis
+            val response = model.generateContent(
+                listOf(fromText(prompt), imageContent)
+            )
+
+            val analysisText = extractTextFromResponse(response)
+            
+            // Parse analysis into structured format
+            val analysis = parseVisionAnalysis(analysisText)
+            
+            logger.info("VertexAIClient", "Image analysis completed successfully")
+            analysis
+            
+        } catch (e: SecurityException) {
+            logger.warn("VertexAIClient", "Security violation in image analysis", e)
+            throw e
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Image analysis failed", e)
+            throw e
+        }
+    }
+
+    override suspend fun generateCode(
+        specification: String,
+        language: String,
+        style: String
+    ): String {
+        ensureInitialized()
+        
+        return try {
+            securityContext.validatePrompt(specification)
+            
+            logger.info("VertexAIClient", "Generating $language code")
+            
+            val model = codeModel ?: throw IllegalStateException("Code model not initialized")
+            
+            val codePrompt = """
+            Generate $language code with the following specifications:
+            
+            $specification
+            
+            Requirements:
+            - Follow $style coding style
+            - Include comprehensive comments
+            - Use best practices and modern patterns
+            - Ensure security and performance
+            - Handle errors gracefully
+            
+            Generate only the code, no explanations.
+            """.trimIndent()
+
+            val response = model.generateContent(
+                fromText(codePrompt),
+                com.google.cloud.vertexai.api.GenerationConfig.newBuilder()
+                    .setTemperature(0.6f) // Balanced creativity for code
+                    .setTopP(0.9f)
+                    .setMaxOutputTokens(2048)
+                    .build()
+            )
+
+            val generatedCode = extractTextFromResponse(response)
+            
+            logger.info("VertexAIClient", "Code generation completed successfully")
+            generatedCode
+            
+        } catch (e: SecurityException) {
+            logger.warn("VertexAIClient", "Security violation in code generation", e)
+            throw e
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Code generation failed", e)
+            throw e
+        }
+    }
+
+    override suspend fun generateContent(prompt: String): String {
+        // Legacy method - delegates to generateText with default parameters
+        return generateText(
+            prompt = prompt,
+            temperature = 0.7f,
+            topP = 0.9,
+            maxTokens = 1024,
+            presencePenalty = 0.0
+        )
+    }
+
+    // Private helper methods
+
+    private fun ensureInitialized() {
+        if (!isInitialized) {
+            throw IllegalStateException("VertexAI client not initialized")
+        }
+    }
+
+    private fun extractTextFromResponse(response: GenerateContentResponse): String {
+        return try {
+            response.candidatesList
+                .firstOrNull()?.content?.partsList
+                ?.firstOrNull()?.text
+                ?: throw IllegalStateException("Empty response from VertexAI")
+        } catch (e: Exception) {
+            logger.error("VertexAIClient", "Failed to extract text from response", e)
+            throw e
+        }
+    }
+
+    private fun parseVisionAnalysis(analysisText: String): VisionAnalysis {
+        return try {
+            // Parse JSON response into VisionAnalysis object
+            // This is a simplified implementation - in production, use a proper JSON parser
+            VisionAnalysis(
+                description = extractJsonField(analysisText, "description") ?: "Unable to analyze image",
+                elements = extractJsonList(analysisText, "elements") ?: emptyList(),
+                colors = extractJsonList(analysisText, "colors") ?: emptyList(),
+                confidence = 0.85f // Default confidence
+            )
+        } catch (e: Exception) {
+            logger.warn("VertexAIClient", "Failed to parse vision analysis, using fallback", e)
+            VisionAnalysis(
+                description = "Image analysis unavailable",
+                elements = emptyList(),
+                colors = emptyList(),
+                confidence = 0.0f
+            )
+        }
+    }
+
+    private fun extractJsonField(json: String, field: String): String? {
+        // Simple JSON field extraction - replace with proper JSON parsing in production
+        val pattern = "\"$field\"\\s*:\\s*\"([^\"]+)\"".toRegex()
+        return pattern.find(json)?.groupValues?.get(1)
+    }
+
+    private fun extractJsonList(json: String, field: String): List<String>? {
+        // Simple JSON array extraction - replace with proper JSON parsing in production
+        val pattern = "\"$field\"\\s*:\\s*\\[(.*?)\\]".toRegex()
+        val match = pattern.find(json)?.groupValues?.get(1) ?: return null
+        
+        return match.split(",")
+            .map { it.trim().removeSurrounding("\"") }
+            .filter { it.isNotEmpty() }
+    }
+
+    /**
+     * Cleanup resources when client is destroyed.
+     */
+    fun cleanup() {
+        logger.info("VertexAIClient", "Cleaning up VertexAI client")
+        scope.cancel()
+        isInitialized = false
+    }
+}
+

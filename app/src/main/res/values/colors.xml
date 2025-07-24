@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="neon_teal">#00FFCC</color>
+    <color name="neon_purple">#E000FF</color>
+    <color name="neon_blue">#00FFFF</color>
+    <color name="neon_teal_transparent">#3300FFCC</color>
+
+    <!-- Light Theme Colors -->
+    <color name="light_primary">#00FFCC</color>
+    <color name="light_on_primary">#000000</color>
+    <color name="light_primary_container">#00CC99</color>
+    <color name="light_on_primary_container">#000000</color>
+
+    <color name="light_secondary">#E000FF</color>
+    <color name="light_on_secondary">#000000</color>
+    <color name="light_secondary_container">#B200CC</color>
+    <color name="light_on_secondary_container">#000000</color>
+
+    <color name="light_tertiary">#00FFFF</color>
+    <color name="light_on_tertiary">#000000</color>
+    <color name="light_tertiary_container">#00CCCC</color>
+    <color name="light_on_tertiary_container">#000000</color>
+
+    <color name="light_error">#FF3B30</color>
+    <color name="light_on_error">#000000</color>
+    <color name="light_error_container">#93000A</color>
+    <color name="light_on_error_container">#FFDAD6</color>
+
+    <color name="light_background">#1A1A1A</color>
+    <color name="light_on_background">#E1E1E1</color>
+
+    <color name="light_surface">#2D2D2D</color>
+    <color name="light_on_surface">#E1E1E1</color>
+    <color name="light_surface_variant">#3D3D3D</color>
+    <color name="light_on_surface_variant">#C5C5C5</color>
+
+    <color name="light_outline">#8D8D8D</color>
+    <color name="light_outline_variant">#3D3D3D</color>
+
+    <!-- Common Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="divider">#1F000000</color>
+    <color name="on_surface_medium">#99000000</color>
+
+    <!-- Material 3 Color Aliases (Light Theme by Default) -->
+    <color name="primary">@color/light_primary</color>
+    <color name="on_primary">@color/light_on_primary</color>
+    <color name="primary_container">@color/light_primary_container</color>
+    <color name="on_primary_container">@color/light_on_primary_container</color>
+
+    <color name="secondary">@color/light_secondary</color>
+    <color name="on_secondary">@color/light_on_secondary</color>
+    <color name="secondary_container">@color/light_secondary_container</color>
+    <color name="on_secondary_container">@color/light_on_secondary_container</color>
+
+    <color name="tertiary">@color/light_tertiary</color>
+    <color name="on_tertiary">@color/light_on_tertiary</color>
+    <color name="tertiary_container">@color/light_tertiary_container</color>
+    <color name="on_tertiary_container">@color/light_on_tertiary_container</color>
+
+    <color name="error">@color/light_error</color>
+    <color name="on_error">@color/light_on_error</color>
+    <color name="error_container">@color/light_error_container</color>
+    <color name="on_error_container">@color/light_on_error_container</color>
+
+    <color name="background">@color/light_background</color>
+    <color name="on_background">@color/light_on_background</color>
+
+    <color name="surface">@color/light_surface</color>
+    <color name="on_surface">@color/light_on_surface</color>
+    <color name="surface_variant">@color/light_surface_variant</color>
+    <color name="on_surface_variant">@color/light_on_surface_variant</color>
+
+    <color name="outline">@color/light_outline</color>
+    <color name="outline_variant">@color/light_outline_variant</color>
+
+    <!-- Legacy compatibility -->
+    <color name="app_background_light">@color/light_background</color>
+</resources>

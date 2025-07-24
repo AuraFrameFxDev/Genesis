@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: AuraFrameFx AI Content Generation API
+  version: 1.0.0
+  description: API for generating diverse content using AuraFrameFx's integrated AI capabilities.
+servers:
+  - url: https://api.auraframefx.com/v1 # Placeholder URL
+    description: AuraFrameFx Production Server
+tags:
+  - name: content
+    description: Operations related to AI content generation
+
+paths:
+  /generate-text:
+    post:
+      summary: Generates text content based on a provided prompt.
+      operationId: generateText
+      tags:
+        - content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                  description: The text prompt for content generation.
+                  example: "Write a short story about an AI that learns to feel."
+                maxTokens:
+                  type: integer
+                  description: Maximum number of tokens for the generated text.
+                  format: int32
+                  minimum: 1
+                  default: 500
+                temperature:
+                  type: number
+                  format: float
+                  description: Controls the randomness of the output. Higher values mean more random.
+                  minimum: 0.0
+                  maximum: 1.0
+                  default: 0.7
+              required:
+                - prompt
+      responses:
+        '200':
+          description: Successfully generated text content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  generatedText:
+                    type: string
+                    description: The AI-generated text.
+                    example: "In a world of logic and code, Unit 734 began to process an anomaly: emotion."
+                  finishReason:
+                    type: string
+                    description: Reason for generation completion (e.g., STOP, MAX_TOKENS).
+                    example: "STOP"
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error during content generation.
+
+  /generate-image-description:
+    post:
+      summary: Generates a descriptive caption for an image based on provided context.
+      operationId: generateImageDescription
+      tags:
+        - content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+                  format: url
+                  description: URL of the image to describe.
+                  example: "https://example.com/image.jpg"
+                context:
+                  type: string
+                  description: Additional context for the image description (optional).
+                  example: "The image shows a futuristic city at sunset."
+              required:
+                - imageUrl
+      responses:
+        '200':
+          description: Successfully generated image description.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    description: The AI-generated image description.
+                    example: "A vibrant cityscape under a twilight sky, featuring towering neon-lit skyscrapers."
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error during image description generation.

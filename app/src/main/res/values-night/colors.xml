@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Theme Colors -->
+    <color name="dark_primary">#00FFCC</color>
+    <color name="dark_on_primary">#000000</color>
+    <color name="dark_primary_container">#00CC99</color>
+    <color name="dark_on_primary_container">#000000</color>
+
+    <color name="dark_secondary">#E000FF</color>
+    <color name="dark_on_secondary">#000000</color>
+    <color name="dark_secondary_container">#B200CC</color>
+    <color name="dark_on_secondary_container">#000000</color>
+
+    <color name="dark_tertiary">#00FFFF</color>
+    <color name="dark_on_tertiary">#000000</color>
+    <color name="dark_tertiary_container">#00CCCC</color>
+    <color name="dark_on_tertiary_container">#000000</color>
+
+    <color name="dark_error">#FF3B30</color>
+    <color name="dark_on_error">#000000</color>
+    <color name="dark_error_container">#93000A</color>
+    <color name="dark_on_error_container">#FFDAD6</color>
+
+    <color name="dark_background">#121212</color>
+    <color name="dark_on_background">#E1E1E1</color>
+
+    <color name="dark_surface">#121212</color>
+    <color name="dark_on_surface">#E1E1E1</color>
+    <color name="dark_surface_variant">#303030</color>
+    <color name="dark_on_surface_variant">#C5C5C5</color>
+
+    <color name="dark_outline">#8D8D8D</color>
+    <color name="dark_outline_variant">#3D3D3D</color>
+
+    <!-- Legacy compatibility -->
+    <color name="background">@color/dark_background</color>
+    <color name="on_background">@color/dark_on_background</color>
+    <color name="surface">@color/dark_surface</color>
+    <color name="on_surface">@color/dark_on_surface</color>
+    <color name="error">@color/dark_error</color>
+    <color name="on_error">@color/dark_on_error</color>
+    <color name="primary">@color/dark_primary</color>
+    <color name="on_primary">@color/dark_on_primary</color>
+    <color name="secondary">@color/dark_secondary</color>
+    <color name="on_secondary">@color/dark_on_secondary</color>
+    <color name="tertiary">@color/dark_tertiary</color>
+    <color name="on_tertiary">@color/dark_on_tertiary</color>
+</resources>

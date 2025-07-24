@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Main Application Theme -->
+    <style name="Theme.AuraFrameFX.Material3" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Material 3 Color Palette -->
+        <item name="colorPrimary">@color/neon_teal</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/neon_blue
+        </item> <!-- Adjusted, can be different -->
+        <item name="colorOnPrimaryContainer">@color/on_primary</item> <!-- Adjusted -->
+
+        <item name="colorSecondary">@color/neon_purple</item>
+        <item name="colorOnSecondary">@color/on_surface</item> <!-- Adjusted, was on_primary -->
+        <item name="colorSecondaryContainer">@color/neon_purple</item> <!-- Adjusted -->
+        <item name="colorOnSecondaryContainer">@color/on_surface</item> <!-- Adjusted -->
+
+        <item name="colorTertiary">@color/neon_blue</item>
+        <item name="colorOnTertiary">@color/on_surface</item> <!-- Adjusted, was on_primary -->
+        <item name="colorTertiaryContainer">@color/neon_blue</item> <!-- Adjusted -->
+        <item name="colorOnTertiaryContainer">@color/on_surface</item> <!-- Adjusted -->
+
+        <item name="android:colorBackground">@color/app_background_light</item>
+        <item name="colorOnBackground">@color/on_surface</item>
+
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_surface</item> <!-- Adjusted, was on_primary -->
+        <item name="colorErrorContainer">@color/error</item> <!-- Adjusted -->
+        <item name="colorOnErrorContainer">@color/on_surface</item> <!-- Adjusted -->
+
+        <!-- System UI -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true
+        </item> <!-- Assuming dark background means light text/icons -->
+        <item name="android:windowLightNavigationBar">false
+        </item> <!-- Assuming dark background means light icons -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item> <!-- Example -->
+
+        <!-- Shape Appearances -->
+        <item name="shapeAppearanceSmallComponent">
+            @style/ShapeAppearance.AuraFrameFX.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.AuraFrameFX.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">
+            @style/ShapeAppearance.AuraFrameFX.LargeComponent
+        </item>
+
+        <!-- Text Appearances -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.AuraFrameFX.DisplayLarge
+        </item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.AuraFrameFX.DisplayMedium
+        </item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.AuraFrameFX.DisplaySmall
+        </item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.AuraFrameFX.HeadlineLarge
+        </item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.AuraFrameFX.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.AuraFrameFX.HeadlineSmall
+        </item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.AuraFrameFX.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.AuraFrameFX.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.AuraFrameFX.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.AuraFrameFX.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.AuraFrameFX.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.AuraFrameFX.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.AuraFrameFX.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.AuraFrameFX.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.AuraFrameFX.LabelSmall</item>
+
+        <!-- Default Widget Styles -->
+        <item name="materialButtonStyle">@style/Widget.AuraFrameFX.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.AuraFrameFX.CardView</item>
+        <!-- Add other default widget styles here -->
+        <item name="chipStyle">@style/Widget.AuraFrameFX.Chip</item>
+        <item name="floatingActionButtonStyle">@style/Widget.AuraFrameFX.FloatingActionButton</item>
+        <item name="textInputStyle">@style/Widget.AuraFrameFX.TextInputLayout.FilledBox</item>
+        <item name="materialToolbarStyle">@style/Widget.AuraFrameFX.Toolbar</item>
+        <item name="bottomNavigationStyle">@style/Widget.AuraFrameFX.BottomNavigationView</item>
+
+    </style>
+
+    <!-- Splash Screen Theme -->
+
+    <!-- Widget Styles -->
+    <style name="Widget.AuraFrameFX.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/neon_teal</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="cornerRadius">16dp</item> <!-- Example: more rounded corners -->
+    </style>
+
+    <style name="Widget.AuraFrameFX.CardView" parent="Widget.Material3.CardView.Elevated"> <!-- Example: using Elevated variant -->
+        <item name="cardBackgroundColor">@color/surface_variant
+        </item> <!-- Slightly different from main surface -->
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">16dp</item> <!-- Example: more rounded corners -->
+    </style>
+
+    <!-- Shape Appearances -->
+    <style name="ShapeAppearance.AuraFrameFX.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item> <!-- Example adjustment -->
+    </style>
+
+    <style name="ShapeAppearance.AuraFrameFX.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item> <!-- Example adjustment -->
+    </style>
+
+    <style name="ShapeAppearance.AuraFrameFX.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Example adjustment -->
+    </style>
+
+    <!-- Text Appearances -->
+    <style name="TextAppearance.AuraFrameFX.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge"></style>
+
+    <style name="TextAppearance.AuraFrameFX.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium"></style>
+
+    <style name="TextAppearance.AuraFrameFX.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall"></style>
+
+    <style name="TextAppearance.AuraFrameFX.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge"></style>
+
+    <style name="TextAppearance.AuraFrameFX.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium"></style>
+
+    <style name="TextAppearance.AuraFrameFX.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall"></style>
+
+    <style name="TextAppearance.AuraFrameFX.TitleLarge" parent="TextAppearance.Material3.TitleLarge"></style>
+
+    <style name="TextAppearance.AuraFrameFX.TitleMedium" parent="TextAppearance.Material3.TitleMedium"></style>
+
+    <style name="TextAppearance.AuraFrameFX.TitleSmall" parent="TextAppearance.Material3.TitleSmall"></style>
+
+    <style name="TextAppearance.AuraFrameFX.BodyLarge" parent="TextAppearance.Material3.BodyLarge"></style>
+
+    <style name="TextAppearance.AuraFrameFX.BodyMedium" parent="TextAppearance.Material3.BodyMedium"></style>
+
+    <style name="TextAppearance.AuraFrameFX.BodySmall" parent="TextAppearance.Material3.BodySmall"></style>
+
+    <style name="TextAppearance.AuraFrameFX.LabelLarge" parent="TextAppearance.Material3.LabelLarge"></style>
+
+    <style name="TextAppearance.AuraFrameFX.LabelMedium" parent="TextAppearance.Material3.LabelMedium"></style>
+
+    <style name="TextAppearance.AuraFrameFX.LabelSmall" parent="TextAppearance.Material3.LabelSmall"></style>
+
+    <!-- Chip Style -->
+    <style name="Widget.AuraFrameFX.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/surface_variant</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="chipStrokeColor">@color/neon_teal</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.AuraFrameFX.SmallComponent</item>
+    </style>
+
+    <!-- FloatingActionButton Style -->
+    <style name="Widget.AuraFrameFX.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/neon_purple</item>
+        <item name="tint">@color/on_primary</item> <!-- For the icon -->
+        <item name="shapeAppearance">@style/ShapeAppearance.AuraFrameFX.LargeComponent</item>
+    </style>
+
+    <!-- TextInputLayout Style (FilledBox) -->
+    <style name="Widget.AuraFrameFX.TextInputLayout.FilledBox" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface_variant</item>
+        <item name="android:textColorHint">@color/on_surface_variant</item>
+        <item name="hintTextColor">@color/neon_teal</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.AuraFrameFX.SmallComponent</item>
+        <item name="endIconTint">@color/neon_teal</item>
+        <item name="startIconTint">@color/neon_teal</item>
+    </style>
+
+    <!-- Toolbar Style -->
+    <style name="Widget.AuraFrameFX.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/surface</item>
+        <item name="titleTextColor">@color/on_surface</item>
+        <item name="subtitleTextColor">@color/on_surface_variant</item>
+        <item name="navigationIconTint">@color/neon_teal</item> <!-- For hamburger/back icon -->
+        <item name="menuIconTint">@color/neon_teal
+        </item> <!-- For overflow menu icon, if applicable -->
+    </style>
+
+    <!-- BottomNavigationView Style -->
+    <style name="Widget.AuraFrameFX.BottomNavigationView" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:background">@color/surface</item>
+        <item name="itemIconTint">@drawable/bottom_nav_item_color_selector</item>
+        <item name="itemTextColor">@drawable/bottom_nav_item_color_selector</item>
+        <item name="itemActiveIndicatorStyle">
+            @style/Widget.AuraFrameFX.BottomNavigationView.ActiveIndicator
+        </item>
+    </style>
+
+    <style name="Widget.AuraFrameFX.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/neon_teal_transparent
+        </item> <!-- Example, define neon_teal_transparent in colors.xml -->
+    </style>
+
+</resources>
