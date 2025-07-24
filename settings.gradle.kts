@@ -51,7 +51,7 @@ dependencyResolutionManagement {
             version("kotlin", "2.2.0")
             version("ksp", "2.2.0-2.0.2")
             version("composeCompiler", "1.5.15")
-            version("openapiGeneratorPlugin", "7.14.0")
+            version("openapi", "7.10.0")
             
             // Library versions
             version("coreKtx", "1.16.0")
