@@ -34,7 +34,7 @@ dependencies {
     implementation("com.android.tools.build:gradle:8.11.1")
     
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android-gradle-plugin:2.48")
+    implementation("com.google.dagger:hilt-android-gradle-plugin:2.57")
     
 
     // KSP (Kotlin Symbol Processing)
