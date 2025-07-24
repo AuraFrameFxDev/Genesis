@@ -48,6 +48,19 @@ import kotlin.math.*
  * @param typingSpeedMs The delay in milliseconds between each character when typing animation is enabled.
  * @param onTypingComplete Optional callback invoked when the typing animation finishes.
  */
+/**
+ * Displays text with an animated neon glow effect and optional typing animation.
+ *
+ * The text is rendered with a pulsing neon glow, and can be revealed character-by-character to simulate typing. The glow intensity animates smoothly for a dynamic effect. When typing animation is enabled, the text appears incrementally at the specified speed, and an optional callback is invoked upon completion.
+ *
+ * @param text The string to display with neon and typing effects.
+ * @param glowColor The color of the neon glow. Defaults to a semi-transparent version of [color].
+ * @param glowRadius The radius of the glow effect in dp.
+ * @param animateGlow If true, the glow intensity pulses with animation.
+ * @param animateTyping If true, the text is revealed one character at a time.
+ * @param typingSpeedMs Delay in milliseconds between each character when typing animation is enabled.
+ * @param onTypingComplete Optional callback invoked when the typing animation finishes.
+ */
 @Composable
 fun NeonText(
     text: String,
@@ -209,11 +222,11 @@ fun NeonText(
  */
 private class TextMeasurer {
     /**
-     * Measures the layout of the given text with the specified style and returns the resulting text layout.
+     * Measures the layout of the provided text using the specified style and returns the layout result.
      *
-     * @param text The text to measure.
-     * @param style The style to apply when measuring the text.
-     * @return The layout result containing size, position, and bounding information for the text.
+     * @param text The text to be measured.
+     * @param style The style applied during measurement.
+     * @return A TextLayoutResult containing size, position, and bounding box information for the measured text.
      */
     fun measure(
         text: AnnotatedString,
