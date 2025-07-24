@@ -52,7 +52,7 @@ dependencies {
     implementation("com.google.firebase:perf-plugin:1.4.2")
     
     // OpenAPI Generator
-    implementation("org.openapitools.openapidiff:openapi-diff-core:2.0.1")
+    implementation("org.openapitools.openapidiff:openapi-diff-core:2.1.2")
     
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
