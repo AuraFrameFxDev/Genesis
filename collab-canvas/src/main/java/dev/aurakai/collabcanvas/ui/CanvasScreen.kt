@@ -50,6 +50,11 @@ import kotlin.math.absoluteValue
  *
  * Provides a UI for drawing freehand paths, rectangles, and ovals, with support for pan and zoom gestures, tool selection, and element selection. Users can draw, select, and manipulate elements on the canvas. Includes a toolbar for color and stroke width selection, as well as clear and save actions. Animated transitions are applied to drawn paths for interactive effects.
  */
+/**
+ * Displays a collaborative drawing canvas with multi-tool support, gesture handling, and animated path rendering.
+ *
+ * Provides a UI for drawing freehand paths, rectangles, and ovals, including pan and zoom gestures, tool selection, and element selection. Supports animated transitions for interactive path effects and includes clear and save actions.
+ */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CanvasScreen() {
