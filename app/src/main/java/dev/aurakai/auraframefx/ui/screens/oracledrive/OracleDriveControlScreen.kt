@@ -35,11 +35,6 @@ private val gradientBackground = Brush.verticalGradient(
  * Presents a layered background with data visualization and shimmer effects, a neon-styled top app bar, and a main content area containing system status, module management, and an AI command bar. Simulates initialization with a brief delay before fully rendering the interface.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-/**
- * Displays the Oracle Drive control interface with a neon-themed, animated UI.
- *
- * Renders layered animated backgrounds, a neon-styled top app bar with typing animation during initialization, and a main content area featuring system status, module management, and an AI command bar. Simulates initialization with a brief delay before fully rendering the interface.
- */
 @Composable
 fun OracleDriveControlScreen() {
     var isInitialized by remember { mutableStateOf(false) }
