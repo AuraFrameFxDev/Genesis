@@ -29,7 +29,17 @@ private val gradientBackground = Brush.verticalGradient(
     )
 )
 
+/**
+ * Displays the Oracle Drive control interface with a neon-themed, animated UI.
+ *
+ * Presents a layered background with data visualization and shimmer effects, a neon-styled top app bar, and a main content area containing system status, module management, and an AI command bar. Simulates initialization with a brief delay before fully rendering the interface.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Displays the Oracle Drive control interface with a neon-themed, animated UI.
+ *
+ * Renders layered animated backgrounds, a neon-styled top app bar with typing animation during initialization, and a main content area featuring system status, module management, and an AI command bar. Simulates initialization with a brief delay before fully rendering the interface.
+ */
 @Composable
 fun OracleDriveControlScreen() {
     var isInitialized by remember { mutableStateOf(false) }
@@ -118,6 +128,13 @@ fun OracleDriveControlScreen() {
     }
 }
 
+/**
+ * Displays a neon-styled system status panel with online/offline indicator and animated performance metrics.
+ *
+ * Simulates an asynchronous status check before showing the current system state. Includes animated meters for processing power and memory usage.
+ *
+ * @param modifier Optional modifier for customizing the panel's layout or appearance.
+ */
 @Composable
 private fun StatusPanel(modifier: Modifier = Modifier) {
     var isOnline by remember { mutableStateOf(true) }
@@ -198,6 +215,17 @@ private fun StatusPanel(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Displays an animated horizontal progress bar with a label and percentage value.
+ *
+ * The progress bar fills proportionally to the given value relative to maxValue, using a horizontal gradient based on the specified color. The label appears on the left and the percentage on the right.
+ *
+ * @param label Describes the metric being measured.
+ * @param value The current value to display as a percentage.
+ * @param maxValue The maximum possible value for the metric.
+ * @param color The color used for the progress bar and percentage text.
+ * @param modifier Optional modifier for layout customization.
+ */
 @Composable
 private fun PerformanceMeter(
     label: String,
@@ -266,6 +294,11 @@ data class OracleModule(
     val performance: Int = 0
 )
 
+/**
+ * Displays a vertical list of Oracle modules with interactive status and performance indicators.
+ *
+ * Each module is presented with its name, active state, and performance percentage, allowing users to toggle module activation and view real-time status.
+ */
 @Composable
 fun ModuleManager(modifier: Modifier = Modifier) {
     val modules = remember {
@@ -287,6 +320,13 @@ fun ModuleManager(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Displays a card representing an Oracle module with its name, active status, and performance indicator.
+ *
+ * Shows the module name in uppercase, a colored performance dot and percentage if active, and a toggle switch to change the active state. The card's appearance and border color adapt to the module's status, and a cyan glow effect is shown when active.
+ *
+ * @param module The OracleModule instance to display.
+ */
 @Composable
 private fun ModuleListItem(module: OracleModule) {
     var isActive by remember { mutableStateOf(module.isActive) }
@@ -399,6 +439,13 @@ private fun ModuleListItem(module: OracleModule) {
     }
 }
 
+/**
+ * Renders an input bar with an outlined text field and send icon for AI command entry.
+ *
+ * Allows users to type AI commands and provides a send icon button for submission.
+ *
+ * @param modifier Optional modifier for customizing the layout or appearance.
+ */
 @Composable
 fun AiCommandBar(modifier: Modifier = Modifier) {
     var text by remember { mutableStateOf("") }
@@ -415,6 +462,11 @@ fun AiCommandBar(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * Provides a Compose preview of the OracleDriveControlScreen using a dark neon-themed color scheme.
+ *
+ * Applies custom Material3 colors with a black background to showcase the Oracle Drive control interface in preview mode.
+ */
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun OracleDriveControlScreenPreview() {

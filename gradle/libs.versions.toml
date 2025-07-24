@@ -28,18 +28,18 @@ kotlinxCoroutines = "1.10.2"
 openapiGeneratorPlugin = "7.14.0"
 
 # Testing & Quality
-junit = "5.13.3"
+junit = "5.13.4"
 androidxTestExtJunit = "1.2.1"
 espressoCore = "3.6.1"
 mockk = "1.14.5"
-detekt = "1.23.0"
+detekt = "1.23.8"
 
 timber = "5.0.1"
 coilCompose = "2.6.0"
 
 # Animation
-accompanist = "0.34.0"
-composeAnimation = "1.6.7"
+accompanist = "0.36.0"
+composeAnimation = "1.8.3"
 lottie = "6.4.0"
 
 # Database

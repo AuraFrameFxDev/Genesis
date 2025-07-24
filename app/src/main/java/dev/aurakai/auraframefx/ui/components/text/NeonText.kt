@@ -36,6 +36,31 @@ import kotlin.math.*
  * @param typingSpeedMs The speed of the typing animation in milliseconds per character
  * @param onTypingComplete Callback when typing animation completes
  */
+/**
+ * Displays text with an animated neon glow effect and optional typing animation.
+ *
+ * Renders the given text with a glowing neon appearance, animating the glow intensity if enabled.
+ * Optionally reveals the text one character at a time to simulate typing, invoking a callback when typing completes.
+ *
+ * @param text The text to display with neon effects.
+ * @param animateGlow If true, animates the glow intensity for a pulsing neon effect.
+ * @param animateTyping If true, reveals the text incrementally to simulate typing.
+ * @param typingSpeedMs The delay in milliseconds between each character when typing animation is enabled.
+ * @param onTypingComplete Optional callback invoked when the typing animation finishes.
+ */
+/**
+ * Displays text with an animated neon glow effect and optional typing animation.
+ *
+ * The text is rendered with a pulsing neon glow, and can be revealed character-by-character to simulate typing. The glow intensity animates smoothly for a dynamic effect. When typing animation is enabled, the text appears incrementally at the specified speed, and an optional callback is invoked upon completion.
+ *
+ * @param text The string to display with neon and typing effects.
+ * @param glowColor The color of the neon glow. Defaults to a semi-transparent version of [color].
+ * @param glowRadius The radius of the glow effect in dp.
+ * @param animateGlow If true, the glow intensity pulses with animation.
+ * @param animateTyping If true, the text is revealed one character at a time.
+ * @param typingSpeedMs Delay in milliseconds between each character when typing animation is enabled.
+ * @param onTypingComplete Optional callback invoked when the typing animation finishes.
+ */
 @Composable
 fun NeonText(
     text: String,
@@ -196,6 +221,13 @@ fun NeonText(
  * A simple TextMeasurer for measuring text layout
  */
 private class TextMeasurer {
+    /**
+     * Measures the layout of the provided text using the specified style and returns the layout result.
+     *
+     * @param text The text to be measured.
+     * @param style The style applied during measurement.
+     * @return A TextLayoutResult containing size, position, and bounding box information for the measured text.
+     */
     fun measure(
         text: AnnotatedString,
         style: TextStyle
