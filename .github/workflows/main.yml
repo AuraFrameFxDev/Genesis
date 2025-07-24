@@ -22,6 +22,13 @@ jobs:
           distribution: 'temurin'
           java-version: '24'
 
+      # Ensure Gradle wrapper exists
+      - name: Ensure Gradle wrapper exists
+        run: |
+          if [ ! -f ./gradlew ]; then
+            gradle wrapper
+          fi
+
       # Make gradlew executable
       - name: Make gradlew executable
         run: chmod +x ./gradlew
