@@ -30,9 +30,9 @@ private val gradientBackground = Brush.verticalGradient(
 )
 
 /**
- * Displays the Oracle Drive control panel UI with animated backgrounds, status indicators, module management, and an AI command bar.
+ * Displays the Oracle Drive control interface with a neon-themed, animated UI.
  *
- * This composable presents a visually rich interface featuring a neon-themed top bar, animated data visualization background, shimmer particle effects, and interactive components for monitoring system status, managing modules, and entering AI commands.
+ * Presents a layered background with data visualization and shimmer effects, a neon-styled top app bar, and a main content area containing system status, module management, and an AI command bar. Simulates initialization with a brief delay before fully rendering the interface.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,9 +124,9 @@ fun OracleDriveControlScreen() {
 }
 
 /**
- * Displays a system status panel with online/offline indicator and animated performance metrics.
+ * Displays a system status panel with neon styling, showing online/offline state and performance metrics.
  *
- * Shows a neon-styled "SYSTEM STATUS" title, a colored status indicator reflecting online state, and animated meters for processing power and memory usage.
+ * Simulates an asynchronous status check before indicating system status. Includes animated performance meters for processing power and memory usage.
  */
 @Composable
 private fun StatusPanel(modifier: Modifier = Modifier) {
@@ -209,14 +209,14 @@ private fun StatusPanel(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays an animated horizontal performance meter with a label and percentage value.
+ * Displays an animated horizontal progress bar with a label and percentage value.
  *
- * The meter visually represents the ratio of `value` to `maxValue` as a colored progress bar, accompanied by a label and percentage text.
+ * Shows the given label and value as a percentage, with the progress bar filled proportionally to the value relative to maxValue. The fill color uses a horizontal gradient based on the provided color.
  *
- * @param label The descriptive label for the performance metric.
- * @param value The current value to display, shown as a percentage.
+ * @param label The label describing the metric being measured.
+ * @param value The current value to display as a percentage.
  * @param maxValue The maximum possible value for the metric.
- * @param color The primary color used for the progress bar and percentage text.
+ * @param color The color used for the progress bar and percentage text.
  * @param modifier Optional modifier for layout customization.
  */
 @Composable
@@ -288,11 +288,9 @@ data class OracleModule(
 )
 
 /**
- * Displays a vertically scrollable list of Oracle modules with their activation status and performance indicators.
+ * Displays a vertically arranged list of Oracle modules with their current status and performance.
  *
- * Each module is shown as an interactive card allowing toggling of its active state and visualizing its performance.
- *
- * @param modifier Modifier to be applied to the LazyColumn container.
+ * Each module is shown with its name, active state, and performance indicator, allowing users to view and interact with module statuses.
  */
 @Composable
 fun ModuleManager(modifier: Modifier = Modifier) {
@@ -316,9 +314,9 @@ fun ModuleManager(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a card representing an Oracle module with its name, activation status, and performance indicator.
+ * Displays a card representing an Oracle module with its name, active status, and performance indicator.
  *
- * Shows the module name, a colored performance indicator if active, and a toggle switch to activate or deactivate the module. The card's appearance and border color change based on the module's active state, and a glowing effect is shown when active.
+ * Shows the module name in uppercase, a colored performance dot and percentage if active, and a toggle switch to change the active state. The card's appearance and border color adapt to the module's status, and a cyan glow effect is shown when active.
  *
  * @param module The OracleModule instance to display.
  */
@@ -437,7 +435,7 @@ private fun ModuleListItem(module: OracleModule) {
 /**
  * Displays a command input bar for entering and sending AI commands.
  *
- * Shows an outlined text field with a placeholder and a send button for user interaction.
+ * Shows an outlined text field with a placeholder and a send icon button.
  */
 @Composable
 fun AiCommandBar(modifier: Modifier = Modifier) {
@@ -456,9 +454,9 @@ fun AiCommandBar(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a preview of the Oracle Drive Control Screen with a custom dark color scheme and black background.
+ * Displays a preview of the OracleDriveControlScreen with a dark neon-themed color scheme.
  *
- * Intended for use in design tools to visualize the UI with themed colors and layout.
+ * Renders the UI in a Compose preview using a black background and custom Material3 colors for primary, secondary, surface, and text elements.
  */
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable

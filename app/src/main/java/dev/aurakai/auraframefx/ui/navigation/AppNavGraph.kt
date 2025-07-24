@@ -37,9 +37,11 @@ import dev.aurakai.collabcanvas.ui.CanvasScreen
  * @param navController The navigation controller that manages navigation between screens.
  */
 /**
- * Sets up the main navigation graph for the app, mapping navigation routes to their corresponding composable screens.
+ * Defines the main navigation graph for the application using Jetpack Compose Navigation.
  *
- * @param navController The navigation controller used to manage navigation between screens.
+ * Maps navigation routes to their corresponding composable screens, enabling navigation between Home, Settings, Canvas, AI Chat, Profile, and Oracle Drive Control screens.
+ *
+ * @param navController The navigation controller used to manage app navigation.
  */
 @Composable
 fun AppNavGraph(navController: NavHostController) {
