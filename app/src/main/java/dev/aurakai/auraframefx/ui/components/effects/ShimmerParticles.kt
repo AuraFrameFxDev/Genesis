@@ -24,18 +24,18 @@ import kotlin.random.Random
  * @param speedMultiplier Speed multiplier for particle movement (default: 1f)
  */
 /**
- * Displays an animated shimmering particle effect as a composable overlay.
+ * Displays an animated shimmering particle overlay effect.
  *
- * Renders a configurable number of glowing particles that move smoothly and shimmer across the canvas, with randomized size, speed, color, and position. The shimmer intensity, animation duration, and movement speed can be customized.
+ * Renders a configurable number of particles that move smoothly and shimmer across the composable area. Each particle randomly varies in size, speed, color (between the provided base and secondary colors), and initial position. The shimmer intensity, animation duration, and movement speed can be customized.
  *
- * @param modifier Modifier to apply to the composable.
+ * @param modifier Modifier to apply to the particle overlay.
  * @param particleCount Number of particles to display.
  * @param particleSize Base size of each particle.
  * @param baseColor Primary color used for particles.
  * @param secondaryColor Secondary color used for particles.
  * @param shimmerIntensity Controls the strength of the shimmer effect (0 to 1).
  * @param animationDuration Duration of the shimmer animation cycle in milliseconds.
- * @param speedMultiplier Multiplies the base movement speed of all particles.
+ * @param speedMultiplier Multiplies the base speed of all particles.
  */
 @Composable
 fun ShimmerParticles(
@@ -144,7 +144,7 @@ private data class Particle(
 )
 
 /**
- * Displays a preview of the ShimmerParticles composable with 100 particles and default cyan and magenta colors.
+ * Displays a preview of the ShimmerParticles effect with 100 particles filling the available space.
  */
 @Composable
 @Preview
