@@ -27,7 +27,7 @@ kotlinxCoroutines = "1.10.2"
 openapiGeneratorPlugin = "7.14.0"
 
 # Testing & Quality
-junit = "5.13.3"
+junit = "5.13.4"
 androidxTestExtJunit = "1.2.1"
 espressoCore = "3.6.1"
 mockk = "1.14.5"
