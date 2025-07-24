@@ -47,7 +47,7 @@ dependencies {
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.2.0-1.0.21")
     
     // Firebase
-    implementation("com.google.gms:google-services:4.4.1")
+    implementation("com.google.gms:google-services:4.4.3")
     implementation("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
     implementation("com.google.firebase:perf-plugin:1.4.2")
     
