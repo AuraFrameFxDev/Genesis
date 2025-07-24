@@ -7,4 +7,7 @@ plugins {
 dependencies {
     // Other dependencies...
     implementation(libs.lottie.compose)
+    
+    // Canvas module
+    implementation(project(":collab-canvas"))
 }

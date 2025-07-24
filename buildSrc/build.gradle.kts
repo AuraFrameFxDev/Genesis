@@ -6,18 +6,11 @@ plugins {
     id("com.gradle.plugin-publish") version "1.3.1"
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-        // Let Gradle auto-detect the vendor
-        vendor.set(JvmVendorSpec.ORACLE)
-    }
-}
-
 repositories {
     google()
     mavenCentral()
     gradlePluginPortal()
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
 }
 
 // Configure Gradle plugin publishing
@@ -43,6 +36,7 @@ dependencies {
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android-gradle-plugin:2.48")
     
+
     // KSP (Kotlin Symbol Processing)
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.2.0-2.0.2")
     
@@ -64,7 +58,6 @@ dependencies {
 // Configure Kotlin compiler options
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
         freeCompilerArgs.addAll(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all",
@@ -81,15 +74,6 @@ tasks.withType<Test> {
         events("passed", "skipped", "failed")
         showStandardStreams = true
     }
-    systemProperty("gradle.version", project.gradle.gradleVersion)
-    systemProperty("java.version", JavaVersion.current())
-}
-
-// Configure Java compilation
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    options.isIncremental = true
-    options.isFork = true
 }
 
 // Configure plugin publishing
