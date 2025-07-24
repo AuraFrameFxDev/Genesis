@@ -3,7 +3,7 @@
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
-    id("com.gradle.plugin-publish") version "1.2.0"
+    id("com.gradle.plugin-publish") version "1.3.1"
 }
 
 repositories {
@@ -36,22 +36,23 @@ dependencies {
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android-gradle-plugin:2.48")
     
-    // KSP (Kotlin Symbol Processing) - Using stable version compatible with Kotlin 2.2.0
-    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.0.0-1.0.21")
+
+    // KSP (Kotlin Symbol Processing)
+    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.2.0-2.0.2")
     
     // Firebase
-    implementation("com.google.gms:google-services:4.4.1")
+    implementation("com.google.gms:google-services:4.4.3")
     implementation("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
     implementation("com.google.firebase:perf-plugin:1.4.2")
     
     // OpenAPI Generator
-    implementation("org.openapitools.openapidiff:openapi-diff-core:2.0.1")
+    implementation("org.openapitools.openapidiff:openapi-diff-core:2.1.2")
     
     // Testing
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
-    testImplementation("com.google.truth:truth:1.4.0")
+    testImplementation("com.google.truth:truth:1.4.4")
 }
 
 // Configure Kotlin compiler options

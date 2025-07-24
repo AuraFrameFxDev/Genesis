@@ -98,7 +98,7 @@ rootProject.children.forEach { project ->
 
 // Configure build scan
 plugins {
-    id("com.gradle.enterprise") version "3.15.1"
+    id("com.gradle.enterprise") version "3.19.2"
 }
 
 gradleEnterprise {
