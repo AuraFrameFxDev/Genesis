@@ -38,7 +38,7 @@ coilCompose = "2.6.0"
 
 # Animation
 accompanist = "0.34.0"
-composeAnimation = "1.6.7"
+composeAnimation = "1.8.3"
 lottie = "6.4.0"
 
 [libraries]
