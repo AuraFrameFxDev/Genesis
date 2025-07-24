@@ -23,22 +23,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
         isCoreLibraryDesugaringEnabled = true
     }
-    
-    // Kotlin compiler options
-    kotlin {
-        jvmToolchain(libs.versions.javaVersion.get().toInt())
-        
-        compilerOptions {
-            jvmTarget = JVM.target(libs.versions.javaVersion.get().toInt())
-            allWarningsAsErrors = true
-            freeCompilerArgs.addAll(
-                "-opt-in=kotlin.RequiresOptIn",
-                "-Xjvm-default=all",
-                "-Xcontext-receivers"
-            )
-        }
-    }
-    
+
     // Configure Compose
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -61,8 +46,10 @@ android {
             useSupportLibrary = true
         }
         
-        // Enable resource shrinking and code shrinking in release builds
-        resourceConfigurations.addAll(listOf("en", "xxhdpi"))
+            // Configure Android resources
+        androidResources {
+            localeFilters.add("en")
+        }
         
         // Enable split APKs by ABI for smaller APK sizes
         ndk {
