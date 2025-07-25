@@ -1,14 +1,29 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.openapi.generator)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("org.openapi.generator") version "7.14.0"
 }
 
 android {
     namespace = "dev.aurakai.auraframefx"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = 34
+    
+    defaultConfig {
+        applicationId = "dev.aurakai.auraframefx"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
+        
+        // Enable vector drawable support
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
     
     // Enable build features
     buildFeatures {
@@ -29,22 +44,7 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
-    defaultConfig {
-        applicationId = "dev.aurakai.auraframefx"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
 
-        // Test configuration
-        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
-        multiDexEnabled = true
-        
-        // Enable vector drawable support
-        vectorDrawables {
-            useSupportLibrary = true
-        }
         
             // Configure Android resources
         androidResources {
