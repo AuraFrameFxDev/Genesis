@@ -1,76 +1,74 @@
-// Top-level build file for AuraOS project
+// Top-level build file for AuraFrameFX project
 // Configure build settings and plugins for all subprojects
 
 // Enable Gradle's configuration cache for faster builds
 @file:Suppress("DSL_SCOPE_VIOLATION")
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:8.1.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-    }
-}
-
+// Apply core plugins with versions from settings.gradle.kts
 plugins {
-    id("com.android.application") version "8.1.1" apply false
-    id("com.android.library") version "8.1.1" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
-    id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
+    // Android plugins
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    
+    // Kotlin plugins
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
-// Configure subprojects
+// Configure all projects (root + subprojects)
+allprojects {
+    // Apply common configuration to all projects
+    group = "dev.aurakai.auraframefx"
+    version = "1.0.0"
+}
+
+// Configure all subprojects (excluding root)
 subprojects {
     // Common configuration for all subprojects
-    afterEvaluate {
-        // Configure Java toolchain if this is a Java/Kotlin project
-        plugins.withId("java") {
-            configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(22)) // Using Java 22 as required
-                }
-                sourceCompatibility = JavaVersion.VERSION_22
-                targetCompatibility = JavaVersion.VERSION_22
+    plugins.withType<JavaPlugin> {
+        // Configure Java toolchain for Java projects
+        configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(22))
             }
         }
+    }
 
-        // Apply common test configuration
-        tasks.withType<Test> {
-            useJUnitPlatform()
-            testLogging {
-                events("passed", "skipped", "failed")
-            }
+    // Configure Kotlin toolchain for all projects with Kotlin plugin
+    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+        configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+            jvmToolchain(22)
         }
+    }
 
-        // Configure Kotlin compilation with simplified DSL
-        plugins.withId("org.jetbrains.kotlin.jvm") {
-            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
-                .configureEach {
-                    kotlinOptions {
-                        jvmTarget = "22"
-                        apiVersion = "1.9"
-                        languageVersion = "1.9"
-                        freeCompilerArgs = freeCompilerArgs + listOf(
-                            "-Xjvm-default=all",
-                            "-opt-in=kotlin.RequiresOptIn"
-                        )
-                    }
-                }
+    // Common test configuration
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+        }
+    }
+
+    // Configure Kotlin compilation
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_22)
+            // Use string literals for Kotlin version to avoid deprecation warnings
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.fromVersion("2.2"))
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.fromVersion("2.2"))
+            freeCompilerArgs.addAll(
+                "-Xjvm-default=all",
+                "-opt-in=kotlin.RequiresOptIn"
+            )
         }
     }
 }
 
 // Clean task for the root project
 tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
-    delete("${rootProject.projectDir}/build")
-    delete("${rootProject.projectDir}/.idea")
-
-    // Declare outputs for incremental build support
-    outputs.dir(rootProject.layout.buildDirectory)
-    outputs.dir("${rootProject.projectDir}/build")
-    outputs.dir("${rootProject.projectDir}/.idea")
+    delete(layout.buildDirectory)
+    delete("${projectDir}/build")
+    delete("${projectDir}/.idea")
 }

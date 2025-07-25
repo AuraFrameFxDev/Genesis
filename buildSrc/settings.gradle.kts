@@ -4,7 +4,7 @@ rootProject.name = "buildSrc"
 // Enable feature previews
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-// Configure repositories for buildSrc
+// Configure plugin management
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -13,11 +13,12 @@ pluginManagement {
     }
 }
 
-// Configure repositories for buildSrc
+// Configure dependency resolution
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        gradlePluginPortal()
     }
 }

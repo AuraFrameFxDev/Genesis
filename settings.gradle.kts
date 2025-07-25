@@ -18,8 +18,20 @@ pluginManagement {
     // Configure resolution strategy for plugins
     resolutionStrategy {
         eachPlugin {
-            when (requested.id.namespace) {
-                "com.android" -> useModule("com.android.tools.build:gradle:${requested.version}")
+            when {
+                // Android plugins
+                requested.id.namespace == "com.android" -> 
+                    useModule("com.android.tools.build:gradle:${requested.version}")
+                
+                // Kotlin plugins - using hardcoded version for now
+                requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true -> {
+                    // Using hardcoded version as a fallback
+                    useVersion("2.2.0")
+                }
+                    
+                // KSP plugin
+                requested.id.id == "com.google.devtools.ksp" ->
+                    useModule("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${requested.version}")
             }
         }
     }
@@ -27,9 +39,10 @@ pluginManagement {
 
 // Dependency Resolution Management
 dependencyResolutionManagement {
+    // Configure to fail if any project declares repositories
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
-    // Configure repositories
+    // Configure repositories for all projects
     repositories {
         google()
         mavenCentral()
