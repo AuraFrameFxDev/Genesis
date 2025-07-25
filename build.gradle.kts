@@ -25,6 +25,19 @@ allprojects {
 
 // Configure all subprojects (excluding root)
 subprojects {
+    afterEvaluate {
+        // Apply Java plugin to non-Android projects
+        if (!project.name.equals("app")) {
+            pluginManager.apply("java")
+
+            // Configure Java toolchains
+            extensions.configure<JavaPluginExtension> {
+                toolchain {
+                    languageVersion.set(JavaLanguageVersion.of(24))
+                }
+            }
+        }
+    }
     // Common test configuration
     tasks.withType<Test> {
         useJUnitPlatform()

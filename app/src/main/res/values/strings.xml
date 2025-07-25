@@ -24,7 +24,7 @@
     <!-- Feature Specific Placeholders -->
     <string name="creativity_engine">AURA\'S CREATIVITY ENGINE</string>
     <string name="neural_interface_active">NEURAL INTERFACE ACTIVE</string>
-    <string name="virtual_monitorization">VIRTUAL MONITORZATION</string>
+    <string name="virtual_monitorization">VIRTUAL MONITORIZATION</string>
     <string name="menu_ui_engine">UI ENGINE</string>
     <string name="menu_aurashield">AuraShield</string>
     <string name="menu_aurakaiecosys">AurakaiEcoSys</string>
@@ -38,7 +38,7 @@
     <string name="neural">NEURAL</string>
     <string name="active">ACTIVE</string>
     <string name="quantum">QUANTUM</string>
-    <string name="quantum_percent">99.8%%</string>
+    <string name="quantum_percent">99.8\%</string>
 
     <!-- Profile Screen -->
     <string name="user_profile">User Profile</string>

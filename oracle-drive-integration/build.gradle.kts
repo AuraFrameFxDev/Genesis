@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.bundles.oracleDrive)
 
     // Core Android dependencies
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.lifecycle)
 
@@ -66,4 +69,6 @@ dependencies {
     // Testing
     testImplementation(libs.bundles.testing.unit)
     androidTestImplementation(libs.bundles.testing.android)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

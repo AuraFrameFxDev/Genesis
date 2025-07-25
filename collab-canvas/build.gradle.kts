@@ -53,7 +53,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 
     // Compose
-    implementation(platform(libs.compose.bom))
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
@@ -77,11 +79,9 @@ dependencies {
     implementation(libs.coil.compose)
 
     // Testing
-    testImplementation(libs.junit.api)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.bundles.testing.unit)
+    androidTestImplementation(libs.bundles.testing.android)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }
 
 // Detekt configuration

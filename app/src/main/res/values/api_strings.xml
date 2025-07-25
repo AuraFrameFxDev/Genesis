@@ -3,7 +3,7 @@
     <!-- API Error Messages -->
     <string name="error_bad_request">Invalid request. Please try again.</string>
     <string name="error_unauthorized">Session expired. Please log in again.</string>
-    <string name="error_forbidden">You don't have permission to access this resource.</string>
+    <string name="error_forbidden">You don\'t have permission to access this resource.</string>
     <string name="error_not_found">The requested resource was not found.</string>
     <string name="error_timeout">Request timed out. Please check your connection and try again.</string>
     <string name="error_server_error">Server error. Please try again later.</string>

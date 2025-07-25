@@ -11,7 +11,7 @@
         android:label="AuraFrameFX LSPosed Module"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AuraFrameFX.Material3">
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <meta-data
             android:name="xposedmodule"
             android:value="true" />

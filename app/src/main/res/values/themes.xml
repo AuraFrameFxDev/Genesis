@@ -10,4 +10,18 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Material 3 theme. -->
+    <style name="Theme.AuraFrameFX.Material3" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:colorPrimary">@color/light_primary</item>
+        <item name="android:colorPrimaryDark">@color/light_primary_container</item>
+        <item name="android:colorAccent">@color/light_secondary</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 </resources>

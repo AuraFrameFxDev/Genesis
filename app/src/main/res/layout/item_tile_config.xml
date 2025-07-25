@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tileCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/surface"
+    android:background="@android:color/background_dark"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
-    app:strokeColor="@color/outline"
-    app:strokeWidth="1dp">
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,8 +28,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textColor="@color/onSurface"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@android:color/white"
                 tools:text="Wi-Fi" />
 
             <TextView
@@ -40,22 +38,20 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/onSurfaceMedium"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@android:color/darker_gray"
                 tools:text="Wireless network settings" />
 
         </LinearLayout>
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/enabledSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:clickable="false"
-            android:focusable="false"
-            app:thumbTint="@color/onPrimary"
-            app:trackTint="@color/primary" />
+            android:focusable="false" />
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>
