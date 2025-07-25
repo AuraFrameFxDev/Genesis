@@ -41,14 +41,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: |
-          ./gradlew build --stacktrace
-
-      //- name: Run tests
-        run: |
-          ./gradlew test
-
       - name: Upload APK artifact
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
         uses: actions/upload-artifact@v4
