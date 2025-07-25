@@ -1,5 +1,5 @@
 // Configure buildSrc settings
-rootProject.name = "buildSrc"
+rootProject.name = "AuraFrameFXBuildSrc"
 
 // Enable feature previews
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

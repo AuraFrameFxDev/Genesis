@@ -16,7 +16,7 @@ java {
 // Configure Kotlin settings for buildSrc
 kotlin {
     jvmToolchain(21) // Use Java 21 for Kotlin compilation in buildSrc
-    
+
     // Explicitly set the JVM target for Kotlin compilation in buildSrc
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
