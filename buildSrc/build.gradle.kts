@@ -22,3 +22,14 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
     }
 }
+
+// Logic to detect and configure the man-aura-app-plugin
+val pluginDir = rootProject.file("plugins")
+val pluginName = "man-aura-app-plugin"
+val pluginFound = pluginDir.listFiles()?.any { it.name.contains(pluginName) } == true
+
+if (pluginFound) {
+    println("Detected $pluginName! Configuring project accordingly.")
+    // Set an extra property to be used in other build scripts
+    extra.set("hasManAuraAppPlugin", true)
+}

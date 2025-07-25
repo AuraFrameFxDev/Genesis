@@ -72,3 +72,10 @@ tasks.register<Delete>("clean") {
     delete("${projectDir}/build")
     delete("${projectDir}/.idea")
 }
+
+// Apply the man-aura-app-plugin if it was detected in buildSrc
+if (project.extra.has("hasManAuraAppPlugin")) {
+    allprojects {
+        apply(plugin = "man-aura-app-plugin")
+    }
+}
