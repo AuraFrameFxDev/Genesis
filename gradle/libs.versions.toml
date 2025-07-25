@@ -1,16 +1,16 @@
 [versions]
 # Build Configuration
-compileSdk = "35"
-targetSdk = "35"
+compileSdk = "36"
+targetSdk = "36"
 minSdk = "33"
-javaVersion = "21"
+javaVersion = "24"
 
 # Plugin versions
-agp = "8.7.3"
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
+agp = "8.11.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 composeCompiler = "1.5.15"
-hilt = "2.52"
+hilt = "2.57"
 openapi = "7.10.0"
 room = "2.6.1"
 firebase = "33.7.0"

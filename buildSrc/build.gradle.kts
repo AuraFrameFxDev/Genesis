@@ -49,10 +49,12 @@ dependencies {
     implementation("org.openapitools.openapidiff:openapi-diff-core:2.1.2")
     
     // Testing
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.0")
     testImplementation("com.google.truth:truth:1.4.4")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-annotations-common:2.2.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-common:2.2.0")
 }
 
 // Configure Kotlin compiler options
