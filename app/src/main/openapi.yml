@@ -396,6 +396,246 @@ components:
     # Existing schemas (User, Theme, ContentRequest, ContentResponse) would be here
     # with any minor adjustments or added descriptions.
 
+    # Canvas Schemas
+    Canvas:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the canvas
+        name:
+          type: string
+          description: Display name of the canvas
+        description:
+          type: string
+          description: Optional description of the canvas
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: When the canvas was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the canvas was last updated
+        createdBy:
+          type: string
+          format: uuid
+          description: ID of the user who created the canvas
+        isPublic:
+          type: boolean
+          description: Whether the canvas is publicly accessible
+          default: false
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags for categorizing the canvas
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+        - createdBy
+
+    CanvasCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Display name for the new canvas
+        description:
+          type: string
+          description: Optional description of the canvas
+          nullable: true
+        isPublic:
+          type: boolean
+          description: Whether the canvas should be publicly accessible
+          default: false
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags for categorizing the canvas
+      required:
+        - name
+
+    CanvasUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Updated display name for the canvas
+        description:
+          type: string
+          description: Updated description of the canvas
+          nullable: true
+        isPublic:
+          type: boolean
+          description: Updated public/private status of the canvas
+        tags:
+          type: array
+          items:
+            type: string
+          description: Updated tags for the canvas
+
+    CanvasElement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the element
+        canvasId:
+          type: string
+          format: uuid
+          description: ID of the canvas this element belongs to
+        type:
+          type: string
+          enum: [SHAPE, TEXT, IMAGE, STICKY_NOTE, ARROW, DIAGRAM]
+          description: Type of the canvas element
+        content:
+          type: object
+          description: Content of the element (structure varies by type)
+          additionalProperties: true
+        position:
+          $ref: '#/components/schemas/CanvasPosition'
+        size:
+          $ref: '#/components/schemas/CanvasSize'
+        style:
+          $ref: '#/components/schemas/CanvasStyle'
+        createdAt:
+          type: string
+          format: date-time
+          description: When the element was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the element was last updated
+        createdBy:
+          type: string
+          format: uuid
+          description: ID of the user who created the element
+      required:
+        - id
+        - canvasId
+        - type
+        - content
+        - position
+        - size
+        - style
+        - createdAt
+        - updatedAt
+        - createdBy
+
+    CanvasElementCreateRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [SHAPE, TEXT, IMAGE, STICKY_NOTE, ARROW, DIAGRAM]
+          description: Type of the element to create
+        content:
+          type: object
+          description: Content of the element (structure varies by type)
+          additionalProperties: true
+        position:
+          $ref: '#/components/schemas/CanvasPosition'
+        size:
+          $ref: '#/components/schemas/CanvasSize'
+        style:
+          $ref: '#/components/schemas/CanvasStyle'
+      required:
+        - type
+        - content
+        - position
+        - size
+
+    CanvasElementUpdateRequest:
+      type: object
+      properties:
+        content:
+          type: object
+          description: Updated content of the element
+          additionalProperties: true
+          nullable: true
+        position:
+          $ref: '#/components/schemas/CanvasPosition'
+          nullable: true
+        size:
+          $ref: '#/components/schemas/CanvasSize'
+          nullable: true
+        style:
+          $ref: '#/components/schemas/CanvasStyle'
+          nullable: true
+
+    CanvasPosition:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+          description: X-coordinate position
+        y:
+          type: number
+          format: float
+          description: Y-coordinate position
+        zIndex:
+          type: integer
+          description: Stacking order of the element
+          default: 0
+      required:
+        - x
+        - y
+
+    CanvasSize:
+      type: object
+      properties:
+        width:
+          type: number
+          format: float
+          description: Width of the element
+          minimum: 0
+        height:
+          type: number
+          format: float
+          description: Height of the element
+          minimum: 0
+      required:
+        - width
+        - height
+
+    CanvasStyle:
+      type: object
+      properties:
+        backgroundColor:
+          type: string
+          description: Background color in hex format
+          example: "#FFFFFF"
+        borderColor:
+          type: string
+          description: Border color in hex format
+          example: "#000000"
+        borderWidth:
+          type: number
+          format: float
+          description: Border width in pixels
+          default: 1
+        opacity:
+          type: number
+          format: float
+          description: Opacity value between 0 and 1
+          minimum: 0
+          maximum: 1
+          default: 1
+        borderRadius:
+          type: number
+          format: float
+          description: Border radius in pixels
+          minimum: 0
+          default: 0
+
     # AI Content Generation Schemas
     GenerateTextRequest:
       type: object

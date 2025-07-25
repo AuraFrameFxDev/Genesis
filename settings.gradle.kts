@@ -62,11 +62,15 @@ listOf(
 
 // Configure all projects
 rootProject.children.forEach { project ->
-    project.buildFileName = "${project.name}.gradle.kts"
+    // Use intermediate build file for app module
+    val buildFileName = if (project.name == "app") "intermediate-build.gradle.kts" else "${project.name}.gradle.kts"
+    project.buildFileName = buildFileName
+    
     // Ensure all build files exist
-    if (!project.buildFile.exists()) {
-        project.buildFile.parentFile?.mkdirs()
-        project.buildFile.createNewFile()
-        project.buildFile.writeText("// ${project.name} build configuration\n")
+    val buildFile = project.projectDir.resolve(buildFileName)
+    if (!buildFile.exists()) {
+        buildFile.parentFile?.mkdirs()
+        buildFile.createNewFile()
+        buildFile.writeText("// ${project.name} build configuration\n")
     }
 }

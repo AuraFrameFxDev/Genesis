@@ -7,13 +7,13 @@
 // Apply core plugins with versions from settings.gradle.kts
 plugins {
     // Android plugins
-    id("com.android.application") version "8.1.3" apply false
-    id("com.android.library") version "8.1.3" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
     
     // Kotlin plugins
-    id("org.jetbrains.kotlin.android") version "2.2.0" apply false
-    id("org.jetbrains.kotlin.jvm") version "2.2.0" apply false
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 // Configure all projects (root + subprojects)
@@ -25,48 +25,6 @@ allprojects {
 
 // Configure all subprojects (excluding root)
 subprojects {
-    // Common configuration for all subprojects
-    plugins.withType<JavaPlugin> {
-        // Configure Java toolchain for Java projects
-        configure<JavaPluginExtension> {
-            toolchain {
-                languageVersion.set(JavaLanguageVersion.of(22))
-            }
-        }
-    }
-
-    // Configure Kotlin toolchain for all projects with Kotlin plugin
-    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-        configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
-            jvmToolchain(24)
-        }
-    }
-    
-    // Configure Android projects
-    pluginManager.withPlugin("com.android.application") {
-        configure<com.android.build.gradle.BaseExtension> {
-            compileSdkVersion(34)
-            
-            defaultConfig {
-                minSdk = 24
-                targetSdk = 34
-                versionCode = 1
-                versionName = "1.0"
-                
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            }
-            
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_24
-                targetCompatibility = JavaVersion.VERSION_24
-            }
-            
-            kotlinOptions {
-                jvmTarget = "24"
-            }
-        }
-    }
-
     // Common test configuration
     tasks.withType<Test> {
         useJUnitPlatform()
