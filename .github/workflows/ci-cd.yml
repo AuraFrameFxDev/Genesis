@@ -2,10 +2,6 @@ name: Android Assemble Release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
 
 jobs:
   assemble-release:
