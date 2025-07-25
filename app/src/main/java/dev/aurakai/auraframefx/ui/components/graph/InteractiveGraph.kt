@@ -62,7 +62,7 @@ fun InteractiveGraph(
     selectedNodeId: String? = null,
     onNodeSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(16.dp)
+    contentPadding: PaddingValues = PaddingValues(16.dp),
 ) {
     var scale by remember { mutableStateOf(1f) }
     var translation by remember { mutableStateOf(Offset.Zero) }
@@ -269,7 +269,7 @@ private fun drawNode(node: GraphNode, isSelected: Boolean, textColor: Color, dra
 private fun DrawScope.drawConnection(
     from: GraphNode,
     to: GraphNode,
-    connection: Connection
+    connection: Connection,
 ) {
     val fromCenter = from.position.toCompose()
     val toCenter = to.position.toCompose()
@@ -339,7 +339,7 @@ private fun DrawScope.drawArrowHead(
     direction: Offset,
     size: Float,
     angle: Float,
-    color: Color
+    color: Color,
 ) {
     val arrowPath = Path().apply {
         val p1 = tip - (direction.rotate(angle) * size)

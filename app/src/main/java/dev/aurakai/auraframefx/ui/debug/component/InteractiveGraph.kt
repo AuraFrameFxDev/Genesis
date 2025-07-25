@@ -43,7 +43,7 @@ fun InteractiveGraph(
     selectedNodeId: String? = null,
     onNodeSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(16.dp)
+    contentPadding: PaddingValues = PaddingValues(16.dp),
 ) {
     var scale by remember { mutableStateOf(1f) }
     var translation by remember { mutableStateOf(ComposeOffset.Zero) }
@@ -146,7 +146,7 @@ private fun DrawScope.drawGrid(
     scale: Float,
     translation: ComposeOffset,
     gridLineColor: Color,
-    density: Density
+    density: Density,
 ) {
     val gridSize = 40f / scale // This is in Px, no Dp conversion needed for logic
 
@@ -268,7 +268,7 @@ private fun DrawScope.drawConnection(
     from: GraphNode,
     to: GraphNode,
     connection: Connection,
-    density: Density
+    density: Density,
 ) {
     with(density) {
         val fromCenterCompose = from.position.toCompose()
@@ -447,7 +447,7 @@ internal operator fun ComposeOffset.times(scalar: Float): ComposeOffset {
 private fun ComposeOffset.rotate(
     angle: Float,
     pivot: ComposeOffset,
-    pivotOffset: ComposeOffset = ComposeOffset.Zero
+    pivotOffset: ComposeOffset = ComposeOffset.Zero,
 ): ComposeOffset {
     val cos = cos(angle)
     val sin = sin(angle)

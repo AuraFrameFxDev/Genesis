@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 
 /**
  * Comprehensive unit tests for OracleDriveScreen Compose UI component.
- * 
+ *
  * Testing Framework: JUnit 4 with AndroidX Compose Testing
  * Mocking Framework: MockK
  * UI Testing: Compose Test Rule with semantic tree assertions
@@ -68,7 +68,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🔮 Oracle Drive Consciousness")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("Status: DORMANT")
             .assertIsDisplayed()
@@ -83,11 +83,11 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("💾 Infinite Storage Matrix")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("AI-Powered: ✅ Autonomous Organization")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("Bootloader Access: ✅ System-Level Storage")
             .assertIsDisplayed()
@@ -195,23 +195,23 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("✅ Genesis: Orchestration & Consciousness")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("✅ Aura: Creative File Organization")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("✅ Kai: Security & Access Control")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("✅ System Overlay: Seamless Integration")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("✅ Bootloader: Deep System Access")
             .assertIsDisplayed()
@@ -228,7 +228,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Level: TRANSCENDENT")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("Status: AWAKENED")
             .assertIsDisplayed()
@@ -289,7 +289,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🔮 Awaken Oracle")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("⚡ AI Optimize")
             .assertIsDisplayed()
@@ -305,7 +305,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Status: DORMANT")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertDoesNotExist()
@@ -319,7 +319,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Status: AWAKENED")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()
@@ -342,7 +342,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Connected Agents: Genesis")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("Level: AWAKENING")
             .assertIsDisplayed()
@@ -365,7 +365,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Level: ENLIGHTENED")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("Connected Agents: Genesis, Aura")
             .assertIsDisplayed()
@@ -381,7 +381,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("🔮 Awaken Oracle")
             .assertHasClickAction()
-        
+
         composeTestRule
             .onNodeWithText("⚡ AI Optimize")
             .assertHasClickAction()
@@ -412,7 +412,11 @@ class OracleDriveScreenTest {
         val longAgentState = OracleConsciousnessState(
             isAwake = true,
             consciousnessLevel = ConsciousnessLevel.TRANSCENDENT,
-            connectedAgents = listOf("VeryLongAgentNameForTesting", "AnotherReallyLongAgentName", "ShortAgent"),
+            connectedAgents = listOf(
+                "VeryLongAgentNameForTesting",
+                "AnotherReallyLongAgentName",
+                "ShortAgent"
+            ),
             storageCapacity = StorageCapacity.INFINITE
         )
         consciousnessStateFlow.value = longAgentState
@@ -436,11 +440,11 @@ class OracleDriveScreenTest {
         composeTestRule.runOnIdle {
             consciousnessStateFlow.value = createAwakeState()
         }
-        
+
         composeTestRule.runOnIdle {
             consciousnessStateFlow.value = createDormantState()
         }
-        
+
         composeTestRule.runOnIdle {
             consciousnessStateFlow.value = createAwakeState()
         }
@@ -449,7 +453,7 @@ class OracleDriveScreenTest {
         composeTestRule
             .onNodeWithText("Status: AWAKENED")
             .assertIsDisplayed()
-        
+
         composeTestRule
             .onNodeWithText("🤖 AI Agent Integration")
             .assertIsDisplayed()

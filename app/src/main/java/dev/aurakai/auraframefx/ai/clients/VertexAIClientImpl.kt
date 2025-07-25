@@ -107,7 +107,7 @@ class VertexAIClientImpl : VertexAIClient {
     override suspend fun generateCode(
         specification: String,
         language: String,
-        style: String
+        style: String,
     ): String? {
         delay(100)
         return "// Stub $language code for: $specification"

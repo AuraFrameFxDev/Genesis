@@ -39,6 +39,6 @@ sealed interface TrinityUiState {
         val agentStatus: Map<String, AgentResponse> = emptyMap(),
         val availableThemes: List<Theme> = emptyList(),
         val lastAgentResponse: AgentResponse? = null,
-        val lastAgentType: String? = null
+        val lastAgentType: String? = null,
     ) : TrinityUiState
 }

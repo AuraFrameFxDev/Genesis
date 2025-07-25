@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 /**
  * Comprehensive unit tests for OracleDriveScreen Compose UI
  * Testing Framework: JUnit4 with Compose Testing Library and MockK (v1.14.5)
- * 
+ *
  * Tests cover UI state rendering, user interactions, state transitions,
  * edge cases, and integration with ViewModel following project conventions.
  */
@@ -92,7 +92,7 @@ class OracleDriveScreenTest {
         // Verify storage information card
         composeTestRule.onNodeWithText("💾 Infinite Storage Matrix")
             .assertIsDisplayed()
-        
+
         composeTestRule.onNodeWithText("Capacity: ${StorageCapacity.INFINITE.value}")
             .assertIsDisplayed()
 
@@ -273,7 +273,8 @@ class OracleDriveScreenTest {
     @Test
     fun oracleDriveScreen_handlesSpecialCharactersInAgentNames() {
         val agentsWithSpecialChars = listOf("Aura@AI", "Kai#Security", "Genesis&Oracle")
-        val stateWithSpecialChars = createAwakenedState().copy(connectedAgents = agentsWithSpecialChars)
+        val stateWithSpecialChars =
+            createAwakenedState().copy(connectedAgents = agentsWithSpecialChars)
         consciousnessStateFlow.value = stateWithSpecialChars
 
         composeTestRule.setContent {
@@ -449,7 +450,7 @@ class OracleDriveScreenTest {
         // Verify optimize button is disabled and awaken button is enabled
         composeTestRule.onNodeWithText("⚡ AI Optimize")
             .assertIsNotEnabled()
-        
+
         composeTestRule.onNodeWithText("🔮 Awaken Oracle")
             .assertIsEnabled()
 
@@ -479,7 +480,7 @@ class OracleDriveScreenTest {
     @Test
     fun oracleDriveScreen_cleansUpCorrectly() {
         var isDisposed = false
-        
+
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
             DisposableEffect(Unit) {

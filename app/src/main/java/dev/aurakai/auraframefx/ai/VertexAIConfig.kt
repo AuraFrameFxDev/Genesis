@@ -47,7 +47,7 @@ data class VertexAIConfig(
     // Feature flags
     val enableStreamingResponses: Boolean = true,
     val enableBatchProcessing: Boolean = true,
-    val enableFunctionCalling: Boolean = true
+    val enableFunctionCalling: Boolean = true,
 ) {
     /**
      * Validates the configuration fields and returns a list of error messages for any missing or invalid values.

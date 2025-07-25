@@ -8,5 +8,5 @@ data class AgentRequest(
     val type: String = "text", // Added default
     val context: Map<String, String>? = emptyMap(), // Added default, kept nullable for flexibility
     val metadata: Map<String, String>? = emptyMap(), // Added default, kept nullable
-    val agentType: AgentType? = null
+    val agentType: AgentType? = null,
 )

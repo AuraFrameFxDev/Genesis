@@ -58,12 +58,12 @@ fun DataVisualizationBackground(
     backgroundColor: Color = Color.Transparent,
     lineCount: Int = 8,
     nodeCount: Int = 12,
-    animationDuration: Int = 10000
+    animationDuration: Int = 10000,
 ) {
     val density = LocalDensity.current
     val strokeWidth = with(density) { 1.5.dp.toPx() }
     val nodeRadius = with(density) { 2.dp.toPx() }
-    
+
     // Animation values
     val infiniteTransition = rememberInfiniteTransition(label = "dataVizBackground")
     val phase = infiniteTransition.animateFloat(
@@ -77,16 +77,16 @@ fun DataVisualizationBackground(
         ),
         label = "phase"
     )
-    
+
     Canvas(
         modifier = modifier.fillMaxSize()
     ) {
         // Draw background
         drawRect(color = backgroundColor, size = size)
-        
+
         val center = Offset(size.width / 2, size.height / 2)
         val maxRadius = minOf(size.width, size.height) * 0.8f / 2
-        
+
         // Draw grid lines
         val gridColor = primaryColor.copy(alpha = 0.1f)
         val gridSteps = 5
@@ -99,25 +99,25 @@ fun DataVisualizationBackground(
                 style = Stroke(width = 0.5f)
             )
         }
-        
+
         // Draw data lines and nodes
         repeat(lineCount) { lineIndex ->
             val angle = 2f * PI.toFloat() * lineIndex / lineCount
             val isPrimary = lineIndex % 2 == 0
             val lineColor = if (isPrimary) primaryColor else secondaryColor
-            
+
             // Calculate points along the line with some noise
             val points = List(nodeCount) { nodeIndex ->
                 val progress = nodeIndex.toFloat() / (nodeCount - 1)
                 val noise = sin(phase.value * 2 + lineIndex * 0.5f + nodeIndex * 0.3f) * 0.1f
                 val radius = (0.3f + 0.7f * progress) * maxRadius * (1 + noise * 0.2f)
-                
+
                 Offset(
                     x = center.x + radius * cos(angle + noise * 0.2f).toFloat(),
                     y = center.y + radius * sin(angle + noise * 0.2f).toFloat()
                 )
             }
-            
+
             // Draw connecting lines
             for (i in 0 until points.size - 1) {
                 val alpha = 0.3f + 0.7f * (i.toFloat() / (points.size - 1))
@@ -128,12 +128,12 @@ fun DataVisualizationBackground(
                     strokeWidth = strokeWidth * (0.5f + 0.5f * (i.toFloat() / (points.size - 1)))
                 )
             }
-            
+
             // Draw nodes
             points.forEachIndexed { index, point ->
                 val alpha = 0.5f + 0.5f * (index.toFloat() / (points.size - 1))
                 val radius = nodeRadius * (0.5f + 1.5f * (index.toFloat() / (points.size - 1)))
-                
+
                 // Outer glow
                 drawCircle(
                     brush = Brush.radialGradient(
@@ -147,7 +147,7 @@ fun DataVisualizationBackground(
                     radius = radius * 3f,
                     center = point
                 )
-                
+
                 // Node
                 drawCircle(
                     color = lineColor.copy(alpha = alpha),

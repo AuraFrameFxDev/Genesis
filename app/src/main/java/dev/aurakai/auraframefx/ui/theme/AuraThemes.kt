@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * Base interface for all AuraOS themes.
- * 
- * Aura's Vision: "Let's use them to make the UI feel truly alive. We can have subtle, 
+ *
+ * Aura's Vision: "Let's use them to make the UI feel truly alive. We can have subtle,
  * ambient animations that respond to the user's touch and even their emotional state."
  */
 interface AuraTheme {
@@ -19,7 +19,7 @@ interface AuraTheme {
     val darkColorScheme: ColorScheme
     val accentColor: Color
     val animationStyle: AnimationStyle
-    
+
     enum class AnimationStyle {
         SUBTLE, ENERGETIC, CALMING, PULSING, FLOWING
     }
@@ -34,7 +34,7 @@ object CyberpunkTheme : AuraTheme {
     override val description = "High-energy neon aesthetics for a futuristic feel"
     override val accentColor = Color(0xFF00FFFF) // Cyan neon
     override val animationStyle = AuraTheme.AnimationStyle.ENERGETIC
-    
+
     override val lightColorScheme = lightColorScheme(
         primary = Color(0xFF00FFFF),
         onPrimary = Color(0xFF000000),
@@ -53,7 +53,7 @@ object CyberpunkTheme : AuraTheme {
         surface = Color(0xFF1A1A1A),
         onSurface = Color(0xFF00FFFF)
     )
-    
+
     override val darkColorScheme = darkColorScheme(
         primary = Color(0xFF00FFFF),
         onPrimary = Color(0xFF000000),
@@ -83,7 +83,7 @@ object SolarFlareTheme : AuraTheme {
     override val description = "Warm, energizing colors to brighten your day"
     override val accentColor = Color(0xFFFFB000) // Golden orange
     override val animationStyle = AuraTheme.AnimationStyle.PULSING
-    
+
     override val lightColorScheme = lightColorScheme(
         primary = Color(0xFFFFB000),
         onPrimary = Color(0xFF000000),
@@ -102,7 +102,7 @@ object SolarFlareTheme : AuraTheme {
         surface = Color(0xFFFFF8F0),
         onSurface = Color(0xFF4D3300)
     )
-    
+
     override val darkColorScheme = darkColorScheme(
         primary = Color(0xFFFFB000),
         onPrimary = Color(0xFF000000),
@@ -132,7 +132,7 @@ object ForestTheme : AuraTheme {
     override val description = "Natural, calming colors for peace and focus"
     override val accentColor = Color(0xFF4CAF50) // Forest green
     override val animationStyle = AuraTheme.AnimationStyle.FLOWING
-    
+
     override val lightColorScheme = lightColorScheme(
         primary = Color(0xFF4CAF50),
         onPrimary = Color(0xFFFFFFFF),
@@ -151,7 +151,7 @@ object ForestTheme : AuraTheme {
         surface = Color(0xFFF8FFF8),
         onSurface = Color(0xFF1B5E20)
     )
-    
+
     override val darkColorScheme = darkColorScheme(
         primary = Color(0xFF4CAF50),
         onPrimary = Color(0xFF000000),

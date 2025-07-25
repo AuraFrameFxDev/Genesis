@@ -100,10 +100,16 @@ android {
     // Enable data binding if needed
     // buildFeatures.dataBinding = true
 
-    // Enable Compose compiler metrics and reports
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    // Configure CMake for native code
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
+
+    // Configure NDK version
+    ndkVersion = "25.2.9519653" // Use the latest stable NDK version
 
     // Compose compiler options
     composeOptions {

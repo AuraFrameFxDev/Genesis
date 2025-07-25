@@ -59,8 +59,9 @@ class LibsVersionsTomlTest {
                 val versionValue = matcher.group(2)
 
                 // Check version format (semantic versioning or date-based for BOM)
-                val isValidVersion = versionValue.matches(Regex("""^\d+\.\d+(\.\d+)?(-\w+(\.\d+)?)?$""")) ||
-                                       versionValue.matches(Regex("""^\d{4}\.\d{2}\.\d{2}$""")) // Date format for BOM
+                val isValidVersion =
+                    versionValue.matches(Regex("""^\d+\.\d+(\.\d+)?(-\w+(\.\d+)?)?$""")) ||
+                            versionValue.matches(Regex("""^\d{4}\.\d{2}\.\d{2}$""")) // Date format for BOM
 
                 assertTrue(
                     "Version '$versionName' should follow semantic versioning: $versionValue",
@@ -226,7 +227,7 @@ class LibsVersionsTomlTest {
             val lineIndex = tomlLines.indexOf(line)
             val previousLine = if (lineIndex > 0) tomlLines[lineIndex - 1] else ""
             val hasComment = previousLine.contains("migration") || line.contains("migration") ||
-                             previousLine.contains("Needs migration") || line.contains("Needs migration")
+                    previousLine.contains("Needs migration") || line.contains("Needs migration")
 
             // Documentation test - Accompanist libraries should ideally have migration notes
             if (line.contains("accompanist")) {
@@ -306,7 +307,10 @@ class LibsVersionsTomlTest {
                 val bundleName = matcher.group(1)
                 val bundleContent = matcher.group(2)
 
-                assertFalse("Bundle '$bundleName' should not be empty", bundleContent.trim().isEmpty())
+                assertFalse(
+                    "Bundle '$bundleName' should not be empty",
+                    bundleContent.trim().isEmpty()
+                )
                 assertTrue(
                     "Bundle '$bundleName' should contain quoted library references",
                     bundleContent.contains("\"")
@@ -707,7 +711,10 @@ class LibsVersionsTomlTest {
         val librariesIndex = foundSections.indexOf("[libraries]")
 
         if (versionsIndex >= 0 && librariesIndex >= 0) {
-            assertTrue("Versions section should come before libraries", versionsIndex < librariesIndex)
+            assertTrue(
+                "Versions section should come before libraries",
+                versionsIndex < librariesIndex
+            )
         }
     }
 

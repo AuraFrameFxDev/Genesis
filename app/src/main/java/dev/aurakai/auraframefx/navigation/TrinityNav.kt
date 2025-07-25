@@ -19,7 +19,7 @@ fun TrinityNavGraph(navController: NavHostController) {
         composable(route = TrinityScreens.TrinityHome.route) {
             TrinityScreen()
         }
-        
+
         // Add more screens for the Trinity system as needed
     }
 }
@@ -29,7 +29,7 @@ fun TrinityNavGraph(navController: NavHostController) {
  */
 sealed class TrinityScreens(val route: String) {
     object TrinityHome : TrinityScreens("trinity_home")
-    
+
     // Add more screens as needed
     // Example:
     // object AgentDetail : TrinityScreens("agent_detail/{agentId}")

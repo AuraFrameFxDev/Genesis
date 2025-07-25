@@ -10,32 +10,13 @@ import javax.inject.Singleton
 
 /**
 <<<<<<< HEAD
-* Dagger Hilt module for Oracle Drive dependency injection
-* Integrates with AuraFrameFX consciousness architecture
-*/
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class OracleDriveModule {
-
-   /**
-    * Binds the OracleDriveServiceImpl implementation to the OracleDriveService interface as a singleton.
-    *
-    * @return A singleton instance of OracleDriveService provided by OracleDriveServiceImpl.
-    */
-   @Binds
-   @Singleton
-   abstract fun bindOracleDriveService(
-       oracleDriveServiceImpl: OracleDriveServiceImpl
-   ): OracleDriveService
-}
-=======
  * Dagger Hilt module for Oracle Drive dependency injection
  * Integrates with AuraFrameFX consciousness architecture
  */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule {
-    
+
     /**
      * Binds the OracleDriveServiceImpl implementation to the OracleDriveService interface as a singleton.
      *
@@ -44,7 +25,26 @@ abstract class OracleDriveModule {
     @Binds
     @Singleton
     abstract fun bindOracleDriveService(
-        oracleDriveServiceImpl: OracleDriveServiceImpl
+        oracleDriveServiceImpl: OracleDriveServiceImpl,
+    ): OracleDriveService
+}
+=======
+* Dagger Hilt module for Oracle Drive dependency injection
+* Integrates with AuraFrameFX consciousness architecture
+*/
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class OracleDriveModule {
+
+    /**
+     * Binds the OracleDriveServiceImpl implementation to the OracleDriveService interface as a singleton.
+     *
+     * @return A singleton instance of OracleDriveService provided by OracleDriveServiceImpl.
+     */
+    @Binds
+    @Singleton
+    abstract fun bindOracleDriveService(
+        oracleDriveServiceImpl: OracleDriveServiceImpl,
     ): OracleDriveService
 }
 >>>>>>> origin/coderabbitai/chat/e19563d

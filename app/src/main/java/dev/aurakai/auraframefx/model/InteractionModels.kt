@@ -21,14 +21,14 @@ data class EnhancedInteractionData(
     val timestamp: String,
     val context: Map<String, String> = emptyMap(),
     val enrichmentData: Map<String, String> = emptyMap(),
-    val emotion: String? = null
+    val emotion: String? = null,
 )
 
 @Serializable
 data class InteractionData(
     val content: String,
     val type: String = "text",
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 )
 
 /**
@@ -40,7 +40,7 @@ data class InteractionResponse(
     val agent: String,
     val confidence: Float,
     val timestamp: String,
-    val metadata: Map<String, String> = emptyMap()
+    val metadata: Map<String, String> = emptyMap(),
 )
 
 enum class CreativeIntent {
@@ -70,7 +70,7 @@ data class AgentRequest(
     val query: String,
     val type: String = "text",
     val context: Map<String, String> = emptyMap(),
-    val metadata: Map<String, String> = emptyMap()
+    val metadata: Map<String, String> = emptyMap(),
 )
 
 /**
@@ -80,7 +80,7 @@ data class AgentRequest(
 data class AiRequest(
     val query: String,
     val type: String = "text",
-    val context: Map<String, String> = emptyMap()
+    val context: Map<String, String> = emptyMap(),
 )
 
 /**
@@ -91,7 +91,7 @@ data class GenerateTextRequest(
     val prompt: String,
     val maxTokens: Int = 1000,
     val temperature: Float = 0.7f,
-    val topP: Float = 0.9f
+    val topP: Float = 0.9f,
 )
 
 /**
@@ -101,5 +101,5 @@ data class GenerateTextRequest(
 data class GenerateTextResponse(
     val generatedText: String,
     val finishReason: String = "completed",
-    val usage: Map<String, Int> = emptyMap()
+    val usage: Map<String, Int> = emptyMap(),
 )

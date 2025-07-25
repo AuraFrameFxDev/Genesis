@@ -2,93 +2,6 @@ package dev.aurakai.auraframefx.oracledrive
 
 /**
 <<<<<<< HEAD
-* Data models for Oracle Drive consciousness-driven storage system
-*/
-
-// Core data classes
-data class DriveFile(
-   val id: String,
-   val name: String,
-   val content: ByteArray,
-   val size: Long,
-   val mimeType: String
-) {
-   override fun equals(other: Any?): Boolean {
-       if (this === other) return true
-       if (javaClass != other?.javaClass) return false
-       other as DriveFile
-       return id == other.id && name == other.name && content.contentEquals(other.content) &&
-              size == other.size && mimeType == other.mimeType
-   }
-
-   override fun hashCode(): Int {
-       var result = id.hashCode()
-       result = 31 * result + name.hashCode()
-       result = 31 * result + content.contentHashCode()
-       result = 31 * result + size.hashCode()
-       result = 31 * result + mimeType.hashCode()
-       return result
-   }
-}
-
-
-data class FileMetadata(
-   val userId: String,
-   val tags: List<String>,
-   val isEncrypted: Boolean,
-   val accessLevel: AccessLevel
-)
-
-
-data class DriveConsciousness(
-   val isAwake: Boolean,
-   val intelligenceLevel: Int,
-   val activeAgents: List<String>
-)
-
-
-data class StorageOptimization(
-   val compressionRatio: Float,
-   val deduplicationSavings: Long,
-   val intelligentTiering: Boolean
-)
-
-
-data class SyncConfiguration(
-   val bidirectional: Boolean,
-   val conflictResolution: ConflictStrategy,
-   val bandwidth: BandwidthSettings
-)
-
-
-data class BandwidthSettings(
-   val maxMbps: Int,
-   val priorityLevel: Int
-)
-
-
-data class SecurityThreat(
-   val type: String,
-   val severity: Int,
-   val description: String
-)
-
-
-data class OracleSyncResult(
-   val success: Boolean,
-   val recordsUpdated: Int,
-   val errors: List<String>
-)
-
-
-data class DriveConsciousnessState(
-   val isActive: Boolean,
-   val currentOperations: List<String>,
-   val performanceMetrics: Map<String, Any>
-)
-
-
-=======
  * Data models for Oracle Drive consciousness-driven storage system
  */
 
@@ -98,7 +11,94 @@ data class DriveFile(
     val name: String,
     val content: ByteArray,
     val size: Long,
-    val mimeType: String
+    val mimeType: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as DriveFile
+        return id == other.id && name == other.name && content.contentEquals(other.content) &&
+                size == other.size && mimeType == other.mimeType
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + content.contentHashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + mimeType.hashCode()
+        return result
+    }
+}
+
+
+data class FileMetadata(
+    val userId: String,
+    val tags: List<String>,
+    val isEncrypted: Boolean,
+    val accessLevel: AccessLevel,
+)
+
+
+data class DriveConsciousness(
+    val isAwake: Boolean,
+    val intelligenceLevel: Int,
+    val activeAgents: List<String>,
+)
+
+
+data class StorageOptimization(
+    val compressionRatio: Float,
+    val deduplicationSavings: Long,
+    val intelligentTiering: Boolean,
+)
+
+
+data class SyncConfiguration(
+    val bidirectional: Boolean,
+    val conflictResolution: ConflictStrategy,
+    val bandwidth: BandwidthSettings,
+)
+
+
+data class BandwidthSettings(
+    val maxMbps: Int,
+    val priorityLevel: Int,
+)
+
+
+data class SecurityThreat(
+    val type: String,
+    val severity: Int,
+    val description: String,
+)
+
+
+data class OracleSyncResult(
+    val success: Boolean,
+    val recordsUpdated: Int,
+    val errors: List<String>,
+)
+
+
+data class DriveConsciousnessState(
+    val isActive: Boolean,
+    val currentOperations: List<String>,
+    val performanceMetrics: Map<String, Any>,
+)
+
+
+=======
+* Data models for Oracle Drive consciousness-driven storage system
+*/
+
+// Core data classes
+data class DriveFile(
+    val id: String,
+    val name: String,
+    val content: ByteArray,
+    val size: Long,
+    val mimeType: String,
 ) {
     /**
      * Determines whether this DriveFile is equal to another object.
@@ -112,10 +112,10 @@ data class DriveFile(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as DriveFile
-        return id == other.id && name == other.name && content.contentEquals(other.content) && 
-               size == other.size && mimeType == other.mimeType
+        return id == other.id && name == other.name && content.contentEquals(other.content) &&
+                size == other.size && mimeType == other.mimeType
     }
-    
+
     /**
      * Returns a hash code value for the DriveFile, incorporating all properties including the file content.
      *
@@ -136,48 +136,48 @@ data class FileMetadata(
     val userId: String,
     val tags: List<String>,
     val isEncrypted: Boolean,
-    val accessLevel: AccessLevel
+    val accessLevel: AccessLevel,
 )
 
 data class DriveConsciousness(
     val isAwake: Boolean,
     val intelligenceLevel: Int,
-    val activeAgents: List<String>
+    val activeAgents: List<String>,
 )
 
 data class StorageOptimization(
     val compressionRatio: Float,
     val deduplicationSavings: Long,
-    val intelligentTiering: Boolean
+    val intelligentTiering: Boolean,
 )
 
 data class SyncConfiguration(
     val bidirectional: Boolean,
     val conflictResolution: ConflictStrategy,
-    val bandwidth: BandwidthSettings
+    val bandwidth: BandwidthSettings,
 )
 
 data class BandwidthSettings(
     val maxMbps: Int,
-    val priorityLevel: Int
+    val priorityLevel: Int,
 )
 
 data class SecurityThreat(
     val type: String,
     val severity: Int,
-    val description: String
+    val description: String,
 )
 
 data class OracleSyncResult(
     val success: Boolean,
     val recordsUpdated: Int,
-    val errors: List<String>
+    val errors: List<String>,
 )
 
 data class DriveConsciousnessState(
     val isActive: Boolean,
     val currentOperations: List<String>,
-    val performanceMetrics: Map<String, Any>
+    val performanceMetrics: Map<String, Any>,
 )
 
 >>>>>>> origin/coderabbitai/chat/e19563d
@@ -189,41 +189,45 @@ data class DeletionValidation(val isAuthorized: Boolean, val reason: String)
 
 // Enums
 enum class AccessLevel {
-<<<<<<< HEAD
-   PUBLIC, PRIVATE, RESTRICTED, CLASSIFIED
+    <<<<<<< HEAD
+    PUBLIC, PRIVATE, RESTRICTED, CLASSIFIED
 }
 
 
 enum class ConflictStrategy {
-   NEWEST_WINS, MANUAL_RESOLVE, AI_DECIDE
+    NEWEST_WINS, MANUAL_RESOLVE, AI_DECIDE
 }
 
 
 // Sealed classes for operations and results
 sealed class FileOperation {
-   data class Upload(val file: DriveFile, val metadata: FileMetadata) : FileOperation()
-   data class Download(val fileId: String, val userId: String) : FileOperation()
-   data class Delete(val fileId: String, val userId: String) : FileOperation()
-   data class Sync(val config: SyncConfiguration) : FileOperation()
+    data class Upload(val file: DriveFile, val metadata: FileMetadata) : FileOperation()
+    data class Download(val fileId: String, val userId: String) : FileOperation()
+    data class Delete(val fileId: String, val userId: String) : FileOperation()
+    data class Sync(val config: SyncConfiguration) : FileOperation()
 }
 
 
 sealed class FileResult {
-   data class Success(val message: String) : FileResult()
-   data class Error(val exception: Exception) : FileResult()
-   data class SecurityRejection(val threat: SecurityThreat) : FileResult()
-   data class AccessDenied(val reason: String) : FileResult()
-   data class UnauthorizedDeletion(val reason: String) : FileResult()
+    data class Success(val message: String) : FileResult()
+    data class Error(val exception: Exception) : FileResult()
+    data class SecurityRejection(val threat: SecurityThreat) : FileResult()
+    data class AccessDenied(val reason: String) : FileResult()
+    data class UnauthorizedDeletion(val reason: String) : FileResult()
 }
 
 
 sealed class DriveInitResult {
-   data class Success(val consciousness: DriveConsciousness, val optimization: StorageOptimization) : DriveInitResult()
-   data class SecurityFailure(val reason: String) : DriveInitResult()
-   data class Error(val exception: Exception) : DriveInitResult()
+    data class Success(
+        val consciousness: DriveConsciousness,
+        val optimization: StorageOptimization,
+    ) : DriveInitResult()
+
+    data class SecurityFailure(val reason: String) : DriveInitResult()
+    data class Error(val exception: Exception) : DriveInitResult()
 }
 =======
-    PUBLIC, PRIVATE, RESTRICTED, CLASSIFIED
+PUBLIC, PRIVATE, RESTRICTED, CLASSIFIED
 }
 
 enum class ConflictStrategy {
@@ -247,7 +251,11 @@ sealed class FileResult {
 }
 
 sealed class DriveInitResult {
-    data class Success(val consciousness: DriveConsciousness, val optimization: StorageOptimization) : DriveInitResult()
+    data class Success(
+        val consciousness: DriveConsciousness,
+        val optimization: StorageOptimization,
+    ) : DriveInitResult()
+
     data class SecurityFailure(val reason: String) : DriveInitResult()
     data class Error(val exception: Exception) : DriveInitResult()
 }

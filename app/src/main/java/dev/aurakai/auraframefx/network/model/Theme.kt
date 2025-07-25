@@ -9,7 +9,7 @@ data class Theme(
     val description: String? = null,
     val isActive: Boolean = false,
     val colors: ThemeColors? = null,
-    val styles: Map<String, String> = emptyMap()
+    val styles: Map<String, String> = emptyMap(),
 )
 
 @Serializable
@@ -23,5 +23,5 @@ data class ThemeColors(
     val onSecondary: String,
     val onBackground: String,
     val onSurface: String,
-    val onError: String
+    val onError: String,
 )

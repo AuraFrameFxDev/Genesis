@@ -63,7 +63,7 @@ interface AuraFxLogger {
         tag: String,
         operation: String,
         durationMs: Long,
-        metadata: Map<String, Any> = emptyMap()
+        metadata: Map<String, Any> = emptyMap(),
     )
 
     /**
@@ -87,7 +87,7 @@ interface AuraFxLogger {
         tag: String,
         operation: String,
         confidence: Float,
-        metadata: Map<String, Any> = emptyMap()
+        metadata: Map<String, Any> = emptyMap(),
     )
 
     /**

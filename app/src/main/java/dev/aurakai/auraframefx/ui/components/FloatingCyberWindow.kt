@@ -17,7 +17,7 @@ fun FloatingCyberWindow(
     title: String,
     cornerStyle: CornerStyle = CornerStyle.ROUNDED,
     backgroundStyle: BackgroundStyle = BackgroundStyle.SOLID,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     // TODO: Implement floating cyber window
 }

@@ -23,7 +23,7 @@ import javax.inject.Singleton
 class SecurityMonitor @Inject constructor(
     private val securityContext: SecurityContext,
     private val genesisBridgeService: GenesisBridgeService,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var isMonitoring = false
@@ -34,7 +34,7 @@ class SecurityMonitor @Inject constructor(
         val severity: String,
         val source: String,
         val timestamp: Long,
-        val details: Map<String, String>
+        val details: Map<String, String>,
     )
 
     @Serializable
@@ -43,7 +43,7 @@ class SecurityMonitor @Inject constructor(
         val confidence: Double,
         val source: String,
         val mitigationApplied: Boolean,
-        val details: Map<String, String>
+        val details: Map<String, String>,
     )
 
     /**

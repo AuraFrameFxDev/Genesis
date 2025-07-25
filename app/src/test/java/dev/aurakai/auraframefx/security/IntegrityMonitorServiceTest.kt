@@ -22,7 +22,8 @@ class IntegrityMonitorServiceTest {
 
     @Test
     fun testServiceStarts() {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), IntegrityMonitorService::class.java)
+        val intent =
+            Intent(ApplicationProvider.getApplicationContext(), IntegrityMonitorService::class.java)
         service.onStartCommand(intent, 0, 0)
         assertThat(service).isNotNull()
     }

@@ -16,11 +16,11 @@
     <string name="error_no_internet">No internet connection. Please check your network settings.</string>
     <string name="error_network_io">Network error. Please check your connection and try again.</string>
     <string name="error_unknown">An unknown error occurred. Please try again.</string>
-    
+
     <!-- API Success Messages -->
     <string name="success_theme_applied">Theme applied successfully</string>
     <string name="success_agent_request">Request processed successfully</string>
-    
+
     <!-- Loading Messages -->
     <string name="loading">Loading…</string>
     <string name="processing">Processing…</string>

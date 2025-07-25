@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class OracleDriveControlViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val TAG = "OracleDriveVM"

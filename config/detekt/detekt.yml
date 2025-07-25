@@ -40,7 +40,7 @@ style:
     active: true
 
 detekt:
-  config: 
+  config:
     validation: true
     build:
       maxIssues: 10

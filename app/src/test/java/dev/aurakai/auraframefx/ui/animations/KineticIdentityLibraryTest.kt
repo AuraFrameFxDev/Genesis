@@ -28,10 +28,10 @@ import kotlin.test.assertNotNull
 
 /**
  * Comprehensive unit tests for KineticIdentityLibrary
- * 
+ *
  * Testing Framework: JUnit 4 with Compose Test Rules and JUnit 5 for pure functions
  * Mocking Library: MockK
- * 
+ *
  * Tests cover:
  * - Breathing animation behavior across emotional states
  * - Responsive glow activation and deactivation
@@ -77,7 +77,7 @@ class KineticIdentityLibraryTest {
     @Test
     fun breathingAnimation_adaptsToEmotionalState_calm() {
         var currentState by mutableStateOf(EmotionalState.CALM)
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.BreathingAnimation(
                 modifier = Modifier.testTag("breathing_calm"),
@@ -86,7 +86,7 @@ class KineticIdentityLibraryTest {
         }
 
         composeTestRule.onNodeWithTag("breathing_calm").assertExists()
-        
+
         // Test state change
         currentState = EmotionalState.ENERGETIC
         composeTestRule.waitForIdle()
@@ -247,7 +247,7 @@ class KineticIdentityLibraryTest {
     @Test
     fun responsiveGlow_handlesStateTransitions() {
         var isActive by mutableStateOf(false)
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.ResponsiveGlow(
                 modifier = Modifier.testTag("glow_transition"),
@@ -258,12 +258,12 @@ class KineticIdentityLibraryTest {
         }
 
         composeTestRule.onNodeWithTag("glow_transition").assertExists()
-        
+
         // Trigger state change
         isActive = true
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("glow_transition").assertExists()
-        
+
         isActive = false
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("glow_transition").assertExists()
@@ -489,7 +489,7 @@ class KineticIdentityLibraryTest {
     @Test
     fun keyboardGlow_handlesTypingStateTransitions() {
         var isTyping by mutableStateOf(false)
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.KeyboardGlow(
                 modifier = Modifier.testTag("keyboard_transition"),
@@ -499,12 +499,12 @@ class KineticIdentityLibraryTest {
         }
 
         composeTestRule.onNodeWithTag("keyboard_transition").assertExists()
-        
+
         // Start typing
         isTyping = true
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("keyboard_transition").assertExists()
-        
+
         // Stop typing
         isTyping = false
         composeTestRule.waitForIdle()
@@ -593,7 +593,7 @@ class KineticIdentityLibraryTest {
         )
 
         val copied = original.copy(life = 0.3f)
-        
+
         assertEquals(Offset(100f, 200f), copied.position)
         assertEquals(Offset(1f, 2f), copied.velocity)
         assertEquals(0.3f, copied.life)
@@ -664,7 +664,7 @@ class KineticIdentityLibraryTest {
     @Test
     fun animations_handleRapidStateChanges() {
         var emotionalState by mutableStateOf(EmotionalState.CALM)
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.BreathingAnimation(
                 modifier = Modifier.testTag("breathing_rapid_changes"),
@@ -677,14 +677,14 @@ class KineticIdentityLibraryTest {
             emotionalState = EmotionalState.values()[index % EmotionalState.values().size]
             composeTestRule.waitForIdle()
         }
-        
+
         composeTestRule.onNodeWithTag("breathing_rapid_changes").assertExists()
     }
 
     @Test
     fun responsiveGlow_handlesManyTouchPositionChanges() {
         var touchPosition by mutableStateOf(Offset(0f, 0f))
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.ResponsiveGlow(
                 modifier = Modifier.testTag("glow_many_touches"),
@@ -699,16 +699,16 @@ class KineticIdentityLibraryTest {
             touchPosition = Offset(index * 10f, index * 15f)
             composeTestRule.waitForIdle()
         }
-        
+
         composeTestRule.onNodeWithTag("glow_many_touches").assertExists()
     }
 
     @Test
     fun particleFlow_handlesThemeChanges() {
         var animationStyle by mutableStateOf(AuraTheme.AnimationStyle.FLOWING)
-        
+
         every { mockTheme.animationStyle } returns animationStyle
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.ParticleFlow(
                 modifier = Modifier.testTag("particle_theme_changes"),
@@ -717,11 +717,11 @@ class KineticIdentityLibraryTest {
         }
 
         composeTestRule.onNodeWithTag("particle_theme_changes").assertExists()
-        
+
         // Change animation style
         animationStyle = AuraTheme.AnimationStyle.ENERGETIC
         every { mockTheme.animationStyle } returns animationStyle
-        
+
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("particle_theme_changes").assertExists()
     }
@@ -738,7 +738,7 @@ class KineticIdentityLibraryTest {
         }
 
         composeTestRule.onNodeWithTag("breathing_float_bounds").assertExists()
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.BreathingAnimation(
                 modifier = Modifier.testTag("breathing_float_bounds_max"),
@@ -893,7 +893,7 @@ class KineticIdentityLibraryTest {
     @Test
     fun animations_maintainPerformanceUnderLoad() {
         var stateCounter by mutableStateOf(0)
-        
+
         composeTestRule.setContent {
             // Simulate heavy state changes
             LaunchedEffect(stateCounter) {
@@ -902,14 +902,14 @@ class KineticIdentityLibraryTest {
                     stateCounter++
                 }
             }
-            
+
             Box(modifier = Modifier.fillMaxSize()) {
                 KineticIdentityLibrary.BreathingAnimation(
                     modifier = Modifier.testTag("breathing_load_test"),
                     emotionalState = EmotionalState.values()[stateCounter % EmotionalState.values().size],
                     intensity = (stateCounter % 10).toFloat()
                 )
-                
+
                 KineticIdentityLibrary.ResponsiveGlow(
                     modifier = Modifier.testTag("glow_load_test"),
                     isActive = stateCounter % 2 == 0,
@@ -922,7 +922,7 @@ class KineticIdentityLibraryTest {
 
         // Let the test run for a while to stress test
         composeTestRule.waitForIdle()
-        
+
         composeTestRule.onNodeWithTag("breathing_load_test").assertExists()
         composeTestRule.onNodeWithTag("glow_load_test").assertExists()
     }
@@ -935,7 +935,7 @@ class KineticIdentityLibraryTest {
             every { accentColor } returns Color.Unspecified
             every { animationStyle } returns AuraTheme.AnimationStyle.FLOWING
         }
-        
+
         composeTestRule.setContent {
             KineticIdentityLibrary.ResponsiveGlow(
                 modifier = Modifier.testTag("glow_null_color"),
@@ -955,7 +955,7 @@ class KineticIdentityLibraryTest {
                 every { accentColor } returns Color.Blue
                 every { animationStyle } returns style
             }
-            
+
             composeTestRule.setContent {
                 KineticIdentityLibrary.ParticleFlow(
                     modifier = Modifier.testTag("particle_style_$index"),
@@ -977,7 +977,7 @@ class KineticIdentityLibraryPureFunctionTest {
         // We can't directly access private functions, but we can test the public interface
         // that uses them indirectly through the Composable functions
         val particleCount = 10
-        
+
         // This would be tested through the UI if the private functions were public
         // For now, we test the data class behavior which is used by the private functions
         val testParticle = Particle(
@@ -987,7 +987,7 @@ class KineticIdentityLibraryPureFunctionTest {
             maxLife = 5.0f,
             size = 8.0f
         )
-        
+
         kotlin.test.assertNotNull(testParticle)
         kotlin.test.assertEquals(100f, testParticle.position.x)
         kotlin.test.assertEquals(200f, testParticle.position.y)
@@ -1002,7 +1002,7 @@ class KineticIdentityLibraryPureFunctionTest {
             maxLife = 1.0f,
             size = 5f
         )
-        
+
         // Test the alpha calculation logic that would be used in drawParticle
         val intensity = 1.0f
         val expectedAlpha = (particle.life / particle.maxLife) * intensity
@@ -1018,7 +1018,7 @@ class KineticIdentityLibraryPureFunctionTest {
             maxLife = 1.0f,
             size = 5f
         )
-        
+
         val intensity = 1.0f
         val expectedAlpha = (particle.life / particle.maxLife) * intensity
         kotlin.test.assertEquals(0.0f, expectedAlpha)
@@ -1033,7 +1033,7 @@ class KineticIdentityLibraryPureFunctionTest {
             maxLife = 1.0f,
             size = 5f
         )
-        
+
         val intensity = 1.0f
         val expectedAlpha = (particle.life / particle.maxLife) * intensity
         kotlin.test.assertEquals(1.0f, expectedAlpha)
@@ -1048,7 +1048,7 @@ class KineticIdentityLibraryPureFunctionTest {
             maxLife = 1.0f,
             size = 5f
         )
-        
+
         val intensity = 2.0f
         val expectedAlpha = (particle.life / particle.maxLife) * intensity
         kotlin.test.assertEquals(1.0f, expectedAlpha)
@@ -1062,7 +1062,7 @@ class KineticIdentityLibraryPureFunctionTest {
         val focusedDuration = 3000
         val stressedDuration = 1500
         val neutralDuration = 3500
-        
+
         // Verify duration ordering makes sense (stressed < energetic < focused < neutral < calm)
         kotlin.test.assertTrue(stressedDuration < energeticDuration)
         kotlin.test.assertTrue(energeticDuration < focusedDuration)
@@ -1078,7 +1078,7 @@ class KineticIdentityLibraryPureFunctionTest {
         val focusedAmplitude = 0.5f
         val stressedAmplitude = 1.0f
         val neutralAmplitude = 0.6f
-        
+
         // Verify amplitude ordering makes sense (calm < focused < neutral < energetic < stressed)
         kotlin.test.assertTrue(calmAmplitude < focusedAmplitude)
         kotlin.test.assertTrue(focusedAmplitude < neutralAmplitude)

@@ -8,7 +8,7 @@ import java.io.File
  * All file operations are encrypted at rest and in transit.
  */
 interface SecureFileService {
-    
+
     /**
      * Saves encrypted data to a file, optionally within a specified subdirectory.
      *
@@ -22,9 +22,9 @@ interface SecureFileService {
     suspend fun saveFile(
         data: ByteArray,
         fileName: String,
-        directory: String? = null
+        directory: String? = null,
     ): Flow<FileOperationResult>
-    
+
     /**
      * Reads and decrypts the specified file, optionally from a subdirectory.
      *
@@ -34,9 +34,9 @@ interface SecureFileService {
      */
     suspend fun readFile(
         fileName: String,
-        directory: String? = null
+        directory: String? = null,
     ): Flow<FileOperationResult>
-    
+
     /**
      * Securely deletes the specified file, optionally from a given subdirectory.
      *
@@ -46,17 +46,17 @@ interface SecureFileService {
      */
     suspend fun deleteFile(
         fileName: String,
-        directory: String? = null
+        directory: String? = null,
     ): FileOperationResult
-    
+
     /**
- * Returns a list of file names (without extensions) in the specified directory.
- *
- * If no directory is provided, lists files in the root directory.
- *
- * @param directory The optional subdirectory to list files from.
- * @return A list of file names without their extensions.
- */
+     * Returns a list of file names (without extensions) in the specified directory.
+     *
+     * If no directory is provided, lists files in the root directory.
+     *
+     * @param directory The optional subdirectory to list files from.
+     * @return A list of file names without their extensions.
+     */
     suspend fun listFiles(directory: String? = null): List<String>
 }
 
@@ -67,7 +67,7 @@ sealed class FileOperationResult {
     data class Success(val file: File) : FileOperationResult()
     data class Data(val data: ByteArray, val fileName: String) : FileOperationResult()
     data class Error(val message: String, val exception: Exception? = null) : FileOperationResult()
-    
+
     /**
      * Determines whether this [FileOperationResult] is equal to another object.
      *
@@ -88,7 +88,7 @@ sealed class FileOperationResult {
             is Error -> other is Error && message == other.message && exception == other.exception
         }
     }
-    
+
     /**
      * Returns a hash code value for the `FileOperationResult` instance based on its type and contained data.
      *

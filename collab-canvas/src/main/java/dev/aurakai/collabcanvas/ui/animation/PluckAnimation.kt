@@ -23,7 +23,7 @@ data class PluckablePath(
     var scale: Float = 1f,
     var alpha: Float = 1f,
     var isPlucked: Boolean = false,
-    var targetPosition: Offset = Offset.Zero
+    var targetPosition: Offset = Offset.Zero,
 )
 
 /**
@@ -34,10 +34,10 @@ fun Modifier.pluckableCanvas(
     onPathPlucked: (PluckablePath) -> Unit,
     onPathDropped: (PluckablePath) -> Unit,
     onPathClicked: (PluckablePath) -> Unit,
-    onPathMoved: (PluckablePath, Offset) -> Unit
+    onPathMoved: (PluckablePath, Offset) -> Unit,
 ) = pointerInput(Unit) {
     var currentDrag: PluckablePath? = null
-    
+
     detectTapGestures(
         onTap = { offset ->
             paths.find { path ->
@@ -57,7 +57,7 @@ fun Modifier.pluckableCanvas(
             }
         }
     )
-    
+
     detectDragGestures(
         onDragStart = { offset ->
             paths.find { path ->
@@ -107,10 +107,10 @@ fun morphAnimationSpec(): AnimationSpec<Float> = tween(
 fun interpolatePaths(
     start: Path,
     end: Path,
-    progress: Float
+    progress: Float,
 ): Path {
     val result = Path()
-    
+
     // Simple interpolation - in a real app, you'd want to use a more sophisticated algorithm
     // that matches up points between the two paths
     if (progress < 0.5f) {
@@ -118,6 +118,6 @@ fun interpolatePaths(
     } else {
         result.addPath(end)
     }
-    
+
     return result
 }

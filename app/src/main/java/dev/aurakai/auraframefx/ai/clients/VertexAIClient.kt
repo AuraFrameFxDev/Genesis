@@ -24,7 +24,7 @@ interface VertexAIClient {
     suspend fun generateText(
         prompt: String,
         maxTokens: Int = 1000,
-        temperature: Float = 0.7f
+        temperature: Float = 0.7f,
     ): String
 
     /**

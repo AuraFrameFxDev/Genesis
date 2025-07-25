@@ -29,7 +29,7 @@ data class AgentConfig(
     val enabled: Boolean = true,
     val priority: Int = 1,
     val capabilities: List<String> = emptyList(),
-    val settings: Map<String, String> = emptyMap()
+    val settings: Map<String, String> = emptyMap(),
 )
 
 /**
@@ -38,5 +38,5 @@ data class AgentConfig(
 data class AgentHierarchyData(
     val parentAgent: AgentType?,
     val childAgents: List<AgentType>,
-    val level: Int
+    val level: Int,
 )

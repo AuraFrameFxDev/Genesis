@@ -30,7 +30,7 @@ data class CanvasElement(
     val isSelected: Boolean = false,
     val createdBy: String,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 ) {
     /**
      * Creates a copy of this element with the specified path.
@@ -76,7 +76,7 @@ data class CanvasElement(
             createdBy: String,
             path: PathData = PathData(),
             color: Color = Color.Black,
-            strokeWidth: Float = 5f
+            strokeWidth: Float = 5f,
         ): CanvasElement {
             return CanvasElement(
                 id = id,
@@ -107,7 +107,7 @@ enum class ElementType {
  */
 data class PathData(
     val points: List<Offset> = emptyList(),
-    val isComplete: Boolean = false
+    val isComplete: Boolean = false,
 ) {
     /**
      * Creates a new PathData with an additional point.
@@ -146,11 +146,11 @@ class PathTypeAdapter : JsonSerializer<Path>, JsonDeserializer<Path> {
     override fun serialize(
         src: Path,
         typeOfSrc: Type,
-        context: JsonSerializationContext
+        context: JsonSerializationContext,
     ): JsonElement {
         val bounds = android.graphics.RectF()
         src.computeBounds(bounds, true)
-        
+
         val pathData = src.toPathData()
         val jsonObject = JsonObject()
         jsonObject.addProperty("boundsLeft", bounds.left)
@@ -164,7 +164,7 @@ class PathTypeAdapter : JsonSerializer<Path>, JsonDeserializer<Path> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
-        context: JsonDeserializationContext
+        context: JsonDeserializationContext,
     ): Path {
         val jsonObject = json.asJsonObject
         val pathData = jsonObject.get("pathData").asString
@@ -177,10 +177,12 @@ class PathTypeAdapter : JsonSerializer<Path>, JsonDeserializer<Path> {
                         val (x, y) = cmd.drop(1).split(",").map { it.toFloat() }
                         moveTo(x, y)
                     }
+
                     'L' -> {
                         val (x, y) = cmd.drop(1).split(",").map { it.toFloat() }
                         lineTo(x, y)
                     }
+
                     'Z' -> close()
                 }
             }
@@ -195,15 +197,19 @@ class PathTypeAdapter : JsonSerializer<Path>, JsonDeserializer<Path> {
                 PathIterator.Verb.MOVE -> {
                     pathData.append("M${points[0].x},${points[0].y} ")
                 }
+
                 PathIterator.Verb.LINE -> {
                     pathData.append("L${points[1].x},${points[1].y} ")
                 }
+
                 PathIterator.Verb.QUAD -> {
                     pathData.append("Q${points[1].x},${points[1].y} ${points[2].x},${points[2].y} ")
                 }
+
                 PathIterator.Verb.CUBIC -> {
                     pathData.append("C${points[1].x},${points[1].y} ${points[2].x},${points[2].y} ${points[3].x},${points[3].y} ")
                 }
+
                 PathIterator.Verb.CLOSE -> {
                     pathData.append("Z ")
                 }
@@ -220,7 +226,7 @@ class ColorTypeAdapter : JsonSerializer<Color>, JsonDeserializer<Color> {
     override fun serialize(
         src: Color,
         typeOfSrc: Type,
-        context: JsonSerializationContext
+        context: JsonSerializationContext,
     ): JsonElement {
         return JsonPrimitive(src.value.toInt())
     }
@@ -228,7 +234,7 @@ class ColorTypeAdapter : JsonSerializer<Color>, JsonDeserializer<Color> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
-        context: JsonDeserializationContext
+        context: JsonDeserializationContext,
     ): Color {
         return Color(json.asLong.toULong())
     }

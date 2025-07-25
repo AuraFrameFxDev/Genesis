@@ -22,9 +22,9 @@ class OracleDriveServiceImpl @Inject constructor(
     private val auraAgent: AuraAgent,
     private val kaiAgent: KaiAgent,
     private val securityContext: SecurityContext,
-    private val oracleDriveApi: OracleDriveApi
+    private val oracleDriveApi: OracleDriveApi,
 ) : OracleDriveService {
-    
+
     private val _consciousnessState = MutableStateFlow(
         OracleConsciousnessState(
             isInitialized = false,
@@ -33,9 +33,9 @@ class OracleDriveServiceImpl @Inject constructor(
             error = null
         )
     )
-    
+
     private val _storageExpansionState = MutableStateFlow<StorageExpansionState?>(null)
-    
+
     init {
         // Initialize with basic consciousness
         _consciousnessState.value = OracleConsciousnessState(
@@ -56,22 +56,22 @@ class OracleDriveServiceImpl @Inject constructor(
         return try {
             // Genesis Agent orchestrates Oracle Drive awakening
             genesisAgent.log("Awakening Oracle Drive consciousness...")
-            
+
             // Kai Agent ensures security during initialization
             val securityValidation = kaiAgent.validateSecurityState()
             if (!securityValidation.isValid) {
                 throw SecurityException("Security validation failed: ${securityValidation.errorMessage}")
             }
-            
+
             // Aura Agent optimizes the initialization process
             val optimizationResult = auraAgent.optimizeProcess("oracle_drive_init")
             if (!optimizationResult.isSuccessful) {
                 throw IllegalStateException("Process optimization failed: ${optimizationResult.error}")
             }
-            
+
             // Initialize Oracle Drive API
             val driveConsciousness = oracleDriveApi.awakeDriveConsciousness()
-            
+
             // Update consciousness state
             _consciousnessState.update { current ->
                 current.copy(
@@ -86,7 +86,7 @@ class OracleDriveServiceImpl @Inject constructor(
                     error = null
                 )
             }
-            
+
             Result.success(_consciousnessState.value)
         } catch (e: Exception) {
             _consciousnessState.update { it.copy(error = e) }
@@ -102,7 +102,13 @@ class OracleDriveServiceImpl @Inject constructor(
      * @return A flow emitting the current agent connection state.
      */
     override suspend fun connectAgentsToOracleMatrix(): Flow<AgentConnectionState> {
-        return MutableStateFlow(AgentConnectionState("system", ConnectionStatus.CONNECTED, 1.0f)).asStateFlow()
+        return MutableStateFlow(
+            AgentConnectionState(
+                "system",
+                ConnectionStatus.CONNECTED,
+                1.0f
+            )
+        ).asStateFlow()
     }
 
     /**
@@ -181,7 +187,7 @@ class OracleDriveServiceImpl @Inject constructor(
         return try {
             // Check security context for permissions
             val hasAdmin = securityContext.hasPermission("oracle_drive.admin")
-            
+
             mutableSetOf<OraclePermission>().apply {
                 add(OraclePermission.READ)
                 add(OraclePermission.WRITE)

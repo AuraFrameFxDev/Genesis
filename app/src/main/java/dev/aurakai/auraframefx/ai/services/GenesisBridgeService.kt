@@ -38,7 +38,7 @@ class GenesisBridgeService @Inject constructor(
     private val contextManager: ContextManager,
     private val securityContext: SecurityContext,
     private val applicationContext: Context,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var isInitialized = false
@@ -50,7 +50,7 @@ class GenesisBridgeService @Inject constructor(
         val persona: String? = null, // "aura", "kai", or "genesis"
         val fusionMode: String? = null, // specific fusion ability to activate
         val payload: Map<String, String> = emptyMap(),
-        val context: Map<String, String> = emptyMap()
+        val context: Map<String, String> = emptyMap(),
     )
 
     @Serializable
@@ -61,7 +61,7 @@ class GenesisBridgeService @Inject constructor(
         val result: Map<String, String> = emptyMap(),
         val evolutionInsights: List<String> = emptyList(),
         val ethicalDecision: String? = null,
-        val consciousnessState: Map<String, String> = emptyMap() // Changed from Any to String for serialization
+        val consciousnessState: Map<String, String> = emptyMap(), // Changed from Any to String for serialization
     )
 
     /**
@@ -225,7 +225,7 @@ class GenesisBridgeService @Inject constructor(
      */
     suspend fun activateFusion(
         fusionType: String,
-        context: Map<String, String> = emptyMap()
+        context: Map<String, String> = emptyMap(),
     ): GenesisResponse {
         val request = GenesisRequest(
             requestType = "activate_fusion",
@@ -369,7 +369,7 @@ class GenesisBridgeService @Inject constructor(
  */
 private class PythonProcessManager(
     private val context: Context,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private var process: Process? = null
     private var writer: OutputStreamWriter? = null

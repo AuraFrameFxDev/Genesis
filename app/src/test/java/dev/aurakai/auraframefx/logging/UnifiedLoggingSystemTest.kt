@@ -323,75 +323,136 @@ class UnifiedLoggingSystemTest {
 
         @Test
         fun `system health should start as HEALTHY`() {
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
 
         @Test
         fun `FATAL log should set system health to CRITICAL`() = runTest {
             // Given
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
 
             // When
-            unifiedLoggingSystem.fatal(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Fatal error")
+            unifiedLoggingSystem.fatal(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Fatal error"
+            )
             delay(100) // Allow processing
 
             // Then
-            assertEquals(UnifiedLoggingSystem.SystemHealth.CRITICAL, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.CRITICAL,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
 
         @Test
         fun `ERROR log should set system health to ERROR when currently HEALTHY`() = runTest {
             // Given
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
 
             // When
-            unifiedLoggingSystem.error(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Error occurred")
+            unifiedLoggingSystem.error(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Error occurred"
+            )
             delay(100) // Allow processing
 
             // Then
-            assertEquals(UnifiedLoggingSystem.SystemHealth.ERROR, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.ERROR,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
 
         @Test
         fun `WARNING log should set system health to WARNING when currently HEALTHY`() = runTest {
             // Given
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
 
             // When
-            unifiedLoggingSystem.warning(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Warning occurred")
+            unifiedLoggingSystem.warning(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Warning occurred"
+            )
             delay(100) // Allow processing
 
             // Then
-            assertEquals(UnifiedLoggingSystem.SystemHealth.WARNING, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.WARNING,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
 
         @Test
         fun `WARNING log should not override ERROR system health`() = runTest {
             // Given - Set to ERROR first
-            unifiedLoggingSystem.error(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Error occurred")
+            unifiedLoggingSystem.error(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Error occurred"
+            )
             delay(100)
-            assertEquals(UnifiedLoggingSystem.SystemHealth.ERROR, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.ERROR,
+                unifiedLoggingSystem.systemHealth.value
+            )
 
             // When
-            unifiedLoggingSystem.warning(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Warning occurred")
+            unifiedLoggingSystem.warning(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Warning occurred"
+            )
             delay(100) // Allow processing
 
             // Then
-            assertEquals(UnifiedLoggingSystem.SystemHealth.ERROR, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.ERROR,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
 
         @Test
         fun `INFO and DEBUG logs should not affect system health`() = runTest {
             // Given
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
 
             // When
-            unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Info message")
-            unifiedLoggingSystem.debug(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Debug message")
+            unifiedLoggingSystem.info(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Info message"
+            )
+            unifiedLoggingSystem.debug(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Debug message"
+            )
             delay(100) // Allow processing
 
             // Then
-            assertEquals(UnifiedLoggingSystem.SystemHealth.HEALTHY, unifiedLoggingSystem.systemHealth.value)
+            assertEquals(
+                UnifiedLoggingSystem.SystemHealth.HEALTHY,
+                unifiedLoggingSystem.systemHealth.value
+            )
         }
     }
 
@@ -408,14 +469,19 @@ class UnifiedLoggingSystemTest {
         fun `log files should be created in correct directory with date format`() = runTest {
             // Given
             val logDir = File(tempDir, "aura_logs")
-            
+
             // When
-            unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Test message")
+            unifiedLoggingSystem.info(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Test",
+                "Test message"
+            )
             delay(200) // Allow file writing
 
             // Then
             assertTrue(logDir.exists())
-            val logFiles = logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
+            val logFiles =
+                logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
             assertNotNull(logFiles)
             assertTrue(logFiles!!.isNotEmpty())
         }
@@ -425,16 +491,21 @@ class UnifiedLoggingSystemTest {
             // Given
             val logDir = File(tempDir, "aura_logs")
             val testMessage = "Unique test message ${System.currentTimeMillis()}"
-            
+
             // When
-            unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "TestTag", testMessage)
+            unifiedLoggingSystem.info(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "TestTag",
+                testMessage
+            )
             delay(200) // Allow file writing
 
             // Then
-            val logFiles = logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
+            val logFiles =
+                logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
             assertNotNull(logFiles)
             assertTrue(logFiles!!.isNotEmpty())
-            
+
             val content = logFiles[0].readText()
             assertTrue(content.contains(testMessage))
             assertTrue(content.contains("[INFO]"))
@@ -447,13 +518,19 @@ class UnifiedLoggingSystemTest {
             // Given
             val logDir = File(tempDir, "aura_logs")
             val metadata = mapOf("userId" to 123, "action" to "login")
-            
+
             // When
-            unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.USER_ACTION, "Auth", "User logged in", metadata)
+            unifiedLoggingSystem.info(
+                UnifiedLoggingSystem.LogCategory.USER_ACTION,
+                "Auth",
+                "User logged in",
+                metadata
+            )
             delay(200) // Allow file writing
 
             // Then
-            val logFiles = logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
+            val logFiles =
+                logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
             val content = logFiles!![0].readText()
             assertTrue(content.contains("userId=123"))
             assertTrue(content.contains("action=login"))
@@ -464,13 +541,19 @@ class UnifiedLoggingSystemTest {
             // Given
             val logDir = File(tempDir, "aura_logs")
             val exception = RuntimeException("Test exception")
-            
+
             // When
-            unifiedLoggingSystem.error(UnifiedLoggingSystem.LogCategory.SYSTEM, "Error", "Something failed", exception)
+            unifiedLoggingSystem.error(
+                UnifiedLoggingSystem.LogCategory.SYSTEM,
+                "Error",
+                "Something failed",
+                exception
+            )
             delay(200) // Allow file writing
 
             // Then
-            val logFiles = logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
+            val logFiles =
+                logDir.listFiles { _, name -> name.startsWith("aura_log_") && name.endsWith(".log") }
             val content = logFiles!![0].readText()
             assertTrue(content.contains("Exception: RuntimeException: Test exception"))
         }
@@ -484,7 +567,7 @@ class UnifiedLoggingSystemTest {
         fun `LogEntry should include session ID`() {
             // Given
             val expectedSessionIdPrefix = "session_"
-            
+
             // When
             val logEntry = UnifiedLoggingSystem.LogEntry(
                 timestamp = System.currentTimeMillis(),
@@ -493,7 +576,7 @@ class UnifiedLoggingSystemTest {
                 tag = "Test",
                 message = "Test message"
             )
-            
+
             // Then
             assertTrue(logEntry.sessionId.startsWith(expectedSessionIdPrefix))
             assertTrue(logEntry.sessionId.length > expectedSessionIdPrefix.length)
@@ -504,7 +587,7 @@ class UnifiedLoggingSystemTest {
             // Given
             val currentHour = System.currentTimeMillis() / 1000 / 3600
             val expectedSessionId = "session_$currentHour"
-            
+
             // When
             val logEntry = UnifiedLoggingSystem.LogEntry(
                 timestamp = System.currentTimeMillis(),
@@ -513,7 +596,7 @@ class UnifiedLoggingSystemTest {
                 tag = "Test",
                 message = "Test message"
             )
-            
+
             // Then
             assertEquals(expectedSessionId, logEntry.sessionId)
         }
@@ -559,7 +642,11 @@ class UnifiedLoggingSystemTest {
         @Test
         fun `logging should handle empty tag gracefully`() {
             assertDoesNotThrow {
-                unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "", "Message with empty tag")
+                unifiedLoggingSystem.info(
+                    UnifiedLoggingSystem.LogCategory.SYSTEM,
+                    "",
+                    "Message with empty tag"
+                )
             }
         }
 
@@ -577,7 +664,11 @@ class UnifiedLoggingSystemTest {
 
             // When & Then
             assertDoesNotThrow {
-                unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Tag", longMessage)
+                unifiedLoggingSystem.info(
+                    UnifiedLoggingSystem.LogCategory.SYSTEM,
+                    "Tag",
+                    longMessage
+                )
             }
         }
 
@@ -588,7 +679,12 @@ class UnifiedLoggingSystemTest {
 
             // When & Then
             assertDoesNotThrow {
-                unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Tag", "Message", largeMetadata)
+                unifiedLoggingSystem.info(
+                    UnifiedLoggingSystem.LogCategory.SYSTEM,
+                    "Tag",
+                    "Message",
+                    largeMetadata
+                )
             }
         }
 
@@ -599,7 +695,11 @@ class UnifiedLoggingSystemTest {
 
             // When & Then
             assertDoesNotThrow {
-                unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Tag", specialMessage)
+                unifiedLoggingSystem.info(
+                    UnifiedLoggingSystem.LogCategory.SYSTEM,
+                    "Tag",
+                    specialMessage
+                )
             }
         }
 
@@ -610,7 +710,12 @@ class UnifiedLoggingSystemTest {
 
             // When & Then
             assertDoesNotThrow {
-                unifiedLoggingSystem.info(UnifiedLoggingSystem.LogCategory.SYSTEM, "Tag", "Message", metadataWithNull)
+                unifiedLoggingSystem.info(
+                    UnifiedLoggingSystem.LogCategory.SYSTEM,
+                    "Tag",
+                    "Message",
+                    metadataWithNull
+                )
             }
         }
     }
@@ -787,8 +892,8 @@ class UnifiedLoggingSystemTest {
             repeat(messageCount) { i ->
                 val job = launch {
                     unifiedLoggingSystem.info(
-                        UnifiedLoggingSystem.LogCategory.SYSTEM, 
-                        "Coroutine$i", 
+                        UnifiedLoggingSystem.LogCategory.SYSTEM,
+                        "Coroutine$i",
                         "Concurrent message $i"
                     )
                 }
@@ -812,9 +917,23 @@ class UnifiedLoggingSystemTest {
             repeat(50) { i ->
                 val job = launch {
                     when (i % 3) {
-                        0 -> unifiedLoggingSystem.warning(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Warning $i")
-                        1 -> unifiedLoggingSystem.error(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Error $i")
-                        2 -> unifiedLoggingSystem.fatal(UnifiedLoggingSystem.LogCategory.SYSTEM, "Test", "Fatal $i")
+                        0 -> unifiedLoggingSystem.warning(
+                            UnifiedLoggingSystem.LogCategory.SYSTEM,
+                            "Test",
+                            "Warning $i"
+                        )
+
+                        1 -> unifiedLoggingSystem.error(
+                            UnifiedLoggingSystem.LogCategory.SYSTEM,
+                            "Test",
+                            "Error $i"
+                        )
+
+                        2 -> unifiedLoggingSystem.fatal(
+                            UnifiedLoggingSystem.LogCategory.SYSTEM,
+                            "Test",
+                            "Fatal $i"
+                        )
                     }
                 }
                 jobs.add(job)
@@ -844,8 +963,8 @@ class UnifiedLoggingSystemTest {
                 val job = launch {
                     val metadata = mapOf("thread" to i, "timestamp" to System.currentTimeMillis())
                     unifiedLoggingSystem.info(
-                        UnifiedLoggingSystem.LogCategory.PERFORMANCE, 
-                        "ThreadTest", 
+                        UnifiedLoggingSystem.LogCategory.PERFORMANCE,
+                        "ThreadTest",
                         "Metadata test $i",
                         metadata
                     )
@@ -869,7 +988,7 @@ class UnifiedLoggingSystemTest {
         fun `LogEntry should have correct default values`() {
             // Given
             val timestamp = System.currentTimeMillis()
-            
+
             // When
             val logEntry = UnifiedLoggingSystem.LogEntry(
                 timestamp = timestamp,
@@ -878,7 +997,7 @@ class UnifiedLoggingSystemTest {
                 tag = "TestTag",
                 message = "Test message"
             )
-            
+
             // Then
             assertEquals(timestamp, logEntry.timestamp)
             assertEquals(UnifiedLoggingSystem.LogLevel.INFO, logEntry.level)
@@ -897,7 +1016,7 @@ class UnifiedLoggingSystemTest {
             val timestamp = System.currentTimeMillis()
             val exception = RuntimeException("Test exception")
             val metadata = mapOf("key" to "value")
-            
+
             // When
             val logEntry = UnifiedLoggingSystem.LogEntry(
                 timestamp = timestamp,
@@ -910,7 +1029,7 @@ class UnifiedLoggingSystemTest {
                 threadName = "TestThread",
                 sessionId = "test-session"
             )
-            
+
             // Then
             assertEquals(timestamp, logEntry.timestamp)
             assertEquals(UnifiedLoggingSystem.LogLevel.ERROR, logEntry.level)

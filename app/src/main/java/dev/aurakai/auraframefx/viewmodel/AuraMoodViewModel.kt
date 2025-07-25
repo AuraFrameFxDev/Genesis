@@ -58,7 +58,7 @@ class AuraMoodViewModel @Inject constructor() : ViewModel() {
     fun transitionToMood(
         targetEmotion: Emotion,
         targetIntensity: Float = 0.5f,
-        durationMs: Long = 3000L
+        durationMs: Long = 3000L,
     ) {
         viewModelScope.launch {
             val steps = 20

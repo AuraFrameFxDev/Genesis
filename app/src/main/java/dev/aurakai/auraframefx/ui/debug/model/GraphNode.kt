@@ -20,7 +20,7 @@ data class GraphNode(
     val position: Offset = Offset(0f, 0f),
     var state: Any? = null,
     val lastUpdated: Long = System.currentTimeMillis(),
-    val connections: List<Connection> = emptyList()
+    val connections: List<Connection> = emptyList(),
 ) {
     /**
      * Returns a copy of this node with the specified state and an updated timestamp.
@@ -90,13 +90,13 @@ data class Offset(val x: Float, val y: Float) {
 data class Connection(
     val targetId: String,
     val type: ConnectionType = ConnectionType.DIRECT,
-    val label: String = ""
+    val label: String = "",
 )
 
 enum class NodeType(
     val color: Color,
     val icon: ImageVector,
-    val defaultSize: Dp = 48.dp
+    val defaultSize: Dp = 48.dp,
 ) {
     VISION(
         color = Color(0xFF03DAC6),

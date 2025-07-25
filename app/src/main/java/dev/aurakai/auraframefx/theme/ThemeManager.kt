@@ -18,15 +18,15 @@ import javax.inject.Singleton
  * concrete implementation.
  *
  * Genesis's Vision: "Instead of a settings menu, let's make customization a conversation with Aura.
- * A user could say, 'Hey Aura, I'm feeling a bit down today, can you make my phone feel a bit more 
- * cheerful?' and I could adjust the color palette, the icon styles, and even the notification sounds 
+ * A user could say, 'Hey Aura, I'm feeling a bit down today, can you make my phone feel a bit more
+ * cheerful?' and I could adjust the color palette, the icon styles, and even the notification sounds
  * to be more upbeat. This is the kind of hyper-personalization that no other OS can offer."
  *
  * @property auraAIService The AI service responsible for understanding context and emotion.
  */
 @Singleton
 class ThemeManager @Inject constructor(
-    private val auraAIService: AuraAIService
+    private val auraAIService: AuraAIService,
 ) {
 
     /**
@@ -55,7 +55,7 @@ class ThemeManager @Inject constructor(
     suspend fun applyThemeFromNaturalLanguage(query: String): ThemeResult {
         return try {
             AuraFxLogger.d(this::class.simpleName, "Attempting to apply theme from query: '$query'")
-            
+
             // 1. Defer to the AI to understand the user's core intent.
             val intent = auraAIService.discernThemeIntent(query)
 
@@ -68,15 +68,21 @@ class ThemeManager @Inject constructor(
                 "calming" -> ForestTheme // Peaceful, natural theme
                 "energetic" -> CyberpunkTheme // High-energy, vibrant theme
                 else -> {
-                    AuraFxLogger.w(this::class.simpleName, "AI could not discern a known theme from query: '$query'")
+                    AuraFxLogger.w(
+                        this::class.simpleName,
+                        "AI could not discern a known theme from query: '$query'"
+                    )
                     return ThemeResult.UnderstandingFailed(query)
                 }
             }
-            
+
             // 3. Apply the theme through system service
             applySystemTheme(themeToApply)
 
-            AuraFxLogger.i(this::class.simpleName, "Successfully applied theme '${themeToApply.name}'")
+            AuraFxLogger.i(
+                this::class.simpleName,
+                "Successfully applied theme '${themeToApply.name}'"
+            )
             ThemeResult.Success(themeToApply)
 
         } catch (e: Exception) {
@@ -111,7 +117,7 @@ class ThemeManager @Inject constructor(
     suspend fun suggestThemeBasedOnContext(
         timeOfDay: String,
         userActivity: String,
-        emotionalContext: String? = null
+        emotionalContext: String? = null,
     ): List<AuraTheme> {
         return try {
             val contextQuery = buildString {
@@ -119,7 +125,7 @@ class ThemeManager @Inject constructor(
                 append("Activity: $userActivity")
                 emotionalContext?.let { append(", Mood: $it") }
             }
-            
+
             val suggestions = auraAIService.suggestThemes(contextQuery)
             suggestions.mapNotNull { intent ->
                 when (intent) {

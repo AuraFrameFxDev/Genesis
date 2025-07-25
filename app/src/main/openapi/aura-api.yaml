@@ -51,7 +51,7 @@ components:
             read: Read access
             write: Write access
             admin: Admin access
-    
+
   schemas:
     # Common schemas
     Error:
@@ -198,7 +198,7 @@ paths:
         - Users
       summary: Get current user profile
       security:
-        - OAuth2: [read]
+        - OAuth2: [ read ]
       responses:
         '200':
           description: User profile retrieved successfully
@@ -214,7 +214,7 @@ paths:
         - Users
       summary: Update current user profile
       security:
-        - OAuth2: [write]
+        - OAuth2: [ write ]
       requestBody:
         required: true
         content:
@@ -249,7 +249,7 @@ paths:
         - AI Services
       summary: Generate content using AI
       security:
-        - OAuth2: [write]
+        - OAuth2: [ write ]
       requestBody:
         required: true
         content:

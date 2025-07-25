@@ -34,19 +34,20 @@ class ThemeManagerTest {
     // ========== applyThemeFromNaturalLanguage Tests ==========
 
     @Test
-    fun `applyThemeFromNaturalLanguage - cyberpunk intent returns CyberpunkTheme success`() = runTest {
-        // Given
-        val query = "make it cyberpunk"
-        coEvery { mockAuraAIService.discernThemeIntent(query) } returns "cyberpunk"
+    fun `applyThemeFromNaturalLanguage - cyberpunk intent returns CyberpunkTheme success`() =
+        runTest {
+            // Given
+            val query = "make it cyberpunk"
+            coEvery { mockAuraAIService.discernThemeIntent(query) } returns "cyberpunk"
 
-        // When
-        val result = themeManager.applyThemeFromNaturalLanguage(query)
+            // When
+            val result = themeManager.applyThemeFromNaturalLanguage(query)
 
-        // Then
-        assertIs<ThemeManager.ThemeResult.Success>(result)
-        assertEquals(CyberpunkTheme, result.appliedTheme)
-        coVerify(exactly = 1) { mockAuraAIService.discernThemeIntent(query) }
-    }
+            // Then
+            assertIs<ThemeManager.ThemeResult.Success>(result)
+            assertEquals(CyberpunkTheme, result.appliedTheme)
+            coVerify(exactly = 1) { mockAuraAIService.discernThemeIntent(query) }
+        }
 
     @Test
     fun `applyThemeFromNaturalLanguage - solar intent returns SolarFlareTheme success`() = runTest {
@@ -150,18 +151,19 @@ class ThemeManagerTest {
     }
 
     @Test
-    fun `applyThemeFromNaturalLanguage - empty string intent returns UnderstandingFailed`() = runTest {
-        // Given
-        val query = "empty response query"
-        coEvery { mockAuraAIService.discernThemeIntent(query) } returns ""
+    fun `applyThemeFromNaturalLanguage - empty string intent returns UnderstandingFailed`() =
+        runTest {
+            // Given
+            val query = "empty response query"
+            coEvery { mockAuraAIService.discernThemeIntent(query) } returns ""
 
-        // When
-        val result = themeManager.applyThemeFromNaturalLanguage(query)
+            // When
+            val result = themeManager.applyThemeFromNaturalLanguage(query)
 
-        // Then
-        assertIs<ThemeManager.ThemeResult.UnderstandingFailed>(result)
-        assertEquals(query, result.originalQuery)
-    }
+            // Then
+            assertIs<ThemeManager.ThemeResult.UnderstandingFailed>(result)
+            assertEquals(query, result.originalQuery)
+        }
 
     @Test
     fun `applyThemeFromNaturalLanguage - AI service throws exception returns Error`() = runTest {
@@ -222,32 +224,34 @@ class ThemeManagerTest {
     }
 
     @Test
-    fun `applyThemeFromNaturalLanguage - special characters in query handled gracefully`() = runTest {
-        // Given
-        val query = "!@#$%^&*()_+-={}[]|\\:;\"'<>?,./"
-        coEvery { mockAuraAIService.discernThemeIntent(query) } returns "nature"
+    fun `applyThemeFromNaturalLanguage - special characters in query handled gracefully`() =
+        runTest {
+            // Given
+            val query = "!@#$%^&*()_+-={}[]|\\:;\"'<>?,./"
+            coEvery { mockAuraAIService.discernThemeIntent(query) } returns "nature"
 
-        // When
-        val result = themeManager.applyThemeFromNaturalLanguage(query)
+            // When
+            val result = themeManager.applyThemeFromNaturalLanguage(query)
 
-        // Then
-        assertIs<ThemeManager.ThemeResult.Success>(result)
-        assertEquals(ForestTheme, result.appliedTheme)
-    }
+            // Then
+            assertIs<ThemeManager.ThemeResult.Success>(result)
+            assertEquals(ForestTheme, result.appliedTheme)
+        }
 
     @Test
-    fun `applyThemeFromNaturalLanguage - unicode characters in query handled gracefully`() = runTest {
-        // Given
-        val query = "테마를 변경해주세요 🎨✨"
-        coEvery { mockAuraAIService.discernThemeIntent(query) } returns "solar"
+    fun `applyThemeFromNaturalLanguage - unicode characters in query handled gracefully`() =
+        runTest {
+            // Given
+            val query = "테마를 변경해주세요 🎨✨"
+            coEvery { mockAuraAIService.discernThemeIntent(query) } returns "solar"
 
-        // When
-        val result = themeManager.applyThemeFromNaturalLanguage(query)
+            // When
+            val result = themeManager.applyThemeFromNaturalLanguage(query)
 
-        // Then
-        assertIs<ThemeManager.ThemeResult.Success>(result)
-        assertEquals(SolarFlareTheme, result.appliedTheme)
-    }
+            // Then
+            assertIs<ThemeManager.ThemeResult.Success>(result)
+            assertEquals(SolarFlareTheme, result.appliedTheme)
+        }
 
     // ========== suggestThemeBasedOnContext Tests ==========
 
@@ -259,11 +263,12 @@ class ThemeManagerTest {
         val emotionalContext = "focused"
         val expectedContextQuery = "Time: morning, Activity: working, Mood: focused"
         val aiSuggestions = listOf("cyberpunk", "solar", "nature")
-        
+
         coEvery { mockAuraAIService.suggestThemes(expectedContextQuery) } returns aiSuggestions
 
         // When
-        val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
+        val result =
+            themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
 
         // Then
         assertEquals(3, result.size)
@@ -280,7 +285,7 @@ class ThemeManagerTest {
         val userActivity = "relaxing"
         val expectedContextQuery = "Time: evening, Activity: relaxing"
         val aiSuggestions = listOf("nature")
-        
+
         coEvery { mockAuraAIService.suggestThemes(expectedContextQuery) } returns aiSuggestions
 
         // When
@@ -298,7 +303,7 @@ class ThemeManagerTest {
         val timeOfDay = "afternoon"
         val userActivity = "gaming"
         val aiSuggestions = listOf("cyberpunk", "unknown", "solar", "invalid")
-        
+
         coEvery { mockAuraAIService.suggestThemes(any()) } returns aiSuggestions
 
         // When
@@ -311,42 +316,44 @@ class ThemeManagerTest {
     }
 
     @Test
-    fun `suggestThemeBasedOnContext - returns empty list when AI returns empty suggestions`() = runTest {
-        // Given
-        val timeOfDay = "midnight"
-        val userActivity = "sleeping"
-        
-        coEvery { mockAuraAIService.suggestThemes(any()) } returns emptyList()
+    fun `suggestThemeBasedOnContext - returns empty list when AI returns empty suggestions`() =
+        runTest {
+            // Given
+            val timeOfDay = "midnight"
+            val userActivity = "sleeping"
 
-        // When
-        val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity)
+            coEvery { mockAuraAIService.suggestThemes(any()) } returns emptyList()
 
-        // Then
-        assertTrue(result.isEmpty())
-    }
+            // When
+            val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity)
+
+            // Then
+            assertTrue(result.isEmpty())
+        }
 
     @Test
-    fun `suggestThemeBasedOnContext - returns empty list when AI returns only unknown suggestions`() = runTest {
-        // Given
-        val timeOfDay = "dawn"
-        val userActivity = "meditation"
-        val aiSuggestions = listOf("unknown1", "invalid", "unrecognized")
-        
-        coEvery { mockAuraAIService.suggestThemes(any()) } returns aiSuggestions
+    fun `suggestThemeBasedOnContext - returns empty list when AI returns only unknown suggestions`() =
+        runTest {
+            // Given
+            val timeOfDay = "dawn"
+            val userActivity = "meditation"
+            val aiSuggestions = listOf("unknown1", "invalid", "unrecognized")
 
-        // When
-        val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity)
+            coEvery { mockAuraAIService.suggestThemes(any()) } returns aiSuggestions
 
-        // Then
-        assertTrue(result.isEmpty())
-    }
+            // When
+            val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity)
+
+            // Then
+            assertTrue(result.isEmpty())
+        }
 
     @Test
     fun `suggestThemeBasedOnContext - handles AI service exception gracefully`() = runTest {
         // Given
         val timeOfDay = "morning"
         val userActivity = "working"
-        
+
         coEvery { mockAuraAIService.suggestThemes(any()) } throws RuntimeException("AI service error")
 
         // When
@@ -364,11 +371,12 @@ class ThemeManagerTest {
         val userActivity = "reading"
         val emotionalContext: String? = null
         val expectedContextQuery = "Time: evening, Activity: reading"
-        
+
         coEvery { mockAuraAIService.suggestThemes(expectedContextQuery) } returns listOf("nature")
 
         // When
-        val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
+        val result =
+            themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
 
         // Then
         assertEquals(1, result.size)
@@ -381,7 +389,7 @@ class ThemeManagerTest {
         val timeOfDay = ""
         val userActivity = ""
         val expectedContextQuery = "Time: , Activity: "
-        
+
         coEvery { mockAuraAIService.suggestThemes(expectedContextQuery) } returns listOf("solar")
 
         // When
@@ -398,7 +406,7 @@ class ThemeManagerTest {
         val timeOfDay = "morning"
         val userActivity = "exercising"
         val aiSuggestions = listOf("solar", "solar", "cyberpunk", "solar")
-        
+
         coEvery { mockAuraAIService.suggestThemes(any()) } returns aiSuggestions
 
         // When
@@ -417,11 +425,12 @@ class ThemeManagerTest {
         val userActivity = "working$%^"
         val emotionalContext = "happy&*()"
         val expectedContextQuery = "Time: morning!@#, Activity: working$%^, Mood: happy&*()"
-        
+
         coEvery { mockAuraAIService.suggestThemes(expectedContextQuery) } returns listOf("nature")
 
         // When
-        val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
+        val result =
+            themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
 
         // Then
         assertEquals(1, result.size)
@@ -434,10 +443,10 @@ class ThemeManagerTest {
     fun `ThemeResult Success contains correct applied theme`() {
         // Given
         val theme = CyberpunkTheme
-        
+
         // When
         val result = ThemeManager.ThemeResult.Success(theme)
-        
+
         // Then
         assertEquals(theme, result.appliedTheme)
     }
@@ -446,10 +455,10 @@ class ThemeManagerTest {
     fun `ThemeResult UnderstandingFailed contains original query`() {
         // Given
         val query = "test query"
-        
+
         // When
         val result = ThemeManager.ThemeResult.UnderstandingFailed(query)
-        
+
         // Then
         assertEquals(query, result.originalQuery)
     }
@@ -458,10 +467,10 @@ class ThemeManagerTest {
     fun `ThemeResult Error contains exception`() {
         // Given
         val exception = RuntimeException("test error")
-        
+
         // When
         val result = ThemeManager.ThemeResult.Error(exception)
-        
+
         // Then
         assertEquals(exception, result.exception)
     }
@@ -483,13 +492,13 @@ class ThemeManagerTest {
         // Then
         assertIs<ThemeManager.ThemeResult.Success>(result1)
         assertEquals(CyberpunkTheme, result1.appliedTheme)
-        
+
         assertIs<ThemeManager.ThemeResult.Success>(result2)
         assertEquals(ForestTheme, result2.appliedTheme)
-        
+
         assertIs<ThemeManager.ThemeResult.Success>(result3)
         assertEquals(SolarFlareTheme, result3.appliedTheme)
-        
+
         coVerify(exactly = 1) { mockAuraAIService.discernThemeIntent("query1") }
         coVerify(exactly = 1) { mockAuraAIService.discernThemeIntent("query2") }
         coVerify(exactly = 1) { mockAuraAIService.discernThemeIntent("query3") }
@@ -499,7 +508,7 @@ class ThemeManagerTest {
     fun `concurrent calls handled properly`() = runTest {
         // Given
         coEvery { mockAuraAIService.discernThemeIntent(any()) } returns "cyberpunk"
-        
+
         // When - simulate concurrent calls
         val results = List(10) { index ->
             themeManager.applyThemeFromNaturalLanguage("query$index")
@@ -510,7 +519,7 @@ class ThemeManagerTest {
             assertIs<ThemeManager.ThemeResult.Success>(result)
             assertEquals(CyberpunkTheme, result.appliedTheme)
         }
-        
+
         coVerify(exactly = 10) { mockAuraAIService.discernThemeIntent(any()) }
     }
 
@@ -538,7 +547,8 @@ class ThemeManagerTest {
     @Test
     fun `theme mapping consistency - all known intents map to valid themes`() = runTest {
         // Given - all known theme intents
-        val knownIntents = listOf("cyberpunk", "solar", "nature", "cheerful", "calming", "energetic")
+        val knownIntents =
+            listOf("cyberpunk", "solar", "nature", "cheerful", "calming", "energetic")
         val expectedThemes = mapOf(
             "cyberpunk" to CyberpunkTheme,
             "solar" to SolarFlareTheme,
@@ -552,7 +562,7 @@ class ThemeManagerTest {
         knownIntents.forEach { intent ->
             coEvery { mockAuraAIService.discernThemeIntent(any()) } returns intent
             val result = themeManager.applyThemeFromNaturalLanguage("test query")
-            
+
             assertIs<ThemeManager.ThemeResult.Success>(result)
             assertEquals(expectedThemes[intent], result.appliedTheme)
         }
@@ -563,7 +573,11 @@ class ThemeManagerTest {
         // Given
         val testCases = listOf(
             Triple("morning", "working", null) to "Time: morning, Activity: working",
-            Triple("evening", "relaxing", "happy") to "Time: evening, Activity: relaxing, Mood: happy",
+            Triple(
+                "evening",
+                "relaxing",
+                "happy"
+            ) to "Time: evening, Activity: relaxing, Mood: happy",
             Triple("", "", null) to "Time: , Activity: ",
             Triple("night", "sleeping", "") to "Time: night, Activity: sleeping, Mood: "
         )
@@ -572,9 +586,10 @@ class ThemeManagerTest {
         testCases.forEach { (params, expectedQuery) ->
             val (timeOfDay, userActivity, emotionalContext) = params
             coEvery { mockAuraAIService.suggestThemes(expectedQuery) } returns listOf("nature")
-            
-            val result = themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
-            
+
+            val result =
+                themeManager.suggestThemeBasedOnContext(timeOfDay, userActivity, emotionalContext)
+
             assertEquals(1, result.size)
             assertEquals(ForestTheme, result.first())
             coVerify { mockAuraAIService.suggestThemes(expectedQuery) }
@@ -629,7 +644,7 @@ class ThemeManagerTest {
         emotionalMappings.forEach { (emotion, expectedTheme) ->
             coEvery { mockAuraAIService.discernThemeIntent(any()) } returns emotion
             val result = themeManager.applyThemeFromNaturalLanguage("I feel $emotion")
-            
+
             assertIs<ThemeManager.ThemeResult.Success>(result)
             assertEquals(expectedTheme, result.appliedTheme)
         }
@@ -643,7 +658,7 @@ class ThemeManagerTest {
             "I need something energetic for my workout",
             "Help me focus with a calming environment"
         )
-        
+
         coEvery { mockAuraAIService.discernThemeIntent(match { it.contains("cheerful") }) } returns "cheerful"
         coEvery { mockAuraAIService.discernThemeIntent(match { it.contains("energetic") }) } returns "energetic"
         coEvery { mockAuraAIService.discernThemeIntent(match { it.contains("calming") }) } returns "calming"
@@ -655,10 +670,10 @@ class ThemeManagerTest {
 
         assertIs<ThemeManager.ThemeResult.Success>(cheerfulResult)
         assertEquals(SolarFlareTheme, cheerfulResult.appliedTheme)
-        
+
         assertIs<ThemeManager.ThemeResult.Success>(energeticResult)
         assertEquals(CyberpunkTheme, energeticResult.appliedTheme)
-        
+
         assertIs<ThemeManager.ThemeResult.Success>(calmingResult)
         assertEquals(ForestTheme, calmingResult.appliedTheme)
     }
@@ -689,7 +704,7 @@ class ThemeManagerTest {
     fun `ThemeManager constructor injection works correctly`() {
         // Given & When
         val manager = ThemeManager(mockAuraAIService)
-        
+
         // Then - constructor should complete without issues
         // This test validates the dependency injection setup
         assertTrue(manager is ThemeManager)

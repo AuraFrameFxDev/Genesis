@@ -131,7 +131,7 @@ class GraphNodeTest {
         fun shouldHandleSpecialCharactersInIdAndName() {
             val specialId = "test-node_123!@#$%"
             val specialName = "Test Node (with special chars) & symbols"
-            
+
             val node = GraphNode(
                 id = specialId,
                 name = specialName,
@@ -147,7 +147,7 @@ class GraphNodeTest {
         fun shouldHandleUnicodeCharactersInIdAndName() {
             val unicodeId = "节点-🔥-test"
             val unicodeName = "测试节点 🚀 Test Node"
-            
+
             val node = GraphNode(
                 id = unicodeId,
                 name = unicodeName,
@@ -168,7 +168,7 @@ class GraphNodeTest {
         fun shouldUpdateStateAndTimestamp() {
             val originalTimestamp = defaultNode.lastUpdated
             Thread.sleep(1) // Ensure time difference
-            
+
             val newState = "new-state"
             val updatedNode = defaultNode.withUpdatedState(newState)
 
@@ -351,7 +351,7 @@ class GraphNodeTest {
                 position = Offset(10f, 20f),
                 state = "same-state"
             )
-            
+
             val node2 = GraphNode(
                 id = "same-id",
                 name = "Same Node",
@@ -371,7 +371,7 @@ class GraphNodeTest {
                 name = "Same Node",
                 type = NodeType.AGENT
             )
-            
+
             val node2 = GraphNode(
                 id = "same-id",
                 name = "Same Node",
@@ -391,7 +391,7 @@ class GraphNodeTest {
             )
 
             val toString = node.toString()
-            
+
             assertTrue(toString.contains("test-id"))
             assertTrue(toString.contains("Test Node"))
             assertTrue(toString.contains("VISION"))
@@ -1053,7 +1053,10 @@ class NodeTypeTest {
     @DisplayName("should have positive default sizes")
     fun shouldHavePositiveDefaultSizes() {
         NodeType.values().forEach { nodeType ->
-            assertTrue(nodeType.defaultSize.value > 0, "Default size should be positive for $nodeType")
+            assertTrue(
+                nodeType.defaultSize.value > 0,
+                "Default size should be positive for $nodeType"
+            )
         }
     }
 
@@ -1107,8 +1110,14 @@ class NodeTypeTest {
     @DisplayName("should have reasonable default sizes")
     fun shouldHaveReasonableDefaultSizes() {
         NodeType.values().forEach { nodeType ->
-            assertTrue(nodeType.defaultSize.value >= 48f, "Default size should be at least 48dp for $nodeType")
-            assertTrue(nodeType.defaultSize.value <= 100f, "Default size should be at most 100dp for $nodeType")
+            assertTrue(
+                nodeType.defaultSize.value >= 48f,
+                "Default size should be at least 48dp for $nodeType"
+            )
+            assertTrue(
+                nodeType.defaultSize.value <= 100f,
+                "Default size should be at most 100dp for $nodeType"
+            )
         }
     }
 }

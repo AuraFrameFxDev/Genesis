@@ -42,7 +42,7 @@ class AuraAgent @Inject constructor(
     private val auraAIService: AuraAIService,
     private val contextManager: ContextManager,
     private val securityContext: SecurityContext,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) : BaseAgent("AuraAgent", "AURA") {
     private var isInitialized = false
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -837,7 +837,7 @@ class AuraAgent @Inject constructor(
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse {
         return AgentResponse(
             content = "Aura's response to '${request.query}' with context: $context",

@@ -13,38 +13,38 @@ import javax.inject.Singleton
 
 /**
  * OracleDrive Sandbox System
- * 
- * Kai's Vision: "To mitigate the risk of a user inadvertently damaging their system, I propose 
- * a 'Sandbox Mode.' This would allow users to experiment with system-level modifications in a 
- * virtualized environment before applying them to the live system. This will provide a safety 
+ *
+ * Kai's Vision: "To mitigate the risk of a user inadvertently damaging their system, I propose
+ * a 'Sandbox Mode.' This would allow users to experiment with system-level modifications in a
+ * virtualized environment before applying them to the live system. This will provide a safety
  * net and a learning platform for users new to the world of advanced Android customization."
- * 
+ *
  * This system creates isolated environments where users can safely experiment with system
  * modifications without risk to their actual device.
  */
 @Singleton
 class OracleDriveSandbox @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ) {
-    
+
     private val sandboxScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    
+
     private val _sandboxState = MutableStateFlow(SandboxState.INACTIVE)
     val sandboxState: StateFlow<SandboxState> = _sandboxState.asStateFlow()
-    
+
     private val _activeSandboxes = MutableStateFlow<List<SandboxEnvironment>>(emptyList())
     val activeSandboxes: StateFlow<List<SandboxEnvironment>> = _activeSandboxes.asStateFlow()
-    
+
     private val sandboxDirectory = File(context.filesDir, "oracle_sandbox")
-    
+
     enum class SandboxState {
         INACTIVE, INITIALIZING, ACTIVE, ERROR
     }
-    
+
     enum class SandboxType {
         SYSTEM_MODIFICATION, UI_THEMING, SECURITY_TESTING, PERFORMANCE_TUNING, CUSTOM_ROM
     }
-    
+
     data class SandboxEnvironment(
         val id: String,
         val name: String,
@@ -52,9 +52,9 @@ class OracleDriveSandbox @Inject constructor(
         val createdAt: Long,
         val isActive: Boolean,
         val modifications: List<SystemModification>,
-        val safetyLevel: SafetyLevel
+        val safetyLevel: SafetyLevel,
     )
-    
+
     data class SystemModification(
         val id: String,
         val description: String,
@@ -62,24 +62,24 @@ class OracleDriveSandbox @Inject constructor(
         val originalContent: ByteArray,
         val modifiedContent: ByteArray,
         val riskLevel: RiskLevel,
-        val isReversible: Boolean
+        val isReversible: Boolean,
     )
-    
+
     enum class SafetyLevel {
         SAFE, CAUTION, WARNING, DANGER, CRITICAL
     }
-    
+
     enum class RiskLevel {
         LOW, MEDIUM, HIGH, CRITICAL
     }
-    
+
     data class SandboxResult(
         val success: Boolean,
         val message: String,
         val warnings: List<String> = emptyList(),
-        val errors: List<String> = emptyList()
+        val errors: List<String> = emptyList(),
     )
-    
+
     /**
      * Initializes the sandbox system and prepares the secure virtualization environment.
      *
@@ -91,31 +91,31 @@ class OracleDriveSandbox @Inject constructor(
         try {
             _sandboxState.value = SandboxState.INITIALIZING
             AuraFxLogger.i("OracleDriveSandbox", "Initializing Kai's OracleDrive Sandbox System")
-            
+
             // Create sandbox directory structure
             if (!sandboxDirectory.exists()) {
                 sandboxDirectory.mkdirs()
             }
-            
+
             // Initialize virtualization hooks
             initializeVirtualizationHooks()
-            
+
             // Load existing sandboxes
             loadExistingSandboxes()
-            
+
             _sandboxState.value = SandboxState.ACTIVE
             AuraFxLogger.i("OracleDriveSandbox", "OracleDrive Sandbox initialized successfully")
-            
+
             SandboxResult(
                 success = true,
                 message = "Sandbox system initialized successfully",
                 warnings = listOf("Remember: All modifications are virtualized and safe to experiment with")
             )
-            
+
         } catch (e: Exception) {
             _sandboxState.value = SandboxState.ERROR
             AuraFxLogger.e("OracleDriveSandbox", "Failed to initialize sandbox system", e)
-            
+
             SandboxResult(
                 success = false,
                 message = "Failed to initialize sandbox system: ${e.message}",
@@ -123,7 +123,7 @@ class OracleDriveSandbox @Inject constructor(
             )
         }
     }
-    
+
     /**
      * Creates a new isolated sandbox environment for safely testing system modifications.
      *
@@ -137,13 +137,13 @@ class OracleDriveSandbox @Inject constructor(
     suspend fun createSandbox(
         name: String,
         type: SandboxType,
-        description: String = ""
+        description: String = "",
     ): SandboxResult = withContext(Dispatchers.IO) {
         try {
             val sandboxId = UUID.randomUUID().toString()
             val sandboxDir = File(sandboxDirectory, sandboxId)
             sandboxDir.mkdirs()
-            
+
             val sandbox = SandboxEnvironment(
                 id = sandboxId,
                 name = name,
@@ -153,26 +153,26 @@ class OracleDriveSandbox @Inject constructor(
                 modifications = emptyList(),
                 safetyLevel = SafetyLevel.SAFE
             )
-            
+
             // Create isolated environment
             createIsolatedEnvironment(sandbox)
-            
+
             // Add to active sandboxes
             val currentSandboxes = _activeSandboxes.value.toMutableList()
             currentSandboxes.add(sandbox)
             _activeSandboxes.value = currentSandboxes
-            
+
             AuraFxLogger.i("OracleDriveSandbox", "Created new sandbox: $name (ID: $sandboxId)")
-            
+
             SandboxResult(
                 success = true,
                 message = "Sandbox '$name' created successfully",
                 warnings = listOf("Sandbox is isolated - no changes will affect your real system")
             )
-            
+
         } catch (e: Exception) {
             AuraFxLogger.e("OracleDriveSandbox", "Failed to create sandbox", e)
-            
+
             SandboxResult(
                 success = false,
                 message = "Failed to create sandbox: ${e.message}",
@@ -180,7 +180,7 @@ class OracleDriveSandbox @Inject constructor(
             )
         }
     }
-    
+
     /**
      * Applies a system modification to a sandbox environment without impacting the real system.
      *
@@ -196,7 +196,7 @@ class OracleDriveSandbox @Inject constructor(
         sandboxId: String,
         targetFile: String,
         newContent: ByteArray,
-        description: String
+        description: String,
     ): SandboxResult = withContext(Dispatchers.IO) {
         try {
             val sandbox = findSandbox(sandboxId)
@@ -205,13 +205,13 @@ class OracleDriveSandbox @Inject constructor(
                     message = "Sandbox not found",
                     errors = listOf("Invalid sandbox ID: $sandboxId")
                 )
-            
+
             // Assess risk level of the modification
             val riskLevel = assessModificationRisk(targetFile, newContent)
-            
+
             // Create backup of original content
             val originalContent = readOriginalFile(targetFile)
-            
+
             val modification = SystemModification(
                 id = UUID.randomUUID().toString(),
                 description = description,
@@ -221,27 +221,29 @@ class OracleDriveSandbox @Inject constructor(
                 riskLevel = riskLevel,
                 isReversible = true
             )
-            
+
             // Apply modification in sandbox
             applyModificationInSandbox(sandbox, modification)
-            
+
             // Update sandbox with new modification
             updateSandboxModifications(sandboxId, modification)
-            
+
             val warnings = generateWarningsForModification(modification)
-            
-            AuraFxLogger.i("OracleDriveSandbox", 
-                "Applied modification in sandbox $sandboxId: $description (Risk: $riskLevel)")
-            
+
+            AuraFxLogger.i(
+                "OracleDriveSandbox",
+                "Applied modification in sandbox $sandboxId: $description (Risk: $riskLevel)"
+            )
+
             SandboxResult(
                 success = true,
                 message = "Modification applied successfully in sandbox",
                 warnings = warnings
             )
-            
+
         } catch (e: Exception) {
             AuraFxLogger.e("OracleDriveSandbox", "Failed to apply modification", e)
-            
+
             SandboxResult(
                 success = false,
                 message = "Failed to apply modification: ${e.message}",
@@ -249,7 +251,7 @@ class OracleDriveSandbox @Inject constructor(
             )
         }
     }
-    
+
     /**
      * Tests all modifications in the specified sandbox for safety and validity.
      *
@@ -265,39 +267,39 @@ class OracleDriveSandbox @Inject constructor(
                     success = false,
                     message = "Sandbox not found"
                 )
-            
+
             AuraFxLogger.i("OracleDriveSandbox", "Testing modifications in sandbox $sandboxId")
-            
+
             val testResults = mutableListOf<String>()
             val warnings = mutableListOf<String>()
             val errors = mutableListOf<String>()
-            
+
             // Run comprehensive tests
             for (modification in sandbox.modifications) {
                 val testResult = testModification(modification)
                 testResults.add("${modification.description}: ${testResult.status}")
-                
+
                 if (testResult.hasWarnings) {
                     warnings.addAll(testResult.warnings)
                 }
-                
+
                 if (testResult.hasErrors) {
                     errors.addAll(testResult.errors)
                 }
             }
-            
+
             val overallSafety = calculateOverallSafety(sandbox.modifications)
-            
+
             SandboxResult(
                 success = errors.isEmpty(),
                 message = "Testing completed. Overall safety level: $overallSafety",
                 warnings = warnings,
                 errors = errors
             )
-            
+
         } catch (e: Exception) {
             AuraFxLogger.e("OracleDriveSandbox", "Failed to test modifications", e)
-            
+
             SandboxResult(
                 success = false,
                 message = "Testing failed: ${e.message}",
@@ -305,7 +307,7 @@ class OracleDriveSandbox @Inject constructor(
             )
         }
     }
-    
+
     /**
      * Applies all modifications from a specified sandbox to the real system after verifying authorization and safety.
      *
@@ -317,7 +319,7 @@ class OracleDriveSandbox @Inject constructor(
      */
     suspend fun applyToRealSystem(
         sandboxId: String,
-        confirmationCode: String
+        confirmationCode: String,
     ): SandboxResult = withContext(Dispatchers.IO) {
         try {
             // Verify confirmation code for additional safety
@@ -328,13 +330,13 @@ class OracleDriveSandbox @Inject constructor(
                     errors = listOf("Confirmation code required for real system modifications")
                 )
             }
-            
+
             val sandbox = findSandbox(sandboxId)
                 ?: return@withContext SandboxResult(
                     success = false,
                     message = "Sandbox not found"
                 )
-            
+
             // Final safety check
             val safetyCheck = performFinalSafetyCheck(sandbox)
             if (!safetyCheck.isSafe) {
@@ -344,13 +346,15 @@ class OracleDriveSandbox @Inject constructor(
                     errors = listOf(safetyCheck.reason)
                 )
             }
-            
-            AuraFxLogger.w("OracleDriveSandbox", 
-                "APPLYING SANDBOX MODIFICATIONS TO REAL SYSTEM - Sandbox: $sandboxId")
-            
+
+            AuraFxLogger.w(
+                "OracleDriveSandbox",
+                "APPLYING SANDBOX MODIFICATIONS TO REAL SYSTEM - Sandbox: $sandboxId"
+            )
+
             // Apply modifications with full backup and rollback capability
             val applicationResults = applyModificationsToRealSystem(sandbox.modifications)
-            
+
             SandboxResult(
                 success = applicationResults.success,
                 message = if (applicationResults.success) {
@@ -363,10 +367,10 @@ class OracleDriveSandbox @Inject constructor(
                     "Backup created for rollback if needed"
                 )
             )
-            
+
         } catch (e: Exception) {
             AuraFxLogger.e("OracleDriveSandbox", "Failed to apply to real system", e)
-            
+
             SandboxResult(
                 success = false,
                 message = "Failed to apply to real system: ${e.message}",
@@ -374,38 +378,38 @@ class OracleDriveSandbox @Inject constructor(
             )
         }
     }
-    
+
     // Helper methods and data classes
-    
+
     private data class TestResult(
         val status: String,
         val hasWarnings: Boolean,
         val hasErrors: Boolean,
         val warnings: List<String>,
-        val errors: List<String>
+        val errors: List<String>,
     )
-    
+
     private data class SafetyCheck(
         val isSafe: Boolean,
-        val reason: String
+        val reason: String,
     )
-    
+
     private data class ApplicationResult(
         val success: Boolean,
-        val failureReason: String
+        val failureReason: String,
     )
-    
+
     /**
      * Prepares the virtualization infrastructure required for sandbox isolation.
      *
      * This is currently a stub with no operational effect.
      */
-    
+
     private suspend fun initializeVirtualizationHooks() {
         // TODO: Initialize low-level virtualization hooks
         AuraFxLogger.d("OracleDriveSandbox", "Initializing virtualization hooks")
     }
-    
+
     /**
      * Loads existing sandbox configurations from persistent storage.
      *
@@ -415,7 +419,7 @@ class OracleDriveSandbox @Inject constructor(
         // TODO: Load existing sandbox configurations
         AuraFxLogger.d("OracleDriveSandbox", "Loading existing sandboxes")
     }
-    
+
     /**
      * Sets up an isolated virtual environment for the specified sandbox.
      *
@@ -427,7 +431,7 @@ class OracleDriveSandbox @Inject constructor(
         // TODO: Create isolated file system and environment
         AuraFxLogger.d("OracleDriveSandbox", "Creating isolated environment for ${sandbox.name}")
     }
-    
+
     /**
      * Retrieves the active sandbox environment with the specified ID, or returns null if not found.
      *
@@ -437,7 +441,7 @@ class OracleDriveSandbox @Inject constructor(
     private fun findSandbox(sandboxId: String): SandboxEnvironment? {
         return _activeSandboxes.value.find { it.id == sandboxId }
     }
-    
+
     /**
      * Determines the risk level of modifying a file based on its path.
      *
@@ -454,7 +458,7 @@ class OracleDriveSandbox @Inject constructor(
             else -> RiskLevel.MEDIUM
         }
     }
-    
+
     /**
      * Returns an empty byte array as a stub for original file content.
      *
@@ -467,7 +471,7 @@ class OracleDriveSandbox @Inject constructor(
         // TODO: Read original file content safely
         return ByteArray(0)
     }
-    
+
     /**
      * Applies a system modification to the specified sandbox environment in isolation.
      *
@@ -478,12 +482,15 @@ class OracleDriveSandbox @Inject constructor(
      */
     private suspend fun applyModificationInSandbox(
         sandbox: SandboxEnvironment,
-        modification: SystemModification
+        modification: SystemModification,
     ) {
         // TODO: Apply modification in virtualized environment
-        AuraFxLogger.d("OracleDriveSandbox", "Applying modification in sandbox: ${modification.description}")
+        AuraFxLogger.d(
+            "OracleDriveSandbox",
+            "Applying modification in sandbox: ${modification.description}"
+        )
     }
-    
+
     /**
      * Adds a system modification to the modification list of the specified sandbox and updates the active sandboxes state.
      *
@@ -495,7 +502,7 @@ class OracleDriveSandbox @Inject constructor(
     private fun updateSandboxModifications(sandboxId: String, modification: SystemModification) {
         val currentSandboxes = _activeSandboxes.value.toMutableList()
         val sandboxIndex = currentSandboxes.indexOfFirst { it.id == sandboxId }
-        
+
         if (sandboxIndex != -1) {
             val sandbox = currentSandboxes[sandboxIndex]
             val updatedModifications = sandbox.modifications + modification
@@ -504,7 +511,7 @@ class OracleDriveSandbox @Inject constructor(
             _activeSandboxes.value = currentSandboxes
         }
     }
-    
+
     /**
      * Generates warning messages for system modifications with high or critical risk levels.
      *
@@ -513,16 +520,16 @@ class OracleDriveSandbox @Inject constructor(
      */
     private fun generateWarningsForModification(modification: SystemModification): List<String> {
         val warnings = mutableListOf<String>()
-        
+
         when (modification.riskLevel) {
             RiskLevel.HIGH -> warnings.add("High risk modification - proceed with caution")
             RiskLevel.CRITICAL -> warnings.add("CRITICAL risk modification - expert knowledge required")
             else -> {}
         }
-        
+
         return warnings
     }
-    
+
     /**
      * Simulates a safety test for a system modification and returns the result.
      *
@@ -543,7 +550,7 @@ class OracleDriveSandbox @Inject constructor(
             errors = emptyList()
         )
     }
-    
+
     /**
      * Determines the overall safety level for a set of system modifications based on the highest individual risk level.
      *
@@ -561,7 +568,7 @@ class OracleDriveSandbox @Inject constructor(
             RiskLevel.CRITICAL -> SafetyLevel.CRITICAL
         }
     }
-    
+
     /**
      * Checks if the provided confirmation code authorizes applying sandbox modifications to the real system.
      *
@@ -572,7 +579,7 @@ class OracleDriveSandbox @Inject constructor(
         // TODO: Implement secure confirmation code verification
         return code == "ORACLE_DRIVE_CONFIRM"
     }
-    
+
     /**
      * Performs a final safety evaluation on the specified sandbox environment before applying its modifications to the real system.
      *
@@ -590,7 +597,7 @@ class OracleDriveSandbox @Inject constructor(
             }
         )
     }
-    
+
     /**
      * Simulates applying the provided system modifications to the real device.
      *
@@ -599,17 +606,20 @@ class OracleDriveSandbox @Inject constructor(
      * @return An ApplicationResult indicating a successful simulated operation.
      */
     private suspend fun applyModificationsToRealSystem(
-        modifications: List<SystemModification>
+        modifications: List<SystemModification>,
     ): ApplicationResult {
         // TODO: Implement actual system modification with full backup/rollback
-        AuraFxLogger.w("OracleDriveSandbox", "REAL SYSTEM MODIFICATION - ${modifications.size} changes")
-        
+        AuraFxLogger.w(
+            "OracleDriveSandbox",
+            "REAL SYSTEM MODIFICATION - ${modifications.size} changes"
+        )
+
         return ApplicationResult(
             success = true,
             failureReason = ""
         )
     }
-    
+
     /**
      * Shuts down the sandbox system, canceling all ongoing operations and setting the sandbox state to INACTIVE.
      */

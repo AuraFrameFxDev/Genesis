@@ -26,7 +26,7 @@ class AuraApiService @Inject constructor(
     private val context: Context,
     private val authInterceptor: AuthInterceptor,
     private val dispatchers: AppCoroutineDispatchers,
-    @BaseUrl private val baseUrl: String
+    @BaseUrl private val baseUrl: String,
 ) {
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -108,7 +108,7 @@ class AuraApiService @Inject constructor(
     suspend fun clearCache() = withContext(dispatchers.io) {
         okHttpClient.cache?.evictAll()
     }
-    
+
     // Add more API services as needed
 
     companion object {

@@ -20,5 +20,5 @@ data class SecurityAnalysis(
     val threatLevel: ThreatLevel,
     val description: String,
     val recommendedActions: List<String> = emptyList(),
-    val confidence: Float = 0.0f
+    val confidence: Float = 0.0f,
 )

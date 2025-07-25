@@ -10,12 +10,12 @@ data class User(
     val role: String? = null,
     val preferences: UserPreferences? = null,
     val createdAt: String? = null,
-    val updatedAt: String? = null
+    val updatedAt: String? = null,
 )
 
 @Serializable
 data class UserPreferences(
     val theme: String? = null,
     val notifications: Boolean = true,
-    val language: String = "en"
+    val language: String = "en",
 )

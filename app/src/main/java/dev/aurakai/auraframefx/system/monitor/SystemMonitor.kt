@@ -23,7 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class SystemMonitor @Inject constructor(
     private val context: Context,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var isMonitoring = false
@@ -308,7 +308,7 @@ data class NetworkMetrics(
     val receivedBytes: Long = 0L,
     val transmittedBytes: Long = 0L,
     val receivedPackets: Long = 0L,
-    val transmittedPackets: Long = 0L
+    val transmittedPackets: Long = 0L,
 )
 
 /**
@@ -326,5 +326,5 @@ data class SystemPerformanceReport(
     val processId: Int,
     val threadCount: Int,
     val heapSizeBytes: Long,
-    val heapUsedBytes: Long
+    val heapUsedBytes: Long,
 )

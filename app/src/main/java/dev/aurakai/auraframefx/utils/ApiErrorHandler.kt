@@ -15,7 +15,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class ApiErrorHandler @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ) {
     /**
      * Get a user-friendly error message from a throwable.
@@ -39,6 +39,7 @@ class ApiErrorHandler @Inject constructor(
                     else -> context.getString(R.string.error_unknown_http, throwable.code())
                 }
             }
+
             is ConnectException -> context.getString(R.string.error_connection_failed)
             is SocketTimeoutException -> context.getString(R.string.error_connection_timeout)
             is UnknownHostException -> context.getString(R.string.error_no_internet)
@@ -54,9 +55,9 @@ class ApiErrorHandler @Inject constructor(
      * @return True if the error is a network error, false otherwise.
      */
     fun isNetworkError(throwable: Throwable): Boolean {
-        return throwable is IOException || 
-               throwable is SocketTimeoutException ||
-               throwable is UnknownHostException
+        return throwable is IOException ||
+                throwable is SocketTimeoutException ||
+                throwable is UnknownHostException
     }
 
     /**

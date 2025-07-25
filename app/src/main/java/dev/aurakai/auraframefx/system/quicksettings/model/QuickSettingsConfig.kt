@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class QuickSettingsConfig(
     val tiles: List<QuickSettingsTileConfig> = emptyList(),
-    val background: ImageResource? = null
+    val background: ImageResource? = null,
 )
 
 @Serializable
@@ -15,7 +15,7 @@ data class QuickSettingsTileConfig(
     val id: String,
     val label: String,
     val shape: OverlayShape,
-    val animation: QuickSettingsAnimation
+    val animation: QuickSettingsAnimation,
 )
 
 @Serializable

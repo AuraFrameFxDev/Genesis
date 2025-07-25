@@ -25,20 +25,20 @@ android {
             )
         }
     }
-    
+
     buildFeatures {
         compose = true
     }
-    
+
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-    
+
     kotlinOptions {
         jvmTarget = libs.versions.javaVersion.get()
         freeCompilerArgs = freeCompilerArgs + listOf(
@@ -51,7 +51,7 @@ android {
 dependencies {
     // Core Android
     implementation(libs.androidx.core.ktx)
-    
+
     // Compose
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
@@ -62,20 +62,20 @@ dependencies {
     implementation(libs.lottie.compose) // Lottie animations
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
-    
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
-    
+
     // ViewModel
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
-    
+
     // Logging
     implementation(libs.timber)
-    
+
     // Image loading
     implementation(libs.coil.compose)
-    
+
     // Testing
     testImplementation(libs.junit.api)
     androidTestImplementation(libs.androidx.test.ext.junit)

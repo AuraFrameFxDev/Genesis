@@ -38,7 +38,7 @@ class MockAuraAIService : Agent {
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse { // Added context
         return AgentResponse(
             content = "AuraAI mock response for: ${request.query} with context: $context",
@@ -87,7 +87,7 @@ class MockKaiAIService : Agent {
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse { // Added context
         return AgentResponse(
             content = "KaiAI mock response for: ${request.query} with context: $context",
@@ -136,7 +136,7 @@ class MockCascadeAIService : Agent {
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse { // Added context
         return AgentResponse(
             content = "CascadeAI mock response for: ${request.query} with context: $context",

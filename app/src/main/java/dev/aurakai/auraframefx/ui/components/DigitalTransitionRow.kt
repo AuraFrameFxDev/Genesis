@@ -6,7 +6,7 @@ import dev.aurakai.auraframefx.system.homescreen.HomeScreenTransitionType
 @Composable
 fun DigitalTransitionRow(
     currentType: HomeScreenTransitionType,
-    onTypeSelected: (HomeScreenTransitionType) -> Unit
+    onTypeSelected: (HomeScreenTransitionType) -> Unit,
 ) {
     // TODO: Implement digital transition row
 }

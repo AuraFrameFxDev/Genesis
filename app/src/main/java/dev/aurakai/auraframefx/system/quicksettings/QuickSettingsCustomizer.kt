@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class QuickSettingsCustomizer @Inject constructor(
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences,
 ) {
     private val _currentConfig = MutableStateFlow<QuickSettingsConfig?>(null)
     val currentConfig: StateFlow<QuickSettingsConfig?> = _currentConfig

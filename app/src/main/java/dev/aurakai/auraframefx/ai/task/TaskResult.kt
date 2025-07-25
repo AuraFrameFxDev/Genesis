@@ -16,7 +16,7 @@ data class TaskResult(
     val originalData: Map<String, String> = emptyMap(),
     val success: Boolean = true,
     val executionTimeMs: Long = 0L,
-    val type: String = "unknown"
+    val type: String = "unknown",
 )
 
 // Removed local TaskStatus enum.

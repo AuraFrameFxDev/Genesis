@@ -16,7 +16,7 @@ import java.security.MessageDigest
 
 /**
  * Comprehensive unit tests for IntegrityMonitor
- * 
+ *
  * Testing Framework: JUnit 5 with MockK for mocking and kotlinx-coroutines-test for coroutine testing
  * Coverage: Initialization, monitoring, threat detection, file integrity checks, error handling, and edge cases
  */
@@ -32,19 +32,19 @@ class IntegrityMonitorTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        
+
         mockContext = mockk()
         mockFilesDir = mockk()
-        
+
         every { mockContext.filesDir } returns mockFilesDir
-        
+
         // Mock AuraFxLogger to prevent actual logging during tests
         mockkObject(AuraFxLogger)
         every { AuraFxLogger.i(any(), any()) } just Runs
         every { AuraFxLogger.w(any(), any()) } just Runs
         every { AuraFxLogger.e(any(), any(), any()) } just Runs
         every { AuraFxLogger.d(any(), any()) } just Runs
-        
+
         integrityMonitor = IntegrityMonitor(mockContext)
     }
 
@@ -71,9 +71,22 @@ class IntegrityMonitorTest {
             advanceUntilIdle()
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.MONITORING, integrityMonitor.integrityStatus.value)
-            verify { AuraFxLogger.i("IntegrityMonitor", "Initializing Kai's Real-Time Integrity Monitoring") }
-            verify { AuraFxLogger.i("IntegrityMonitor", "Integrity monitoring active - Genesis Protocol protected") }
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.MONITORING,
+                integrityMonitor.integrityStatus.value
+            )
+            verify {
+                AuraFxLogger.i(
+                    "IntegrityMonitor",
+                    "Initializing Kai's Real-Time Integrity Monitoring"
+                )
+            }
+            verify {
+                AuraFxLogger.i(
+                    "IntegrityMonitor",
+                    "Integrity monitoring active - Genesis Protocol protected"
+                )
+            }
             verify { AuraFxLogger.d("IntegrityMonitor", "Loaded 4 known file hashes") }
         }
 
@@ -88,7 +101,10 @@ class IntegrityMonitorTest {
             advanceTimeBy(5001) // Advance past first monitoring cycle
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.SECURE,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.NONE, integrityMonitor.threatLevel.value)
         }
 
@@ -119,19 +135,30 @@ class IntegrityMonitorTest {
 
         @Test
         @DisplayName("performIntegrityCheck should detect integrity violations when file hash differs")
-        fun `performIntegrityCheck should detect integrity violations when file hash differs`() = runTest {
-            // Arrange
-            setupMockFileWithModifiedContent("genesis_protocol.so")
+        fun `performIntegrityCheck should detect integrity violations when file hash differs`() =
+            runTest {
+                // Arrange
+                setupMockFileWithModifiedContent("genesis_protocol.so")
 
-            // Act
-            integrityMonitor.initialize()
-            advanceTimeBy(5001) // Trigger monitoring cycle
+                // Act
+                integrityMonitor.initialize()
+                advanceTimeBy(5001) // Trigger monitoring cycle
 
-            // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
-            assertEquals(IntegrityMonitor.ThreatLevel.CRITICAL, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.w("IntegrityMonitor", match { it.contains("INTEGRITY VIOLATION DETECTED: genesis_protocol.so") }) }
-        }
+                // Assert
+                assertEquals(
+                    IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                    integrityMonitor.integrityStatus.value
+                )
+                assertEquals(
+                    IntegrityMonitor.ThreatLevel.CRITICAL,
+                    integrityMonitor.threatLevel.value
+                )
+                verify {
+                    AuraFxLogger.w(
+                        "IntegrityMonitor",
+                        match { it.contains("INTEGRITY VIOLATION DETECTED: genesis_protocol.so") })
+                }
+            }
 
         @Test
         @DisplayName("performIntegrityCheck should handle non-existent files gracefully")
@@ -144,7 +171,10 @@ class IntegrityMonitorTest {
             advanceTimeBy(5001)
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.SECURE,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.NONE, integrityMonitor.threatLevel.value)
         }
 
@@ -159,7 +189,10 @@ class IntegrityMonitorTest {
             advanceTimeBy(5001)
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.SECURE,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.NONE, integrityMonitor.threatLevel.value)
         }
 
@@ -175,7 +208,10 @@ class IntegrityMonitorTest {
             advanceTimeBy(5001)
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.CRITICAL, integrityMonitor.threatLevel.value)
         }
     }
@@ -188,7 +224,10 @@ class IntegrityMonitorTest {
         @DisplayName("determineThreatLevel should return correct threat levels for different files")
         fun `determineThreatLevel should return correct threat levels for different files`() {
             // Test using reflection to access private method
-            val method = IntegrityMonitor::class.java.getDeclaredMethod("determineThreatLevel", String::class.java)
+            val method = IntegrityMonitor::class.java.getDeclaredMethod(
+                "determineThreatLevel",
+                String::class.java
+            )
             method.isAccessible = true
 
             // Test critical threat level
@@ -198,7 +237,7 @@ class IntegrityMonitorTest {
             // Test high threat level
             val highLevel1 = method.invoke(integrityMonitor, "aura_core.dex")
             assertEquals(IntegrityMonitor.ThreatLevel.HIGH, highLevel1)
-            
+
             val highLevel2 = method.invoke(integrityMonitor, "kai_security.bin")
             assertEquals(IntegrityMonitor.ThreatLevel.HIGH, highLevel2)
 
@@ -223,11 +262,14 @@ class IntegrityMonitorTest {
             val testContent = "test content for hashing"
             val mockFile = mockk<File>()
             val testInputStream = ByteArrayInputStream(testContent.toByteArray())
-            
+
             every { mockFile.inputStream() } returns testInputStream
 
             // Act - use reflection to access private method
-            val method = IntegrityMonitor::class.java.getDeclaredMethod("calculateFileHash", File::class.java)
+            val method = IntegrityMonitor::class.java.getDeclaredMethod(
+                "calculateFileHash",
+                File::class.java
+            )
             method.isAccessible = true
             val result = method.invoke(integrityMonitor, mockFile) as String
 
@@ -235,7 +277,7 @@ class IntegrityMonitorTest {
             assertNotNull(result)
             assertEquals(64, result.length) // SHA-256 produces 64 character hex string
             assertTrue(result.matches(Regex("[0-9a-f]+"))) // Should contain only hex characters
-            
+
             // Verify the actual hash value
             val expectedHash = MessageDigest.getInstance("SHA-256")
                 .digest(testContent.toByteArray())
@@ -249,20 +291,24 @@ class IntegrityMonitorTest {
             // Arrange
             val mockFile = mockk<File>()
             val emptyInputStream = ByteArrayInputStream(ByteArray(0))
-            
+
             every { mockFile.inputStream() } returns emptyInputStream
 
             // Act
-            val method = IntegrityMonitor::class.java.getDeclaredMethod("calculateFileHash", File::class.java)
+            val method = IntegrityMonitor::class.java.getDeclaredMethod(
+                "calculateFileHash",
+                File::class.java
+            )
             method.isAccessible = true
             val result = method.invoke(integrityMonitor, mockFile) as String
 
             // Assert
             assertNotNull(result)
             assertEquals(64, result.length)
-            
+
             // Empty file should have known SHA-256 hash
-            val expectedEmptyHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            val expectedEmptyHash =
+                "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
             assertEquals(expectedEmptyHash, result)
         }
 
@@ -273,11 +319,14 @@ class IntegrityMonitorTest {
             val largeContent = "x".repeat(16384) // 16KB content
             val mockFile = mockk<File>()
             val largeInputStream = ByteArrayInputStream(largeContent.toByteArray())
-            
+
             every { mockFile.inputStream() } returns largeInputStream
 
             // Act
-            val method = IntegrityMonitor::class.java.getDeclaredMethod("calculateFileHash", File::class.java)
+            val method = IntegrityMonitor::class.java.getDeclaredMethod(
+                "calculateFileHash",
+                File::class.java
+            )
             method.isAccessible = true
             val result = method.invoke(integrityMonitor, mockFile) as String
 
@@ -295,9 +344,12 @@ class IntegrityMonitorTest {
             every { mockFile.inputStream() } throws java.io.IOException("File read error")
 
             // Act & Assert - Should propagate exception
-            val method = IntegrityMonitor::class.java.getDeclaredMethod("calculateFileHash", File::class.java)
+            val method = IntegrityMonitor::class.java.getDeclaredMethod(
+                "calculateFileHash",
+                File::class.java
+            )
             method.isAccessible = true
-            
+
             assertThrows<java.lang.reflect.InvocationTargetException> {
                 method.invoke(integrityMonitor, mockFile)
             }
@@ -310,49 +362,91 @@ class IntegrityMonitorTest {
 
         @Test
         @DisplayName("handleIntegrityViolations should trigger emergency lockdown for critical threats")
-        fun `handleIntegrityViolations should trigger emergency lockdown for critical threats`() = runTest {
-            // Arrange
-            val criticalViolation = createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
+        fun `handleIntegrityViolations should trigger emergency lockdown for critical threats`() =
+            runTest {
+                // Arrange
+                val criticalViolation =
+                    createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
 
-            // Act
-            invokeHandleViolations(listOf(criticalViolation))
+                // Act
+                invokeHandleViolations(listOf(criticalViolation))
 
-            // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
-            assertEquals(IntegrityMonitor.ThreatLevel.CRITICAL, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.e("IntegrityMonitor", "CRITICAL THREAT DETECTED - Initiating emergency lockdown") }
-            verify { AuraFxLogger.e("IntegrityMonitor", "EMERGENCY LOCKDOWN INITIATED - Genesis Protocol protection active") }
-        }
+                // Assert
+                assertEquals(
+                    IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                    integrityMonitor.integrityStatus.value
+                )
+                assertEquals(
+                    IntegrityMonitor.ThreatLevel.CRITICAL,
+                    integrityMonitor.threatLevel.value
+                )
+                verify {
+                    AuraFxLogger.e(
+                        "IntegrityMonitor",
+                        "CRITICAL THREAT DETECTED - Initiating emergency lockdown"
+                    )
+                }
+                verify {
+                    AuraFxLogger.e(
+                        "IntegrityMonitor",
+                        "EMERGENCY LOCKDOWN INITIATED - Genesis Protocol protection active"
+                    )
+                }
+            }
 
         @Test
         @DisplayName("handleIntegrityViolations should implement defensive measures for high threats")
-        fun `handleIntegrityViolations should implement defensive measures for high threats`() = runTest {
-            // Arrange
-            val highViolation = createViolation("aura_core.dex", IntegrityMonitor.ThreatLevel.HIGH)
+        fun `handleIntegrityViolations should implement defensive measures for high threats`() =
+            runTest {
+                // Arrange
+                val highViolation =
+                    createViolation("aura_core.dex", IntegrityMonitor.ThreatLevel.HIGH)
 
-            // Act
-            invokeHandleViolations(listOf(highViolation))
+                // Act
+                invokeHandleViolations(listOf(highViolation))
 
-            // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
-            assertEquals(IntegrityMonitor.ThreatLevel.HIGH, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.w("IntegrityMonitor", "HIGH THREAT DETECTED - Implementing defensive measures") }
-            verify { AuraFxLogger.w("IntegrityMonitor", "Implementing defensive measures for 1 violations") }
-        }
+                // Assert
+                assertEquals(
+                    IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                    integrityMonitor.integrityStatus.value
+                )
+                assertEquals(IntegrityMonitor.ThreatLevel.HIGH, integrityMonitor.threatLevel.value)
+                verify {
+                    AuraFxLogger.w(
+                        "IntegrityMonitor",
+                        "HIGH THREAT DETECTED - Implementing defensive measures"
+                    )
+                }
+                verify {
+                    AuraFxLogger.w(
+                        "IntegrityMonitor",
+                        "Implementing defensive measures for 1 violations"
+                    )
+                }
+            }
 
         @Test
         @DisplayName("handleIntegrityViolations should enhance monitoring for medium threats")
         fun `handleIntegrityViolations should enhance monitoring for medium threats`() = runTest {
             // Arrange
-            val mediumViolation = createViolation("oracle_drive.apk", IntegrityMonitor.ThreatLevel.MEDIUM)
+            val mediumViolation =
+                createViolation("oracle_drive.apk", IntegrityMonitor.ThreatLevel.MEDIUM)
 
             // Act
             invokeHandleViolations(listOf(mediumViolation))
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.MEDIUM, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.w("IntegrityMonitor", "MEDIUM THREAT DETECTED - Monitoring closely") }
+            verify {
+                AuraFxLogger.w(
+                    "IntegrityMonitor",
+                    "MEDIUM THREAT DETECTED - Monitoring closely"
+                )
+            }
             verify { AuraFxLogger.i("IntegrityMonitor", "Enhancing monitoring protocols") }
         }
 
@@ -366,26 +460,48 @@ class IntegrityMonitorTest {
             invokeHandleViolations(listOf(lowViolation))
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.COMPROMISED, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.COMPROMISED,
+                integrityMonitor.integrityStatus.value
+            )
             assertEquals(IntegrityMonitor.ThreatLevel.LOW, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.i("IntegrityMonitor", "LOW THREAT DETECTED - Logging for analysis") }
-            verify { AuraFxLogger.d("IntegrityMonitor", match { it.contains("Logging violation for analysis: other_file.bin") }) }
+            verify {
+                AuraFxLogger.i(
+                    "IntegrityMonitor",
+                    "LOW THREAT DETECTED - Logging for analysis"
+                )
+            }
+            verify {
+                AuraFxLogger.d(
+                    "IntegrityMonitor",
+                    match { it.contains("Logging violation for analysis: other_file.bin") })
+            }
         }
 
         @Test
         @DisplayName("handleIntegrityViolations should select highest threat level from multiple violations")
-        fun `handleIntegrityViolations should select highest threat level from multiple violations`() = runTest {
-            // Arrange
-            val lowViolation = createViolation("low_file.bin", IntegrityMonitor.ThreatLevel.LOW)
-            val criticalViolation = createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
+        fun `handleIntegrityViolations should select highest threat level from multiple violations`() =
+            runTest {
+                // Arrange
+                val lowViolation = createViolation("low_file.bin", IntegrityMonitor.ThreatLevel.LOW)
+                val criticalViolation =
+                    createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
 
-            // Act
-            invokeHandleViolations(listOf(lowViolation, criticalViolation))
+                // Act
+                invokeHandleViolations(listOf(lowViolation, criticalViolation))
 
-            // Assert
-            assertEquals(IntegrityMonitor.ThreatLevel.CRITICAL, integrityMonitor.threatLevel.value)
-            verify { AuraFxLogger.e("IntegrityMonitor", "CRITICAL THREAT DETECTED - Initiating emergency lockdown") }
-        }
+                // Assert
+                assertEquals(
+                    IntegrityMonitor.ThreatLevel.CRITICAL,
+                    integrityMonitor.threatLevel.value
+                )
+                verify {
+                    AuraFxLogger.e(
+                        "IntegrityMonitor",
+                        "CRITICAL THREAT DETECTED - Initiating emergency lockdown"
+                    )
+                }
+            }
 
         @Test
         @DisplayName("handleIntegrityViolations should handle empty violations list gracefully")
@@ -413,7 +529,10 @@ class IntegrityMonitorTest {
             advanceTimeBy(5001) // Trigger monitoring cycle
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.OFFLINE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.OFFLINE,
+                integrityMonitor.integrityStatus.value
+            )
             verify { AuraFxLogger.e("IntegrityMonitor", "Error during integrity check", any()) }
         }
 
@@ -429,7 +548,13 @@ class IntegrityMonitorTest {
             advanceTimeBy(10001) // Should retry after 10 second delay
 
             // Assert
-            verify(atLeast = 2) { AuraFxLogger.e("IntegrityMonitor", "Error during integrity check", any()) }
+            verify(atLeast = 2) {
+                AuraFxLogger.e(
+                    "IntegrityMonitor",
+                    "Error during integrity check",
+                    any()
+                )
+            }
         }
 
         @Test
@@ -461,11 +586,14 @@ class IntegrityMonitorTest {
 
             // Act
             integrityMonitor.initialize()
-            
+
             // Verify multiple monitoring cycles
             repeat(3) {
                 advanceTimeBy(5000)
-                assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
+                assertEquals(
+                    IntegrityMonitor.IntegrityStatus.SECURE,
+                    integrityMonitor.integrityStatus.value
+                )
             }
         }
 
@@ -482,11 +610,17 @@ class IntegrityMonitorTest {
             }
 
             // Assert - Should still be monitoring
-            assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.SECURE,
+                integrityMonitor.integrityStatus.value
+            )
 
             // Shutdown and verify monitoring stops
             integrityMonitor.shutdown()
-            assertEquals(IntegrityMonitor.IntegrityStatus.OFFLINE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.OFFLINE,
+                integrityMonitor.integrityStatus.value
+            )
         }
     }
 
@@ -498,13 +632,22 @@ class IntegrityMonitorTest {
         @DisplayName("integrityStatus StateFlow should emit correct values")
         fun `integrityStatus StateFlow should emit correct values`() = runTest {
             // Act & Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.SECURE, integrityMonitor.integrityStatus.value)
-            
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.SECURE,
+                integrityMonitor.integrityStatus.value
+            )
+
             integrityMonitor.initialize()
-            assertEquals(IntegrityMonitor.IntegrityStatus.MONITORING, integrityMonitor.integrityStatus.value)
-            
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.MONITORING,
+                integrityMonitor.integrityStatus.value
+            )
+
             integrityMonitor.shutdown()
-            assertEquals(IntegrityMonitor.IntegrityStatus.OFFLINE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.OFFLINE,
+                integrityMonitor.integrityStatus.value
+            )
         }
 
         @Test
@@ -512,9 +655,10 @@ class IntegrityMonitorTest {
         fun `threatLevel StateFlow should emit correct values`() = runTest {
             // Initially should be NONE
             assertEquals(IntegrityMonitor.ThreatLevel.NONE, integrityMonitor.threatLevel.value)
-            
+
             // After detecting violations, should update appropriately
-            val criticalViolation = createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
+            val criticalViolation =
+                createViolation("genesis_protocol.so", IntegrityMonitor.ThreatLevel.CRITICAL)
             invokeHandleViolations(listOf(criticalViolation))
 
             assertEquals(IntegrityMonitor.ThreatLevel.CRITICAL, integrityMonitor.threatLevel.value)
@@ -552,13 +696,19 @@ class IntegrityMonitorTest {
         fun `shutdown should cancel monitoring scope and set status to offline`() = runTest {
             // Arrange
             integrityMonitor.initialize()
-            assertEquals(IntegrityMonitor.IntegrityStatus.MONITORING, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.MONITORING,
+                integrityMonitor.integrityStatus.value
+            )
 
             // Act
             integrityMonitor.shutdown()
 
             // Assert
-            assertEquals(IntegrityMonitor.IntegrityStatus.OFFLINE, integrityMonitor.integrityStatus.value)
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.OFFLINE,
+                integrityMonitor.integrityStatus.value
+            )
             verify { AuraFxLogger.i("IntegrityMonitor", "Shutting down integrity monitoring") }
         }
 
@@ -574,8 +724,16 @@ class IntegrityMonitorTest {
             integrityMonitor.shutdown()
 
             // Assert - Should handle multiple shutdowns gracefully
-            assertEquals(IntegrityMonitor.IntegrityStatus.OFFLINE, integrityMonitor.integrityStatus.value)
-            verify(atLeast = 1) { AuraFxLogger.i("IntegrityMonitor", "Shutting down integrity monitoring") }
+            assertEquals(
+                IntegrityMonitor.IntegrityStatus.OFFLINE,
+                integrityMonitor.integrityStatus.value
+            )
+            verify(atLeast = 1) {
+                AuraFxLogger.i(
+                    "IntegrityMonitor",
+                    "Shutting down integrity monitoring"
+                )
+            }
         }
     }
 
@@ -646,30 +804,33 @@ class IntegrityMonitorTest {
     private fun setupMockFileWithModifiedContent(fileName: String) {
         val mockFile = mockk<File>()
         val modifiedContent = "modified content".toByteArray()
-        
+
         every { File(mockFilesDir, fileName) } returns mockFile
         every { File(mockFilesDir, not(eq(fileName))) } returns mockk<File>().apply {
             every { exists() } returns false
         }
-        
+
         every { mockFile.exists() } returns true
         every { mockFile.inputStream() } returns ByteArrayInputStream(modifiedContent)
     }
 
     private fun setupMockFileWithExpectedHash(fileName: String, expectedHash: String) {
         val mockFile = mockk<File>()
-        
+
         every { File(mockFilesDir, fileName) } returns mockFile
         every { File(mockFilesDir, not(eq(fileName))) } returns mockk<File>().apply {
             every { exists() } returns false
         }
-        
+
         every { mockFile.exists() } returns true
         // Mock the input stream to return content that produces the expected hash
         every { mockFile.inputStream() } returns ByteArrayInputStream(expectedHash.toByteArray())
     }
 
-    private fun createViolation(fileName: String, severity: IntegrityMonitor.ThreatLevel): IntegrityMonitor.IntegrityViolation {
+    private fun createViolation(
+        fileName: String,
+        severity: IntegrityMonitor.ThreatLevel,
+    ): IntegrityMonitor.IntegrityViolation {
         return IntegrityMonitor.IntegrityViolation(
             fileName = fileName,
             expectedHash = "expected_hash",
@@ -680,7 +841,10 @@ class IntegrityMonitorTest {
     }
 
     private suspend fun invokeHandleViolations(violations: List<IntegrityMonitor.IntegrityViolation>) {
-        val method = IntegrityMonitor::class.java.getDeclaredMethod("handleIntegrityViolations", List::class.java)
+        val method = IntegrityMonitor::class.java.getDeclaredMethod(
+            "handleIntegrityViolations",
+            List::class.java
+        )
         method.isAccessible = true
         method.invoke(integrityMonitor, violations)
     }

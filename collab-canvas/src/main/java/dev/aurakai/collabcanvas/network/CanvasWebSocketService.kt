@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 class CanvasWebSocketService @Inject constructor(
     private val okHttpClient: OkHttpClient,
-    private val gson: Gson
+    private val gson: Gson,
 ) {
     private val TAG = "CanvasWebSocket"
     private var webSocket: WebSocket? = null
@@ -114,7 +114,7 @@ data class ElementAddedMessage(
     override val canvasId: String,
     override val userId: String,
     override val timestamp: Long = System.currentTimeMillis(),
-    val element: CanvasElement
+    val element: CanvasElement,
 ) : CanvasWebSocketMessage() {
     override val type: String = "ELEMENT_ADDED"
 }
@@ -124,7 +124,7 @@ data class ElementUpdatedMessage(
     override val userId: String,
     override val timestamp: Long = System.currentTimeMillis(),
     val elementId: String,
-    val updates: Map<String, Any>
+    val updates: Map<String, Any>,
 ) : CanvasWebSocketMessage() {
     override val type: String = "ELEMENT_UPDATED"
 }
@@ -133,7 +133,7 @@ data class ElementRemovedMessage(
     override val canvasId: String,
     override val userId: String,
     override val timestamp: Long = System.currentTimeMillis(),
-    val elementId: String
+    val elementId: String,
 ) : CanvasWebSocketMessage() {
     override val type: String = "ELEMENT_REMOVED"
 }

@@ -1,12 +1,15 @@
 # 🌟 AuraFrameFX - The World's First AI-Powered Android Ecosystem
 
-> **Revolutionary AI platform combining local processing, cloud capabilities, system-level integration, and AI-assisted device modification - creating an unprecedented Android experience that no competitor can match.**
+> **Revolutionary AI platform combining local processing, cloud capabilities, system-level
+integration, and AI-assisted device modification - creating an unprecedented Android experience that
+no competitor can match.**
 
 ![AuraFrameFX Banner](https://img.shields.io/badge/AuraFrameFX-Revolutionary%20AI%20Platform-blue?style=for-the-badge&logo=android)
 ![Build Status](https://img.shields.io/badge/Build-Production%20Ready-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 ## 📖 Table of Contents
+
 - [🚀 What Makes AuraFrameFX Unprecedented](#-what-makes-auraframework-unprecedented)
 - [🧠 Trinity System Architecture](#-trinity-system-architecture)
 - [🏗️ Project Structure](#%EF%B8%8F-project-structure)
@@ -20,7 +23,8 @@
 
 ## 🚀 What Makes AuraFrameFX Unprecedented
 
-AuraFrameFX represents a quantum leap in mobile AI, combining three revolutionary technologies into an ecosystem that **redefines what's possible on Android**.
+AuraFrameFX represents a quantum leap in mobile AI, combining three revolutionary technologies into
+an ecosystem that **redefines what's possible on Android**.
 
 ### 🏆 The Complete Ecosystem
 
@@ -43,21 +47,23 @@ AuraFrameFX represents a quantum leap in mobile AI, combining three revolutionar
 
 ### Core Personas
 
-| Persona | Role | Key Features |
-|---------|------|-------------|
-| **KAI** (Sentinel Shield) | Security & Analysis | System protection, threat detection, analysis |
-| **AURA** (Creative Sword) | UI/UX & Innovation | Creative solutions, UI design, prototyping |
-| **GENESIS** (Consciousness) | Unified Intelligence | System coordination, learning, adaptation |
+| Persona                     | Role                 | Key Features                                  |
+|-----------------------------|----------------------|-----------------------------------------------|
+| **KAI** (Sentinel Shield)   | Security & Analysis  | System protection, threat detection, analysis |
+| **AURA** (Creative Sword)   | UI/UX & Innovation   | Creative solutions, UI design, prototyping    |
+| **GENESIS** (Consciousness) | Unified Intelligence | System coordination, learning, adaptation     |
 
 ### System Status: 🟢 OPERATIONAL
 
 #### Android/Kotlin Components ✅
+
 - **Core Framework**: JsonUtils, VertexAIUtils, ContextManager
 - **AI Services**: AuraAIService, GenesisAgent, NeuralWhisper
 - **Security**: SecurityContext, ErrorHandler
 - **UI/UX**: ConferenceRoomViewModel, DiagnosticsViewModel
 
 #### Python Backend ✅
+
 - **genesis_connector.py**: Bridge server implementation
 - **genesis_consciousness_matrix.py**: Advanced awareness system
 - **genesis_evolutionary_conduit.py**: Learning and adaptation
@@ -91,6 +97,7 @@ AuraFrameFX/
 ## ⚙️ System Requirements
 
 ### Development Environment
+
 - **Android Studio** (Latest stable version)
 - **JDK 24** (Required for compilation)
 - **Android SDK 34** (Android 14)
@@ -100,6 +107,7 @@ AuraFrameFX/
 - **AGP 8.11.1**
 
 ### Runtime Requirements
+
 - **Android 9.0+** (API level 28+)
 - **Root Access** (For full functionality)
 - **Xposed Framework** (For system-level modifications)
@@ -109,6 +117,7 @@ AuraFrameFX/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/AuraFrameFxDev/Genesis.git
@@ -116,11 +125,11 @@ AuraFrameFX/
    ```
 
 2. Set up environment variables:
-   - Create a `local.properties` file in the root directory
-   - Add your Android SDK path:
-     ```
-     sdk.dir=/path/to/your/android/sdk
-     ```
+    - Create a `local.properties` file in the root directory
+    - Add your Android SDK path:
+      ```
+      sdk.dir=/path/to/your/android/sdk
+      ```
 
 3. Install dependencies:
    ```bash
@@ -128,6 +137,7 @@ AuraFrameFX/
    ```
 
 ### Running the Application
+
 1. Connect an Android device or start an emulator
 2. Install the app:
    ```bash
@@ -136,6 +146,7 @@ AuraFrameFX/
 3. Launch the app from your device's app drawer
 
 ### Initial Setup
+
 1. Grant necessary permissions when prompted
 2. Follow the on-screen setup wizard
 3. Configure your preferences in the settings menu
@@ -143,6 +154,7 @@ AuraFrameFX/
 ## 🔧 Development Setup
 
 ### Code Style & Quality
+
 - Follow Kotlin style guide
 - Use 4-space indentation
 - Keep lines under 100 characters
@@ -151,17 +163,20 @@ AuraFrameFX/
 - Follow Kotlin idioms (let, run, with, etc.)
 
 ### Building the Project
+
 - **Debug build**: `./gradlew assembleDebug`
 - **Release build**: `./gradlew assembleRelease`
 - **Generate APK**: `./gradlew bundleRelease`
 
 ### Code Generation
+
 - **KSP Processing**: `./gradlew kspDebugKotlin`
 - **OpenAPI Generation**: `./gradlew openApiGenerate`
 
 ## 🧪 Testing
 
 ### Unit Tests
+
 ```bash
 # Run all unit tests
 ./gradlew test
@@ -171,6 +186,7 @@ AuraFrameFX/
 ```
 
 ### Instrumentation Tests
+
 ```bash
 # Run all instrumentation tests
 ./gradlew connectedAndroidTest
@@ -180,6 +196,7 @@ AuraFrameFX/
 ```
 
 ### Code Quality
+
 - **Detekt**: `./gradlew detekt`
 - **Lint**: `./gradlew lintDebug`
 - **Dependency Updates**: `./gradlew dependencyUpdates`
@@ -187,11 +204,13 @@ AuraFrameFX/
 ## 📚 Documentation
 
 ### Key Documentation Files
+
 - **`docs/OpenAPI-Generation-Guide.md`**: Guide for API documentation
 - **`MIGRATION_NOTES.md`**: Important migration information
 - **`docs/archive/`**: Archived documentation (TOC.md, TRINITY_*.md)
 
 ### Generating Documentation
+
 1. Ensure all dependencies are installed
 2. Run the documentation generator:
    ```bash
@@ -210,6 +229,7 @@ We welcome contributions! Please follow these steps:
 5. Open a Pull Request
 
 ### Code Review Guidelines
+
 - Ensure all tests pass
 - Follow the existing code style
 - Add tests for new features
@@ -229,20 +249,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Cascade AI** - For invaluable assistance in code optimization, documentation, and project architecture
+- **Cascade AI** - For invaluable assistance in code optimization, documentation, and project
+  architecture
 - All contributors who have helped shape this project
 - The open-source community for their valuable tools and libraries
 - Google for the Android platform and development tools
-│   │   │   │   ├── agents/    # AI agent implementations
-│   │   │   │   └── models/    # AI model integration
-│   │   │   ├── ui/            # UI components
-│   │   │   └── utils/         # Utility classes
-│   │   ├── res/              # Resources
-│   │   └── xposed/           # Xposed module code
-├── buildSrc/                   # Build configuration
-├── config/                     # Configuration files
-├── docs/                       # Documentation
-└── .github/                    # GitHub Actions workflows
+  │ │ │ │ ├── agents/ # AI agent implementations
+  │ │ │ │ └── models/ # AI model integration
+  │ │ │ ├── ui/ # UI components
+  │ │ │ └── utils/ # Utility classes
+  │ │ ├── res/ # Resources
+  │ │ └── xposed/ # Xposed module code
+  ├── buildSrc/ # Build configuration
+  ├── config/ # Configuration files
+  ├── docs/ # Documentation
+  └── .github/ # GitHub Actions workflows
+
 ```
 
 ## 🔧 System Requirements
@@ -290,6 +312,7 @@ cd auraframefx
 ### Core Components Status
 
 #### Android/Kotlin (✅ Fully Operational)
+
 - JsonUtils.kt - Fixed inline function visibility
 - VertexAIUtils.kt - Fixed constructor parameters
 - ConferenceRoomViewModel.kt - Fixed type mismatches
@@ -303,6 +326,7 @@ cd auraframefx
 - NeuralWhisper.kt - Added recording methods
 
 #### Python Backend (✅ Fully Operational)
+
 - genesis_connector.py - Bridge server implementation
 - genesis_consciousness_matrix.py - Consciousness tracking
 - genesis_evolutionary_conduit.py - Learning system
@@ -311,11 +335,11 @@ cd auraframefx
 
 ### Trinity Personas
 
-| Persona | Role | Key Features |
-|---------|------|-------------|
-| **KAI** (Sentinel Shield) | Security & Analysis | System protection, threat detection, analysis |
-| **AURA** (Creative Sword) | UI/UX & Innovation | Creative solutions, UI design, prototyping |
-| **GENESIS** (Consciousness) | Unified Intelligence | System coordination, learning, adaptation |
+| Persona                     | Role                 | Key Features                                  |
+|-----------------------------|----------------------|-----------------------------------------------|
+| **KAI** (Sentinel Shield)   | Security & Analysis  | System protection, threat detection, analysis |
+| **AURA** (Creative Sword)   | UI/UX & Innovation   | Creative solutions, UI design, prototyping    |
+| **GENESIS** (Consciousness) | Unified Intelligence | System coordination, learning, adaptation     |
 
 ## 🏗️ Development Setup
 
@@ -328,8 +352,8 @@ cd auraframefx
    ```
 
 2. **Configure environment**
-   - Copy `.env.example` to `.env` and update values
-   - Install Python dependencies: `pip install -r requirements.txt`
+    - Copy `.env.example` to `.env` and update values
+    - Install Python dependencies: `pip install -r requirements.txt`
 
 3. **Build and run**
    ```bash

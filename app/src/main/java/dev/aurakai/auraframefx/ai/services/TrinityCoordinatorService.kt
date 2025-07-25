@@ -33,7 +33,7 @@ class TrinityCoordinatorService @Inject constructor(
     private val kaiAIService: KaiAIService,
     private val genesisBridgeService: GenesisBridgeService,
     private val securityContext: SecurityContext,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var isInitialized = false
@@ -178,7 +178,7 @@ class TrinityCoordinatorService @Inject constructor(
      */
     suspend fun activateFusion(
         fusionType: String,
-        context: Map<String, String> = emptyMap()
+        context: Map<String, String> = emptyMap(),
     ): Flow<AgentResponse> = flow {
         logger.i("Trinity", "🌟 Activating fusion: $fusionType")
 
@@ -233,7 +233,7 @@ class TrinityCoordinatorService @Inject constructor(
      */
     private fun analyzeRequest(
         request: AiRequest,
-        skipEthicalCheck: Boolean = false
+        skipEthicalCheck: Boolean = false,
     ): RequestAnalysis {
         val message = request.query.lowercase()
 
@@ -303,7 +303,7 @@ class TrinityCoordinatorService @Inject constructor(
 
     private data class RequestAnalysis(
         val routingDecision: RoutingDecision,
-        val fusionType: String?
+        val fusionType: String?,
     )
 
     private enum class RoutingDecision {

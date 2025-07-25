@@ -20,7 +20,7 @@ data class HierarchyAgentConfig(
     val name: String,
     val role: AgentRole,
     val priority: AgentPriority,
-    val capabilities: Set<String>
+    val capabilities: Set<String>,
 )
 
 object AgentHierarchy {

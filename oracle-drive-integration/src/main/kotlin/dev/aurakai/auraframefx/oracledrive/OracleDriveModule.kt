@@ -13,10 +13,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule {
-    
+
     @Binds
     @Singleton
     abstract fun bindOracleDriveService(
-        oracleDriveServiceImpl: OracleDriveServiceImpl
+        oracleDriveServiceImpl: OracleDriveServiceImpl,
     ): OracleDriveService
 }

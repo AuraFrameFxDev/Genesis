@@ -55,7 +55,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -109,7 +112,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -159,7 +165,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -213,7 +222,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -271,7 +283,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -325,7 +340,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -375,7 +393,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -429,7 +450,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -479,7 +503,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -533,7 +560,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -583,7 +613,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -637,7 +670,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -695,7 +731,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -749,7 +788,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -799,7 +841,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -853,7 +898,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -880,7 +928,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -905,7 +955,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -959,7 +1012,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1009,7 +1065,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1063,7 +1122,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1121,7 +1183,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1175,7 +1240,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1225,7 +1293,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1279,7 +1350,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1329,7 +1403,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1383,7 +1460,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1433,7 +1513,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1487,7 +1570,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1545,7 +1631,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1599,7 +1688,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1649,7 +1741,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1703,7 +1798,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1730,7 +1828,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module with multiple colons should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -1755,7 +1855,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1809,7 +1912,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1859,7 +1965,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1913,7 +2022,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -1971,7 +2083,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2025,7 +2140,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2075,7 +2193,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2129,7 +2250,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2179,7 +2303,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2233,7 +2360,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2283,7 +2413,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2337,7 +2470,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2395,7 +2531,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2449,7 +2588,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2499,7 +2641,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2553,7 +2698,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2580,7 +2728,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -2605,7 +2755,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2659,7 +2812,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2709,7 +2865,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2763,7 +2922,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2821,7 +2983,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2875,7 +3040,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2925,7 +3093,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -2979,7 +3150,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3029,7 +3203,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3083,7 +3260,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3133,7 +3313,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3187,7 +3370,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3245,7 +3431,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3299,7 +3488,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3349,7 +3541,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3403,7 +3598,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3430,7 +3628,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module without colon should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -3455,7 +3655,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3509,7 +3712,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3559,7 +3765,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3613,7 +3822,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3671,7 +3883,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3725,7 +3940,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3775,7 +3993,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3829,7 +4050,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3879,7 +4103,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3933,7 +4160,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -3983,7 +4213,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4037,7 +4270,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4095,7 +4331,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4149,7 +4388,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4199,7 +4441,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4253,7 +4498,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4280,7 +4528,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -4305,7 +4555,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4359,7 +4612,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4409,7 +4665,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4463,7 +4722,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4521,7 +4783,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4575,7 +4840,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4625,7 +4893,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4679,7 +4950,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4729,7 +5003,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4783,7 +5060,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4833,7 +5113,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4887,7 +5170,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4945,7 +5231,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -4999,7 +5288,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5049,7 +5341,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5103,7 +5398,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5130,7 +5428,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module with multiple colons should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -5155,7 +5455,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5209,7 +5512,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5259,7 +5565,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5313,7 +5622,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5371,7 +5683,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5425,7 +5740,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5475,7 +5793,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5529,7 +5850,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5579,7 +5903,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5633,7 +5960,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5683,7 +6013,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5737,7 +6070,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5795,7 +6131,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5849,7 +6188,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5899,7 +6241,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5953,7 +6298,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -5980,7 +6328,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -6005,7 +6355,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6059,7 +6412,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6109,7 +6465,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6163,7 +6522,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6221,7 +6583,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6275,7 +6640,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6325,7 +6693,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6379,7 +6750,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6429,7 +6803,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6483,7 +6860,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6533,7 +6913,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6587,7 +6970,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6645,7 +7031,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6699,7 +7088,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6749,7 +7141,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6803,7 +7198,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6844,7 +7242,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6898,7 +7299,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -6948,7 +7352,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7002,7 +7409,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7060,7 +7470,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7114,7 +7527,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7164,7 +7580,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7218,7 +7637,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7268,7 +7690,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7322,7 +7747,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7372,7 +7800,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7426,7 +7857,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7484,7 +7918,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7538,7 +7975,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7588,7 +8028,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7642,7 +8085,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7669,7 +8115,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -7694,7 +8142,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7748,7 +8199,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7798,7 +8252,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7852,7 +8309,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7910,7 +8370,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -7964,7 +8427,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8014,7 +8480,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8068,7 +8537,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8118,7 +8590,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8172,7 +8647,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8222,7 +8700,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8276,7 +8757,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8334,7 +8818,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8388,7 +8875,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8438,7 +8928,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8492,7 +8985,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8519,7 +9015,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module with multiple colons should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -8544,7 +9042,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8598,7 +9099,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8648,7 +9152,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8702,7 +9209,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8760,7 +9270,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8814,7 +9327,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8864,7 +9380,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8918,7 +9437,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -8968,7 +9490,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9022,7 +9547,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9072,7 +9600,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9126,7 +9657,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9184,7 +9718,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9238,7 +9775,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9288,7 +9828,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9342,7 +9885,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9369,7 +9915,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -9394,7 +9942,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9448,7 +9999,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9498,7 +10052,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9552,7 +10109,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9610,7 +10170,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9664,7 +10227,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9714,7 +10280,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9768,7 +10337,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9818,7 +10390,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9872,7 +10447,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9922,7 +10500,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -9976,7 +10557,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10034,7 +10618,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10088,7 +10675,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10138,7 +10728,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10192,7 +10785,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10219,7 +10815,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module without colon should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -10244,7 +10842,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10298,7 +10899,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10348,7 +10952,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10402,7 +11009,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10460,7 +11070,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10514,7 +11127,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10564,7 +11180,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10618,7 +11237,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10668,7 +11290,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10722,7 +11347,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10772,7 +11400,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10826,7 +11457,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10884,7 +11518,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10938,7 +11575,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -10988,7 +11628,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11042,7 +11685,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11069,7 +11715,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module starting with number should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -11094,7 +11742,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11148,7 +11799,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11198,7 +11852,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11252,7 +11909,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11310,7 +11970,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11364,7 +12027,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11414,7 +12080,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11468,7 +12137,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11518,7 +12190,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11572,7 +12247,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11622,7 +12300,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11676,7 +12357,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11734,7 +12418,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11788,7 +12475,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11838,7 +12528,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11892,7 +12585,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11919,7 +12615,9 @@ class LibsVersionsTomlEdgeCaseTest {
 
         assertFalse("Module with multiple colons should be invalid", result.isValid)
 
-        assertTrue("Should report invalid module format", result.errors.any { it.contains("Invalid module format") })
+        assertTrue(
+            "Should report invalid module format",
+            result.errors.any { it.contains("Invalid module format") })
 
     }
 
@@ -11944,7 +12642,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -11998,7 +12699,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12048,7 +12752,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12102,7 +12809,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12160,7 +12870,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12214,7 +12927,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12264,7 +12980,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12318,7 +13037,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12368,7 +13090,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12422,7 +13147,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12472,7 +13200,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12526,7 +13257,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12584,7 +13318,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12638,7 +13375,10 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("Library with extra unknown field should be valid (should ignore unknown fields)", result.isValid)
+        assertTrue(
+            "Library with extra unknown field should be valid (should ignore unknown fields)",
+            result.isValid
+        )
 
     }
 
@@ -12688,11 +13428,14 @@ class LibsVersionsTomlEdgeCaseTest {
 
         val result = LibsVersionsTomlValidator(tempToml).validate()
 
-        assertTrue("L
+        assertTrue(
+            "L
             [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            kotlinLib = { module = 'org.jetbrains.kotlin:kotlin-stdlib', version.ref = "kotlin" }
-        """.trimIndent()
+                testLib = { module = "com.example:lib", version.ref = "agp" }
+                kotlinLib = {
+            module = 'org.jetbrains.kotlin:kotlin-stdlib', version.ref = "kotlin"
+        }
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Mixed quotes should be valid", result.isValid)
@@ -12702,13 +13445,13 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun escapedCharacters_doNotBreakParsing() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            special = "version-with-\"quotes\""
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            specialLib = { module = "com.example:special\path", version.ref = "special" }
-        """.trimIndent()
+                [versions]
+                    agp = "8.11.1"
+                    special = "version-with-\"quotes\""
+                [libraries]
+                    testLib = { module = "com.example:lib", version.ref = "agp" }
+                    specialLib = { module = "com.example:special\path", version.ref = "special" }
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Escaped characters should be valid", result.isValid)
@@ -12718,17 +13461,17 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun inlineTableVariations_areSupported() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            kotlin = "2.0.0"
-            [libraries]
-            compactLib = { module = "com.example:lib", version.ref = "agp" }
-            spacedLib = { module = "com.example:spaced" , version.ref = "kotlin" }
-            multilineLib = {
+                [versions]
+                    agp = "8.11.1"
+                    kotlin = "2.0.0"
+                [libraries]
+                    compactLib = { module = "com.example:lib", version.ref = "agp" }
+                    spacedLib = { module = "com.example:spaced" , version.ref = "kotlin" }
+                    multilineLib = {
                 module = "com.example:multiline",
                 version.ref = "agp"
             }
-        """.trimIndent()
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Inline table variations should be valid", result.isValid)
@@ -12738,16 +13481,16 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun bundleArrayFormats_areAccepted() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [bundles]
-            testing = ["testLib"]
-            multiBundle = [
+                [versions]
+                    agp = "8.11.1"
+                [libraries]
+                    testLib = { module = "com.example:lib", version.ref = "agp" }
+                [bundles]
+                    testing =["testLib"]
+                    multiBundle =[
                 "testLib",
             ]
-        """.trimIndent()
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertTrue("Bundle array formats should be valid", result.isValid)
@@ -12757,11 +13500,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun sectionNames_areCaseSensitive() {
         val toml = """
-            [Versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-        """.trimIndent()
+                [Versions]
+                    agp = "8.11.1"
+                [libraries]
+                    testLib = { module = "com.example:lib", version.ref = "agp" }
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Section names should be case sensitive", result.isValid)
@@ -12788,8 +13531,8 @@ class LibsVersionsTomlEdgeCaseTest {
     fun fileWithOnlyComments_isHandledCorrectly() {
         val toml = """
             # This is a comment
-            # Another comment
-            ## More comments
+        # Another comment
+        ## More comments
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12801,10 +13544,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedTomlSyntax_isDetected() {
         val toml = """
-            [versions
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions
+                agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12816,8 +13559,8 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun missingVersionsSection_isDetected() {
         val toml = """
-            [libraries]
-            testLib = { module = "com.example:lib", version = "1.0.0" }
+        [libraries]
+        testLib = { module = "com.example:lib", version = "1.0.0" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12829,8 +13572,8 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun missingLibrariesSection_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
+        [versions]
+        agp = "8.11.1"
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12842,10 +13585,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedToml_withMissingClosingBracket_isHandledGracefully() {
         val toml = """
-            [versions
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions
+                agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12856,11 +13599,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedToml_withInvalidKeyValueSeparator_isRejected() {
         val toml = """
-            [versions]
-            agp : "8.11.1"
-            kotlin = "2.0.0"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp : "8.11.1"
+        kotlin = "2.0.0"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12870,10 +13613,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun invalidVersionReference_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "nonexistent" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "nonexistent" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12885,11 +13628,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedToml_withUnterminatedString_isHandled() {
         val toml = """
-            [versions]
-            agp = "8.11.1
-            kotlin = "2.0.0"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1
+        kotlin = "2.0.0"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12899,11 +13642,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedToml_withDuplicateKeys_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            agp = "8.11.2"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        agp = "8.11.2"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12913,10 +13656,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedToml_withInvalidTableDefinition_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [[libraries]]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [[libraries]]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12926,18 +13669,18 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun extremeVersionNumbers_areHandledCorrectly() {
         val toml = """
-            [versions]
-            zero = "0.0.0"
-            large = "999999.999999.999999"
-            alphanumeric = "1.0.0-alpha.1+build.123"
-            semverPre = "2.0.0-SNAPSHOT"
-            dateVersion = "20231225.1200"
-            [libraries]
-            zeroLib  = { module = "com.example:zero" , version.ref = "zero"   }
-            largeLib = { module = "com.example:large", version.ref = "large" }
-            alphaLib = { module = "com.example:alpha", version.ref = "alphanumeric" }
-            preLib   = { module = "com.example:pre" , version.ref = "semverPre"   }
-            dateLib  = { module = "com.example:date", version.ref = "dateVersion" }
+        [versions]
+        zero = "0.0.0"
+        large = "999999.999999.999999"
+        alphanumeric = "1.0.0-alpha.1+build.123"
+        semverPre = "2.0.0-SNAPSHOT"
+        dateVersion = "20231225.1200"
+        [libraries]
+        zeroLib = { module = "com.example:zero" , version.ref = "zero" }
+        largeLib = { module = "com.example:large", version.ref = "large" }
+        alphaLib = { module = "com.example:alpha", version.ref = "alphanumeric" }
+        preLib = { module = "com.example:pre" , version.ref = "semverPre" }
+        dateLib = { module = "com.example:date", version.ref = "dateVersion" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12947,12 +13690,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun unicodeCharacters_inVersionsAndModules_areSupported() {
         val toml = """
-            [versions]
-            unicode = "1.0.0-ñoño"
-            emoji   = "2.0.0-🚀"
-            [libraries]
-            unicodeLib = { module = "com.exämple:ñoño", version.ref = "unicode" }
-            emojiLib   = { module = "com.example:rocket", version.ref = "emoji"   }
+        [versions]
+        unicode = "1.0.0-ñoño"
+        emoji = "2.0.0-🚀"
+        [libraries]
+        unicodeLib = { module = "com.exämple:ñoño", version.ref = "unicode" }
+        emojiLib = { module = "com.example:rocket", version.ref = "emoji" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12977,11 +13720,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun commentsAndWhitespace_areIgnoredProperly() {
         val toml = """
-            # Initial comment
-            [versions]  # inline comment
-            agp = "8.11.1"  # version comment
-            [libraries] # section comment
-            testLib = { module = "com.example:lib", version.ref = "agp" } # inline
+        # Initial comment
+                [versions]  # inline comment
+        agp = "8.11.1"  # version comment
+        [libraries] # section comment
+        testLib = { module = "com.example:lib", version.ref = "agp" } # inline
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -12991,12 +13734,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionReferences_withComplexPaths_areResolved() {
         val toml = """
-            [versions]
-            parent.child = "1.0.0"
-            nested.deep.version = "2.0.0"
-            [libraries]
-            parentLib = { module = "com.example:parent" , version.ref = "parent.child" }
-            nestedLib = { module = "com.example:nested", version.ref = "nested.deep.version" }
+        [versions]
+        parent.child = "1.0.0"
+        nested.deep.version = "2.0.0"
+        [libraries]
+        parentLib = { module = "com.example:parent" , version.ref = "parent.child" }
+        nestedLib = { module = "com.example:nested", version.ref = "nested.deep.version" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13006,8 +13749,8 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun fileWithOnlyVersionsSection_isInvalid() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
+        [versions]
+        agp = "8.11.1"
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13018,8 +13761,8 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun fileWithOnlyLibrariesSection_isInvalid() {
         val toml = """
-            [libraries]
-            loneLib = { module = "com.example:lib", version = "1.0.0" }
+        [libraries]
+        loneLib = { module = "com.example:lib", version = "1.0.0" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13030,10 +13773,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithDirectVersionAndReference_conflictsAreDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            conflicted = { module = "com.example:lib", version = "1.0.0", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        conflicted = { module = "com.example:lib", version = "1.0.0", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13043,10 +13786,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithoutModule_isInvalid() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            noModule = { version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        noModule = { version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13057,10 +13800,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun concurrentValidation_handlesMultipleThreads() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val results = mutableListOf<Boolean>()
@@ -13086,12 +13829,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun validationPerformance_staysWithinReasonableBounds() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            kotlin = "2.0.0"
-            [libraries]
-            a = { module = "com.example:a", version.ref = "agp" }
-            b = { module = "com.example:b", version.ref = "kotlin" }
+        [versions]
+        agp = "8.11.1"
+        kotlin = "2.0.0"
+        [libraries]
+        a = { module = "com.example:a", version.ref = "agp" }
+        b = { module = "com.example:b", version.ref = "kotlin" }
         """.trimIndent()
         write(toml)
         val start = System.currentTimeMillis()
@@ -13115,9 +13858,9 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun emptyVersionsSection_isDetected() {
         val toml = """
-            [versions]
-            [libraries]
-            testLib = { module = "com.example:lib", version = "1.0.0" }
+        [versions]
+        [libraries]
+        testLib = { module = "com.example:lib", version = "1.0.0" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13127,9 +13870,9 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun emptyLibrariesSection_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
+        [versions]
+        agp = "8.11.1"
+        [libraries]
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13139,10 +13882,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithoutVersionSpecification_isInvalid() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            incomplete = { module = "com.example:lib" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        incomplete = { module = "com.example:lib" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13152,10 +13895,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun invalidModuleFormat_withoutColon_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            badModule = { module = "com.example.lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        badModule = { module = "com.example.lib", version.ref = "agp" }
         """.trimIndent()
         write
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13166,10 +13909,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun moduleWithEmptyGroupId_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            emptyGroup = { module = ":artifact", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        emptyGroup = { module = ":artifact", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13179,10 +13922,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun moduleWithEmptyArtifactId_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            emptyArtifact = { module = "com.example:", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        emptyArtifact = { module = "com.example:", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13192,11 +13935,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionWithEmptyValue_isRejected() {
         val toml = """
-            [versions]
-            empty = ""
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        empty = ""
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13206,12 +13949,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun bundleReferencingNonexistentLibrary_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            realLib = { module = "com.example:lib", version.ref = "agp" }
-            [bundles]
-            badBundle = ["realLib", "nonexistentLib"]
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        realLib = { module = "com.example:lib", version.ref = "agp" }
+        [bundles]
+        badBundle = ["realLib", "nonexistentLib"]
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13223,12 +13966,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun bundleWithEmptyArray_isValid() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [bundles]
-            emptyBundle = []
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [bundles]
+        emptyBundle = []
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13238,14 +13981,14 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun pluginsSection_withValidContent_isAccepted() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            kotlin = "2.0.0"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [plugins]
-            android = { id = "com.android.application", version.ref = "agp" }
-            kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+        [versions]
+        agp = "8.11.1"
+        kotlin = "2.0.0"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [plugins]
+        android = { id = "com.android.application", version.ref = "agp" }
+        kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13256,12 +13999,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun pluginWithoutId_isInvalid() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [plugins]
-            badPlugin = { version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [plugins]
+        badPlugin = { version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13271,11 +14014,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun circularVersionReferences_areDetected() {
         val toml = """
-            [versions]
-            circular1 = { ref = "circular2" }
-            circular2 = { ref = "circular1" }
-            [libraries]
-            testLib = { module = "com.example:lib", version = "1.0.0" }
+        [versions]
+        circular1 = { ref = "circular2" }
+        circular2 = { ref = "circular1" }
+        [libraries]
+        testLib = { module = "com.example:lib", version = "1.0.0" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13285,15 +14028,15 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithExtraProperties_isHandled() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            extraProps = {
-                module = "com.example:lib",
-                version.ref = "agp",
-                classifier = "sources",
-                type = "jar"
-            }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        extraProps = {
+            module = "com.example:lib",
+            version.ref = "agp",
+            classifier = "sources",
+            type = "jar"
+        }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13303,10 +14046,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun invalidTomlDataTypes_areRejected() {
         val toml = """
-            [versions]
-            agp = 8.11.1
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = 8.11.1
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13316,10 +14059,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionReferencesWithSpaces_areHandled() {
         val toml = """
-            [versions]
-            "version with spaces" = "1.0.0"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "version with spaces" }
+        [versions]
+        "version with spaces" = "1.0.0"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "version with spaces" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13329,10 +14072,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun maximumNestingDepth_isRespected() {
         val toml = """
-            [versions]
-            deep.nested.version.reference.path = "1.0.0"
-            [libraries]
-            deepLib = { module = "com.example:deep", version.ref = "deep.nested.version.reference.path" }
+        [versions]
+        deep.nested.version.reference.path = "1.0.0"
+        [libraries]
+        deepLib =
+            { module = "com.example:deep", version.ref = "deep.nested.version.reference.path" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13342,14 +14086,15 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun specialCharactersInKeys_areHandled() {
         val toml = """
-            [versions]
-            "version-with-dashes" = "1.0.0"
-            "version_with_underscores" = "2.0.0"
-            "version.with.dots" = "3.0.0"
-            [libraries]
-            dashLib = { module = "com.example:dash", version.ref = "version-with-dashes" }
-            underscoreLib = { module = "com.example:underscore", version.ref = "version_with_underscores" }
-            dotLib = { module = "com.example:dot", version.ref = "version.with.dots" }
+        [versions]
+        "version-with-dashes" = "1.0.0"
+        "version_with_underscores" = "2.0.0"
+        "version.with.dots" = "3.0.0"
+        [libraries]
+        dashLib = { module = "com.example:dash", version.ref = "version-with-dashes" }
+        underscoreLib =
+            { module = "com.example:underscore", version.ref = "version_with_underscores" }
+        dotLib = { module = "com.example:dot", version.ref = "version.with.dots" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13359,10 +14104,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun malformedInlineTable_withMissingComma_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            badTable = { module = "com.example:lib" version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        badTable = { module = "com.example:lib" version . ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13372,14 +14117,14 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun extraneousSections_areIgnored() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [custom.section]
-            customKey = "customValue"
-            [metadata]
-            format.version = "1.1"
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [custom.section]
+        customKey = "customValue"
+        [metadata]
+        format.version = "1.1"
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13389,10 +14134,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun invalidUnicodeSequences_areHandled() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            unicodeLib = { module = "com.example:lib\u0000", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        unicodeLib = { module = "com.example:lib\u0000", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13414,10 +14159,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun validationWithReadOnlyFile_worksCorrectly() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         tempToml.setReadOnly()
@@ -13446,10 +14191,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun validationCaching_maintainsConsistency() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val validator = LibsVersionsTomlValidator(tempToml)
@@ -13482,12 +14227,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun pluginWithInvalidCharacters_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [plugins]
-            invalidPlugin = { id = "com/invalid/plugin", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [plugins]
+        invalidPlugin = { id = "com/invalid/plugin", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13497,10 +14242,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithConflictingVersionProperties_isDetected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            conflictLib = { module = "com.example:lib", version = "1.0.0", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        conflictLib = { module = "com.example:lib", version = "1.0.0", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13510,12 +14255,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionRanges_withInvalidSyntax_areRejected() {
         val toml = """
-            [versions]
-            invalidRange1 = "[1.0.0,2.0.0"
-            invalidRange2 = "1.0.0,2.0.0)"
-            validRange = "[1.0.0,2.0.0)"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "validRange" }
+        [versions]
+        invalidRange1 = "[1.0.0,2.0.0"
+        invalidRange2 = "1.0.0,2.0.0)"
+        validRange = "[1.0.0,2.0.0)"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "validRange" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13525,15 +14270,15 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun complexBundleWithMixedReferences_isValidated() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            kotlin = "2.0.0"
-            [libraries]
-            lib1 = { module = "com.example:lib1", version.ref = "agp" }
-            lib2 = { module = "com.example:lib2", version.ref = "kotlin" }
-            lib3 = { module = "com.example:lib3", version = "1.0.0" }
-            [bundles]
-            mixedBundle = ["lib1", "lib2", "lib3"]
+        [versions]
+        agp = "8.11.1"
+        kotlin = "2.0.0"
+        [libraries]
+        lib1 = { module = "com.example:lib1", version.ref = "agp" }
+        lib2 = { module = "com.example:lib2", version.ref = "kotlin" }
+        lib3 = { module = "com.example:lib3", version = "1.0.0" }
+        [bundles]
+        mixedBundle = ["lib1", "lib2", "lib3"]
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13543,10 +14288,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithGroupAndNameSyntax_isAccepted() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            groupNameLib = { group = "com.example", name = "library", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        groupNameLib = { group = "com.example", name = "library", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13556,11 +14301,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithIncompleteGroupNameSyntax_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            incompleteLib1 = { group = "com.example", version.ref = "agp" }
-            incompleteLib2 = { name = "library", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        incompleteLib1 = { group = "com.example", version.ref = "agp" }
+        incompleteLib2 = { name = "library", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13570,11 +14315,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionWithLeadingZeros_isHandled() {
         val toml = """
-            [versions]
-            leadingZero = "01.02.03"
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        leadingZero = "01.02.03"
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13584,13 +14329,13 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionWithBuildMetadata_isSupported() {
         val toml = """
-            [versions]
-            withBuild = "1.0.0+build.123"
-            withBuildAlpha = "2.0.0-alpha+beta.456"
-            agp = "8.11.1"
-            [libraries]
-            buildLib = { module = "com.example:lib", version.ref = "withBuild" }
-            testLib = { module = "com.example:test", version.ref = "agp" }
+        [versions]
+        withBuild = "1.0.0+build.123"
+        withBuildAlpha = "2.0.0-alpha+beta.456"
+        agp = "8.11.1"
+        [libraries]
+        buildLib = { module = "com.example:lib", version.ref = "withBuild" }
+        testLib = { module = "com.example:test", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13600,14 +14345,14 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun multipleBundlesReferencingSameLibrary_areAllowed() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            sharedLib = { module = "com.example:shared", version.ref = "agp" }
-            otherLib = { module = "com.example:other", version.ref = "agp" }
-            [bundles]
-            bundle1 = ["sharedLib", "otherLib"]
-            bundle2 = ["sharedLib"]
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        sharedLib = { module = "com.example:shared", version.ref = "agp" }
+        otherLib = { module = "com.example:other", version.ref = "agp" }
+        [bundles]
+        bundle1 = ["sharedLib", "otherLib"]
+        bundle2 = ["sharedLib"]
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13617,13 +14362,13 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun tomlWithMalformedBundleArray_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [bundles]
-            malformedBundle = ["testLib",
-        """.trimIndent()
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [bundles]
+        malformedBundle = ["testLib",
+            """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
         assertFalse("Malformed bundle array should be rejected", result.isValid)
@@ -13632,10 +14377,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithNumericModule_isRejected() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            numericModule = { module = "123:456", version.ref = "agp" }
+                [versions]
+                    agp = "8.11.1"
+        [libraries]
+        numericModule = { module = "123:456", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13646,12 +14391,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionWithNonLatinCharacters_isSupported() {
         val toml = """
-            [versions]
-            китайский = "1.0.0-中文"
-            العربية = "2.0.0-عربي"
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        китайский = "1.0.0-中文"
+        العربية = "2.0.0-عربي"
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13661,16 +14406,16 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun tomlWithTrailingCommasInArrays_isHandled() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            lib1 = { module = "com.example:lib1", version.ref = "agp" }
-            lib2 = { module = "com.example:lib2", version.ref = "agp" }
-            [bundles]
-            trailingCommaBundle = [
-                "lib1",
-                "lib2",
-            ]
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        lib1 = { module = "com.example:lib1", version.ref = "agp" }
+        lib2 = { module = "com.example:lib2", version.ref = "agp" }
+        [bundles]
+        trailingCommaBundle = [
+            "lib1",
+            "lib2",
+        ]
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13680,12 +14425,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionWithMathematicalOperators_isRejected() {
         val toml = """
-            [versions]
-            mathVersion = "1.0.0+1.0.0"
-            invalidMath = "1.0*2.0"
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        mathVersion = "1.0.0+1.0.0"
+        invalidMath = "1.0*2.0"
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13696,10 +14441,10 @@ class LibsVersionsTomlEdgeCaseTest {
     fun libraryWithExcessivelyLongModuleName_isHandled() {
         val longModule = "com.example." + "a".repeat(1000) + ":artifact"
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            longModuleLib = { module = "$longModule", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        longModuleLib = { module = "$longModule", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13709,10 +14454,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun concurrentFileModification_isHandledGracefully() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
 
@@ -13730,11 +14475,11 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun tomlWithInlineComments_isHandled() {
         val toml = """
-            [versions] # Main versions
-            agp = "8.11.1" # Android Gradle Plugin
-            kotlin = "2.0.0" # Kotlin version
-            [libraries] # Dependencies
-            testLib = { module = "com.example:lib", version.ref = "agp" } # Test library
+        [versions] # Main versions
+        agp = "8.11.1" # Android Gradle Plugin
+        kotlin = "2.0.0" # Kotlin version
+        [libraries] # Dependencies
+        testLib = { module = "com.example:lib", version.ref = "agp" } # Test library
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13744,12 +14489,12 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun pluginWithDirectVersionString_isAccepted() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
-            [plugins]
-            directVersionPlugin = { id = "com.example.plugin", version = "1.0.0" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
+        [plugins]
+        directVersionPlugin = { id = "com.example.plugin", version = "1.0.0" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13759,13 +14504,13 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun versionKeyWithReservedWords_isHandled() {
         val toml = """
-            [versions]
-            class = "1.0.0"
-            interface = "2.0.0"
-            public = "3.0.0"
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        class = "1.0.0"
+        interface = "2.0.0"
+        public = "3.0.0"
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13775,10 +14520,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun libraryWithMixedQuoteTypes_inInlineTable_isHandled() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            mixedQuotes = { module = 'com.example:lib', version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        mixedQuotes = { module = 'com.example:lib', version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val result = LibsVersionsTomlValidator(tempToml).validate()
@@ -13788,10 +14533,10 @@ class LibsVersionsTomlEdgeCaseTest {
     @Test
     fun validationResult_containsTimestamp() {
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
         val beforeTime = System.currentTimeMillis()
@@ -13823,10 +14568,10 @@ class LibsVersionsTomlEdgeCaseTest {
     fun validationWithSymbolicLinks_isHandled() {
         // This test may not work on all systems, so we handle it gracefully
         val toml = """
-            [versions]
-            agp = "8.11.1"
-            [libraries]
-            testLib = { module = "com.example:lib", version.ref = "agp" }
+        [versions]
+        agp = "8.11.1"
+        [libraries]
+        testLib = { module = "com.example:lib", version.ref = "agp" }
         """.trimIndent()
         write(toml)
 

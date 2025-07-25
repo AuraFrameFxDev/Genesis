@@ -64,7 +64,7 @@ class CascadeAIService @Inject constructor(
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse { // Added context
         // Example: collect from the flow, or implement separate direct logic
         return AgentResponse(

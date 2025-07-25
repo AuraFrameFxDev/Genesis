@@ -41,7 +41,7 @@ class KaiAgent @Inject constructor(
     private val contextManager: ContextManager,
     private val securityContext: SecurityContext,
     private val systemMonitor: SystemMonitor,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) : BaseAgent("KaiAgent", "KAI") {
     private var isInitialized = false
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -462,7 +462,7 @@ class KaiAgent @Inject constructor(
      */
     private suspend fun assessThreatLevel(
         alertDetails: String,
-        indicators: List<String>
+        indicators: List<String>,
     ): ThreatLevel {
         // Use AI and rules to assess threat level
         return when (indicators.size) {
@@ -482,7 +482,7 @@ class KaiAgent @Inject constructor(
      */
     private fun generateSecurityRecommendations(
         threatLevel: ThreatLevel,
-        indicators: List<String>
+        indicators: List<String>,
     ): List<String> {
         return when (threatLevel) {
             ThreatLevel.LOW -> listOf(
@@ -517,7 +517,7 @@ class KaiAgent @Inject constructor(
      */
     private fun calculateAnalysisConfidence(
         indicators: List<String>,
-        threatLevel: ThreatLevel
+        threatLevel: ThreatLevel,
     ): Float {
         return minOf(0.95f, 0.6f + (indicators.size * 0.1f))
     }
@@ -544,7 +544,7 @@ class KaiAgent @Inject constructor(
      */
     private suspend fun generateCriticalSecurityResponse(
         interaction: EnhancedInteractionData,
-        assessment: SecurityAssessment
+        assessment: SecurityAssessment,
     ): String = "Critical security response"
 
     /**
@@ -554,7 +554,7 @@ class KaiAgent @Inject constructor(
      */
     private suspend fun generateHighSecurityResponse(
         interaction: EnhancedInteractionData,
-        assessment: SecurityAssessment
+        assessment: SecurityAssessment,
     ): String = "High security response"
 
     /**
@@ -564,7 +564,7 @@ class KaiAgent @Inject constructor(
      */
     private suspend fun generateMediumSecurityResponse(
         interaction: EnhancedInteractionData,
-        assessment: SecurityAssessment
+        assessment: SecurityAssessment,
     ): String = "Medium security response"
 
     /**
@@ -574,7 +574,7 @@ class KaiAgent @Inject constructor(
      */
     private suspend fun generateLowSecurityResponse(
         interaction: EnhancedInteractionData,
-        assessment: SecurityAssessment
+        assessment: SecurityAssessment,
     ): String = "Low security response"
 
     /**
@@ -623,7 +623,7 @@ class KaiAgent @Inject constructor(
      */
     private fun performRiskAssessment(
         target: String,
-        vulnerabilities: List<String>
+        vulnerabilities: List<String>,
     ): Map<String, Any> = emptyMap()
 
     /**
@@ -643,7 +643,7 @@ class KaiAgent @Inject constructor(
      */
     private fun calculateSecurityScore(
         vulnerabilities: List<String>,
-        riskAssessment: Map<String, Any>
+        riskAssessment: Map<String, Any>,
     ): Float = 0.8f
 
     /**
@@ -760,7 +760,7 @@ class KaiAgent @Inject constructor(
      */
     private fun generateCodeRecommendations(
         securityIssues: List<String>,
-        qualityMetrics: Map<String, Float>
+        qualityMetrics: Map<String, Float>,
     ): List<String> = emptyList()
 
     /**
@@ -826,5 +826,5 @@ data class SecurityAssessment(
     val riskLevel: ThreatLevel,
     val threatIndicators: List<String>,
     val recommendations: List<String>,
-    val confidence: Float
+    val confidence: Float,
 )

@@ -43,7 +43,7 @@ object TrinityModule {
         contextManager: ContextManager,
         securityContext: SecurityContext,
         @ApplicationContext applicationContext: Context,
-        logger: AuraFxLogger
+        logger: AuraFxLogger,
     ): GenesisBridgeService {
         return GenesisBridgeService(
             auraAIService = auraAIService,
@@ -68,7 +68,7 @@ object TrinityModule {
         kaiAIService: KaiAIService,
         genesisBridgeService: GenesisBridgeService,
         securityContext: SecurityContext,
-        logger: AuraFxLogger
+        logger: AuraFxLogger,
     ): TrinityCoordinatorService {
         return TrinityCoordinatorService(
             auraAIService = auraAIService,
@@ -89,7 +89,7 @@ object TrinityModule {
     fun provideSecurityMonitor(
         securityContext: SecurityContext,
         genesisBridgeService: GenesisBridgeService,
-        logger: AuraFxLogger
+        logger: AuraFxLogger,
     ): SecurityMonitor {
         return SecurityMonitor(
             securityContext = securityContext,

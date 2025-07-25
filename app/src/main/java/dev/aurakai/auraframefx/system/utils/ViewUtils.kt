@@ -38,7 +38,7 @@ object ViewUtils {
         visible: Boolean,
         animate: Boolean = true,
         duration: Long = 200,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         if (view.isVisible == visible) {
             onEnd?.invoke()
@@ -88,7 +88,7 @@ object ViewUtils {
     fun <T : View> findViewsByType(
         root: View,
         type: Class<T>,
-        includeInvisible: Boolean = false
+        includeInvisible: Boolean = false,
     ): List<T> {
         val result = mutableListOf<T>()
 
@@ -118,7 +118,7 @@ object ViewUtils {
     fun <T : View> findFirstViewByType(
         root: View,
         type: Class<T>,
-        includeInvisible: Boolean = false
+        includeInvisible: Boolean = false,
     ): T? {
         if (type.isInstance(root) && (includeInvisible || root.visibility == View.VISIBLE)) {
             return root as T
@@ -148,7 +148,7 @@ object ViewUtils {
     fun findViewsWithTag(
         root: View,
         tag: String,
-        includeInvisible: Boolean = false
+        includeInvisible: Boolean = false,
     ): List<View> {
         val result = mutableListOf<View>()
 

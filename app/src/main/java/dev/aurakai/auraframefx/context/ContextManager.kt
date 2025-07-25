@@ -25,7 +25,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class ContextManager @Inject constructor(
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -419,7 +419,7 @@ data class ContextData(
     val createdAt: Long,
     val data: MutableMap<String, String>,
     var accessCount: Int,
-    var lastAccessTime: Long
+    var lastAccessTime: Long,
 )
 
 @Serializable
@@ -429,7 +429,7 @@ data class ConversationEntry(
     val agentResponse: String,
     val agentType: String,
     val confidence: Float,
-    val metadata: Map<String, String>
+    val metadata: Map<String, String>,
 )
 
 @Serializable
@@ -438,7 +438,7 @@ data class Memory(
     val content: String,
     val relevanceScore: Float,
     val timestamp: Long,
-    val tags: List<String>
+    val tags: List<String>,
 )
 
 @Serializable
@@ -447,6 +447,6 @@ data class Insight(
     val request: String,
     val response: String,
     val complexity: String,
-    val extractedPatterns: List<String>
+    val extractedPatterns: List<String>,
 )
 

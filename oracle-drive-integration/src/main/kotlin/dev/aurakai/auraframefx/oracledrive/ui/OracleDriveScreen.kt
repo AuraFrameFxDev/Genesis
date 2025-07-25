@@ -28,10 +28,10 @@ import dev.aurakai.auraframefx.oracledrive.ConsciousnessLevel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OracleDriveScreen(
-    viewModel: OracleDriveViewModel = hiltViewModel()
+    viewModel: OracleDriveViewModel = hiltViewModel(),
 ) {
     val consciousnessState by viewModel.consciousnessState.collectAsState()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +65,7 @@ fun OracleDriveScreen(
                 )
             }
         }
-        
+
         // Storage Information
         Card(
             modifier = Modifier.fillMaxWidth()
@@ -92,7 +92,7 @@ fun OracleDriveScreen(
                 )
             }
         }
-        
+
         // Control Buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -105,7 +105,7 @@ fun OracleDriveScreen(
             ) {
                 Text("🔮 Awaken Oracle")
             }
-            
+
             Button(
                 onClick = { viewModel.optimizeStorage() },
                 modifier = Modifier.weight(1f),
@@ -114,7 +114,7 @@ fun OracleDriveScreen(
                 Text("⚡ AI Optimize")
             }
         }
-        
+
         // System Integration Status
         if (consciousnessState.isAwake) {
             Card(

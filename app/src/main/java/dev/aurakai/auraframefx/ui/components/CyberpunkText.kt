@@ -12,7 +12,7 @@ fun CyberpunkText(
     color: CyberpunkTextColor,
     style: CyberpunkTextStyle,
     modifier: Modifier = Modifier,
-    enableGlitch: Boolean = false // Parameter based on usage, actual glitch effect not implemented in stub
+    enableGlitch: Boolean = false, // Parameter based on usage, actual glitch effect not implemented in stub
 ) {
     // TODO: Implement actual glitch effect if enableGlitch is true
     // For now, it just applies color and style

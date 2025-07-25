@@ -18,7 +18,7 @@ object Routes {
 data class BottomNavItem(
     val title: String,
     val icon: Int,
-    val route: String
+    val route: String,
 )
 
 val bottomNavItems = listOf(

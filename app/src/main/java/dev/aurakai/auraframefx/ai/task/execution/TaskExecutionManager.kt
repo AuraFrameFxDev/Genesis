@@ -36,7 +36,7 @@ class TaskExecutionManager @Inject constructor(
     private val kaiAgent: KaiAgent,
     private val genesisAgent: GenesisAgent,
     private val securityContext: SecurityContext,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -77,7 +77,7 @@ class TaskExecutionManager @Inject constructor(
         data: Map<String, Any>,
         priority: TaskPriority = TaskPriority.NORMAL,
         agentPreference: String? = null,
-        scheduledTime: Long? = null
+        scheduledTime: Long? = null,
     ): TaskExecution {
         logger.i("TaskExecutionManager", "Scheduling task: $type")
 
@@ -195,7 +195,7 @@ class TaskExecutionManager @Inject constructor(
      */
     fun getTasks(
         status: ExecutionStatus? = null,
-        agentType: AgentType? = null
+        agentType: AgentType? = null,
     ): List<TaskExecution> {
         val allTasks = mutableListOf<TaskExecution>()
 
@@ -524,7 +524,7 @@ data class ExecutionStats(
     val activeTasks: Int = 0,
     val queuedTasks: Int = 0,
     val failedTasks: Int = 0,
-    val averageExecutionTimeMs: Long = 0
+    val averageExecutionTimeMs: Long = 0,
 )
 
 @Serializable
@@ -532,7 +532,7 @@ data class QueueStatus(
     val queueSize: Int = 0,
     val activeExecutions: Int = 0,
     val maxConcurrentTasks: Int = 0,
-    val isProcessing: Boolean = false
+    val isProcessing: Boolean = false,
 )
 
 class TaskPriorityComparator : Comparator<TaskExecution> {

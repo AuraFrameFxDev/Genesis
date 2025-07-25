@@ -827,7 +827,7 @@ class JsonUtilsTest {
         val name: String,
         val value: Int,
         val active: Boolean,
-        val numbers: List<Int>
+        val numbers: List<Int>,
     )
 
     class EmptyTestClass
@@ -838,11 +838,11 @@ class JsonUtilsTest {
         val timestamp: Long,
         val metadata: Map<String, Any>,
         val tags: Set<String>,
-        val nested: NestedTestClass?
+        val nested: NestedTestClass?,
     )
 
     data class NestedTestClass(
         val description: String,
-        val priority: Int
+        val priority: Int,
     )
 }

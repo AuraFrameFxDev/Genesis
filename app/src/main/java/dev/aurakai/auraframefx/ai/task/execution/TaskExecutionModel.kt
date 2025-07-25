@@ -27,7 +27,7 @@ data class TaskExecution(
     val checkpoints: List<Checkpoint> = emptyList(),
     val scheduledTime: Long = System.currentTimeMillis(),
     val agentPreference: String? = null,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
 )
 
 @Serializable

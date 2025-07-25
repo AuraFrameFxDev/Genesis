@@ -10,7 +10,7 @@ import retrofit2.http.POST
  * API interface for authentication-related operations.
  */
 interface AuthApi {
-    
+
     /**
      * Refreshes an access token using a refresh token.
      *
@@ -19,9 +19,9 @@ interface AuthApi {
      */
     @POST("auth/refresh")
     suspend fun refreshToken(
-        @Body request: RefreshTokenRequest
+        @Body request: RefreshTokenRequest,
     ): Response<TokenResponse>
-    
+
     /**
      * Logs in a user with the provided credentials.
      *
@@ -30,9 +30,9 @@ interface AuthApi {
      */
     @POST("auth/login")
     suspend fun login(
-        @Body request: LoginRequest
+        @Body request: LoginRequest,
     ): Response<TokenResponse>
-    
+
     /**
      * Registers a new user.
      *
@@ -41,9 +41,9 @@ interface AuthApi {
      */
     @POST("auth/register")
     suspend fun register(
-        @Body request: RegisterRequest
+        @Body request: RegisterRequest,
     ): Response<Unit>
-    
+
     /**
      * Logs out the current user.
      *
@@ -59,7 +59,7 @@ interface AuthApi {
 data class LoginRequest(
     val username: String,
     val password: String,
-    val rememberMe: Boolean = false
+    val rememberMe: Boolean = false,
 )
 
 /**
@@ -69,5 +69,5 @@ data class RegisterRequest(
     val username: String,
     val email: String,
     val password: String,
-    val confirmPassword: String
+    val confirmPassword: String,
 )

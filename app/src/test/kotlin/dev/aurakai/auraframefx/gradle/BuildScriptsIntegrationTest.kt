@@ -28,10 +28,10 @@ import kotlin.io.path.exists
 
 /**
  * Comprehensive integration tests for build scripts functionality.
- * 
+ *
  * This test class validates the behavior of Gradle build scripts in various scenarios
  * including successful builds, failure conditions, edge cases, and Android-specific configurations.
- * 
+ *
  * Testing Framework: JUnit 5 with Gradle TestKit
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -40,15 +40,15 @@ class BuildScriptsIntegrationTest {
 
     @TempDir
     lateinit var testProjectDir: Path
-    
+
     private lateinit var buildFile: File
     private lateinit var settingsFile: File
     private lateinit var gradlePropertiesFile: File
     private lateinit var androidManifestFile: File
-    
+
     companion object {
         private const val GRADLE_VERSION = "8.1"
-        
+
         private const val ANDROID_BUILD_SCRIPT = """
             plugins {
                 id 'com.android.application'
@@ -114,7 +114,7 @@ class BuildScriptsIntegrationTest {
                 debugImplementation 'androidx.compose.ui:ui-test-manifest'
             }
         """
-        
+
         private const val BASIC_JAVA_BUILD_SCRIPT = """
             plugins {
                 id 'java'
@@ -139,7 +139,7 @@ class BuildScriptsIntegrationTest {
                 useJUnitPlatform()
             }
         """
-        
+
         private const val KOTLIN_BUILD_SCRIPT = """
             plugins {
                 id 'org.jetbrains.kotlin.jvm' version '1.9.0'
@@ -165,11 +165,11 @@ class BuildScriptsIntegrationTest {
                 useJUnitPlatform()
             }
         """
-        
+
         private const val MINIMAL_SETTINGS = """
             rootProject.name = 'test-project'
         """
-        
+
         private const val ANDROID_MANIFEST = """
             <?xml version="1.0" encoding="utf-8"?>
             <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -191,7 +191,7 @@ class BuildScriptsIntegrationTest {
                 </application>
             </manifest>
         """
-        
+
         @JvmStatic
         fun gradleVersionProvider(): Stream<Arguments> {
             return Stream.of(
@@ -201,7 +201,7 @@ class BuildScriptsIntegrationTest {
                 Arguments.of("8.2")
             )
         }
-        
+
         @JvmStatic
         fun buildTaskProvider(): Stream<Arguments> {
             return Stream.of(
@@ -215,7 +215,7 @@ class BuildScriptsIntegrationTest {
                 Arguments.of("invalidTask", false)
             )
         }
-        
+
         @JvmStatic
         fun kotlinVersionProvider(): Stream<Arguments> {
             return Stream.of(
@@ -225,101 +225,103 @@ class BuildScriptsIntegrationTest {
             )
         }
     }
-    
+
     @BeforeEach
     fun setUp() {
         buildFile = testProjectDir.resolve("build.gradle").toFile()
         settingsFile = testProjectDir.resolve("settings.gradle").toFile()
         gradlePropertiesFile = testProjectDir.resolve("gradle.properties").toFile()
-        
+
         // Create basic project structure
         testProjectDir.resolve("src/main/java").createDirectories()
         testProjectDir.resolve("src/test/java").createDirectories()
         testProjectDir.resolve("src/main/kotlin").createDirectories()
         testProjectDir.resolve("src/test/kotlin").createDirectories()
-        
+
         // Create Android-specific structure
         testProjectDir.resolve("src/main/res/values").createDirectories()
         androidManifestFile = testProjectDir.resolve("src/main/AndroidManifest.xml").toFile()
-        
+
         // Create minimal settings file
         settingsFile.writeText(MINIMAL_SETTINGS)
-        
+
         // Create basic gradle.properties
-        gradlePropertiesFile.writeText("""
+        gradlePropertiesFile.writeText(
+            """
             org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
             org.gradle.parallel=true
             org.gradle.caching=true
             android.useAndroidX=true
             android.enableJetifier=true
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
-    
+
     @AfterEach
     fun tearDown() {
         // Clean up any temporary files or resources
         // TestKit and @TempDir handle most cleanup automatically
     }
-    
+
     @Nested
     @DisplayName("Basic Build Script Tests")
     inner class BasicBuildScriptTests {
-        
+
         @Test
         @DisplayName("Should successfully build Java project with default configuration")
         fun shouldBuildJavaProjectWithDefaultConfiguration() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
             assertTrue(result.output.contains("BUILD SUCCESSFUL"))
         }
-        
+
         @Test
         @DisplayName("Should successfully build Kotlin project")
         fun shouldBuildKotlinProjectSuccessfully() {
             // Given
             buildFile.writeText(KOTLIN_BUILD_SCRIPT)
             createMainKotlinClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
             assertTrue(result.output.contains("BUILD SUCCESSFUL"))
         }
-        
+
         @Test
         @DisplayName("Should handle empty build script gracefully")
         fun shouldHandleEmptyBuildScript() {
             // Given
             buildFile.writeText("")
-            
+
             // When
             val result = runGradleTask("tasks")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":tasks")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should fail with invalid syntax in build script")
         fun shouldFailWithInvalidSyntaxInBuildScript() {
             // Given
             buildFile.writeText("invalid gradle syntax {{{ unclosed braces")
-            
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
         }
-        
+
         @ParameterizedTest
         @ValueSource(strings = ["build", "clean", "assemble", "tasks", "help"])
         @DisplayName("Should execute common Gradle tasks successfully")
@@ -329,22 +331,23 @@ class BuildScriptsIntegrationTest {
             if (taskName in listOf("build", "assemble")) {
                 createMainJavaClass()
             }
-            
+
             // When
             val result = runGradleTask(taskName)
-            
+
             // Then
             if (result.task(":$taskName") != null) {
                 assertNotEquals(TaskOutcome.FAILED, result.task(":$taskName")?.outcome)
             }
             assertTrue(result.output.contains("BUILD SUCCESSFUL"))
         }
-        
+
         @Test
         @DisplayName("Should handle build script with comments and complex formatting")
         fun shouldHandleBuildScriptWithCommentsAndFormatting() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 // This is a test build script
                 plugins {
                     id 'java' // Java plugin
@@ -368,26 +371,28 @@ class BuildScriptsIntegrationTest {
                 application {
                     mainClass = 'dev.aurakai.Main'
                 }
-            """)
+            """
+            )
             createMainJavaClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Plugin Configuration Tests")
     inner class PluginConfigurationTests {
-        
+
         @Test
         @DisplayName("Should apply Java plugin successfully")
         fun shouldApplyJavaPluginSuccessfully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -395,20 +400,22 @@ class BuildScriptsIntegrationTest {
                 repositories {
                     mavenCentral()
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should apply Kotlin plugin successfully")
         fun shouldApplyKotlinPluginSuccessfully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
@@ -416,20 +423,22 @@ class BuildScriptsIntegrationTest {
                 repositories {
                     mavenCentral()
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileKotlin")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileKotlin")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should apply application plugin successfully")
         fun shouldApplyApplicationPluginSuccessfully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                     id 'application'
@@ -442,37 +451,41 @@ class BuildScriptsIntegrationTest {
                 application {
                     mainClass = 'dev.aurakai.Main'
                 }
-            """)
+            """
+            )
             createMainJavaClass()
-            
+
             // When
             val result = runGradleTask("installDist")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":installDist")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should fail when applying non-existent plugin")
         fun shouldFailWhenApplyingNonExistentPlugin() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'non-existent-plugin-that-does-not-exist'
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
         }
-        
+
         @Test
         @DisplayName("Should handle multiple plugin applications")
         fun shouldHandleMultiplePluginApplications() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                     id 'application'
@@ -487,26 +500,28 @@ class BuildScriptsIntegrationTest {
                 application {
                     mainClass = 'dev.aurakai.Main'
                 }
-            """)
+            """
+            )
             createMainJavaClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Dependency Management Tests")
     inner class DependencyManagementTests {
-        
+
         @Test
         @DisplayName("Should resolve dependencies from Maven Central")
         fun shouldResolveDependenciesFromMavenCentral() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -520,22 +535,24 @@ class BuildScriptsIntegrationTest {
                     implementation 'com.google.guava:guava:31.1-jre'
                     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("dependencies", "--configuration", "runtimeClasspath")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
             assertTrue(result.output.contains("org.slf4j:slf4j-api:1.7.36"))
             assertTrue(result.output.contains("com.google.guava:guava:31.1-jre"))
         }
-        
+
         @Test
         @DisplayName("Should resolve dependencies from multiple repositories")
         fun shouldResolveDependenciesFromMultipleRepositories() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -550,20 +567,22 @@ class BuildScriptsIntegrationTest {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                     implementation 'androidx.core:core-ktx:1.10.1'
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("dependencies", "--configuration", "runtimeClasspath")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should fail with invalid dependency coordinates")
         fun shouldFailWithInvalidDependencyCoordinates() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -575,19 +594,21 @@ class BuildScriptsIntegrationTest {
                 dependencies {
                     implementation 'invalid:dependency:coordinates:extra:parts:too:many'
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
         }
-        
+
         @Test
         @DisplayName("Should handle missing repository configuration")
         fun shouldHandleMissingRepositoryConfiguration() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -595,19 +616,21 @@ class BuildScriptsIntegrationTest {
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
         }
-        
+
         @Test
         @DisplayName("Should handle version conflicts gracefully")
         fun shouldHandleVersionConflictsGracefully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -621,27 +644,29 @@ class BuildScriptsIntegrationTest {
                     implementation 'org.slf4j:slf4j-api:1.7.30' // Different version
                     implementation 'ch.qos.logback:logback-classic:1.2.12'
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("dependencies", "--configuration", "runtimeClasspath")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":dependencies")?.outcome)
             // Gradle should resolve to the higher version
             assertTrue(result.output.contains("1.7.36"))
         }
     }
-    
+
     @Nested
     @DisplayName("Build Configuration Tests")
     inner class BuildConfigurationTests {
-        
+
         @Test
         @DisplayName("Should respect Java source compatibility settings")
         fun shouldRespectJavaSourceCompatibilitySettings() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -654,20 +679,22 @@ class BuildScriptsIntegrationTest {
                     sourceCompatibility = JavaVersion.VERSION_11
                     targetCompatibility = JavaVersion.VERSION_11
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle custom source sets")
         fun shouldHandleCustomSourceSets() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -686,19 +713,20 @@ class BuildScriptsIntegrationTest {
                         resources.srcDir 'src/performance/resources'
                     }
                 }
-            """)
-            
+            """
+            )
+
             // Create integration source directory
             testProjectDir.resolve("src/integration/java").createDirectories()
             testProjectDir.resolve("src/performance/java").createDirectories()
-            
+
             // When
             val result = runGradleTask("compileIntegrationJava")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileIntegrationJava")?.outcome)
         }
-        
+
         @ParameterizedTest
         @CsvSource(
             "VERSION_1_8, NO_SOURCE",
@@ -708,7 +736,8 @@ class BuildScriptsIntegrationTest {
         @DisplayName("Should support different Java versions")
         fun shouldSupportDifferentJavaVersions(javaVersion: String, expectedOutcome: String) {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -721,20 +750,22 @@ class BuildScriptsIntegrationTest {
                     sourceCompatibility = JavaVersion.$javaVersion
                     targetCompatibility = JavaVersion.$javaVersion
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.valueOf(expectedOutcome), result.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle Kotlin compiler options")
         fun shouldHandleKotlinCompilerOptions() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
@@ -753,20 +784,21 @@ class BuildScriptsIntegrationTest {
                         freeCompilerArgs += ["-Xjsr305=strict"]
                     }
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileKotlin")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileKotlin")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Task Execution Tests")
     inner class TaskExecutionTests {
-        
+
         @ParameterizedTest
         @MethodSource("dev.aurakai.auraframefx.gradle.BuildScriptsIntegrationTest#buildTaskProvider")
         @DisplayName("Should execute various build tasks")
@@ -774,7 +806,7 @@ class BuildScriptsIntegrationTest {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            
+
             // When & Then
             if (shouldSucceed) {
                 val result = runGradleTask(taskName)
@@ -787,30 +819,33 @@ class BuildScriptsIntegrationTest {
                 }
             }
         }
-        
+
         @Test
         @DisplayName("Should handle parallel task execution")
         fun shouldHandleParallelTaskExecution() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            gradlePropertiesFile.writeText("""
+            gradlePropertiesFile.writeText(
+                """
                 org.gradle.parallel=true
                 org.gradle.workers.max=4
-            """.trimIndent())
-            
+            """.trimIndent()
+            )
+
             // When
             val result = runGradleTask("build", "--parallel")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should support custom task definitions")
         fun shouldSupportCustomTaskDefinitions() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -830,23 +865,25 @@ class BuildScriptsIntegrationTest {
                         println 'Dependent task executed'
                     }
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("dependentTask")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":customTask")?.outcome)
             assertEquals(TaskOutcome.SUCCESS, result.task(":dependentTask")?.outcome)
             assertTrue(result.output.contains("Custom task executed successfully"))
             assertTrue(result.output.contains("Dependent task executed"))
         }
-        
+
         @Test
         @DisplayName("Should handle task configuration")
         fun shouldHandleTaskConfiguration() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -866,39 +903,41 @@ class BuildScriptsIntegrationTest {
                         events 'passed', 'skipped', 'failed'
                     }
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileJava")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Error Handling Tests")
     inner class ErrorHandlingTests {
-        
+
         @Test
         @DisplayName("Should provide meaningful error messages for compilation failures")
         fun shouldProvideMeaningfulErrorMessagesForCompilationFailures() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createInvalidJavaClass()
-            
+
             // When & Then
             val exception = assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("compileJava")
             }
             assertTrue(exception.message?.contains("Compilation failed") ?: false)
         }
-        
+
         @Test
         @DisplayName("Should handle build script syntax errors gracefully")
         fun shouldHandleBuildScriptSyntaxErrorsGracefully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 
@@ -906,20 +945,22 @@ class BuildScriptsIntegrationTest {
                 repositories {
                     mavenCentral()
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             val exception = assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
             assertTrue(exception.message?.contains("Could not compile build file") ?: false)
         }
-        
+
         @Test
         @DisplayName("Should handle missing main class gracefully")
         fun shouldHandleMissingMainClassGracefully() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                     id 'application'
@@ -932,19 +973,21 @@ class BuildScriptsIntegrationTest {
                 application {
                     mainClass = 'com.nonexistent.Main'
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("run")
             }
         }
-        
+
         @Test
         @DisplayName("Should handle circular task dependencies")
         fun shouldHandleCircularTaskDependencies() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -956,117 +999,123 @@ class BuildScriptsIntegrationTest {
                 task taskB(dependsOn: 'taskA') {
                     doLast { println 'Task B' }
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("taskA")
             }
         }
-        
+
         @Test
         @DisplayName("Should handle invalid plugin versions")
         fun shouldHandleInvalidPluginVersions() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '99.99.99'
                 }
-            """)
-            
+            """
+            )
+
             // When & Then
             assertThrows<UnexpectedBuildFailure> {
                 runGradleTask("build")
             }
         }
     }
-    
+
     @Nested
     @DisplayName("Performance and Resource Tests")
     inner class PerformanceAndResourceTests {
-        
+
         @Test
         @DisplayName("Should complete build within reasonable time")
         fun shouldCompleteBuildWithinReasonableTime() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            
+
             // When
             val startTime = System.currentTimeMillis()
             val result = runGradleTask("build")
             val endTime = System.currentTimeMillis()
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
             assertTrue((endTime - startTime) < 60000, "Build should complete within 60 seconds")
         }
-        
+
         @Test
         @DisplayName("Should handle incremental builds correctly")
         fun shouldHandleIncrementalBuildsCorrectly() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            
+
             // When - First build
             val firstResult = runGradleTask("build")
-            
+
             // When - Second build without changes
             val secondResult = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, firstResult.task(":build")?.outcome)
             assertEquals(TaskOutcome.UP_TO_DATE, secondResult.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle large number of source files")
         fun shouldHandleLargeNumberOfSourceFiles() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
-            
+
             // Create multiple source files
             repeat(25) { i ->
                 createJavaClass("TestClass$i", "dev.aurakai.test")
             }
-            
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle build caching")
         fun shouldHandleBuildCaching() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             createMainJavaClass()
-            gradlePropertiesFile.writeText("""
+            gradlePropertiesFile.writeText(
+                """
                 org.gradle.caching=true
                 org.gradle.parallel=true
-            """.trimIndent())
-            
+            """.trimIndent()
+            )
+
             // When
             val result = runGradleTask("build", "--build-cache")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Kotlin-Specific Tests")
     inner class KotlinSpecificTests {
-        
+
         @ParameterizedTest
         @MethodSource("dev.aurakai.auraframefx.gradle.BuildScriptsIntegrationTest#kotlinVersionProvider")
         @DisplayName("Should work with different Kotlin versions")
         fun shouldWorkWithDifferentKotlinVersions(kotlinVersion: String) {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '$kotlinVersion'
                 }
@@ -1078,21 +1127,23 @@ class BuildScriptsIntegrationTest {
                 dependencies {
                     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 }
-            """)
+            """
+            )
             createMainKotlinClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle Kotlin coroutines dependencies")
         fun shouldHandleKotlinCoroutinesDependencies() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
@@ -1106,21 +1157,23 @@ class BuildScriptsIntegrationTest {
                     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
                     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0'
                 }
-            """)
+            """
+            )
             createKotlinCoroutinesClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle Kotlin serialization plugin")
         fun shouldHandleKotlinSerializationPlugin() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
@@ -1134,34 +1187,38 @@ class BuildScriptsIntegrationTest {
                     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
                 }
-            """)
+            """
+            )
             createKotlinSerializationClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Multi-Module Tests")
     inner class MultiModuleTests {
-        
+
         @Test
         @DisplayName("Should handle simple multi-module project")
         fun shouldHandleSimpleMultiModuleProject() {
             // Given
-            settingsFile.writeText("""
+            settingsFile.writeText(
+                """
                 rootProject.name = 'multi-module-project'
                 include 'core', 'app'
-            """)
-            
+            """
+            )
+
             // Create core module
             val coreDir = testProjectDir.resolve("core")
             coreDir.createDirectories()
-            coreDir.resolve("build.gradle").writeText("""
+            coreDir.resolve("build.gradle").writeText(
+                """
                 plugins {
                     id 'java-library'
                 }
@@ -1169,13 +1226,15 @@ class BuildScriptsIntegrationTest {
                 repositories {
                     mavenCentral()
                 }
-            """)
+            """
+            )
             coreDir.resolve("src/main/java").createDirectories()
-            
+
             // Create app module
             val appDir = testProjectDir.resolve("app")
             appDir.createDirectories()
-            appDir.resolve("build.gradle").writeText("""
+            appDir.resolve("build.gradle").writeText(
+                """
                 plugins {
                     id 'java'
                     id 'application'
@@ -1192,72 +1251,82 @@ class BuildScriptsIntegrationTest {
                 application {
                     mainClass = 'dev.aurakai.App'
                 }
-            """)
+            """
+            )
             appDir.resolve("src/main/java").createDirectories()
-            
+
             // Create main class in app module
-            createJavaClass("App", "dev.aurakai", "public static void main(String[] args) { System.out.println(\"Hello\"); }", appDir.resolve("src/main/java"))
-            
+            createJavaClass(
+                "App",
+                "dev.aurakai",
+                "public static void main(String[] args) { System.out.println(\"Hello\"); }",
+                appDir.resolve("src/main/java")
+            )
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":app:build")?.outcome)
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":core:build")?.outcome)
         }
     }
-    
+
     @Nested
     @DisplayName("Android-Specific Tests")
     inner class AndroidSpecificTests {
-        
+
         @Test
         @DisplayName("Should validate Android manifest structure")
         fun shouldValidateAndroidManifestStructure() {
             // Given
             androidManifestFile.writeText(ANDROID_MANIFEST)
-            
+
             // When
             val manifestExists = androidManifestFile.exists()
             val manifestContent = if (manifestExists) androidManifestFile.readText() else ""
-            
+
             // Then
             assertTrue(manifestExists)
             assertTrue(manifestContent.contains("package=\"dev.aurakai.auraframefx\""))
             assertTrue(manifestContent.contains("MainActivity"))
             assertTrue(manifestContent.contains("android.intent.action.MAIN"))
         }
-        
+
         @Test
         @DisplayName("Should handle Android resource structure")
         fun shouldHandleAndroidResourceStructure() {
             // Given
             val valuesDir = testProjectDir.resolve("src/main/res/values")
             valuesDir.createDirectories()
-            
+
             val stringsXml = valuesDir.resolve("strings.xml")
-            stringsXml.writeText("""
+            stringsXml.writeText(
+                """
                 <?xml version="1.0" encoding="utf-8"?>
                 <resources>
                     <string name="app_name">AuraFrameFX</string>
                     <string name="hello_world">Hello World!</string>
                 </resources>
-            """)
-            
+            """
+            )
+
             val colorsXml = valuesDir.resolve("colors.xml")
-            colorsXml.writeText("""
+            colorsXml.writeText(
+                """
                 <?xml version="1.0" encoding="utf-8"?>
                 <resources>
                     <color name="purple_200">#FFBB86FC</color>
                     <color name="purple_500">#FF6200EE</color>
                     <color name="purple_700">#FF3700B3</color>
                 </resources>
-            """)
-            
+            """
+            )
+
             // When
             val stringsExists = stringsXml.exists()
             val colorsExists = colorsXml.exists()
-            
+
             // Then
             assertTrue(stringsExists)
             assertTrue(colorsExists)
@@ -1265,7 +1334,7 @@ class BuildScriptsIntegrationTest {
             assertTrue(colorsXml.readText().contains("purple_500"))
         }
     }
-    
+
     @ParameterizedTest
     @MethodSource("gradleVersionProvider")
     @DisplayName("Should work with different Gradle versions")
@@ -1273,29 +1342,30 @@ class BuildScriptsIntegrationTest {
         // Given
         buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
         createMainJavaClass()
-        
+
         // When
         val result = GradleRunner.create()
             .withGradleVersion(gradleVersion)
             .withProjectDir(testProjectDir.toFile())
             .withArguments("build", "--stacktrace")
             .build()
-        
+
         // Then
         assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
     }
-    
+
     @Nested
     @DisplayName("Edge Cases and Boundary Tests")
     inner class EdgeCasesAndBoundaryTests {
-        
+
         @Test
         @DisplayName("Should handle extremely long build script")
         fun shouldHandleExtremelyLongBuildScript() {
             // Given
             val longScript = StringBuilder(BASIC_JAVA_BUILD_SCRIPT)
             repeat(100) { i ->
-                longScript.append("""
+                longScript.append(
+                    """
                     
                     // Comment number $i
                     task customTask$i {
@@ -1303,23 +1373,25 @@ class BuildScriptsIntegrationTest {
                             println 'Task $i executed'
                         }
                     }
-                """)
+                """
+                )
             }
             buildFile.writeText(longScript.toString())
             createMainJavaClass()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle build script with unicode characters")
         fun shouldHandleBuildScriptWithUnicodeCharacters() {
             // Given
-            buildFile.writeText("""
+            buildFile.writeText(
+                """
                 plugins {
                     id 'java'
                 }
@@ -1335,31 +1407,37 @@ class BuildScriptsIntegrationTest {
                         println 'Únicöde task executed successfully! 🎉'
                     }
                 }
-            """)
-            
+            """
+            )
+
             // When
             val result = runGradleTask("unicodeTask")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":unicodeTask")?.outcome)
             assertTrue(result.output.contains("🎉"))
         }
-        
+
         @Test
         @DisplayName("Should handle deep directory structure")
         fun shouldHandleDeepDirectoryStructure() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
             val deepPath = "dev/aurakai/deep/very/deeply/nested/package/structure"
-            createJavaClass("DeepClass", "dev.aurakai.deep.very.deeply.nested.package.structure", "", testProjectDir.resolve("src/main/java"))
-            
+            createJavaClass(
+                "DeepClass",
+                "dev.aurakai.deep.very.deeply.nested.package.structure",
+                "",
+                testProjectDir.resolve("src/main/java")
+            )
+
             // When
             val result = runGradleTask("compileJava")
-            
+
             // Then
             assertEquals(TaskOutcome.SUCCESS, result.task(":compileJava")?.outcome)
         }
-        
+
         @Test
         @DisplayName("Should handle empty source directories")
         fun shouldHandleEmptySourceDirectories() {
@@ -1369,17 +1447,17 @@ class BuildScriptsIntegrationTest {
             testProjectDir.resolve("src/main/java/empty1").createDirectories()
             testProjectDir.resolve("src/main/java/empty2").createDirectories()
             testProjectDir.resolve("src/main/resources/empty").createDirectories()
-            
+
             // When
             val result = runGradleTask("build")
-            
+
             // Then
             assertEquals(TaskOutcome.NO_SOURCE, result.task(":compileJava")?.outcome)
         }
     }
-    
+
     // Helper methods
-    
+
     private fun runGradleTask(vararg arguments: String): BuildResult {
         return GradleRunner.create()
             .withGradleVersion(GRADLE_VERSION)
@@ -1387,28 +1465,33 @@ class BuildScriptsIntegrationTest {
             .withArguments(arguments.toList() + "--stacktrace")
             .build()
     }
-    
+
     private fun createMainJavaClass() {
-        createJavaClass("Main", "dev.aurakai", """
+        createJavaClass(
+            "Main", "dev.aurakai", """
             public static void main(String[] args) {
                 System.out.println("Hello, World from Java!");
             }
-        """)
+        """
+        )
     }
-    
+
     private fun createMainKotlinClass() {
-        createKotlinClass("Main", "dev.aurakai", """
+        createKotlinClass(
+            "Main", "dev.aurakai", """
             fun main(args: Array<String>) {
                 println("Hello, World from Kotlin!")
             }
-        """)
+        """
+        )
     }
-    
+
     private fun createInvalidJavaClass() {
         val javaDir = testProjectDir.resolve("src/main/java/dev/aurakai")
         javaDir.createDirectories()
-        
-        javaDir.resolve("Invalid.java").writeText("""
+
+        javaDir.resolve("Invalid.java").writeText(
+            """
             package dev.aurakai;
             
             public class Invalid {
@@ -1422,11 +1505,13 @@ class BuildScriptsIntegrationTest {
                     return 42;
                 }
             }
-        """)
+        """
+        )
     }
-    
+
     private fun createKotlinCoroutinesClass() {
-        createKotlinClass("CoroutinesExample", "dev.aurakai", """
+        createKotlinClass(
+            "CoroutinesExample", "dev.aurakai", """
             import kotlinx.coroutines.*
             
             suspend fun main() {
@@ -1436,11 +1521,13 @@ class BuildScriptsIntegrationTest {
                 }
                 job.join()
             }
-        """)
+        """
+        )
     }
-    
+
     private fun createKotlinSerializationClass() {
-        createKotlinClass("SerializationExample", "dev.aurakai", """
+        createKotlinClass(
+            "SerializationExample", "dev.aurakai", """
             import kotlinx.serialization.*
             import kotlinx.serialization.json.*
             
@@ -1452,29 +1539,43 @@ class BuildScriptsIntegrationTest {
                 val json = Json.encodeToString(user)
                 println(json)
             }
-        """)
+        """
+        )
     }
-    
-    private fun createJavaClass(className: String, packageName: String, additionalMethods: String = "", baseDir: Path = testProjectDir.resolve("src/main/java")) {
+
+    private fun createJavaClass(
+        className: String,
+        packageName: String,
+        additionalMethods: String = "",
+        baseDir: Path = testProjectDir.resolve("src/main/java"),
+    ) {
         val packagePath = packageName.replace('.', '/')
         val javaDir = baseDir.resolve(packagePath)
         javaDir.createDirectories()
-        
-        javaDir.resolve("$className.java").writeText("""
+
+        javaDir.resolve("$className.java").writeText(
+            """
             package $packageName;
             
             public class $className {
                 $additionalMethods
             }
-        """)
+        """
+        )
     }
-    
-    private fun createKotlinClass(className: String, packageName: String, additionalContent: String = "", baseDir: Path = testProjectDir.resolve("src/main/kotlin")) {
+
+    private fun createKotlinClass(
+        className: String,
+        packageName: String,
+        additionalContent: String = "",
+        baseDir: Path = testProjectDir.resolve("src/main/kotlin"),
+    ) {
         val packagePath = packageName.replace('.', '/')
         val kotlinDir = baseDir.resolve(packagePath)
         kotlinDir.createDirectories()
-        
-        kotlinDir.resolve("$className.kt").writeText("""
+
+        kotlinDir.resolve("$className.kt").writeText(
+            """
             package $packageName
             
             class $className {
@@ -1482,6 +1583,7 @@ class BuildScriptsIntegrationTest {
             }
             
             $additionalContent
-        """)
+        """
+        )
     }
 }

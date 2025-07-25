@@ -29,7 +29,7 @@ object LoggingModule {
     @Singleton
     fun provideAuraFxLogger(
         @ApplicationContext context: Context,
-        kaiService: KaiAIService
+        kaiService: KaiAIService,
     ): AuraFxLogger {
         return AuraFxLoggerImpl(context, kaiService)
     }

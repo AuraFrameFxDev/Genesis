@@ -164,20 +164,20 @@ Java_com_example_app_language_LanguageIdentifier_nativeDetectLanguage(
 JNIEXPORT void JNICALL
 Java_com_example_app_language_LanguageIdentifier_nativeRelease(
         JNIEnv
-        *env,
-        jobject /* this */,
-        jlong handle
+*env,
+jobject /* this */,
+jlong handle
 ) {
 // Clean up resources if needed.
 // In the current implementation, nativeInitialize does not allocate any specific resources
 // tied to the handle, as detection is stateless and rule-based.
 // This function serves as a placeholder for potential future enhancements
 // where dynamic resources might be managed.
-    if (handle != 0) {
+if (handle != 0) {
 // Resource cleanup completed - handle closed
-        LOGI("Language identifier resources cleaned up for handle: %lld (Placeholder - no specific resources allocated)",
-             (long long) handle);
-    }
+LOGI("Language identifier resources cleaned up for handle: %lld (Placeholder - no specific resources allocated)",
+     (long long) handle);
+}
 }
 
 /**
@@ -189,7 +189,7 @@ JNIEXPORT jstring
 
 JNICALL
 Java_com_example_app_language_LanguageIdentifier_nativeGetVersion(
-        JNIEnv *env,
+        JNIEnv * env,
         jclass /* clazz */) {
     return env->NewStringUTF("1.2.0"); // Standardized version
 }

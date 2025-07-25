@@ -23,12 +23,12 @@ import javax.inject.Singleton
 class GenesisSecureFileService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val cryptoManager: CryptographyManager,
-    private val secureStorage: SecureStorage
+    private val secureStorage: SecureStorage,
 ) : SecureFileService {
 
     private val internalStorageDir: File = context.filesDir
     private val secureFileExtension = ".gen"
-    
+
     /**
      * Encrypts and securely saves a file to internal storage, storing associated metadata.
      *
@@ -43,7 +43,7 @@ class GenesisSecureFileService @Inject constructor(
     override suspend fun saveFile(
         data: ByteArray,
         fileName: String,
-        directory: String?
+        directory: String?,
     ): Flow<FileOperationResult> = flow {
         try {
             val targetDir = directory?.let { File(internalStorageDir, it) } ?: internalStorageDir
@@ -88,12 +88,12 @@ class GenesisSecureFileService @Inject constructor(
      */
     override suspend fun readFile(
         fileName: String,
-        directory: String?
+        directory: String?,
     ): Flow<FileOperationResult> = flow {
         try {
             val targetDir = directory?.let { File(internalStorageDir, it) } ?: internalStorageDir
             val inputFile = File(targetDir, "$fileName$secureFileExtension")
-            
+
             if (!inputFile.exists()) {
                 emit(FileOperationResult.Error("File not found"))
                 return@flow
@@ -122,12 +122,12 @@ class GenesisSecureFileService @Inject constructor(
      */
     override suspend fun deleteFile(
         fileName: String,
-        directory: String?
+        directory: String?,
     ): FileOperationResult = withContext(Dispatchers.IO) {
         try {
             val targetDir = directory?.let { File(internalStorageDir, it) } ?: internalStorageDir
             val fileToDelete = File(targetDir, "$fileName$secureFileExtension")
-            
+
             if (!fileToDelete.exists()) {
                 return@withContext FileOperationResult.Error("File not found")
             }
@@ -224,5 +224,5 @@ data class FileMetadata(
     val mimeType: String,
     val size: Long,
     val lastModified: Long,
-    val tags: List<String> = emptyList()
+    val tags: List<String> = emptyList(),
 )

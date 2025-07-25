@@ -74,7 +74,7 @@ enum class Emotion {
 data class MoodState(
     val emotion: Emotion = Emotion.NEUTRAL,
     val intensity: Float = 0.5f, // 0.0 to 1.0
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 ) {
     /** Check if this mood is considered "active" (high intensity) */
     val isActive: Boolean get() = intensity > 0.6f

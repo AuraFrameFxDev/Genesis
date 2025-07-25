@@ -48,21 +48,21 @@ android {
 
 dependencies {
     implementation(project(":app"))
-    
+
     // OracleDrive dependencies
     implementation(libs.bundles.oracleDrive)
-    
+
     // Core Android dependencies
     implementation(libs.bundles.compose)
     implementation(libs.bundles.lifecycle)
-    
+
     // Hilt for dependency injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    
+
     // Coroutines for async operations
     implementation(libs.kotlinx.coroutines.android)
-    
+
     // Testing
     testImplementation(libs.bundles.testing.unit)
     androidTestImplementation(libs.bundles.testing.android)

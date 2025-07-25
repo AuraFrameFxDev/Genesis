@@ -109,7 +109,7 @@ fun AuraFrameFXTheme(
     dynamicColor: Boolean = true,
     moodViewModel: AuraMoodViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel = hiltViewModel(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val mood by moodViewModel.moodState.collectAsState()
     val theme by themeViewModel.theme.collectAsState()
@@ -128,8 +128,11 @@ fun AuraFrameFXTheme(
         else -> when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
-                if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
+                    context
+                )
             }
+
             useDarkTheme -> DarkColorScheme
             else -> LightColorScheme
         }
@@ -180,7 +183,7 @@ fun AuraFrameFXTheme(
 private fun getMoodGlowColor(
     emotion: Emotion,
     intensity: Float,
-    baseColorScheme: androidx.compose.material3.ColorScheme
+    baseColorScheme: androidx.compose.material3.ColorScheme,
 ): Color {
     val baseAlpha = (intensity * 0.5f).coerceIn(0.1f, 0.7f)
 

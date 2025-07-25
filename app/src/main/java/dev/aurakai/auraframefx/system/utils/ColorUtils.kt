@@ -77,7 +77,7 @@ object ColorUtils {
     fun createGradientDrawable(
         @ColorInt colors: IntArray,
         cornerRadius: Float = 0f,
-        orientation: GradientDrawable.Orientation = GradientDrawable.Orientation.LEFT_RIGHT
+        orientation: GradientDrawable.Orientation = GradientDrawable.Orientation.LEFT_RIGHT,
     ): GradientDrawable {
         return GradientDrawable(orientation, colors).apply {
             this.cornerRadius = cornerRadius
@@ -95,7 +95,7 @@ object ColorUtils {
     fun createRippleDrawable(
         content: Drawable?,
         @ColorInt rippleColor: Int,
-        mask: Drawable? = null
+        mask: Drawable? = null,
     ): android.graphics.drawable.RippleDrawable {
         return android.graphics.drawable.RippleDrawable(
             android.content.res.ColorStateList.valueOf(rippleColor),
@@ -117,7 +117,7 @@ object ColorUtils {
         context: Context,
         @ColorInt color: Int,
         cornerRadius: Float = 0f,
-        @ColorInt rippleColor: Int? = null
+        @ColorInt rippleColor: Int? = null,
     ): Drawable {
         val bgColor = withAlpha(color, (Color.alpha(color) * 0.5f).toInt())
         val defaultRipple = ContextCompat.getColor(context, R.color.control_highlight_color)
@@ -153,7 +153,7 @@ object ColorUtils {
         insetLeft: Int = 0,
         insetTop: Int = 0,
         insetRight: Int = 0,
-        insetBottom: Int = 0
+        insetBottom: Int = 0,
     ) {
         view.background =
             if (insetLeft != 0 || insetTop != 0 || insetRight != 0 || insetBottom != 0) {
@@ -185,7 +185,7 @@ object ColorUtils {
     fun getTextColorForBackground(
         @ColorInt backgroundColor: Int,
         @ColorInt lightColor: Int = Color.BLACK,
-        @ColorInt darkColor: Int = Color.WHITE
+        @ColorInt darkColor: Int = Color.WHITE,
     ): Int {
         return if (isColorLight(backgroundColor)) lightColor else darkColor
     }
@@ -202,7 +202,7 @@ object ColorUtils {
     fun getColorSafe(
         context: Context,
         @ColorRes colorRes: Int,
-        @ColorInt defaultColor: Int = Color.BLACK
+        @ColorInt defaultColor: Int = Color.BLACK,
     ): Int {
         return try {
             ContextCompat.getColor(context, colorRes)
@@ -239,7 +239,7 @@ object ColorUtils {
         @ColorInt defaultColor: Int,
         @ColorInt pressedColor: Int = withAlpha(defaultColor, 0xCC),
         @ColorInt checkedColor: Int = defaultColor,
-        @ColorInt disabledColor: Int = withAlpha(defaultColor, 0x4D)
+        @ColorInt disabledColor: Int = withAlpha(defaultColor, 0x4D),
     ): android.content.res.ColorStateList {
         return android.content.res.ColorStateList(
             arrayOf(

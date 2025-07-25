@@ -20,11 +20,11 @@ fun CanvasToolbar(
     onColorSelected: (Color) -> Unit,
     onStrokeWidthSelected: (Float) -> Unit,
     onClear: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var showColorPicker by remember { mutableStateOf(false) }
     var showStrokeWidthPicker by remember { mutableStateOf(false) }
-    
+
     val colors = listOf(
         Color.Black,
         Color.Red,
@@ -34,9 +34,9 @@ fun CanvasToolbar(
         Color.Magenta,
         Color.Cyan
     )
-    
+
     val strokeWidths = listOf(1f, 3f, 5f, 8f, 12f)
-    
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -56,7 +56,7 @@ fun CanvasToolbar(
                 tint = MaterialTheme.colorScheme.primary
             )
         }
-        
+
         // Stroke Width Button
         IconButton(
             onClick = { showStrokeWidthPicker = !showStrokeWidthPicker }
@@ -67,7 +67,7 @@ fun CanvasToolbar(
                 tint = MaterialTheme.colorScheme.primary
             )
         }
-        
+
         // Clear Canvas Button
         IconButton(
             onClick = onClear
@@ -79,7 +79,7 @@ fun CanvasToolbar(
             )
         }
     }
-    
+
     // Color Picker Dialog
     if (showColorPicker) {
         AlertDialog(
@@ -118,7 +118,7 @@ fun CanvasToolbar(
             }
         )
     }
-    
+
     // Stroke Width Picker Dialog
     if (showStrokeWidthPicker) {
         AlertDialog(

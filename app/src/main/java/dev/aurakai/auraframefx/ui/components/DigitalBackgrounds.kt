@@ -37,7 +37,7 @@ import kotlin.math.sin
 @Composable
 fun DigitalLandscapeBackground(
     modifier: Modifier = Modifier,
-    color: Color = Color(0xFF00FFFF).copy(alpha = 0.3f)
+    color: Color = Color(0xFF00FFFF).copy(alpha = 0.3f),
 ) {
     Canvas(modifier = modifier) {
         drawDigitalLandscape(color)
@@ -57,7 +57,7 @@ fun DigitalLandscapeBackground(
 fun HexagonGridBackground(
     modifier: Modifier = Modifier,
     alpha: Float = 0.2f,
-    color: Color = Color(0xFF00FFFF).copy(alpha = alpha)
+    color: Color = Color(0xFF00FFFF).copy(alpha = alpha),
 ) {
     Canvas(modifier = modifier) {
         drawHexagonGrid(color)
@@ -132,7 +132,7 @@ private fun DrawScope.drawHexagonGrid(color: Color) {
 private fun DrawScope.drawHexagon(
     center: androidx.compose.ui.geometry.Offset,
     radius: Float,
-    color: Color
+    color: Color,
 ) {
     val path = androidx.compose.ui.graphics.Path()
     for (i in 0..5) {

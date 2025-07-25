@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeViewModel @Inject constructor(
-    private val themeService: ThemeService
+    private val themeService: ThemeService,
 ) : ViewModel() {
 
     private val _theme = MutableStateFlow(Theme.DARK)
@@ -24,7 +24,8 @@ class ThemeViewModel @Inject constructor(
             when (val themeCommand = themeService.parseThemeCommand(command)) {
                 is ThemeCommand.SetTheme -> _theme.value = themeCommand.theme
                 is ThemeCommand.SetColor -> _color.value = themeCommand.color
-                ThemeCommand.Unknown -> { /* Do nothing */ }
+                ThemeCommand.Unknown -> { /* Do nothing */
+                }
             }
         }
     }

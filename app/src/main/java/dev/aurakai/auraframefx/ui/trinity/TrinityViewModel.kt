@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrinityViewModel @Inject constructor(
-    private val repository: TrinityRepository
+    private val repository: TrinityRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<TrinityUiState>(TrinityUiState.Loading)
@@ -25,7 +25,7 @@ class TrinityViewModel @Inject constructor(
     private fun loadInitialData() {
         viewModelScope.launch {
             _uiState.value = TrinityUiState.Loading
-            
+
             // Load initial data in parallel
             launch { loadUserData() }
             launch { loadAgentStatus() }
@@ -55,13 +55,15 @@ class TrinityViewModel @Inject constructor(
         listOf("genesis", "aura", "kai").forEach { agentType ->
             repository.getAgentStatus(agentType)
                 .catch { e ->
-                    _uiState.value = TrinityUiState.Error("Failed to load $agentType status: ${e.message}")
+                    _uiState.value =
+                        TrinityUiState.Error("Failed to load $agentType status: ${e.message}")
                 }
                 .collect { result ->
                     result.onSuccess { status ->
                         _uiState.value = (_uiState.value as? TrinityUiState.Success)?.copy(
                             agentStatus = (_uiState.value as? TrinityUiState.Success)
-                                ?.agentStatus?.plus(agentType to status) ?: mapOf(agentType to status)
+                                ?.agentStatus?.plus(agentType to status)
+                                ?: mapOf(agentType to status)
                         ) ?: TrinityUiState.Success(agentStatus = mapOf(agentType to status))
                     }
                 }
@@ -100,7 +102,7 @@ class TrinityViewModel @Inject constructor(
     fun processAgentRequest(agentType: String, request: Map<String, Any>) {
         viewModelScope.launch {
             _uiState.value = TrinityUiState.Processing
-            
+
             repository.processAgentRequest(agentType, AgentRequest(request))
                 .catch { e ->
                     _uiState.value = TrinityUiState.Error("Agent request failed: ${e.message}")

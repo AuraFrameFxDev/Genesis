@@ -61,7 +61,7 @@ class DummyAgent(
     private val name: String,
     private val response: String,
     private val confidence: Float = 1.0f,
-    private val type: AgentType = AgentType.OTHER
+    private val type: AgentType = AgentType.OTHER,
 ) : Agent {
     override fun getName() = name
     override fun getType() = type
@@ -77,7 +77,7 @@ class DummyAgent(
 class FailingAgent(
     private val name: String,
     private val type: AgentType = AgentType.OTHER,
-    private val errorMessage: String = "Agent processing failed"
+    private val errorMessage: String = "Agent processing failed",
 ) : Agent {
     override fun getName() = name
     override fun getType() = type

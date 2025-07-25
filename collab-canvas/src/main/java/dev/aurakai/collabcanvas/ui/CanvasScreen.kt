@@ -67,15 +67,15 @@ fun CanvasScreen() {
     var selectedTool by remember { mutableStateOf<ElementType>(ElementType.PATH) }
     var selectedElement by remember { mutableStateOf<CanvasElement?>(null) }
     var isDrawing by remember { mutableStateOf(false) }
-    
+
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    
+
     // Animation states
     val animatedPaths = remember { mutableStateMapOf<Int, PluckablePath>() }
     val scale = remember { Animatable(1f) }
     val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-    
+
     // Update animated paths when paths change
     LaunchedEffect(paths) {
         paths.forEachIndexed { index, path ->
@@ -93,7 +93,7 @@ fun CanvasScreen() {
             offset.snapTo(newOffset)
         }
     }
-    
+
     val dragState = rememberDraggableState { delta ->
         coroutineScope.launch {
             offset.snapTo(offset.value + Offset(delta, 0f))
@@ -123,24 +123,24 @@ fun CanvasScreen() {
                 FloatingActionButton(
                     onClick = { selectedTool = ElementType.PATH },
                     modifier = Modifier.size(48.dp),
-                    containerColor = if (selectedTool == ElementType.PATH) MaterialTheme.colorScheme.primaryContainer 
-                                   else MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = if (selectedTool == ElementType.PATH) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Icon(Icons.Default.Edit, "Draw")
                 }
                 FloatingActionButton(
                     onClick = { selectedTool = ElementType.RECTANGLE },
                     modifier = Modifier.size(48.dp),
-                    containerColor = if (selectedTool == ElementType.RECTANGLE) MaterialTheme.colorScheme.primaryContainer 
-                                   else MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = if (selectedTool == ElementType.RECTANGLE) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Icon(Icons.Default.CheckBoxOutlineBlank, "Rectangle")
                 }
                 FloatingActionButton(
                     onClick = { selectedTool = ElementType.OVAL },
                     modifier = Modifier.size(48.dp),
-                    containerColor = if (selectedTool == ElementType.OVAL) MaterialTheme.colorScheme.primaryContainer 
-                                   else MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = if (selectedTool == ElementType.OVAL) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Icon(Icons.Default.PanoramaFishEye, "Circle")
                 }
@@ -190,6 +190,7 @@ fun CanvasScreen() {
                                         val y = change.position.y
                                         currentPath.lineTo(x, y)
                                     }
+
                                     else -> {
                                         // Handle other element types
                                     }
@@ -213,7 +214,7 @@ fun CanvasScreen() {
                 }) {
                     drawGrid()
                 }
-                
+
                 // Draw all elements with transformed coordinates
                 withTransform({
                     scale(scale.value, scale.value, pivot = Offset.Zero)
@@ -235,6 +236,7 @@ fun CanvasScreen() {
                                     )
                                 }
                             }
+
                             ElementType.RECTANGLE -> {
                                 // Draw selection outline if an element is selected with transformed coordinates
                                 selectedElement?.let { element ->
@@ -250,33 +252,37 @@ fun CanvasScreen() {
                                                     rect.width + 8f,
                                                     rect.height + 8f
                                                 ),
-                                                style = Stroke(width = 2f / scale.value.coerceAtLeast(1f))
+                                                style = Stroke(
+                                                    width = 2f / scale.value.coerceAtLeast(
+                                                        1f
+                                                    )
+                                                )
                                             )
-                                            
+
                                             // Draw resize handles
                                             val handleSize = 8f / scale.value.coerceAtLeast(1f)
-                                            
+
                                             // Top-left
                                             drawCircle(
                                                 color = Color.Blue,
                                                 radius = handleSize,
                                                 center = Offset(rect.left, rect.top)
                                             )
-                                            
+
                                             // Top-right
                                             drawCircle(
                                                 color = Color.Blue,
                                                 radius = handleSize,
                                                 center = Offset(rect.right, rect.top)
                                             )
-                                            
+
                                             // Bottom-left
                                             drawCircle(
                                                 color = Color.Blue,
                                                 radius = handleSize,
                                                 center = Offset(rect.left, rect.bottom)
                                             )
-                                            
+
                                             // Bottom-right
                                             drawCircle(
                                                 color = Color.Blue,
@@ -299,6 +305,7 @@ fun CanvasScreen() {
                                     )
                                 }
                             }
+
                             ElementType.OVAL -> {
                                 // Draw oval
                                 element.bounds?.let { rect ->
@@ -313,11 +320,12 @@ fun CanvasScreen() {
                                     )
                                 }
                             }
+
                             else -> {}
                         }
                     }
                 }
-                
+
                 // Draw current path being drawn with transformed coordinates
                 if (isDrawing) {
                     withTransform({
@@ -335,11 +343,11 @@ fun CanvasScreen() {
                         )
                     }
                 }
-                
+
                 // Draw all paths with animations
                 paths.forEachIndexed { index, path ->
                     val animatedPath = animatedPaths[index] ?: return@forEachIndexed
-                    
+
                     // Update animated path properties
                     if (path.isPlucked) {
                         animatedPath.offset = path.offset
@@ -353,7 +361,7 @@ fun CanvasScreen() {
                             animatedPath.scale = 1f
                         }
                     }
-                    
+
                     // Draw the path with transformations
                     withTransform({
                         scale(animatedPath.scale, animatedPath.scale, path.path.getBounds().center)
@@ -383,15 +391,17 @@ fun CanvasScreen() {
             )
         }
     }
-    
+
     // Add drawing functionality
     DrawingHandler(
         onPathCreated = { path ->
-            paths.add(PluckablePath(
-                path = path,
-                color = currentColor,
-                strokeWidth = strokeWidth
-            ))
+            paths.add(
+                PluckablePath(
+                    path = path,
+                    color = currentColor,
+                    strokeWidth = strokeWidth
+                )
+            )
         },
         onPathUpdated = { path ->
             if (paths.isNotEmpty()) {
@@ -405,16 +415,16 @@ fun CanvasScreen() {
 @Composable
 private fun DrawingHandler(
     onPathCreated: (Path) -> Unit,
-    onPathUpdated: (Path) -> Unit
+    onPathUpdated: (Path) -> Unit,
 ) {
     var currentPath by remember { mutableStateOf(Path()) }
-    
+
     LaunchedEffect(Unit) {
         // Initialize drawing
         currentPath = Path()
         onPathCreated(currentPath)
     }
-    
+
     Canvas(
         modifier = Modifier
             .fillMaxSize()

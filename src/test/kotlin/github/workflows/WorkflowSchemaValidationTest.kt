@@ -23,9 +23,9 @@ class WorkflowSchemaValidationTest {
         fun testGitHubActionsSchema() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val content = yaml.load(FileInputStream(workflowFile)) as Map<String, Any>
-            
+
             // Validate top-level schema
             validateWorkflowSchema(content)
         }
@@ -35,10 +35,10 @@ class WorkflowSchemaValidationTest {
         fun testJobSchema() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val content = yaml.load(FileInputStream(workflowFile)) as Map<String, Any>
             val jobs = content["jobs"] as Map<String, Any>
-            
+
             jobs.values.forEach { job ->
                 validateJobSchema(job as Map<String, Any>)
             }
@@ -49,10 +49,10 @@ class WorkflowSchemaValidationTest {
         fun testStepSchema() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val content = yaml.load(FileInputStream(workflowFile)) as Map<String, Any>
             val jobs = content["jobs"] as Map<String, Any>
-            
+
             jobs.values.forEach { job ->
                 val jobMap = job as Map<String, Any>
                 if (jobMap.containsKey("steps")) {
@@ -69,7 +69,7 @@ class WorkflowSchemaValidationTest {
             assertTrue(workflow.containsKey("name"), "Workflow must have name")
             assertTrue(workflow.containsKey("on"), "Workflow must have on")
             assertTrue(workflow.containsKey("jobs"), "Workflow must have jobs")
-            
+
             // Type validation
             assertTrue(workflow["name"] is String, "Name must be string")
             assertTrue(workflow["on"] is Map<*, *>, "On must be object")
@@ -79,10 +79,10 @@ class WorkflowSchemaValidationTest {
         private fun validateJobSchema(job: Map<String, Any>) {
             // Required fields for job
             assertTrue(job.containsKey("runs-on"), "Job must have runs-on")
-            
+
             // Type validation
             assertTrue(job["runs-on"] is String, "runs-on must be string")
-            
+
             if (job.containsKey("steps")) {
                 assertTrue(job["steps"] is List<*>, "steps must be array")
             }
@@ -90,15 +90,17 @@ class WorkflowSchemaValidationTest {
 
         private fun validateStepSchema(step: Map<String, Any>) {
             // Step must have either 'uses' or 'run'
-            assertTrue(step.containsKey("uses") || step.containsKey("run"), 
-                "Step must have either 'uses' or 'run'")
-            
+            assertTrue(
+                step.containsKey("uses") || step.containsKey("run"),
+                "Step must have either 'uses' or 'run'"
+            )
+
             // If has 'uses', validate format
             if (step.containsKey("uses")) {
                 val uses = step["uses"] as String
                 assertTrue(uses.contains("@"), "Action must specify version")
             }
-            
+
             // If has 'run', validate it's a string
             if (step.containsKey("run")) {
                 assertTrue(step["run"] is String, "run must be string")
@@ -115,9 +117,9 @@ class WorkflowSchemaValidationTest {
         fun testNoUnusedEnvironmentVariables() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val content = yaml.load(FileInputStream(workflowFile)) as Map<String, Any>
-            
+
             // Check for env blocks and validate they're used
             validateEnvironmentVariables(content)
         }
@@ -127,19 +129,21 @@ class WorkflowSchemaValidationTest {
         fun testNoHardcodedSecrets() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val workflowContent = workflowFile.readText()
-            
+
             // Check for potential hardcoded secrets
             val secretPatterns = listOf(
                 "password.*=.*[\"'][^\"']+[\"']",
                 "token.*=.*[\"'][^\"']+[\"']",
                 "key.*=.*[\"'][^\"']+[\"']"
             )
-            
+
             secretPatterns.forEach { pattern ->
-                assertFalse(workflowContent.contains(Regex(pattern, RegexOption.IGNORE_CASE)), 
-                    "Workflow should not contain hardcoded secrets matching pattern: $pattern")
+                assertFalse(
+                    workflowContent.contains(Regex(pattern, RegexOption.IGNORE_CASE)),
+                    "Workflow should not contain hardcoded secrets matching pattern: $pattern"
+                )
             }
         }
 
@@ -148,10 +152,10 @@ class WorkflowSchemaValidationTest {
         fun testSemanticActionVersions() {
             val workflowFile = File(".github/workflows/android.yml")
             if (!workflowFile.exists()) return
-            
+
             val content = yaml.load(FileInputStream(workflowFile)) as Map<String, Any>
             val jobs = content["jobs"] as Map<String, Any>
-            
+
             jobs.values.forEach { job ->
                 val jobMap = job as Map<String, Any>
                 if (jobMap.containsKey("steps")) {
@@ -159,8 +163,10 @@ class WorkflowSchemaValidationTest {
                     steps.filter { it.containsKey("uses") }.forEach { step ->
                         val uses = step["uses"] as String
                         val version = uses.split("@")[1]
-                        assertTrue(version.matches(Regex("v\\d+")), 
-                            "Action version should be semantic (v1, v2, etc.): $uses")
+                        assertTrue(
+                            version.matches(Regex("v\\d+")),
+                            "Action version should be semantic (v1, v2, etc.): $uses"
+                        )
                     }
                 }
             }

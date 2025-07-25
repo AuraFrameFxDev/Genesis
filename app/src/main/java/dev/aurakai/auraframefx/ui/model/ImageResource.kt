@@ -9,5 +9,5 @@ data class ImageResource(
     val type: String,
     val path: String,
     val name: String = "",
-    @Contextual val bitmap: android.graphics.Bitmap? = null
+    @Contextual val bitmap: android.graphics.Bitmap? = null,
 )

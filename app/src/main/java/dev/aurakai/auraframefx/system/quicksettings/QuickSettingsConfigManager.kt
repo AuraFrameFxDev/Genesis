@@ -70,7 +70,7 @@ class QuickSettingsConfigManager(private val context: Context) {
      */
     suspend fun updateTileConfig(
         tileId: String,
-        update: (QuickSettingsTileConfig) -> QuickSettingsTileConfig
+        update: (QuickSettingsTileConfig) -> QuickSettingsTileConfig,
     ): Boolean {
         return try {
             val currentTiles = currentConfig.tiles.toMutableList()

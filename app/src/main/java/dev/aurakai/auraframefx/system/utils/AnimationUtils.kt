@@ -42,7 +42,7 @@ object AnimationUtils {
         view: View,
         duration: Long = DEFAULT_DURATION,
         startDelay: Long = 0,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         if (view.visibility == View.VISIBLE && view.alpha == 1f) {
             onEnd?.invoke()
@@ -75,7 +75,7 @@ object AnimationUtils {
         view: View,
         duration: Long = DEFAULT_DURATION,
         startDelay: Long = 0,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         if (view.visibility != View.VISIBLE) {
             onEnd?.invoke()
@@ -110,7 +110,7 @@ object AnimationUtils {
         centerY: Int,
         startRadius: Float = 0f,
         duration: Long = REVEAL_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         if (view.visibility == View.VISIBLE) {
             onEnd?.invoke()
@@ -157,7 +157,7 @@ object AnimationUtils {
         centerY: Int,
         endRadius: Float = 0f,
         duration: Long = REVEAL_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         if (view.visibility != View.VISIBLE) {
             onEnd?.invoke()
@@ -202,7 +202,7 @@ object AnimationUtils {
         @ColorInt startColor: Int,
         @ColorInt endColor: Int,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         val animator = ValueAnimator.ofObject(ArgbEvaluator(), startColor, endColor)
         animator.duration = duration
@@ -228,7 +228,7 @@ object AnimationUtils {
         view: View,
         @ColorInt rippleColor: Int,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         val startColor = ColorUtils.withAlpha(rippleColor, 0x4D) // 30% alpha
         val endColor = ColorUtils.withAlpha(rippleColor, 0x00) // 0% alpha
@@ -263,7 +263,7 @@ object AnimationUtils {
         fromY: Float = 1f,
         toY: Float = 1f,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         view.scaleX = fromX
         view.scaleY = fromY
@@ -291,7 +291,7 @@ object AnimationUtils {
         view: View,
         scale: Float = 1.1f,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         view.animate()
             .scaleX(scale)
@@ -322,7 +322,7 @@ object AnimationUtils {
         view: View,
         distance: Float = 20f,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         val anim = TranslateAnimation(
             -distance, distance, 0f, 0f
@@ -356,7 +356,7 @@ object AnimationUtils {
         fromElevation: Float,
         toElevation: Float,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         val animator = ValueAnimator.ofFloat(fromElevation, toElevation)
         animator.duration = duration
@@ -381,7 +381,7 @@ object AnimationUtils {
         fadeInView: View,
         fadeOutView: View,
         duration: Long = DEFAULT_DURATION,
-        onEnd: (() -> Unit)? = null
+        onEnd: (() -> Unit)? = null,
     ) {
         fadeInView.apply {
             alpha = 0f

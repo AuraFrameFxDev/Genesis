@@ -19,7 +19,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class NeuralWhisper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) {
     companion object {
         private const val TAG = "NeuralWhisper"

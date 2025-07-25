@@ -62,11 +62,11 @@ fun ShimmerParticles(
     secondaryColor: Color = Color.Magenta,
     shimmerIntensity: Float = 0.8f,
     animationDuration: Int = 3000,
-    speedMultiplier: Float = 1f
+    speedMultiplier: Float = 1f,
 ) {
     val density = LocalDensity.current
     val particleSizePx = with(density) { particleSize.toPx() }
-    
+
     // Generate random particles
     val particles = remember(particleCount) {
         List(particleCount) {
@@ -82,7 +82,7 @@ fun ShimmerParticles(
             )
         }
     }
-    
+
     // Animation for the shimmer effect
     val infiniteTransition = rememberInfiniteTransition(label = "shimmerParticles")
     val time = infiniteTransition.animateFloat(
@@ -96,31 +96,33 @@ fun ShimmerParticles(
         ),
         label = "time"
     )
-    
+
     Canvas(
         modifier = modifier.fillMaxSize()
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        
+
         // Draw each particle
         particles.forEach { particle ->
             // Calculate position with smooth movement
-            val angle = time.value * 2f * PI.toFloat() * particle.baseSpeed * speedMultiplier + particle.movementPhase
+            val angle =
+                time.value * 2f * PI.toFloat() * particle.baseSpeed * speedMultiplier + particle.movementPhase
             val offsetX = sin(angle) * canvasWidth * 0.1f
             val offsetY = cos(angle * 1.3f) * canvasHeight * 0.1f
-            
+
             // Calculate shimmer effect
-            val shimmer = (sin(time.value * 2f * PI.toFloat() * particle.baseSpeed + particle.offsetPhase) + 1f) / 2f
+            val shimmer =
+                (sin(time.value * 2f * PI.toFloat() * particle.baseSpeed + particle.offsetPhase) + 1f) / 2f
             val alpha = 0.2f + 0.8f * shimmer * shimmerIntensity
-            
+
             // Calculate final position
             val x = (particle.startX * canvasWidth + offsetX).coerceIn(0f, canvasWidth)
             val y = (particle.startY * canvasHeight + offsetY).coerceIn(0f, canvasHeight)
-            
+
             // Draw particle with glow
             val radius = particle.size * (0.8f + 0.4f * shimmer)
-            
+
             // Outer glow
             drawCircle(
                 brush = Brush.radialGradient(
@@ -134,7 +136,7 @@ fun ShimmerParticles(
                 radius = radius * 3f,
                 center = Offset(x, y)
             )
-            
+
             // Particle
             drawCircle(
                 color = particle.color.copy(alpha = alpha),
@@ -156,7 +158,7 @@ private data class Particle(
     val startX: Float,
     val startY: Float,
     val offsetPhase: Float,
-    val movementPhase: Float
+    val movementPhase: Float,
 )
 
 /**

@@ -75,11 +75,11 @@ fun NeonText(
     animateGlow: Boolean = true,
     animateTyping: Boolean = true,
     typingSpeedMs: Int = 100,
-    onTypingComplete: (() -> Unit)? = null
+    onTypingComplete: (() -> Unit)? = null,
 ) {
     val density = LocalDensity.current
     val glowRadiusPx = with(density) { glowRadius.toPx() }
-    
+
     // Animation for the glow effect
     val infiniteTransition = rememberInfiniteTransition(label = "neonGlow")
     val glowIntensity by infiniteTransition.animateFloat(
@@ -96,10 +96,10 @@ fun NeonText(
         ),
         label = "glowIntensity"
     )
-    
+
     // Animation for the typing effect
     var visibleCharCount by remember { mutableStateOf(if (animateTyping) 0 else text.length) }
-    
+
     LaunchedEffect(animateTyping, text) {
         if (animateTyping) {
             visibleCharCount = 0
@@ -112,13 +112,13 @@ fun NeonText(
             visibleCharCount = text.length
         }
     }
-    
+
     val visibleText = if (animateTyping) {
         text.take(visibleCharCount)
     } else {
         text
     }
-    
+
     // Text style with the custom font and size
     val textStyle = LocalTextStyle.current.merge(
         TextStyle(
@@ -130,7 +130,7 @@ fun NeonText(
             background = Color.Transparent
         )
     )
-    
+
     // Create a text layout to get the size and position of each character
     val textLayoutResult = remember(text, textStyle) {
         TextMeasurer().measure(
@@ -138,7 +138,7 @@ fun NeonText(
             style = textStyle
         )
     }
-    
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -154,7 +154,7 @@ fun NeonText(
                     this.strokeWidth = with(density) { 1.dp.toPx() }
                 }
             }
-            
+
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,7 +167,7 @@ fun NeonText(
                         x = (size.width - textLayoutResult.size.width) / 2 + charLayout.left,
                         y = (size.height - textLayoutResult.size.height) / 2 + charLayout.top
                     )
-                    
+
                     // Draw outer glow
                     drawText(
                         text = text[charIndex].toString(),
@@ -180,7 +180,7 @@ fun NeonText(
                         ),
                         topLeft = offset
                     )
-                    
+
                     // Draw inner glow with neon effect
                     for (i in 1..3) {
                         drawText(
@@ -198,7 +198,7 @@ fun NeonText(
                 }
             }
         }
-        
+
         // Main text (drawn on top of the glow)
         Text(
             text = visibleText,
@@ -230,7 +230,7 @@ private class TextMeasurer {
      */
     fun measure(
         text: AnnotatedString,
-        style: TextStyle
+        style: TextStyle,
     ): TextLayoutResult {
         val textLayout = TextLayout(
             text = text,
@@ -249,4 +249,4 @@ private class TextMeasurer {
  * A preview composable for the NeonText
  */
 @Composable
-@Preview"
+@Preview "

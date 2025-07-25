@@ -13,49 +13,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 24
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '24'
-        cache: 'gradle'
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
+          cache: 'gradle'
 
-    - name: Setup Python for backend
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Setup Python for backend
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f "app/ai_backend/requirements.txt" ]; then
-          pip install -r app/ai_backend/requirements.txt
-        fi
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "app/ai_backend/requirements.txt" ]; then
+            pip install -r app/ai_backend/requirements.txt
+          fi
 
-    - name: Validate Gradle Wrapper
-      uses: gradle/wrapper-validation-action@v2
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v2
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
-    - name: Build with Gradle
-      run: |
-        ./gradlew build --stacktrace
+      - name: Build with Gradle
+        run: |
+          ./gradlew build --stacktrace
 
-    - name: Run tests
-      run: |
-        ./gradlew test
+      - name: Run tests
+        run: |
+          ./gradlew test
 
-    - name: Upload APK artifact
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-debug-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 7
+      - name: Upload APK artifact
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
 
   deploy:
     name: Deploy
@@ -64,41 +64,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 24
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '24'
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
 
-    - name: Setup Python for backend
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Setup Python for backend
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f "app/ai_backend/requirements.txt" ]; then
-          pip install -r app/ai_backend/requirements.txt
-        fi
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "app/ai_backend/requirements.txt" ]; then
+            pip install -r app/ai_backend/requirements.txt
+          fi
 
-    - name: Build and deploy
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
-      run: |
-        ./gradlew assembleRelease
-        # Add deployment steps here (e.g., Firebase App Distribution, Play Store, etc.)
-        echo "Deployment steps will be added here"
+      - name: Build and deploy
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
+        run: |
+          ./gradlew assembleRelease
+          # Add deployment steps here (e.g., Firebase App Distribution, Play Store, etc.)
+          echo "Deployment steps will be added here"
 
-    - name: Run Genesis backend
-      if: github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
-      working-directory: app/ai_backend
-      run: |
-        if [ -f "start_genesis.sh" ]; then
-          bash start_genesis.sh
-        fi
+      - name: Run Genesis backend
+        if: github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
+        working-directory: app/ai_backend
+        run: |
+          if [ -f "start_genesis.sh" ]; then
+            bash start_genesis.sh
+          fi

@@ -18,12 +18,12 @@ import javax.inject.Singleton
 @Singleton
 class AuthInterceptor @Inject constructor(
     private val tokenManager: TokenManager,
-    private val authApi: AuthApi
+    private val authApi: AuthApi,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        
+
         // Skip authentication for login/refresh endpoints
         if (isAuthRequest(originalRequest)) {
             return chain.proceed(originalRequest)
@@ -45,19 +45,19 @@ class AuthInterceptor @Inject constructor(
         // If unauthorized, try to refresh the token and retry the request
         if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
             response.close()
-            
+
             val newToken = runBlocking {
                 try {
                     tokenManager.refreshToken?.let { refreshToken ->
                         val refreshResponse = authApi.refreshToken(
                             RefreshTokenRequest(refreshToken = refreshToken)
                         )
-                        
+
                         if (refreshResponse.isSuccessful) {
                             val newAccessToken = refreshResponse.body()?.accessToken
                             val newRefreshToken = refreshResponse.body()?.refreshToken
                             val expiresIn = refreshResponse.body()?.expiresIn ?: 3600L
-                            
+
                             if (!newAccessToken.isNullOrBlank() && !newRefreshToken.isNullOrBlank()) {
                                 tokenManager.updateTokens(
                                     accessToken = newAccessToken,
@@ -78,9 +78,9 @@ class AuthInterceptor @Inject constructor(
                     null
                 }
             }
-            
+
             // Retry the original request with the new token if refresh was successful
-            newToken?.let { 
+            newToken?.let {
                 request = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $it")
                     .build()
@@ -90,21 +90,21 @@ class AuthInterceptor @Inject constructor(
 
         return response
     }
-    
+
     private fun isAuthRequest(request: Request): Boolean {
         val path = request.url.encodedPath
-        return path.endsWith("/auth/login") || 
-               path.endsWith("/auth/refresh") ||
-               path.endsWith("/auth/register")
+        return path.endsWith("/auth/login") ||
+                path.endsWith("/auth/refresh") ||
+                path.endsWith("/auth/register")
     }
-    
+
     private fun Response.createErrorResponse(code: Int, message: String): Response {
         val json = JSONObject().apply {
             put("success", false)
             put("message", message)
             put("code", code)
         }.toString()
-        
+
         return newBuilder()
             .code(code)
             .message(message)
@@ -117,7 +117,7 @@ class AuthInterceptor @Inject constructor(
  * Data class for refresh token request.
  */
 data class RefreshTokenRequest(
-    val refreshToken: String
+    val refreshToken: String,
 )
 
 /**
@@ -127,5 +127,5 @@ data class TokenResponse(
     val accessToken: String,
     val refreshToken: String,
     val tokenType: String = "Bearer",
-    val expiresIn: Long = 3600
+    val expiresIn: Long = 3600,
 )

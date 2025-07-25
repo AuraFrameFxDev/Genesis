@@ -14,7 +14,7 @@ pluginManagement {
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven(url = "https://jitpack.io")
     }
-    
+
     // Configure resolution strategy for plugins
     resolutionStrategy {
         eachPlugin {
@@ -28,7 +28,7 @@ pluginManagement {
 // Dependency Resolution Management
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
+
     // Configure repositories
     repositories {
         google()

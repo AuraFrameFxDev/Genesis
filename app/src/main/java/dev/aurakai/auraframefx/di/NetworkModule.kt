@@ -27,7 +27,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    
+
     @Provides
     @BaseUrl
     @Singleton
@@ -55,7 +55,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -71,7 +71,7 @@ object NetworkModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         moshi: Moshi,
-        @BaseUrl baseUrl: String
+        @BaseUrl baseUrl: String,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
@@ -87,14 +87,14 @@ object NetworkModule {
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
     }
-    
+
     @Provides
     @Singleton
     fun provideAuraApiService(
         context: android.content.Context,
         authInterceptor: AuthInterceptor,
         dispatchers: AppCoroutineDispatchers,
-        @BaseUrl baseUrl: String
+        @BaseUrl baseUrl: String,
     ): AuraApiService {
         return AuraApiService(context, authInterceptor, dispatchers, baseUrl)
     }

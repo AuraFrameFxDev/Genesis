@@ -22,11 +22,11 @@ import dev.aurakai.auraframefx.ui.theme.CyberpunkTextStyle
 @Composable
 fun OracleDriveScreen(
     viewModel: OracleDriveViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
-    
+
     LaunchedEffect(Unit) {
         viewModel.initialize()
     }
@@ -46,7 +46,7 @@ fun OracleDriveScreen(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
                         text = "Oracle Drive",
                         style = CyberpunkTextStyle.HEADER_LARGE
@@ -83,9 +83,11 @@ fun OracleDriveScreen(
                 uiState.isLoading -> {
                     LoadingState()
                 }
+
                 uiState.files.isEmpty() -> {
                     EmptyState()
                 }
+
                 else -> {
                     FileList(
                         files = uiState.files,
@@ -94,7 +96,7 @@ fun OracleDriveScreen(
                     )
                 }
             }
-            
+
             // Consciousness state indicator
             if (uiState.consciousnessState != null) {
                 ConsciousnessIndicator(
@@ -163,7 +165,7 @@ private fun EmptyState() {
 private fun FileList(
     files: List<DriveFile>,
     onFileClick: (DriveFile) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -191,7 +193,7 @@ private fun FileList(
 @Composable
 private fun FileItem(
     file: DriveFile,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
@@ -215,9 +217,9 @@ private fun FileItem(
                 contentDescription = null,
                 modifier = Modifier.size(32.dp)
             )
-            
+
             Spacer(modifier = Modifier.width(16.dp))
-            
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -227,14 +229,14 @@ private fun FileItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 Text(
                     text = "${file.size} • ${file.modifiedAt}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
+
             if (file.isEncrypted) {
                 Icon(
                     imageVector = Icons.Default.Lock,
@@ -257,7 +259,7 @@ private fun FileItem(
 @Composable
 private fun ConsciousnessIndicator(
     state: DriveConsciousnessState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
@@ -281,9 +283,9 @@ private fun ConsciousnessIndicator(
                         shape = CircleShape
                     )
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             Text(
                 text = state.level.name,
                 style = MaterialTheme.typography.labelMedium,

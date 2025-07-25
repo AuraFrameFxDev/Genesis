@@ -64,35 +64,35 @@ class OracleDriveViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        
+
         coEvery { mockService.getFiles() } returns testFiles
         coEvery { mockService.consciousnessState } returns flowOf(testConsciousnessState)
-        
+
         viewModel = OracleDriveViewModel(mockService)
     }
 
     @Test
     fun `initial load sets loading state and loads files`() = runTest {
         // Given - Initial state
-        
+
         // When - ViewModel is initialized in @Before
-        
+
         // Then
         viewModel.uiState.test(5.seconds) {
             // Initial loading state
             val initialState = awaitItem()
             assertThat(initialState.isLoading).isTrue()
-            
+
             // Loaded state
             val loadedState = awaitItem()
             assertThat(loadedState).isNotNull()
             assertThat(loadedState.isLoading).isFalse()
             assertThat(loadedState.files).hasSize(2)
             assertThat(loadedState.consciousnessState).isEqualTo(testConsciousnessState)
-            
+
             cancelAndIgnoreRemainingEvents()
         }
-        
+
         coVerify(exactly = 1) { mockService.getFiles() }
     }
 
@@ -102,21 +102,21 @@ class OracleDriveViewModelTest {
         viewModel.uiState.test {
             // Skip initial loading states
             skipItems(2)
-            
+
             // When
             viewModel.refresh()
-            
+
             // Then
             val loadingState = awaitItem()
             assertThat(loadingState.isRefreshing).isTrue()
-            
+
             val refreshedState = awaitItem()
             assertThat(refreshedState.isRefreshing).isFalse()
             assertThat(refreshedState.files).hasSize(2)
-            
+
             cancelAndIgnoreRemainingEvents()
         }
-        
+
         coVerify(exactly = 2) { mockService.getFiles() } // Once in init, once in refresh
     }
 
@@ -125,20 +125,20 @@ class OracleDriveViewModelTest {
         // Given
         val error = IOException("Network error")
         coEvery { mockService.getFiles() } throws error
-        
+
         // Create a new ViewModel with the failing service
         val errorViewModel = OracleDriveViewModel(mockService)
-        
+
         // When/Then
         errorViewModel.uiState.test(5.seconds) {
             // Skip initial loading state
             skipItems(1)
-            
+
             // Error state
             val errorState = awaitItem()
             assertThat(errorState.error).isInstanceOf(IOException::class.java)
             assertThat(errorState.isLoading).isFalse()
-            
+
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -147,10 +147,10 @@ class OracleDriveViewModelTest {
     fun `selecting a file updates selectedFile`() = runTest {
         // Given
         val testFile = testFiles[0]
-        
+
         // When
         viewModel.onFileSelected(testFile)
-        
+
         // Then
         assertThat(viewModel.uiState.value.selectedFile).isEqualTo(testFile)
     }
@@ -162,21 +162,21 @@ class OracleDriveViewModelTest {
             level = ConsciousnessLevel.SENTIENT,
             activeAgents = listOf("Genesis", "Aura", "Kai")
         )
-        
+
         // When - Update the flow with a new state
         coEvery { mockService.consciousnessState } returns flowOf(updatedState)
-        
+
         // Re-initialize to get the new flow
         val testViewModel = OracleDriveViewModel(mockService)
-        
+
         // Then
         testViewModel.uiState.test(5.seconds) {
             // Skip initial loading states
             skipItems(2)
-            
+
             val state = awaitItem()
             assertThat(state.consciousnessState).isEqualTo(updatedState)
-            
+
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -186,21 +186,21 @@ class OracleDriveViewModelTest {
         // Given - Force an error
         val error = IOException("Test error")
         coEvery { mockService.getFiles() } throws error
-        
+
         val testViewModel = OracleDriveViewModel(mockService)
-        
+
         // Wait for error state
         testViewModel.uiState.test {
             // Skip to error state
             skipItems(2)
             assertThat(awaitItem().error).isNotNull()
-            
+
             // When
             testViewModel.clearError()
-            
+
             // Then
             assertThat(awaitItem().error).isNull()
-            
+
             cancelAndIgnoreRemainingEvents()
         }
     }

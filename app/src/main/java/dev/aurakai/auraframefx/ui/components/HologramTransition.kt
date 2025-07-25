@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun HologramTransition(
     visible: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     // TODO: Implement hologram transition
     if (visible) {

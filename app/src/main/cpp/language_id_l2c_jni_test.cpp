@@ -42,7 +42,7 @@ protected:
         mock_env.reset();
     }
 
-    std::unique_ptr<MockJNIEnv> mock_env;
+    std::unique_ptr <MockJNIEnv> mock_env;
 
     // Helper method to create test strings
     std::string createTestString(const std::string &content) {
@@ -78,7 +78,7 @@ struct TestCase {
     std::string description;
 };
 
-std::vector<TestCase> testCases = {
+std::vector <TestCase> testCases = {
         {"Hello world",      "en", "Simple English text"},
         {"Bonjour le monde", "fr", "Simple French text"},
         {"Hola mundo",       "es", "Simple Spanish text"},
@@ -202,7 +202,7 @@ const char *testString = "Test string for JNI conversion";
 // Test string creation
 jstring jstr = mock_env->NewStringUTF(testString);
 EXPECT_NE(jstr,
-nullptr
+        nullptr
 );
 
 // Test string retrieval
@@ -230,7 +230,7 @@ struct ConfidenceTestCase {
     std::string description;
 };
 
-std::vector<ConfidenceTestCase> testCases = {
+std::vector <ConfidenceTestCase> testCases = {
         {"This is a very clear English sentence with many words.", 0.8, "High confidence English"},
         {"Yes",                                                    0.3, "Low confidence due to short text"},
         {"123 !@# $%^",                                            0.1, "Very low confidence for non-linguistic text"}
@@ -260,7 +260,7 @@ TEST_F(LanguageIdL2cJniTest, ThreadSafety
 ) {
 const int numThreads = 4;
 const int iterationsPerThread = 100;
-std::vector<std::thread> threads;
+std::vector <std::thread> threads;
 std::atomic<int> successCount(0);
 
 for (
@@ -345,7 +345,7 @@ jstring jstr = mock_env->NewStringUTF(text.c_str());
 
 const char *chars = mock_env->GetStringUTFChars(jstr, nullptr);
 EXPECT_NE(chars,
-nullptr
+        nullptr
 );
 
 mock_env->
@@ -371,7 +371,7 @@ EXPECT_EQ(result,
 TEST_F(LanguageIdL2cJniTest, SupportedLanguages
 ) {
 // Test that common languages are supported
-std::vector<std::string> commonLanguages = {
+std::vector <std::string> commonLanguages = {
         "en", "es", "fr", "de", "it", "pt", "ru", "zh", "ja", "ko",
         "ar", "hi", "th", "vi", "tr", "pl", "nl", "sv", "da", "no"
 };
@@ -389,7 +389,7 @@ lang;
 // Test batch processing
 TEST_F(LanguageIdL2cJniTest, BatchProcessing
 ) {
-std::vector<std::string> texts = {
+std::vector <std::string> texts = {
         "English text",
         "Texto en español",
         "Texte en français",
@@ -397,7 +397,7 @@ std::vector<std::string> texts = {
         "Testo italiano"
 };
 
-std::vector<std::string> expectedLanguages = {"en", "es", "fr", "de", "it"};
+std::vector <std::string> expectedLanguages = {"en", "es", "fr", "de", "it"};
 
 for (
 size_t i = 0;

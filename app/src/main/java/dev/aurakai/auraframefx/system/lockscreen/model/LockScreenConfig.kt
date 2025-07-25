@@ -7,19 +7,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LockScreenConfig(
     val elements: List<LockScreenElementConfig> = emptyList(),
-    val background: BackgroundConfig? = null
+    val background: BackgroundConfig? = null,
 )
 
 @Serializable
 data class LockScreenElementConfig(
     val type: LockScreenElementType,
     val shape: OverlayShape,
-    val animation: LockScreenAnimation
+    val animation: LockScreenAnimation,
 )
 
 @Serializable
 data class BackgroundConfig(
-    val image: ImageResource?
+    val image: ImageResource?,
 )
 
 // Use LockScreenElementType from dev.aurakai.auraframefx.system.lockscreen.model.LockScreenElementType

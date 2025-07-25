@@ -35,10 +35,17 @@ class TimberInitializer @Inject constructor() {
 
             // You can replace this with your actual crash reporting logic
             when (priority) {
-                Log.INFO -> { /* Log informational messages */ }
-                Log.WARN -> { /* Log warnings */ }
-                Log.ERROR -> { /* Log errors */ }
-                Log.ASSERT -> { /* Log asserts */ }
+                Log.INFO -> { /* Log informational messages */
+                }
+
+                Log.WARN -> { /* Log warnings */
+                }
+
+                Log.ERROR -> { /* Log errors */
+                }
+
+                Log.ASSERT -> { /* Log asserts */
+                }
             }
             // FirebaseCrashlytics.getInstance().log("$tag: $message")
             // t?.let { FirebaseCrashlytics.getInstance().recordException(it) }

@@ -117,7 +117,7 @@ fun CyberMenuItem(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isSelected: Boolean
+    isSelected: Boolean,
 ) {
     Box(
         modifier = modifier

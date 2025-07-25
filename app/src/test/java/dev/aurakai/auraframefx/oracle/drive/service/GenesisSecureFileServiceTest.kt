@@ -44,7 +44,7 @@ class GenesisSecureFileServiceTest {
         hiltRule.inject()
         context = ApplicationProvider.getApplicationContext()
         secureFileService = GenesisSecureFileService(context, cryptoManager, secureStorage)
-        
+
         // Clean up any existing test files
         context.filesDir.listFiles()?.forEach { it.deleteRecursively() }
     }
@@ -64,7 +64,7 @@ class GenesisSecureFileServiceTest {
         // Read file
         val readResult = secureFileService.readFile(testFileName).first()
         assertTrue(readResult is FileOperationResult.Data)
-        
+
         val readData = (readResult as FileOperationResult.Data).data
         assertArrayEquals(testData, readData)
     }
@@ -77,19 +77,19 @@ class GenesisSecureFileServiceTest {
             fileName = testFileName,
             directory = testDirectory
         ).first()
-        
+
         assertTrue(saveResult is FileOperationResult.Success)
-        
+
         // Verify file exists in subdirectory
         val file = File(context.filesDir, "$testDirectory/$testFileName")
         assertTrue(file.exists())
-        
+
         // Read file from subdirectory
         val readResult = secureFileService.readFile(
             fileName = testFileName,
             directory = testDirectory
         ).first()
-        
+
         assertTrue(readResult is FileOperationResult.Data)
         assertArrayEquals(testData, (readResult as FileOperationResult.Data).data)
     }
@@ -98,11 +98,11 @@ class GenesisSecureFileServiceTest {
     fun deleteFile_success() = runTest {
         // Save file
         secureFileService.saveFile(testData, testFileName).first()
-        
+
         // Delete file
         val deleteResult = secureFileService.deleteFile(testFileName)
         assertTrue(deleteResult is FileOperationResult.Success)
-        
+
         // Verify file is deleted
         val file = File(context.filesDir, testFileName)
         assertFalse(file.exists())
@@ -115,10 +115,10 @@ class GenesisSecureFileServiceTest {
         fileNames.forEach { fileName ->
             secureFileService.saveFile("Content for $fileName".toByteArray(), fileName).first()
         }
-        
+
         // List files
         val files = secureFileService.listFiles()
-        
+
         // Verify all files are listed
         assertEquals(fileNames.sorted(), files.sorted())
     }
@@ -126,7 +126,7 @@ class GenesisSecureFileServiceTest {
     @Test
     fun readNonExistentFile_returnsError() = runTest {
         val readResult = secureFileService.readFile("non_existent.txt").first()
-        
+
         assertTrue(readResult is FileOperationResult.Error)
         assertEquals("File not found", (readResult as FileOperationResult.Error).message)
     }
@@ -134,7 +134,7 @@ class GenesisSecureFileServiceTest {
     @Test
     fun deleteNonExistentFile_returnsError() = runTest {
         val deleteResult = secureFileService.deleteFile("non_existent.txt")
-        
+
         assertTrue(deleteResult is FileOperationResult.Error)
         assertEquals("File not found", (deleteResult as FileOperationResult.Error).message)
     }

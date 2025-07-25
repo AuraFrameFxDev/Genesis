@@ -38,13 +38,13 @@ private val gradientBackground = Brush.verticalGradient(
 @Composable
 fun OracleDriveControlScreen() {
     var isInitialized by remember { mutableStateOf(false) }
-    
+
     LaunchedEffect(Unit) {
         // Simulate initialization
         kotlinx.coroutines.delay(500)
         isInitialized = true
     }
-    
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -55,7 +55,7 @@ fun OracleDriveControlScreen() {
             secondaryColor = Color.Magenta,
             backgroundColor = Color.Transparent
         )
-        
+
         // Shimmer particles overlay
         ShimmerParticles(
             modifier = Modifier.fillMaxSize(),
@@ -64,7 +64,7 @@ fun OracleDriveControlScreen() {
             secondaryColor = Color.Magenta,
             shimmerIntensity = 0.6f
         )
-        
+
         // Content
         Scaffold(
             topBar = {
@@ -133,13 +133,13 @@ fun OracleDriveControlScreen() {
 @Composable
 private fun StatusPanel(modifier: Modifier = Modifier) {
     var isOnline by remember { mutableStateOf(true) }
-    
+
     LaunchedEffect(Unit) {
         // Simulate status check
         kotlinx.coroutines.delay(800)
         isOnline = true
     }
-    
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -168,9 +168,9 @@ private fun StatusPanel(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             // Status indicator
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -184,14 +184,14 @@ private fun StatusPanel(modifier: Modifier = Modifier) {
                             shape = CircleShape
                         )
                 )
-                
+
                 Text(
                     text = if (isOnline) "All systems operational" else "System offline",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.9f)
                 )
             }
-            
+
             // Performance metrics
             Spacer(modifier = Modifier.height(8.dp))
             PerformanceMeter(
@@ -227,14 +227,14 @@ private fun PerformanceMeter(
     value: Int,
     maxValue: Int,
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var animatedValue by remember { mutableFloatStateOf(0f) }
-    
+
     LaunchedEffect(value) {
         animatedValue = value / maxValue.toFloat()
     }
-    
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -255,9 +255,9 @@ private fun PerformanceMeter(
                 color = color
             )
         }
-        
+
         Spacer(modifier = Modifier.height(4.dp))
-        
+
         // Progress bar
         Box(
             modifier = Modifier
@@ -286,7 +286,7 @@ private fun PerformanceMeter(
 data class OracleModule(
     val name: String,
     val isActive: Boolean,
-    val performance: Int = 0
+    val performance: Int = 0,
 )
 
 /**
@@ -326,21 +326,21 @@ fun ModuleManager(modifier: Modifier = Modifier) {
 private fun ModuleListItem(module: OracleModule) {
     var isActive by remember { mutableStateOf(module.isActive) }
     var isHovered by remember { mutableStateOf(false) }
-    
+
     LaunchedEffect(Unit) {
         // Simulate module initialization
         kotlinx.coroutines.delay(1000)
     }
-    
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color(0x22FFFFFF)
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = if (isActive) 
-                Color.Cyan.copy(alpha = 0.3f) 
-            else 
+            color = if (isActive)
+                Color.Cyan.copy(alpha = 0.3f)
+            else
                 Color.White.copy(alpha = 0.1f)
         ),
         modifier = Modifier
@@ -364,7 +364,7 @@ private fun ModuleListItem(module: OracleModule) {
                     color = if (isActive) Color.White else Color.White.copy(alpha = 0.7f),
                     letterSpacing = 1.sp
                 )
-                
+
                 if (isActive && module.performance > 0) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -382,7 +382,7 @@ private fun ModuleListItem(module: OracleModule) {
                                     shape = CircleShape
                                 )
                         )
-                        
+
                         Text(
                             text = "${module.performance}%",
                             style = MaterialTheme.typography.labelSmall,
@@ -391,7 +391,7 @@ private fun ModuleListItem(module: OracleModule) {
                     }
                 }
             }
-            
+
             // Status indicator with animation
             Box(
                 contentAlignment = Alignment.Center,
@@ -414,11 +414,11 @@ private fun ModuleListItem(module: OracleModule) {
                             )
                     )
                 }
-                
+
                 // Toggle switch
                 Switch(
                     checked = isActive,
-                    onCheckedChange = { 
+                    onCheckedChange = {
                         isActive = it
                         // TODO: Update module status
                     },

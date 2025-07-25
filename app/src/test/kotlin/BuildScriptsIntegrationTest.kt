@@ -31,7 +31,7 @@ import kotlin.io.path.deleteExisting
 /**
  * Comprehensive integration tests for build script functionality.
  * Tests cover validation, execution, analysis, transformation, security, and performance.
- * 
+ *
  * Testing Framework: JUnit 5 with Mockito-Kotlin for mocking
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -83,9 +83,9 @@ class BuildScriptsIntegrationTest {
                     mainClass.set("MainKt")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(validBuildScript)
-            
+
             // When & Then
             assertTrue(buildScriptFile.exists())
             assertTrue(validateBuildScriptSyntax(buildScriptFile))
@@ -100,9 +100,9 @@ class BuildScriptsIntegrationTest {
                     kotlin("jvm" version "1.9.20"  // Missing closing parenthesis
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(invalidBuildScript)
-            
+
             // When & Then
             assertFalse(validateBuildScriptSyntax(buildScriptFile))
         }
@@ -113,7 +113,7 @@ class BuildScriptsIntegrationTest {
         fun shouldHandleEmptyBuildScripts(content: String) {
             // Given
             buildScriptFile.writeText(content)
-            
+
             // When & Then
             assertFalse(validateBuildScriptSyntax(buildScriptFile))
         }
@@ -138,9 +138,9 @@ class BuildScriptsIntegrationTest {
                     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
                 }
             """.trimIndent()
-            
+
             groovyBuildScript.writeText(validGroovyScript)
-            
+
             // When & Then
             assertTrue(validateBuildScriptSyntax(groovyBuildScript))
         }
@@ -169,12 +169,12 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val result = executeBuildScript(testProjectDir, "customTask")
-            
+
             // Then
             assertTrue(result.isSuccess)
             assertNotNull(result.output)
@@ -196,12 +196,12 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val result = executeBuildScript(testProjectDir, "failingTask")
-            
+
             // Then
             assertFalse(result.isSuccess)
             assertNotNull(result.errorOutput)
@@ -223,9 +223,9 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When & Then
             assertThrows<TimeoutException> {
                 executeBuildScriptWithTimeout(testProjectDir, "longRunningTask", 5000L)
@@ -250,12 +250,12 @@ class BuildScriptsIntegrationTest {
                     doLast { println("Task 2 completed") }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val result = executeBuildScript(testProjectDir, "task2")
-            
+
             // Then
             assertTrue(result.isSuccess)
             assertTrue(result.output?.contains("Task 1 completed") == true)
@@ -279,12 +279,12 @@ class BuildScriptsIntegrationTest {
                     id("io.spring.dependency-management") version "1.1.3"
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val plugins = extractPluginsFromBuildScript(buildScriptFile)
-            
+
             // Then
             assertEquals(4, plugins.size)
             assertTrue(plugins.any { it.id.contains("kotlin") && it.version == "1.9.20" })
@@ -306,12 +306,12 @@ class BuildScriptsIntegrationTest {
                     annotationProcessor("org.projectlombok:lombok:1.18.30")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val dependencies = extractDependenciesFromBuildScript(buildScriptFile)
-            
+
             // Then
             assertEquals(5, dependencies.size)
             assertTrue(dependencies.any { it.configuration == "implementation" && it.group == "org.jetbrains.kotlin" })
@@ -328,14 +328,17 @@ class BuildScriptsIntegrationTest {
             "settings.gradle.kts, KOTLIN"
         )
         @DisplayName("Should detect build script language correctly")
-        fun shouldDetectBuildScriptLanguage(fileName: String, expectedLanguage: BuildScriptLanguage) {
+        fun shouldDetectBuildScriptLanguage(
+            fileName: String,
+            expectedLanguage: BuildScriptLanguage,
+        ) {
             // Given
             val scriptFile = File(testProjectDir, fileName)
             scriptFile.writeText("// Sample build script")
-            
+
             // When
             val detectedLanguage = detectBuildScriptLanguage(scriptFile)
-            
+
             // Then
             assertEquals(expectedLanguage, detectedLanguage)
         }
@@ -356,12 +359,12 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val repositories = extractRepositoriesFromBuildScript(buildScriptFile)
-            
+
             // Then
             assertEquals(4, repositories.size)
             assertTrue(repositories.any { it.name == "mavenCentral" })
@@ -385,12 +388,12 @@ class BuildScriptsIntegrationTest {
                     application
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(oldBuildScript)
-            
+
             // When
             upgradeKotlinVersion(buildScriptFile, "1.9.20")
-            
+
             // Then
             val updatedContent = buildScriptFile.readText()
             assertTrue(updatedContent.contains("kotlin(\"jvm\") version \"1.9.20\""))
@@ -406,12 +409,16 @@ class BuildScriptsIntegrationTest {
                     implementation("org.jetbrains.kotlin:kotlin-stdlib")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
-            addDependency(buildScriptFile, "testImplementation", "org.junit.jupiter:junit-jupiter:5.9.2")
-            
+            addDependency(
+                buildScriptFile,
+                "testImplementation",
+                "org.junit.jupiter:junit-jupiter:5.9.2"
+            )
+
             // Then
             val updatedContent = buildScriptFile.readText()
             assertTrue(updatedContent.contains("testImplementation(\"org.junit.jupiter:junit-jupiter:5.9.2\")"))
@@ -428,12 +435,12 @@ class BuildScriptsIntegrationTest {
                     runtimeOnly("org.postgresql:postgresql:42.6.0")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             removeDependency(buildScriptFile, "org.junit.jupiter:junit-jupiter")
-            
+
             // Then
             val updatedContent = buildScriptFile.readText()
             assertFalse(updatedContent.contains("junit-jupiter"))
@@ -451,12 +458,12 @@ class BuildScriptsIntegrationTest {
                     kotlin("jvm") version "1.8.0"
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             updatePluginVersion(buildScriptFile, "org.springframework.boot", "3.1.5")
-            
+
             // Then
             val updatedContent = buildScriptFile.readText()
             assertTrue(updatedContent.contains("org.springframework.boot\") version \"3.1.5\""))
@@ -489,12 +496,12 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(unsafeBuildScript)
-            
+
             // When
             val securityIssues = analyzeSecurityIssues(buildScriptFile)
-            
+
             // Then
             assertTrue(securityIssues.isNotEmpty())
             assertTrue(securityIssues.any { it.contains("exec") })
@@ -513,12 +520,12 @@ class BuildScriptsIntegrationTest {
                     maven { url = uri("ftp://ftp-repo.com/maven") }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val insecureRepos = findInsecureRepositories(buildScriptFile)
-            
+
             // Then
             assertEquals(2, insecureRepos.size)
             assertTrue(insecureRepos.any { it.contains("http://insecure-repo.com") })
@@ -536,12 +543,12 @@ class BuildScriptsIntegrationTest {
                     implementation("evil.corp:backdoor:LATEST")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val suspiciousDeps = findSuspiciousDependencies(buildScriptFile)
-            
+
             // Then
             assertTrue(suspiciousDeps.isNotEmpty())
             assertTrue(suspiciousDeps.any { it.contains("LATEST") })
@@ -558,15 +565,18 @@ class BuildScriptsIntegrationTest {
             // Given
             val largeBuildScript = generateLargeBuildScript(1000) // 1000 dependencies
             buildScriptFile.writeText(largeBuildScript)
-            
+
             // When
             val startTime = System.currentTimeMillis()
             val parseResult = parseBuildScript(buildScriptFile)
             val endTime = System.currentTimeMillis()
-            
+
             // Then
             val parseTime = endTime - startTime
-            assertTrue(parseTime < 5000L, "Parsing should complete within 5 seconds, took ${parseTime}ms")
+            assertTrue(
+                parseTime < 5000L,
+                "Parsing should complete within 5 seconds, took ${parseTime}ms"
+            )
             assertNotNull(parseResult)
         }
 
@@ -579,12 +589,12 @@ class BuildScriptsIntegrationTest {
                     kotlin("jvm") version "1.9.20"
                 }
             """.trimIndent()
-            
+
             repeat(10) { index ->
                 val scriptFile = File(testProjectDir, "build$index.gradle.kts")
                 scriptFile.writeText(buildScript)
             }
-            
+
             // When
             val results = (0 until 10).toList().parallelStream()
                 .map { index ->
@@ -592,7 +602,7 @@ class BuildScriptsIntegrationTest {
                     validateBuildScriptSyntax(scriptFile)
                 }
                 .toList()
-            
+
             // Then
             assertEquals(10, results.size)
             assertTrue(results.all { it })
@@ -619,12 +629,12 @@ class BuildScriptsIntegrationTest {
                     implementation("org.jetbrains.kotlin:kotlin-stdlib") // Duplicate
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(inefficientBuildScript)
-            
+
             // When
             val optimizationSuggestions = analyzePerformanceIssues(buildScriptFile)
-            
+
             // Then
             assertTrue(optimizationSuggestions.isNotEmpty())
             assertTrue(optimizationSuggestions.any { it.contains("duplicate") })
@@ -640,7 +650,7 @@ class BuildScriptsIntegrationTest {
         fun shouldHandleNonExistentBuildScriptFiles() {
             // Given
             val nonExistentFile = File(testProjectDir, "non-existent.gradle.kts")
-            
+
             // When & Then
             assertThrows<FileNotFoundException> {
                 validateBuildScriptSyntax(nonExistentFile)
@@ -653,10 +663,10 @@ class BuildScriptsIntegrationTest {
             // Given
             val buildScript = "plugins { kotlin(\"jvm\") version \"1.9.20\" }"
             buildScriptFile.writeBytes(buildScript.toByteArray(Charsets.UTF_16))
-            
+
             // When
             val content = readBuildScriptWithEncoding(buildScriptFile, Charsets.UTF_16)
-            
+
             // Then
             assertEquals(buildScript, content)
         }
@@ -677,9 +687,9 @@ class BuildScriptsIntegrationTest {
                     }
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When & Then
             assertTrue(validateBuildScriptSyntax(buildScriptFile))
             val tasks = extractTasksFromBuildScript(buildScriptFile)
@@ -692,7 +702,7 @@ class BuildScriptsIntegrationTest {
             // Given
             val corruptedContent = byteArrayOf(0x00, 0xFF.toByte(), 0x00, 0xFF.toByte())
             buildScriptFile.writeBytes(corruptedContent)
-            
+
             // When & Then
             assertThrows<Exception> {
                 validateBuildScriptSyntax(buildScriptFile)
@@ -705,7 +715,7 @@ class BuildScriptsIntegrationTest {
             // Given
             val hugeBuildScript = generateLargeBuildScript(10000) // 10,000 dependencies
             buildScriptFile.writeText(hugeBuildScript)
-            
+
             // When & Then
             assertDoesNotThrow {
                 validateBuildScriptSyntax(buildScriptFile)
@@ -735,12 +745,12 @@ class BuildScriptsIntegrationTest {
                     jvmToolchain(17)
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val javaConfig = extractJavaConfiguration(buildScriptFile)
-            
+
             // Then
             assertEquals(17, javaConfig.sourceCompatibility)
             assertEquals(17, javaConfig.targetCompatibility)
@@ -764,12 +774,12 @@ class BuildScriptsIntegrationTest {
                     systemProperty("junit.jupiter.execution.parallel.enabled", "true")
                 }
             """.trimIndent()
-            
+
             buildScriptFile.writeText(buildScript)
-            
+
             // When
             val testConfig = extractTestConfiguration(buildScriptFile)
-            
+
             // Then
             assertTrue(testConfig.usesJUnitPlatform)
             assertTrue(testConfig.parallelExecutionEnabled)
@@ -781,19 +791,24 @@ class BuildScriptsIntegrationTest {
     private fun validateBuildScriptSyntax(file: File): Boolean {
         if (!file.exists()) throw FileNotFoundException("Build script file not found: ${file.path}")
         val content = file.readText()
-        return content.isNotBlank() && !content.toByteArray().contentEquals(byteArrayOf(0x00, 0xFF.toByte(), 0x00, 0xFF.toByte()))
+        return content.isNotBlank() && !content.toByteArray()
+            .contentEquals(byteArrayOf(0x00, 0xFF.toByte(), 0x00, 0xFF.toByte()))
     }
-    
+
     private fun executeBuildScript(projectDir: File, taskName: String): BuildResult {
         // Mock implementation - would actually execute gradle
         return BuildResult(true, "Custom task executed successfully", null)
     }
-    
-    private fun executeBuildScriptWithTimeout(projectDir: File, taskName: String, timeoutMs: Long): BuildResult {
+
+    private fun executeBuildScriptWithTimeout(
+        projectDir: File,
+        taskName: String,
+        timeoutMs: Long,
+    ): BuildResult {
         // Mock implementation - would execute with timeout
         throw TimeoutException("Build script execution timed out after ${timeoutMs}ms")
     }
-    
+
     private fun extractPluginsFromBuildScript(file: File): List<Plugin> {
         // Mock implementation - would parse and extract plugin information
         return listOf(
@@ -803,7 +818,7 @@ class BuildScriptsIntegrationTest {
             Plugin("io.spring.dependency-management", "1.1.3")
         )
     }
-    
+
     private fun extractDependenciesFromBuildScript(file: File): List<Dependency> {
         // Mock implementation - would parse and extract dependency information
         return listOf(
@@ -814,7 +829,7 @@ class BuildScriptsIntegrationTest {
             Dependency("annotationProcessor", "org.projectlombok", "lombok", "1.18.30")
         )
     }
-    
+
     private fun extractRepositoriesFromBuildScript(file: File): List<Repository> {
         // Mock implementation
         return listOf(
@@ -824,7 +839,7 @@ class BuildScriptsIntegrationTest {
             Repository("maven", "https://oss.sonatype.org/content/repositories/snapshots/")
         )
     }
-    
+
     private fun detectBuildScriptLanguage(file: File): BuildScriptLanguage {
         return when {
             file.name.endsWith(".kts") -> BuildScriptLanguage.KOTLIN
@@ -832,14 +847,17 @@ class BuildScriptsIntegrationTest {
             else -> BuildScriptLanguage.UNKNOWN
         }
     }
-    
+
     private fun upgradeKotlinVersion(file: File, newVersion: String) {
         // Mock implementation - would update Kotlin version
         val content = file.readText()
-        val updatedContent = content.replace(Regex("kotlin\\(\"jvm\"\\)\\s+version\\s+\"[^\"]+\""), "kotlin(\"jvm\") version \"$newVersion\"")
+        val updatedContent = content.replace(
+            Regex("kotlin\\(\"jvm\"\\)\\s+version\\s+\"[^\"]+\""),
+            "kotlin(\"jvm\") version \"$newVersion\""
+        )
         file.writeText(updatedContent)
     }
-    
+
     private fun addDependency(file: File, configuration: String, dependency: String) {
         // Mock implementation - would add dependency
         val content = file.readText()
@@ -847,14 +865,14 @@ class BuildScriptsIntegrationTest {
         val updatedContent = content.replace("dependencies {", "dependencies {\n$dependencyLine")
         file.writeText(updatedContent)
     }
-    
+
     private fun removeDependency(file: File, dependencyPattern: String) {
         // Mock implementation - would remove dependency
         val content = file.readText()
         val lines = content.lines().filterNot { it.contains(dependencyPattern) }
         file.writeText(lines.joinToString("\n"))
     }
-    
+
     private fun updatePluginVersion(file: File, pluginId: String, newVersion: String) {
         // Mock implementation
         val content = file.readText()
@@ -862,7 +880,7 @@ class BuildScriptsIntegrationTest {
         val updatedContent = content.replace(pattern, "id(\"$pluginId\") version \"$newVersion\"")
         file.writeText(updatedContent)
     }
-    
+
     private fun analyzeSecurityIssues(file: File): List<String> {
         // Mock implementation - would analyze for security issues
         val content = file.readText()
@@ -872,7 +890,7 @@ class BuildScriptsIntegrationTest {
         if (content.contains("ProcessBuilder")) issues.add("Found ProcessBuilder usage")
         return issues
     }
-    
+
     private fun findInsecureRepositories(file: File): List<String> {
         // Mock implementation - would find insecure repositories
         val content = file.readText()
@@ -880,7 +898,7 @@ class BuildScriptsIntegrationTest {
         return insecurePatterns.filter { content.contains(it) }
             .map { "Found insecure repository URL using $it" }
     }
-    
+
     private fun findSuspiciousDependencies(file: File): List<String> {
         // Mock implementation
         val content = file.readText()
@@ -888,10 +906,11 @@ class BuildScriptsIntegrationTest {
         if (content.contains("LATEST")) suspicious.add("Found dependency using LATEST version")
         return suspicious
     }
-    
+
     private fun generateLargeBuildScript(dependencyCount: Int): String {
         // Mock implementation - would generate large build script
-        val dependencies = (1..dependencyCount).map { "    implementation(\"com.example:library$it:1.0.0\")" }
+        val dependencies =
+            (1..dependencyCount).map { "    implementation(\"com.example:library$it:1.0.0\")" }
         return """
             plugins { kotlin("jvm") version "1.9.20" }
             dependencies {
@@ -899,12 +918,16 @@ class BuildScriptsIntegrationTest {
             }
         """.trimIndent()
     }
-    
+
     private fun parseBuildScript(file: File): BuildScriptParseResult? {
         // Mock implementation - would parse build script
-        return BuildScriptParseResult(success = true, plugins = emptyList(), dependencies = emptyList())
+        return BuildScriptParseResult(
+            success = true,
+            plugins = emptyList(),
+            dependencies = emptyList()
+        )
     }
-    
+
     private fun analyzePerformanceIssues(file: File): List<String> {
         // Mock implementation
         val content = file.readText()
@@ -916,38 +939,58 @@ class BuildScriptsIntegrationTest {
         }
         return issues
     }
-    
+
     private fun readBuildScriptWithEncoding(file: File, charset: Charset): String {
         return file.readText(charset)
     }
-    
+
     private fun extractTasksFromBuildScript(file: File): List<Task> {
         // Mock implementation - would extract tasks
         return listOf(Task("test-with-üñíçødé", "Task with special characters"))
     }
-    
+
     private fun extractJavaConfiguration(file: File): JavaConfiguration {
         // Mock implementation
         return JavaConfiguration(17, 17, 17)
     }
-    
+
     private fun extractTestConfiguration(file: File): TestConfiguration {
         // Mock implementation
         return TestConfiguration(true, true, listOf("passed", "skipped", "failed"))
     }
-    
+
     // Data classes for testing
     data class BuildResult(val isSuccess: Boolean, val output: String?, val errorOutput: String?)
     data class Plugin(val id: String, val version: String?)
-    data class Dependency(val configuration: String, val group: String, val name: String, val version: String?)
+    data class Dependency(
+        val configuration: String,
+        val group: String,
+        val name: String,
+        val version: String?,
+    )
+
     data class Repository(val name: String, val url: String?)
     data class Task(val name: String, val description: String?)
-    data class BuildScriptParseResult(val success: Boolean, val plugins: List<Plugin>, val dependencies: List<Dependency>)
-    data class JavaConfiguration(val sourceCompatibility: Int, val targetCompatibility: Int, val toolchainVersion: Int)
-    data class TestConfiguration(val usesJUnitPlatform: Boolean, val parallelExecutionEnabled: Boolean, val loggedEvents: List<String>)
-    
+    data class BuildScriptParseResult(
+        val success: Boolean,
+        val plugins: List<Plugin>,
+        val dependencies: List<Dependency>,
+    )
+
+    data class JavaConfiguration(
+        val sourceCompatibility: Int,
+        val targetCompatibility: Int,
+        val toolchainVersion: Int,
+    )
+
+    data class TestConfiguration(
+        val usesJUnitPlatform: Boolean,
+        val parallelExecutionEnabled: Boolean,
+        val loggedEvents: List<String>,
+    )
+
     enum class BuildScriptLanguage { KOTLIN, GROOVY, UNKNOWN }
-    
+
     companion object {
         @JvmStatic
         fun buildScriptTestData(): Stream<Arguments> {

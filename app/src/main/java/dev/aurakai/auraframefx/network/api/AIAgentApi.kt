@@ -17,7 +17,7 @@ interface AIAgentApi {
      */
     @GET("agent/{agentType}/status")
     suspend fun getAgentStatus(
-        @Path("agentType") agentType: String
+        @Path("agentType") agentType: String,
     ): AgentResponse
 
     /**
@@ -30,7 +30,7 @@ interface AIAgentApi {
     @POST("agent/{agentType}/process-request")
     suspend fun processRequest(
         @Path("agentType") agentType: String,
-        @Body request: AgentRequest
+        @Body request: AgentRequest,
     ): AgentResponse
 
     // Add more agent-related endpoints as needed

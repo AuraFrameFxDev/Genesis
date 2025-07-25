@@ -16,7 +16,7 @@ sealed class NavDestination(val route: String, val title: String, val icon: Imag
     object Settings : NavDestination("settings", "Settings", Icons.Filled.Settings)
     object OracleDriveControl :
         NavDestination("oracle_drive_control", "Oracle Drive", Icons.Filled.Folder)
-        
+
     object Canvas : NavDestination("canvas", "Canvas", Icons.Filled.Brush)
 
     companion object {

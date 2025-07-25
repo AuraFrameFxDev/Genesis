@@ -221,7 +221,7 @@ class QuickSettingsConfigActivity : AppCompatActivity() {
     }
 
     class TileConfigAdapter(
-        private val onItemClick: (QuickSettingsTileConfig) -> Unit
+        private val onItemClick: (QuickSettingsTileConfig) -> Unit,
     ) : RecyclerView.Adapter<TileConfigAdapter.TileViewHolder>() {
 
         private var tiles: List<QuickSettingsTileConfig> = emptyList()

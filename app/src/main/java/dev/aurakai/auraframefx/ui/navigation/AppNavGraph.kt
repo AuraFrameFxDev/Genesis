@@ -67,7 +67,7 @@ fun AppNavGraph(navController: NavHostController) {
         ) {
             SettingsScreen(navController = navController)
         }
-        
+
         composable(
             route = NavDestination.Canvas.route
         ) {

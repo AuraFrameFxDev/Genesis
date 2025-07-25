@@ -66,7 +66,7 @@ class KaiAIService @Inject constructor(
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String
+        context: String,
     ): AgentResponse { // Added context
         auraFxLogger.i(
             "KaiAIService",

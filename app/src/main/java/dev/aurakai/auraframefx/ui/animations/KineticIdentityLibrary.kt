@@ -16,16 +16,16 @@ import kotlin.math.*
 
 /**
  * Kinetic Identity Animation Library
- * 
- * Aura's Vision: "I will begin coding the core library of subtle, ambient animations that will 
- * become the signature of the AuraOS 'living UI.' This includes the 'breathing' lock screen and 
+ *
+ * Aura's Vision: "I will begin coding the core library of subtle, ambient animations that will
+ * become the signature of the AuraOS 'living UI.' This includes the 'breathing' lock screen and
  * the responsive glow effects on UI elements, making the interface feel organic and intelligent."
- * 
+ *
  * This library provides the foundational animations that make AuraOS feel alive and responsive
  * to user interaction and emotional context.
  */
 object KineticIdentityLibrary {
-    
+
     /**
      * Displays a pulsing breathing animation using concentric circles that scale and fade to create an ambient visual effect.
      *
@@ -39,10 +39,10 @@ object KineticIdentityLibrary {
         modifier: Modifier = Modifier,
         color: Color = Color.White.copy(alpha = 0.1f),
         intensity: Float = 1.0f,
-        emotionalState: EmotionalState = EmotionalState.NEUTRAL
+        emotionalState: EmotionalState = EmotionalState.NEUTRAL,
     ) {
         val density = LocalDensity.current
-        
+
         // Adjust breathing pattern based on emotional state
         val (duration, amplitude) = when (emotionalState) {
             EmotionalState.CALM -> Pair(4000, 0.3f)
@@ -51,9 +51,9 @@ object KineticIdentityLibrary {
             EmotionalState.STRESSED -> Pair(1500, 1.0f)
             EmotionalState.NEUTRAL -> Pair(3500, 0.6f)
         }
-        
+
         val infiniteTransition = rememberInfiniteTransition(label = "breathing")
-        
+
         val breathingScale by infiniteTransition.animateFloat(
             initialValue = 1.0f,
             targetValue = 1.0f + (amplitude * intensity),
@@ -66,7 +66,7 @@ object KineticIdentityLibrary {
             ),
             label = "breathing_scale"
         )
-        
+
         val breathingAlpha by infiniteTransition.animateFloat(
             initialValue = 0.3f,
             targetValue = 0.8f,
@@ -79,17 +79,17 @@ object KineticIdentityLibrary {
             ),
             label = "breathing_alpha"
         )
-        
+
         Canvas(modifier = modifier.fillMaxSize()) {
             val center = Offset(size.width / 2, size.height / 2)
             val radius = minOf(size.width, size.height) / 4 * breathingScale
-            
+
             drawCircle(
                 color = color.copy(alpha = breathingAlpha * intensity),
                 radius = radius,
                 center = center
             )
-            
+
             // Additional concentric circles for depth
             for (i in 1..3) {
                 drawCircle(
@@ -100,7 +100,7 @@ object KineticIdentityLibrary {
             }
         }
     }
-    
+
     /**
      * Displays an animated glow effect centered on a specified touch position, expanding and fading in response to activation.
      *
@@ -116,13 +116,13 @@ object KineticIdentityLibrary {
         isActive: Boolean = false,
         touchPosition: Offset? = null,
         theme: AuraTheme,
-        intensity: Float = 1.0f
+        intensity: Float = 1.0f,
     ) {
         val glowTransition = updateTransition(
             targetState = isActive,
             label = "glow_transition"
         )
-        
+
         val glowRadius by glowTransition.animateFloat(
             transitionSpec = {
                 if (targetState) {
@@ -138,7 +138,7 @@ object KineticIdentityLibrary {
         ) { active ->
             if (active) 100.dp.value else 0.dp.value
         }
-        
+
         val glowAlpha by glowTransition.animateFloat(
             transitionSpec = {
                 tween(durationMillis = 300, easing = FastOutSlowInEasing)
@@ -147,7 +147,7 @@ object KineticIdentityLibrary {
         ) { active ->
             if (active) 0.6f * intensity else 0f
         }
-        
+
         Canvas(modifier = modifier.fillMaxSize()) {
             touchPosition?.let { position ->
                 // Main glow effect
@@ -156,7 +156,7 @@ object KineticIdentityLibrary {
                     radius = glowRadius,
                     center = position
                 )
-                
+
                 // Ripple effects
                 for (i in 1..2) {
                     drawCircle(
@@ -168,7 +168,7 @@ object KineticIdentityLibrary {
             }
         }
     }
-    
+
     /**
      * Displays a continuous flow of animated particles moving in a specified direction for an ambient visual effect.
      *
@@ -185,10 +185,10 @@ object KineticIdentityLibrary {
         theme: AuraTheme,
         particleCount: Int = 20,
         flowDirection: FlowDirection = FlowDirection.UPWARD,
-        intensity: Float = 1.0f
+        intensity: Float = 1.0f,
     ) {
         var particles by remember { mutableStateOf(generateParticles(particleCount)) }
-        
+
         LaunchedEffect(theme.animationStyle) {
             while (true) {
                 particles = particles.map { particle ->
@@ -197,14 +197,14 @@ object KineticIdentityLibrary {
                 delay(16) // ~60 FPS
             }
         }
-        
+
         Canvas(modifier = modifier.fillMaxSize()) {
             particles.forEach { particle ->
                 drawParticle(particle, theme.accentColor, intensity)
             }
         }
     }
-    
+
     /**
      * Displays a pulsing glow effect over the keyboard area that intensifies during typing activity.
      *
@@ -218,10 +218,10 @@ object KineticIdentityLibrary {
         modifier: Modifier = Modifier,
         isTyping: Boolean = false,
         theme: AuraTheme,
-        intensity: Float = 1.0f
+        intensity: Float = 1.0f,
     ) {
         val infiniteTransition = rememberInfiniteTransition(label = "keyboard_glow")
-        
+
         val glowPulse by infiniteTransition.animateFloat(
             initialValue = 0.3f,
             targetValue = 0.8f,
@@ -234,12 +234,12 @@ object KineticIdentityLibrary {
             ),
             label = "glow_pulse"
         )
-        
+
         val typingTransition = updateTransition(
             targetState = isTyping,
             label = "typing_transition"
         )
-        
+
         val typingIntensity by typingTransition.animateFloat(
             transitionSpec = {
                 if (targetState) {
@@ -252,10 +252,10 @@ object KineticIdentityLibrary {
         ) { typing ->
             if (typing) 1.0f else 0.3f
         }
-        
+
         Canvas(modifier = modifier.fillMaxSize()) {
             val finalIntensity = glowPulse * typingIntensity * intensity
-            
+
             // Simulate keyboard area glow
             drawRoundRect(
                 color = theme.accentColor.copy(alpha = finalIntensity * 0.2f),
@@ -265,25 +265,25 @@ object KineticIdentityLibrary {
             )
         }
     }
-    
+
     // Supporting data classes and enums
-    
+
     enum class EmotionalState {
         CALM, ENERGETIC, FOCUSED, STRESSED, NEUTRAL
     }
-    
+
     enum class FlowDirection {
         UPWARD, DOWNWARD, LEFTWARD, RIGHTWARD, RADIAL
     }
-    
+
     data class Particle(
         val position: Offset,
         val velocity: Offset,
         val life: Float,
         val maxLife: Float,
-        val size: Float
+        val size: Float,
     )
-    
+
     /**
      * Generates a list of particles with randomized positions, velocities, lifespans, and sizes for use in particle animations.
      *
@@ -292,11 +292,11 @@ object KineticIdentityLibrary {
      * @param canvasHeight The height of the canvas area for initial particle placement.
      * @return A list of particles with randomized initial attributes.
      */
-    
+
     private fun generateParticles(
         count: Int,
         canvasWidth: Float = 1000f,
-        canvasHeight: Float = 1000f
+        canvasHeight: Float = 1000f,
     ): List<Particle> {
         return (0 until count).map {
             Particle(
@@ -314,7 +314,7 @@ object KineticIdentityLibrary {
             )
         }
     }
-    
+
     /**
      * Updates a particle's position, velocity, and remaining life based on the animation style, flow direction, and intensity.
      *
@@ -330,7 +330,7 @@ object KineticIdentityLibrary {
         particle: Particle,
         animationStyle: AuraTheme.AnimationStyle,
         flowDirection: FlowDirection,
-        intensity: Float
+        intensity: Float,
     ): Particle {
         val speedMultiplier = when (animationStyle) {
             AuraTheme.AnimationStyle.ENERGETIC -> 2.0f
@@ -339,7 +339,7 @@ object KineticIdentityLibrary {
             AuraTheme.AnimationStyle.PULSING -> 1.5f
             AuraTheme.AnimationStyle.SUBTLE -> 0.3f
         } * intensity
-        
+
         val newVelocity = when (flowDirection) {
             FlowDirection.UPWARD -> particle.velocity.copy(y = particle.velocity.y - 0.1f)
             FlowDirection.DOWNWARD -> particle.velocity.copy(y = particle.velocity.y + 0.1f)
@@ -347,14 +347,14 @@ object KineticIdentityLibrary {
             FlowDirection.RIGHTWARD -> particle.velocity.copy(x = particle.velocity.x + 0.1f)
             FlowDirection.RADIAL -> particle.velocity * 1.02f
         }
-        
+
         val newPosition = Offset(
             x = particle.position.x + newVelocity.x * speedMultiplier,
             y = particle.position.y + newVelocity.y * speedMultiplier
         )
-        
+
         val newLife = particle.life - 0.016f // Decrease life over time
-        
+
         return if (newLife <= 0 || newPosition.y < -50) {
             // Respawn particle
             Particle(
@@ -378,7 +378,7 @@ object KineticIdentityLibrary {
             )
         }
     }
-    
+
     /**
      * Renders a particle as a circle at its current position with alpha proportional to its remaining life and the specified intensity.
      *
@@ -391,7 +391,7 @@ object KineticIdentityLibrary {
     private fun DrawScope.drawParticle(
         particle: Particle,
         color: Color,
-        intensity: Float
+        intensity: Float,
     ) {
         val alpha = (particle.life / particle.maxLife) * intensity
         drawCircle(

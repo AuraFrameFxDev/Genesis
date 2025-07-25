@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 internal object FileOperationUtils {
     private const val TAG = "FileOperationUtils"
     private val logger = Logger.getLogger(TAG)
-    
+
     /**
      * Ensures that the specified directory exists, creating it if necessary.
      *
@@ -30,7 +30,7 @@ internal object FileOperationUtils {
      */
     suspend fun ensureDirectoryExists(
         directory: File,
-        coroutineContext: CoroutineDispatcher = Dispatchers.IO
+        coroutineContext: CoroutineDispatcher = Dispatchers.IO,
     ): Result<Unit> = withContext(coroutineContext) {
         return@withContext try {
             if (!directory.exists()) {
@@ -47,7 +47,7 @@ internal object FileOperationUtils {
             Result.failure(IOException(errorMsg, e))
         }
     }
-    
+
     /**
      * Recursively deletes the specified file or directory and all its contents.
      *
@@ -55,7 +55,7 @@ internal object FileOperationUtils {
      */
     suspend fun deleteFileOrDirectory(
         file: File,
-        coroutineContext: CoroutineDispatcher = Dispatchers.IO
+        coroutineContext: CoroutineDispatcher = Dispatchers.IO,
     ): Result<Unit> = withContext(coroutineContext) {
         return@withContext try {
             if (file.exists()) {
@@ -75,7 +75,7 @@ internal object FileOperationUtils {
             Result.failure(IOException(errorMsg, e))
         }
     }
-    
+
     /**
      * Copies a file from the source to the destination with optional progress reporting.
      *
@@ -92,45 +92,46 @@ internal object FileOperationUtils {
         destination: File,
         bufferSize: Int = DEFAULT_BUFFER_SIZE,
         coroutineContext: CoroutineDispatcher = Dispatchers.IO,
-        progressCallback: ((bytesCopied: Long, totalBytes: Long) -> Unit)? = null
+        progressCallback: ((bytesCopied: Long, totalBytes: Long) -> Unit)? = null,
     ): Result<Unit> = withContext(coroutineContext) {
         val monitor = PerformanceMonitor.start("file_copy")
-        
+
         return@withContext try {
             if (!source.exists()) {
                 throw FileNotFoundException("Source file not found: ${source.absolutePath}")
             }
-            
+
             FileInputStream(source).use { input ->
                 FileOutputStream(destination).use { output ->
                     val buffer = ByteArray(bufferSize)
                     var bytesCopied = 0L
                     val totalBytes = source.length()
-                    
+
                     while (true) {
                         val bytes = input.read(buffer)
                         if (bytes <= 0) break
-                        
+
                         output.write(buffer, 0, bytes)
                         bytesCopied += bytes
-                        
+
                         // Update progress if callback provided
                         progressCallback?.invoke(bytesCopied, totalBytes)
                     }
                 }
             }
-            
+
             monitor.stop()
             logger.debug("Copied ${source.absolutePath} to ${destination.absolutePath}")
             Result.success(Unit)
         } catch (e: Exception) {
             monitor.fail(e)
-            val errorMsg = "Error copying ${source.absolutePath} to ${destination.absolutePath}: ${e.message}"
+            val errorMsg =
+                "Error copying ${source.absolutePath} to ${destination.absolutePath}: ${e.message}"
             logger.error(errorMsg, e)
             Result.failure(IOException(errorMsg, e))
         }
     }
-    
+
     /**
      * Validates a file name to ensure it does not contain unsafe or disallowed patterns.
      *
@@ -143,23 +144,24 @@ internal object FileOperationUtils {
     fun validateFileName(fileName: String): Result<String> {
         return try {
             // Basic validation - prevent directory traversal and other unsafe patterns
-            if (fileName.contains("..") || 
-                fileName.contains("/") || 
+            if (fileName.contains("..") ||
+                fileName.contains("/") ||
                 fileName.contains("\\") ||
                 fileName.contains("\0") ||
-                fileName.trim().isEmpty()) {
+                fileName.trim().isEmpty()
+            ) {
                 throw SecurityException("Invalid file name: $fileName")
             }
-            
+
             // Additional security checks can be added here
-            
+
             Result.success(fileName)
         } catch (e: Exception) {
             logger.error("File name validation failed: ${e.message}", e)
             Result.failure(e)
         }
     }
-    
+
     /**
      * Returns the MIME type corresponding to the file extension of the given file name.
      *

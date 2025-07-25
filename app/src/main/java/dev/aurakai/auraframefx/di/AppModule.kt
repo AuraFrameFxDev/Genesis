@@ -59,7 +59,7 @@ object AppModule {
     @Singleton
     fun provideTokenManager(
         @ApplicationContext context: Context,
-        dispatchers: AppCoroutineDispatchers
+        dispatchers: AppCoroutineDispatchers,
     ): TokenManager {
         return TokenManager(context, dispatchers)
     }
@@ -70,7 +70,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApiErrorHandler(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): ApiErrorHandler {
         return ApiErrorHandler(context)
     }

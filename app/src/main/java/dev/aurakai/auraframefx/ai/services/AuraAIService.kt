@@ -26,7 +26,7 @@ class AuraAIService @Inject constructor(
     private val vertexAIClient: VertexAIClient,
     private val contextManager: ContextManager,
     private val securityContext: SecurityContext,
-    private val logger: AuraFxLogger
+    private val logger: AuraFxLogger,
 ) {
     private var isInitialized = false
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -232,7 +232,7 @@ class AuraAIService @Inject constructor(
      */
     suspend fun generateTheme(
         preferences: ThemePreferences,
-        context: String? = null
+        context: String? = null,
     ): ThemeConfiguration {
         ensureInitialized()
 
@@ -391,7 +391,7 @@ class AuraAIService @Inject constructor(
      */
     private fun buildThemeGenerationPrompt(
         preferences: ThemePreferences,
-        context: String?
+        context: String?,
     ): String {
         return """
         Generate a creative theme configuration for AuraFrameFX based on:
@@ -479,14 +479,14 @@ data class ThemePreferences(
     val primaryColor: String,
     val style: String,
     val mood: String,
-    val animationLevel: String
+    val animationLevel: String,
 )
 
 data class ThemeConfiguration(
     val colors: Map<String, String>,
     val animations: Map<String, Any>,
     val typography: Map<String, Any>,
-    val spacing: Map<String, Any>
+    val spacing: Map<String, Any>,
 ) {
     companion object {
         /**
@@ -514,20 +514,20 @@ data class ComponentSpecification(
     val animationStyle: String,
     val colors: List<String>,
     val size: String,
-    val behavior: String
+    val behavior: String,
 )
 
 data class VisionAnalysis(
     val description: String,
     val elements: List<String>,
     val colors: List<String>,
-    val confidence: Float
+    val confidence: Float,
 )
 
 data class Memory(
     val content: String,
     val relevanceScore: Float,
-    val timestamp: Long
+    val timestamp: Long,
 )
 
 /**

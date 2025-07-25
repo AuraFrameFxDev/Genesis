@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Comprehensive unit tests for the TestTest functionality.
- * 
+ *
  * This test suite covers:
  * - Happy path scenarios
  * - Edge cases and boundary conditions
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
  * - Input validation
  * - Concurrent operations
  * - Integration scenarios
- * 
+ *
  * Testing Framework: JUnit 4 with Mockito for mocking
  * Following the project's established testing patterns
  */
@@ -188,8 +188,10 @@ class TestTest {
 
         // Then - should process efficiently and filter even numbers
         assertNotNull(result)
-        assertTrue("Processing should complete within 5 seconds", 
-                  endTime - startTime < 5000)
+        assertTrue(
+            "Processing should complete within 5 seconds",
+            endTime - startTime < 5000
+        )
         assertEquals(5000, result.size) // Half should be even
         assertTrue("All results should be even", result.all { it % 2 == 0 })
     }
@@ -321,8 +323,10 @@ class TestTest {
         }
 
         threads.forEach { it.start() }
-        assertTrue("All threads should complete within 10 seconds", 
-                  latch.await(10, TimeUnit.SECONDS))
+        assertTrue(
+            "All threads should complete within 10 seconds",
+            latch.await(10, TimeUnit.SECONDS)
+        )
 
         // Then - should have correct final count
         assertEquals(numberOfThreads * operationsPerThread, sharedResource.count)
@@ -342,14 +346,18 @@ class TestTest {
 
         // Then - should meet performance requirements
         assertNotNull(result)
-        assertTrue("Operation took ${executionTimeMs}ms, should be under ${maxExecutionTimeMs}ms",
-                  executionTimeMs <= maxExecutionTimeMs)
+        assertTrue(
+            "Operation took ${executionTimeMs}ms, should be under ${maxExecutionTimeMs}ms",
+            executionTimeMs <= maxExecutionTimeMs
+        )
 
         // Verify filtering and transformation logic
-        assertTrue("Result should contain only strings longer than 5 characters",
-                  result.all { it.length > 5 })
-        assertTrue("All strings should be uppercase",
-                  result.all { it == it.uppercase() })
+        assertTrue(
+            "Result should contain only strings longer than 5 characters",
+            result.all { it.length > 5 })
+        assertTrue(
+            "All strings should be uppercase",
+            result.all { it == it.uppercase() })
     }
 
     // Integration and Contract Tests
@@ -396,8 +404,9 @@ class TestTest {
         // Then - should maintain data integrity
         assertEquals(2, filtered.size)
         assertEquals(2, transformed.size)
-        assertTrue("All transformed strings should be uppercase",
-                  transformed.all { it == it.uppercase() })
+        assertTrue(
+            "All transformed strings should be uppercase",
+            transformed.all { it == it.uppercase() })
     }
 
     // Helper methods for testing

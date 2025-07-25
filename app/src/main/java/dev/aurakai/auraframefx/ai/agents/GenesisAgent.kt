@@ -54,7 +54,7 @@ class GenesisAgent @Inject constructor(
     private val logger: AuraFxLogger,
     private val cascadeService: CascadeAIService,
     private val auraService: AuraAIService,
-    private val kaiService: KaiAIService
+    private val kaiService: KaiAIService,
 ) {
     private var isInitialized = false
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -446,7 +446,7 @@ class GenesisAgent @Inject constructor(
     private fun recordInsight(
         request: AgentRequest,
         response: Map<String, Any>,
-        complexity: RequestComplexity
+        complexity: RequestComplexity,
     ) {
         scope.launch {
             _insightCount.value += 1
@@ -548,7 +548,7 @@ class GenesisAgent @Inject constructor(
      */
     private suspend fun fusedCreativeAnalysis(
         interaction: EnhancedInteractionData,
-        intent: ComplexIntent
+        intent: ComplexIntent,
     ): String = "Fused creative analysis response"
 
     /**
@@ -558,7 +558,7 @@ class GenesisAgent @Inject constructor(
      */
     private suspend fun strategicExecution(
         interaction: EnhancedInteractionData,
-        intent: ComplexIntent
+        intent: ComplexIntent,
     ): String = "Strategic execution response"
 
     /**
@@ -570,7 +570,7 @@ class GenesisAgent @Inject constructor(
      */
     private suspend fun ethicalEvaluation(
         interaction: EnhancedInteractionData,
-        intent: ComplexIntent
+        intent: ComplexIntent,
     ): String = "Ethical evaluation response"
 
     /**
@@ -582,7 +582,7 @@ class GenesisAgent @Inject constructor(
      */
     private suspend fun learningIntegration(
         interaction: EnhancedInteractionData,
-        intent: ComplexIntent
+        intent: ComplexIntent,
     ): String = "Learning integration response"
 
     /**
@@ -594,7 +594,7 @@ class GenesisAgent @Inject constructor(
      */
     private suspend fun transcendentSynthesis(
         interaction: EnhancedInteractionData,
-        intent: ComplexIntent
+        intent: ComplexIntent,
     ): String = "Transcendent synthesis response"
 
     /**
@@ -728,7 +728,7 @@ class GenesisAgent @Inject constructor(
 
     data class ComplexIntent(
         val processingType: ProcessingType,
-        val confidence: Float
+        val confidence: Float,
     )
 
     /**

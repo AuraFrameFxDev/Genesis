@@ -1747,18 +1747,18 @@ data class FileMetadata(
     val name: String,
     val size: Long,
     val mimeType: String,
-    val lastModified: Long
+    val lastModified: Long,
 )
 
 data class OperationMetrics(
     val totalUploads: Int,
     val failedUploads: Int,
     val averageUploadTime: Long,
-    val errorRate: Double
+    val errorRate: Double,
 )
 
 data class HealthStatus(
     val isHealthy: Boolean,
     val status: String,
-    val details: Map<String, Any>
+    val details: Map<String, Any>,
 )

@@ -22,7 +22,7 @@ import java.util.stream.Stream
 /**
  * Comprehensive test suite for build script validation
  * Testing Framework: JUnit 5 with Kotlin
- * 
+ *
  * Covers validation of:
  * - Gradle build scripts (.gradle and .gradle.kts)
  * - Maven POM files
@@ -38,7 +38,7 @@ class BuildScriptsValidationTest {
     lateinit var tempDir: Path
 
     private lateinit var buildValidator: BuildScriptValidator
-    
+
     @BeforeEach
     fun setUp() {
         buildValidator = BuildScriptValidator()
@@ -83,12 +83,12 @@ class BuildScriptsValidationTest {
                     useJUnitPlatform()
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", validGradleScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Valid Gradle script should pass validation")
             assertTrue(result.errors.isEmpty(), "Valid script should have no errors")
@@ -118,12 +118,12 @@ class BuildScriptsValidationTest {
                     mainClass = 'MainKt'
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle", validGradleScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Valid Gradle Groovy script should pass validation")
         }
@@ -148,12 +148,12 @@ class BuildScriptsValidationTest {
                     // Missing closing parenthesis
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", invalidGradleScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(gradleFile)
-            
+
             // Then
             assertFalse(result.isValid, "Invalid Gradle script should fail validation")
             assertTrue(result.errors.isNotEmpty(), "Invalid script should have errors")
@@ -179,12 +179,13 @@ class BuildScriptsValidationTest {
                     runtimeOnly("ch.qos.logback:logback-classic:1.2.11")
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", gradleScript)
-            
+
             // When
-            val result = buildValidator.validateRequiredDependencies(gradleFile, requiredDependencies)
-            
+            val result =
+                buildValidator.validateRequiredDependencies(gradleFile, requiredDependencies)
+
             // Then
             assertTrue(result.isValid, "Script with required dependencies should be valid")
             requiredDependencies.forEach { dependency ->
@@ -211,14 +212,18 @@ class BuildScriptsValidationTest {
                     // Missing junit-jupiter and gson
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", gradleScript)
-            
+
             // When
-            val result = buildValidator.validateRequiredDependencies(gradleFile, requiredDependencies)
-            
+            val result =
+                buildValidator.validateRequiredDependencies(gradleFile, requiredDependencies)
+
             // Then
-            assertFalse(result.isValid, "Script missing required dependencies should fail validation")
+            assertFalse(
+                result.isValid,
+                "Script missing required dependencies should fail validation"
+            )
             assertTrue(result.missingDependencies.contains("org.junit.jupiter:junit-jupiter"))
             assertTrue(result.missingDependencies.contains("com.google.code.gson:gson"))
         }
@@ -237,12 +242,12 @@ class BuildScriptsValidationTest {
                     jvmToolchain(11)
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", gradleScript)
-            
+
             // When
             val result = buildValidator.validateKotlinVersion(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Kotlin version $version should be valid")
         }
@@ -256,12 +261,12 @@ class BuildScriptsValidationTest {
                     kotlin("jvm") version "1.3.0" // Very old version
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", gradleScript)
-            
+
             // When
             val result = buildValidator.validateKotlinVersion(gradleFile)
-            
+
             // Then
             assertFalse(result.isValid, "Unsupported Kotlin version should fail validation")
             assertTrue(result.errors.any { it.contains("unsupported") || it.contains("outdated") })
@@ -311,12 +316,12 @@ class BuildScriptsValidationTest {
                     </dependencies>
                 </project>
             """.trimIndent()
-            
+
             val pomFile = createTempFile("pom.xml", validPom)
-            
+
             // When
             val result = buildValidator.validateMavenPom(pomFile)
-            
+
             // Then
             assertTrue(result.isValid, "Valid Maven POM should pass validation")
             assertNotNull(result.projectInfo, "Should extract project information")
@@ -342,17 +347,26 @@ class BuildScriptsValidationTest {
                     </dependencies>
                 </project>
             """.trimIndent()
-            
+
             val pomFile = createTempFile("pom.xml", invalidPom)
-            
+
             // When
             val result = buildValidator.validateMavenPom(pomFile)
-            
+
             // Then
             assertFalse(result.isValid, "Invalid Maven POM should fail validation")
-            assertTrue(result.errors.any { it.contains("groupId") }, "Should report missing groupId")
-            assertTrue(result.errors.any { it.contains("artifactId") }, "Should report missing artifactId")
-            assertTrue(result.errors.any { it.contains("version") }, "Should report missing version")
+            assertTrue(
+                result.errors.any { it.contains("groupId") },
+                "Should report missing groupId"
+            )
+            assertTrue(
+                result.errors.any { it.contains("artifactId") },
+                "Should report missing artifactId"
+            )
+            assertTrue(
+                result.errors.any { it.contains("version") },
+                "Should report missing version"
+            )
         }
 
         @Test
@@ -376,12 +390,12 @@ class BuildScriptsValidationTest {
                     <version>1.0.0</version>
                 </project>
             """.trimIndent()
-            
+
             val pomFile = createTempFile("pom.xml", pomWithParent)
-            
+
             // When
             val result = buildValidator.validateMavenPom(pomFile)
-            
+
             // Then
             assertTrue(result.isValid, "Maven POM with parent should be valid")
             assertNotNull(result.projectInfo)
@@ -404,19 +418,26 @@ class BuildScriptsValidationTest {
                     mavenCentral()
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", scriptWithInsecureRepos)
-            
+
             // When
             val result = buildValidator.validateSecurity(gradleFile)
-            
+
             // Then
-            assertFalse(result.isValid, "Script with insecure repositories should fail security validation")
+            assertFalse(
+                result.isValid,
+                "Script with insecure repositories should fail security validation"
+            )
             assertTrue(
                 result.securityIssues.any { it.contains("http://") },
                 "Should report insecure HTTP repositories"
             )
-            assertEquals(2, result.securityIssues.size, "Should find exactly 2 insecure repositories")
+            assertEquals(
+                2,
+                result.securityIssues.size,
+                "Should find exactly 2 insecure repositories"
+            )
         }
 
         @Test
@@ -431,14 +452,17 @@ class BuildScriptsValidationTest {
                     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0") // Safe dependency
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", scriptWithVulnerableDeps)
-            
+
             // When
             val result = buildValidator.validateDependencyVersions(gradleFile)
-            
+
             // Then
-            assertFalse(result.isValid, "Script with vulnerable dependencies should fail validation")
+            assertFalse(
+                result.isValid,
+                "Script with vulnerable dependencies should fail validation"
+            )
             assertTrue(result.vulnerabilities.isNotEmpty(), "Should report vulnerability issues")
             assertTrue(result.vulnerabilities.any { it.contains("log4j") })
             assertTrue(result.vulnerabilities.any { it.contains("jackson") })
@@ -467,15 +491,18 @@ class BuildScriptsValidationTest {
                     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", secureScript)
-            
+
             // When
             val result = buildValidator.validateSecurity(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Secure script should pass security validation")
-            assertTrue(result.securityIssues.isEmpty(), "Secure script should have no security issues")
+            assertTrue(
+                result.securityIssues.isEmpty(),
+                "Secure script should have no security issues"
+            )
         }
 
         @Test
@@ -493,14 +520,17 @@ class BuildScriptsValidationTest {
                     }
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", scriptWithHardcodedCredentials)
-            
+
             // When
             val result = buildValidator.validateSecurity(gradleFile)
-            
+
             // Then
-            assertFalse(result.isValid, "Script with hardcoded credentials should fail security validation")
+            assertFalse(
+                result.isValid,
+                "Script with hardcoded credentials should fail security validation"
+            )
             assertTrue(result.securityIssues.any { it.contains("hardcoded") || it.contains("credential") })
         }
     }
@@ -546,12 +576,12 @@ class BuildScriptsValidationTest {
                     }
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", optimizedScript)
-            
+
             // When
             val result = buildValidator.validatePerformanceOptimizations(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Optimized script should pass performance validation")
             assertTrue(result.optimizations.contains("parallel_test_execution"))
@@ -582,12 +612,12 @@ class BuildScriptsValidationTest {
                     }
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle", unoptimizedScript)
-            
+
             // When
             val result = buildValidator.suggestImprovements(gradleFile)
-            
+
             // Then
             assertTrue(result.suggestions.isNotEmpty(), "Should provide improvement suggestions")
             assertTrue(
@@ -618,12 +648,12 @@ class BuildScriptsValidationTest {
                     distributionType = Wrapper.DistributionType.ALL
                 }
             """.trimIndent()
-            
+
             val gradleFile = createTempFile("build.gradle.kts", wrapperScript)
-            
+
             // When
             val result = buildValidator.validateGradleWrapper(gradleFile)
-            
+
             // Then
             assertTrue(result.isValid, "Valid wrapper configuration should pass")
             assertTrue(result.optimizations.contains("gradle_wrapper_configured"))
@@ -639,7 +669,7 @@ class BuildScriptsValidationTest {
         fun shouldHandleEmptyBuildScriptsGracefully() {
             // Given
             val emptyFile = createTempFile("build.gradle.kts", "")
-            
+
             // When & Then
             assertDoesNotThrow {
                 val result = buildValidator.validateGradleScript(emptyFile)
@@ -653,7 +683,7 @@ class BuildScriptsValidationTest {
         fun shouldHandleNonExistentFilesGracefully() {
             // Given
             val nonExistentFile = File("non-existent-build.gradle.kts")
-            
+
             // When & Then
             assertThrows<FileNotFoundException> {
                 buildValidator.validateGradleScript(nonExistentFile)
@@ -666,13 +696,17 @@ class BuildScriptsValidationTest {
             // Given
             val corruptedScript = "���invalid binary data���\u0000\u0001\u0002"
             val corruptedFile = createTempFile("build.gradle.kts", corruptedScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(corruptedFile)
-            
+
             // Then
             assertFalse(result.isValid, "Corrupted script should fail validation")
-            assertTrue(result.errors.any { it.contains("encoding") || it.contains("parse") || it.contains("invalid") })
+            assertTrue(result.errors.any {
+                it.contains("encoding") || it.contains("parse") || it.contains(
+                    "invalid"
+                )
+            })
         }
 
         @Test
@@ -687,12 +721,12 @@ class BuildScriptsValidationTest {
                  */
                 // TODO: Add actual build configuration
             """.trimIndent()
-            
+
             val commentFile = createTempFile("build.gradle.kts", commentOnlyScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(commentFile)
-            
+
             // Then
             assertFalse(result.isValid, "Comment-only script should be invalid")
             assertTrue(result.errors.any { it.contains("no build configuration") || it.contains("empty") })
@@ -705,15 +739,18 @@ class BuildScriptsValidationTest {
             // Given
             val largeScript = generateLargeBuildScript(scriptSize)
             val largeFile = createTempFile("build.gradle.kts", largeScript)
-            
+
             // When
             val startTime = System.currentTimeMillis()
             val result = buildValidator.validateGradleScript(largeFile)
             val endTime = System.currentTimeMillis()
-            
+
             // Then
             val validationTime = endTime - startTime
-            assertTrue(validationTime < 5000, "Validation should complete within 5 seconds for large scripts (size: $scriptSize)")
+            assertTrue(
+                validationTime < 5000,
+                "Validation should complete within 5 seconds for large scripts (size: $scriptSize)"
+            )
             assertNotNull(result, "Should return a result even for large scripts")
         }
 
@@ -734,12 +771,12 @@ class BuildScriptsValidationTest {
                     }
                 }
             """.trimIndent()
-            
+
             val nestedFile = createTempFile("build.gradle.kts", deeplyNestedScript)
-            
+
             // When
             val result = buildValidator.validateGradleScript(nestedFile)
-            
+
             // Then
             assertNotNull(result, "Should handle deeply nested scripts")
         }
@@ -783,7 +820,7 @@ class BuildScriptsValidationTest {
                     }
                 }
             """.trimIndent()
-            
+
             val moduleBuildScript = """
                 dependencies {
                     implementation(project(":common"))
@@ -794,14 +831,14 @@ class BuildScriptsValidationTest {
                     testImplementation("io.mockk:mockk:1.13.2")
                 }
             """.trimIndent()
-            
+
             val rootFile = createTempFile("build.gradle.kts", rootBuildScript)
             val moduleFile = createTempFile("module/build.gradle.kts", moduleBuildScript)
-            
+
             // When
             val rootResult = buildValidator.validateGradleScript(rootFile)
             val moduleResult = buildValidator.validateGradleScript(moduleFile)
-            
+
             // Then
             assertTrue(rootResult.isValid, "Root build script should be valid")
             assertTrue(moduleResult.isValid, "Module build script should be valid")
@@ -891,12 +928,12 @@ class BuildScriptsValidationTest {
                     sign(publishing.publications["maven"])
                 }
             """.trimIndent()
-            
+
             val ciCdFile = createTempFile("build.gradle.kts", ciCdScript)
-            
+
             // When
             val result = buildValidator.validateCICDConfiguration(ciCdFile)
-            
+
             // Then
             assertTrue(result.isValid, "CI/CD configuration should be valid")
             assertTrue(result.features.contains("code_coverage"))
@@ -957,12 +994,12 @@ class BuildScriptsValidationTest {
                     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
                 }
             """.trimIndent()
-            
+
             val androidFile = createTempFile("app/build.gradle.kts", androidBuildScript)
-            
+
             // When
             val result = buildValidator.validateAndroidConfiguration(androidFile)
-            
+
             // Then
             assertTrue(result.isValid, "Android configuration should be valid")
             assertTrue(result.features.contains("minification"))
@@ -990,11 +1027,11 @@ class BuildScriptsValidationTest {
             
             dependencies {
         """.trimIndent()
-        
-        val dependencies = (1..size).joinToString("\n") { 
+
+        val dependencies = (1..size).joinToString("\n") {
             "    implementation(\"com.example:library-$it:1.0.0\")"
         }
-        
+
         return "$baseScript\n$dependencies\n}"
     }
 
@@ -1014,176 +1051,194 @@ class BuildScriptsValidationTest {
 data class ValidationResult(
     val isValid: Boolean,
     val errors: List<String> = emptyList(),
-    val warnings: List<String> = emptyList()
+    val warnings: List<String> = emptyList(),
 )
 
 data class SecurityValidationResult(
     val isValid: Boolean,
     val securityIssues: List<String> = emptyList(),
-    val vulnerabilities: List<String> = emptyList()
+    val vulnerabilities: List<String> = emptyList(),
 )
 
 data class DependencyValidationResult(
     val isValid: Boolean,
     val foundDependencies: List<String> = emptyList(),
-    val missingDependencies: List<String> = emptyList()
+    val missingDependencies: List<String> = emptyList(),
 )
 
 data class ProjectInfo(
     val groupId: String?,
     val artifactId: String?,
-    val version: String?
+    val version: String?,
 )
 
 data class MavenValidationResult(
     val isValid: Boolean,
     val errors: List<String> = emptyList(),
-    val projectInfo: ProjectInfo? = null
+    val projectInfo: ProjectInfo? = null,
 )
 
 data class PerformanceValidationResult(
     val isValid: Boolean,
     val optimizations: List<String> = emptyList(),
-    val suggestions: List<String> = emptyList()
+    val suggestions: List<String> = emptyList(),
 )
 
 data class CICDValidationResult(
     val isValid: Boolean,
     val features: List<String> = emptyList(),
-    val missingFeatures: List<String> = emptyList()
+    val missingFeatures: List<String> = emptyList(),
 )
 
 // Mock BuildScriptValidator class for testing purposes
 class BuildScriptValidator {
-    
+
     fun validateGradleScript(file: File): ValidationResult {
         if (!file.exists()) throw FileNotFoundException("File not found: ${file.path}")
-        
+
         val content = file.readText()
         return when {
             content.isBlank() -> ValidationResult(false, listOf("Script is empty"))
             content.contains("���") -> ValidationResult(false, listOf("Invalid encoding detected"))
-            content.contains("kotlin(\"jvm\" version") -> ValidationResult(false, listOf("Syntax error: missing closing parenthesis"))
-            content.trim().startsWith("//") -> ValidationResult(false, listOf("Script contains no build configuration"))
+            content.contains("kotlin(\"jvm\" version") -> ValidationResult(
+                false,
+                listOf("Syntax error: missing closing parenthesis")
+            )
+
+            content.trim().startsWith("//") -> ValidationResult(
+                false,
+                listOf("Script contains no build configuration")
+            )
+
             else -> ValidationResult(true)
         }
     }
-    
+
     fun validateMavenPom(file: File): MavenValidationResult {
         if (!file.exists()) throw FileNotFoundException("File not found: ${file.path}")
-        
+
         val content = file.readText()
         val errors = mutableListOf<String>()
-        
+
         if (!content.contains("<groupId>")) errors.add("Missing groupId")
         if (!content.contains("<artifactId>")) errors.add("Missing artifactId")
         if (!content.contains("<version>")) errors.add("Missing version")
-        
+
         val projectInfo = if (errors.isEmpty()) {
             ProjectInfo("com.example", "test-project", "1.0.0")
         } else null
-        
+
         return MavenValidationResult(errors.isEmpty(), errors, projectInfo)
     }
-    
-    fun validateRequiredDependencies(file: File, dependencies: List<String>): DependencyValidationResult {
+
+    fun validateRequiredDependencies(
+        file: File,
+        dependencies: List<String>,
+    ): DependencyValidationResult {
         val content = file.readText()
         val foundDependencies = dependencies.filter { content.contains(it) }
         val missingDependencies = dependencies - foundDependencies.toSet()
-        
+
         return DependencyValidationResult(
             missingDependencies.isEmpty(),
             foundDependencies,
             missingDependencies
         )
     }
-    
+
     fun validateKotlinVersion(file: File): ValidationResult {
         val content = file.readText()
         return when {
-            content.contains("version \"1.3.") -> ValidationResult(false, listOf("Unsupported Kotlin version"))
+            content.contains("version \"1.3.") -> ValidationResult(
+                false,
+                listOf("Unsupported Kotlin version")
+            )
+
             else -> ValidationResult(true)
         }
     }
-    
+
     fun validateSecurity(file: File): SecurityValidationResult {
         val content = file.readText()
         val securityIssues = mutableListOf<String>()
-        
+
         val httpRepos = Regex("http://[^\"'\\s]+").findAll(content).count()
         if (httpRepos > 0) {
             repeat(httpRepos) { securityIssues.add("Insecure HTTP repository detected") }
         }
-        
+
         if (content.contains("username = \"") && content.contains("password = \"")) {
             securityIssues.add("Hardcoded credentials detected")
         }
-        
+
         return SecurityValidationResult(securityIssues.isEmpty(), securityIssues)
     }
-    
+
     fun validateDependencyVersions(file: File): SecurityValidationResult {
         val content = file.readText()
         val vulnerabilities = mutableListOf<String>()
-        
+
         if (content.contains("log4j-core:2.14.1")) vulnerabilities.add("Vulnerable log4j version")
         if (content.contains("jackson-databind:2.9.0")) vulnerabilities.add("Vulnerable Jackson version")
-        
-        return SecurityValidationResult(vulnerabilities.isEmpty(), vulnerabilities = vulnerabilities)
+
+        return SecurityValidationResult(
+            vulnerabilities.isEmpty(),
+            vulnerabilities = vulnerabilities
+        )
     }
-    
+
     fun validatePerformanceOptimizations(file: File): PerformanceValidationResult {
         val content = file.readText()
         val optimizations = mutableListOf<String>()
-        
+
         if (content.contains("maxParallelForks")) optimizations.add("parallel_test_execution")
         if (content.contains("jvmToolchain")) optimizations.add("jvm_toolchain")
         if (content.contains("freeCompilerArgs")) optimizations.add("kotlin_compiler_optimizations")
-        
+
         return PerformanceValidationResult(true, optimizations)
     }
-    
+
     fun suggestImprovements(file: File): PerformanceValidationResult {
         val content = file.readText()
         val suggestions = mutableListOf<String>()
-        
+
         if (content.contains("apply plugin:")) suggestions.add("Use plugins block instead of apply plugin")
         if (content.contains("compile ")) suggestions.add("Use implementation instead of compile")
         if (content.contains("jcenter()")) suggestions.add("Replace jcenter with mavenCentral")
         if (content.contains("junit:junit:4")) suggestions.add("Upgrade to JUnit 5")
-        
+
         return PerformanceValidationResult(true, suggestions = suggestions)
     }
-    
+
     fun validateCICDConfiguration(file: File): CICDValidationResult {
         val content = file.readText()
         val features = mutableListOf<String>()
-        
+
         if (content.contains("jacoco")) features.add("code_coverage")
         if (content.contains("sonarqube")) features.add("code_quality")
         if (content.contains("maven-publish")) features.add("publishing")
         if (content.contains("signing")) features.add("signing")
         if (content.contains("dokka")) features.add("documentation")
-        
+
         return CICDValidationResult(true, features)
     }
-    
+
     fun validateGradleWrapper(file: File): PerformanceValidationResult {
         val content = file.readText()
         val optimizations = mutableListOf<String>()
-        
+
         if (content.contains("wrapper")) optimizations.add("gradle_wrapper_configured")
-        
+
         return PerformanceValidationResult(true, optimizations)
     }
-    
+
     fun validateAndroidConfiguration(file: File): CICDValidationResult {
         val content = file.readText()
         val features = mutableListOf<String>()
-        
+
         if (content.contains("isMinifyEnabled = true")) features.add("minification")
         if (content.contains("proguardFiles")) features.add("proguard")
-        
+
         return CICDValidationResult(true, features)
     }
 }

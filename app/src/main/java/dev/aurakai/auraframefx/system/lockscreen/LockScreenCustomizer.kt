@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LockScreenCustomizer @Inject constructor(
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences,
 ) {
 
     private val _currentConfig = MutableStateFlow<LockScreenConfig?>(null)

@@ -53,5 +53,5 @@ data class AppState(
     val currentScreen: String = "home",
     val aiEnabled: Boolean = true,
     val networkConnected: Boolean = false,
-    val lastError: String? = null
+    val lastError: String? = null,
 )

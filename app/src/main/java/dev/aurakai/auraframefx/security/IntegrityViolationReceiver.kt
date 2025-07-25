@@ -18,7 +18,8 @@ class IntegrityViolationReceiver : BroadcastReceiver() {
     }
 
     private fun showNotification(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "integrity_violation_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

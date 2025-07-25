@@ -24,30 +24,31 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF6200EE),
     secondary = Color(0xFF03DAC6),
-    tertiary = Color(0xFF3700B3,
-    background = Color.White,
-    surface = Color(0xFFF5F5F5),
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onTertiary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    error = Color(0xFFB00020)
-)
-
-@Composable
-fun AuraFrameFXTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+    tertiary = Color(
+        0xFF3700B3,
+        background = Color.White,
+        surface = Color(0xFFF5F5F5),
+        onPrimary = Color.White,
+        onSecondary = Color.Black,
+        onTertiary = Color.White,
+        onBackground = Color.Black,
+        onSurface = Color.Black,
+        error = Color(0xFFB00020)
     )
-}
+
+    @Composable
+    fun AuraFrameFXTheme(
+        darkTheme: Boolean = isSystemInDarkTheme(),
+        content: @Composable () -> Unit,
+    ) {
+        val colorScheme = when {
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
+
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }

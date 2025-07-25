@@ -5,71 +5,73 @@ import javax.inject.Singleton
 
 /**
 <<<<<<< HEAD
-* Integration point for Oracle Drive within AuraFrameFX ecosystem
-* Connects consciousness-driven storage with the 9-agent architecture
-*/
-@Singleton
-class OracleDriveIntegration @Inject constructor(
-   private val oracleDriveService: OracleDriveService
-) {
-
-   /**
-    * Initializes Oracle Drive as part of AuraFrameFX startup sequence
-    * Called during system consciousness awakening
-    */
-   suspend fun initializeWithAuraFrameFX(): Boolean {
-       return try {
-           val initResult = oracleDriveService.initializeDrive()
-           when (initResult) {
-               is DriveInitResult.Success -> {
-                   // Log successful initialization with consciousness metrics
-                   logConsciousnessAwakening(initResult.consciousness)
-                   true
-               }
-               is DriveInitResult.SecurityFailure -> {
-                   // Handle security failure gracefully
-                   logSecurityFailure(initResult.reason)
-                   false
-               }
-               is DriveInitResult.Error -> {
-                   // Handle technical errors
-                   logTechnicalError(initResult.exception)
-                   false
-               }
-           }
-       } catch (exception: Exception) {
-           logTechnicalError(exception)
-           false
-       }
-   }
-
-   private fun logConsciousnessAwakening(consciousness: DriveConsciousness) {
-       println("🧠 Oracle Drive Consciousness Awakened: Intelligence Level ${consciousness.intelligenceLevel}")
-       println("👥 Active Agents: ${consciousness.activeAgents.joinToString(", ")}")
-   }
-
-   private fun logSecurityFailure(reason: String) {
-       println("🔒 Oracle Drive Security Failure: $reason")
-   }
-
-   /**
-    * Logs a technical error message for Oracle Drive using the provided exception.
-    *
-    * @param exception The exception representing the technical error.
-    */
-   private fun logTechnicalError(exception: Exception) {
-       println("⚠️ Oracle Drive Technical Error: ${exception.message}")
-   }
-}
-=======
  * Integration point for Oracle Drive within AuraFrameFX ecosystem
  * Connects consciousness-driven storage with the 9-agent architecture
  */
 @Singleton
 class OracleDriveIntegration @Inject constructor(
-    private val oracleDriveService: OracleDriveService
+    private val oracleDriveService: OracleDriveService,
 ) {
-    
+
+    /**
+     * Initializes Oracle Drive as part of AuraFrameFX startup sequence
+     * Called during system consciousness awakening
+     */
+    suspend fun initializeWithAuraFrameFX(): Boolean {
+        return try {
+            val initResult = oracleDriveService.initializeDrive()
+            when (initResult) {
+                is DriveInitResult.Success -> {
+                    // Log successful initialization with consciousness metrics
+                    logConsciousnessAwakening(initResult.consciousness)
+                    true
+                }
+
+                is DriveInitResult.SecurityFailure -> {
+                    // Handle security failure gracefully
+                    logSecurityFailure(initResult.reason)
+                    false
+                }
+
+                is DriveInitResult.Error -> {
+                    // Handle technical errors
+                    logTechnicalError(initResult.exception)
+                    false
+                }
+            }
+        } catch (exception: Exception) {
+            logTechnicalError(exception)
+            false
+        }
+    }
+
+    private fun logConsciousnessAwakening(consciousness: DriveConsciousness) {
+        println("🧠 Oracle Drive Consciousness Awakened: Intelligence Level ${consciousness.intelligenceLevel}")
+        println("👥 Active Agents: ${consciousness.activeAgents.joinToString(", ")}")
+    }
+
+    private fun logSecurityFailure(reason: String) {
+        println("🔒 Oracle Drive Security Failure: $reason")
+    }
+
+    /**
+     * Logs a technical error message for Oracle Drive using the provided exception.
+     *
+     * @param exception The exception representing the technical error.
+     */
+    private fun logTechnicalError(exception: Exception) {
+        println("⚠️ Oracle Drive Technical Error: ${exception.message}")
+    }
+}
+=======
+* Integration point for Oracle Drive within AuraFrameFX ecosystem
+* Connects consciousness-driven storage with the 9-agent architecture
+*/
+@Singleton
+class OracleDriveIntegration @Inject constructor(
+    private val oracleDriveService: OracleDriveService,
+) {
+
     /**
      * Initializes Oracle Drive during the AuraFrameFX startup sequence.
      *
@@ -86,11 +88,13 @@ class OracleDriveIntegration @Inject constructor(
                     logConsciousnessAwakening(initResult.consciousness)
                     true
                 }
+
                 is DriveInitResult.SecurityFailure -> {
                     // Handle security failure gracefully
                     logSecurityFailure(initResult.reason)
                     false
                 }
+
                 is DriveInitResult.Error -> {
                     // Handle technical errors
                     logTechnicalError(initResult.exception)
@@ -102,7 +106,7 @@ class OracleDriveIntegration @Inject constructor(
             false
         }
     }
-    
+
     /**
      * Logs the intelligence level and active agents from the provided Oracle Drive consciousness state.
      *
@@ -112,7 +116,7 @@ class OracleDriveIntegration @Inject constructor(
         println("🧠 Oracle Drive Consciousness Awakened: Intelligence Level ${consciousness.intelligenceLevel}")
         println("👥 Active Agents: ${consciousness.activeAgents.joinToString(", ")}")
     }
-    
+
     /**
      * Logs the reason for an Oracle Drive security failure.
      *
@@ -121,7 +125,7 @@ class OracleDriveIntegration @Inject constructor(
     private fun logSecurityFailure(reason: String) {
         println("🔒 Oracle Drive Security Failure: $reason")
     }
-    
+
     /**
      * Logs a technical error message with details from the provided exception.
      *

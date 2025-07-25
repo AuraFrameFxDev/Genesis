@@ -8,5 +8,5 @@ data class AiRequest(
     val type: String? = null, // Added type back, made nullable
     val context: Map<String, String>? = null,
     val data: Map<String, String>? = null,
-    val agentType: AgentType? = null
+    val agentType: AgentType? = null,
 )
