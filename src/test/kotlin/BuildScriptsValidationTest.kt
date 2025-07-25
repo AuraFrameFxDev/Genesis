@@ -946,6 +946,452 @@ class BuildScriptsValidationTest {
         @Test
         @DisplayName("Should validate Android project build configuration")
         fun shouldValidateAndroidProjectBuildConfiguration() {
+
+        @Test
+        @DisplayName("Should validate Android library module configuration")
+        fun shouldValidateAndroidLibraryModuleConfiguration() {
+
+        @Test
+        @DisplayName("Should validate version catalog configuration")
+        fun shouldValidateVersionCatalogConfiguration() {
+
+        @Test
+        @DisplayName("Should validate multi-module Android project structure")
+        fun shouldValidateMultiModuleAndroidProjectStructure() {
+
+        @Test
+        @DisplayName("Should validate comprehensive testing framework setup matching project structure")
+        fun shouldValidateComprehensiveTestingFrameworkSetup() {
+
+        @Test
+        @DisplayName("Should validate KSP configuration for Hilt and Room")
+        fun shouldValidateKspConfigurationForHiltAndRoom() {
+
+        @Test
+        @DisplayName("Should validate Android dependencies matching project structure")
+        fun shouldValidateAndroidDependenciesMatchingProjectStructure() {
+
+        @Test
+        @DisplayName("Should validate Android build configuration with HiltTestRunner")
+        fun shouldValidateAndroidBuildConfigurationWithHiltTestRunner() {
+            // Given - matching project test runner configuration
+            val buildConfigScript = """
+                android {
+                    namespace = "dev.aurakai.auraframefx"
+                    compileSdk = 34
+                    
+                    defaultConfig {
+                        applicationId = "dev.aurakai.auraframefx"
+                        minSdk = 24
+                        targetSdk = 34
+                        versionCode = 1
+                        versionName = "1.0"
+                        
+                        // Test configuration matching project setup
+                        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+                        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+                        multiDexEnabled = true
+                        
+                        // Vector drawable support
+                        vectorDrawables {
+                            useSupportLibrary = true
+                        }
+                    }
+                    
+                    buildTypes {
+                        debug {
+                            isDebuggable = true
+                            applicationIdSuffix = ".debug"
+                            isMinifyEnabled = false
+                        }
+                        
+                        release {
+                            isMinifyEnabled = true
+                            isShrinkResources = true
+                            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+                        }
+                    }
+                    
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                    }
+                    
+                    kotlinOptions {
+                        jvmTarget = "17"
+                    }
+                    
+                    buildFeatures {
+                        compose = true
+                        buildConfig = true
+                    }
+                    
+                    composeOptions {
+                        kotlinCompilerExtensionVersion = "1.5.4"
+                    }
+                    
+                    packaging {
+                        resources {
+                            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                        }
+                    }
+                }
+            """.trimIndent()
+
+            val buildConfigFile = createTempFile("app/build.gradle.kts", buildConfigScript)
+
+            // When
+            val result = buildValidator.validateAndroidConfiguration(buildConfigFile)
+            val testRunnerResult = buildValidator.validateAndroidTestRunner(buildConfigFile)
+            val composeResult = buildValidator.validateComposeConfiguration(buildConfigFile)
+
+            // Then
+            assertTrue(result.isValid, "Android build configuration should be valid")
+            assertTrue(testRunnerResult.isValid, "Test runner configuration should be valid")
+            assertTrue(composeResult.isValid, "Compose configuration should be valid")
+            assertTrue(result.features.contains("minification"))
+            assertTrue(result.features.contains("proguard"))
+            assertTrue(result.features.contains("compose_ui"))
+        }
+            // Given - based on actual dependencies found in project build files
+            val androidDepsScript = """
+                dependencies {
+                    // Core Android libraries as found in project
+                    implementation("androidx.core:core-ktx:1.12.0")
+                    implementation("androidx.appcompat:appcompat:1.6.1")
+                    implementation("androidx.activity:activity-compose:1.8.0")
+                    
+                    // Compose BOM and libraries matching project setup
+                    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+                    implementation("androidx.compose.ui:ui")
+                    implementation("androidx.compose.ui:ui-graphics")
+                    implementation("androidx.compose.ui:ui-tooling-preview")
+                    implementation("androidx.compose.material3:material3")
+                    implementation("androidx.compose.animation:animation")
+                    
+                    // Navigation as used in project
+                    implementation("androidx.navigation:navigation-compose:2.7.4")
+                    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+                    
+                    // Lifecycle components
+                    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+                    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+                    
+                    // Dependency Injection - Hilt as identified in project
+                    implementation("com.google.dagger:hilt-android:2.47")
+                    ksp("com.google.dagger:hilt-compiler:2.47")
+                    
+                    // Networking
+                    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+                    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+                    
+                    // Image loading - Coil as found in project
+                    implementation("io.coil-kt:coil-compose:2.4.0")
+                    
+                    // Coroutines
+                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+                    
+                    // Timber logging as found in project
+                    implementation("com.jakewharton.timber:timber:5.0.1")
+                    
+                    // Kotlin serialization as found in project
+                    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                    
+                    // Debug tools
+                    debugImplementation("androidx.compose.ui:ui-tooling")
+                    debugImplementation("androidx.compose.ui:ui-test-manifest")
+                    
+                    // Testing matching project test runner setup
+                    testImplementation("junit:junit:4.13.2")
+                    testImplementation("io.mockk:mockk:1.13.5")
+                    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+                    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+                    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+                    androidTestImplementation("com.google.dagger:hilt-android-testing:2.47")
+                    kspAndroidTest("com.google.dagger:hilt-compiler:2.47")
+                }
+            """.trimIndent()
+
+            val androidDepsFile = createTempFile("app/build.gradle.kts", androidDepsScript)
+
+            // When
+            val result = buildValidator.validateGradleScript(androidDepsFile)
+
+            // Then
+            assertTrue(result.isValid, "Android dependencies matching project structure should be valid")
+        }
+            // Given - KSP usage pattern found in project context
+            val kspScript = """
+                plugins {
+                    kotlin("android") version "1.8.0"
+                    id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+                    id("dagger.hilt.android.plugin")
+                }
+                
+                dependencies {
+                    // Hilt with KSP as found in project
+                    implementation("com.google.dagger:hilt-android:2.47")
+                    ksp("com.google.dagger:hilt-compiler:2.47")
+                    
+                    // Room database dependencies
+                    implementation("androidx.room:room-runtime:2.5.0")
+                    implementation("androidx.room:room-ktx:2.5.0")
+                    ksp("androidx.room:room-compiler:2.5.0")
+                    
+                    // Testing KSP
+                    androidTestImplementation("com.google.dagger:hilt-android-testing:2.47")
+                    kspAndroidTest("com.google.dagger:hilt-compiler:2.47")
+                    testImplementation("androidx.room:room-testing:2.5.0")
+                }
+                
+                ksp {
+                    arg("room.schemaLocation", "${}projectDir/schemas")
+                    arg("room.incremental", "true")
+                    arg("room.generateKotlin", "true")
+                }
+            """.trimIndent()
+
+            val kspFile = createTempFile("build.gradle.kts", kspScript)
+
+            // When
+            val result = buildValidator.validateGradleScript(kspFile)
+
+            // Then
+            assertTrue(result.isValid, "KSP configuration for Hilt and Room should be valid")
+        }
+            // Given - based on actual project dependencies found in context
+            val testingScript = """
+                dependencies {
+                    // Unit testing - JUnit 5 as identified in project
+                    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+                    testImplementation("org.jetbrains.kotlin:kotlin-test")
+                    testImplementation("io.mockk:mockk:1.13.5")
+                    testImplementation("org.gradle:gradle-tooling-api:8.0")
+                    testImplementation(gradleTestKit())
+                    
+                    // Coroutines testing
+                    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+                    testImplementation("app.cash.turbine:turbine:0.12.1")
+                    
+                    // Android testing - matching project patterns
+                    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+                    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+                    androidTestImplementation("androidx.test:runner:1.5.2")
+                    
+                    // Compose testing as found in project
+                    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+                    androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
+                    debugImplementation("androidx.compose.ui:ui-test-manifest")
+                    
+                    // Hilt testing as configured in project
+                    androidTestImplementation("com.google.dagger:hilt-android-testing:2.47")
+                    kspAndroidTest("com.google.dagger:hilt-compiler:2.47")
+                }
+                
+                tasks.withType<Test> {
+                    useJUnitPlatform()
+                    testLogging {
+                        events("passed", "skipped", "failed")
+                        showStandardStreams = true
+                    }
+                    maxParallelForks = Runtime.getRuntime().availableProcessors()
+                }
+            """.trimIndent()
+
+            val testFile = createTempFile("build.gradle.kts", testingScript)
+
+            // When
+            val result = buildValidator.validateGradleScript(testFile)
+
+            // Then
+            assertTrue(result.isValid, "Comprehensive testing setup should be valid")
+        }
+            // Given
+            val rootBuildScript = """
+                buildscript {
+                    dependencies {
+                        classpath("com.android.tools.build:gradle:8.1.0")
+                        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0")
+                        classpath("com.google.dagger:hilt-android-gradle-plugin:2.47")
+                    }
+                }
+                
+                plugins {
+                    id("com.android.application") version "8.1.0" apply false
+                    id("com.android.library") version "8.1.0" apply false
+                    kotlin("android") version "1.8.0" apply false
+                    kotlin("kapt") version "1.8.0" apply false
+                    id("dagger.hilt.android.plugin") version "2.47" apply false
+                }
+                
+                allprojects {
+                    repositories {
+                        google()
+                        mavenCentral()
+                        gradlePluginPortal()
+                    }
+                }
+                
+                tasks.register("clean", Delete::class) {
+                    delete(rootProject.buildDir)
+                }
+            """.trimIndent()
+
+            val appModuleScript = """
+                plugins {
+                    id("com.android.application")
+                    kotlin("android")
+                    kotlin("kapt")
+                    id("dagger.hilt.android.plugin")
+                }
+                
+                android {
+                    namespace = "dev.aurakai.auraframefx"
+                    compileSdk = 34
+                    
+                    defaultConfig {
+                        applicationId = "dev.aurakai.auraframefx"
+                        minSdk = 24
+                        targetSdk = 34
+                        versionCode = 1
+                        versionName = "1.0"
+                        
+                        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+                    }
+                }
+                
+                dependencies {
+                    implementation(project(":core"))
+                    implementation(project(":ui"))
+                    implementation(project(":data"))
+                    
+                    implementation("com.google.dagger:hilt-android:2.47")
+                    kapt("com.google.dagger:hilt-compiler:2.47")
+                }
+            """.trimIndent()
+
+            val rootFile = createTempFile("build.gradle.kts", rootBuildScript)
+            val appFile = createTempFile("app/build.gradle.kts", appModuleScript)
+
+            // When
+            val rootResult = buildValidator.validateGradleScript(rootFile)
+            val appResult = buildValidator.validateAndroidConfiguration(appFile)
+
+            // Then
+            assertTrue(rootResult.isValid, "Root multi-module build script should be valid")
+            assertTrue(appResult.isValid, "App module configuration should be valid")
+        }
+            // Given
+            val versionCatalogScript = """
+                plugins {
+                    kotlin("jvm") version libs.versions.kotlin
+                    id("com.android.application") version libs.versions.agp
+                }
+                
+                android {
+                    compileSdk = libs.versions.compileSdk.get().toInt()
+                    
+                    defaultConfig {
+                        minSdk = libs.versions.minSdk.get().toInt()
+                        targetSdk = libs.versions.targetSdk.get().toInt()
+                    }
+                }
+                
+                dependencies {
+                    implementation(libs.androidx.core.ktx)
+                    implementation(libs.compose.ui)
+                    implementation(libs.compose.material3)
+                    implementation(libs.bundles.networking)
+                    
+                    testImplementation(libs.bundles.testing.unit)
+                    androidTestImplementation(libs.bundles.testing.android)
+                }
+            """.trimIndent()
+
+            val catalogFile = createTempFile("app/build.gradle.kts", versionCatalogScript)
+
+            // When
+            val result = buildValidator.validateGradleScript(catalogFile)
+
+            // Then
+            assertTrue(result.isValid, "Version catalog configuration should be valid")
+        }
+            // Given
+            val androidLibraryScript = """
+                plugins {
+                    id("com.android.library") version "8.1.0"
+                    kotlin("android") version "1.8.0"
+                    kotlin("kapt") version "1.8.0"
+                    id("dagger.hilt.android.plugin")
+                }
+                
+                android {
+                    namespace = "dev.aurakai.auraframefx.library"
+                    compileSdk = 34
+                    
+                    defaultConfig {
+                        minSdk = 24
+                        targetSdk = 34
+                        
+                        testInstrumentationRunner = "dev.aurakai.auraframefx.HiltTestRunner"
+                        consumerProguardFiles("consumer-rules.pro")
+                    }
+                    
+                    buildTypes {
+                        release {
+                            isMinifyEnabled = false
+                            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+                        }
+                    }
+                    
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_11
+                        targetCompatibility = JavaVersion.VERSION_11
+                    }
+                    
+                    kotlinOptions {
+                        jvmTarget = "11"
+                    }
+                    
+                    buildFeatures {
+                        compose = true
+                        viewBinding = true
+                    }
+                    
+                    composeOptions {
+                        kotlinCompilerExtensionVersion = "1.4.0"
+                    }
+                }
+                
+                dependencies {
+                    implementation("androidx.core:core-ktx:1.12.0")
+                    implementation("androidx.compose.ui:ui:1.5.0")
+                    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+                    implementation("androidx.compose.material3:material3:1.1.0")
+                    implementation("com.google.dagger:hilt-android:2.47")
+                    kapt("com.google.dagger:hilt-compiler:2.47")
+                    
+                    testImplementation("junit:junit:4.13.2")
+                    testImplementation("io.mockk:mockk:1.13.5")
+                    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+                    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+                    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.0")
+                    androidTestImplementation("com.google.dagger:hilt-android-testing:2.47")
+                    kspAndroidTest("com.google.dagger:hilt-compiler:2.47")
+                }
+            """.trimIndent()
+
+            val androidLibFile = createTempFile("library/build.gradle.kts", androidLibraryScript)
+
+            // When
+            val result = buildValidator.validateAndroidConfiguration(androidLibFile)
+
+            // Then
+            assertTrue(result.isValid, "Android library configuration should be valid")
+            assertTrue(result.features.contains("hilt_dependency_injection"))
+            assertTrue(result.features.contains("compose_ui"))
+            assertTrue(result.features.contains("view_binding"))
+        }
             // Given
             val androidBuildScript = """
                 plugins {
@@ -1238,7 +1684,18 @@ class BuildScriptValidator {
 
         if (content.contains("isMinifyEnabled = true")) features.add("minification")
         if (content.contains("proguardFiles")) features.add("proguard")
+        if (content.contains("hilt-android")) features.add("hilt_dependency_injection")
+        if (content.contains("compose")) features.add("compose_ui")
+        if (content.contains("viewBinding = true")) features.add("view_binding")
+        if (content.contains("productFlavors")) features.add("product_flavors")
+        if (content.contains("signingConfigs")) features.add("signing_config")
+        if (content.contains("buildConfigField")) features.add("build_config_fields")
+        if (content.contains("HiltTestRunner")) features.add("hilt_test_runner")
+        if (content.contains("vectorDrawables")) features.add("vector_drawables")
+        if (content.contains("multiDexEnabled")) features.add("multidex")
+        if (content.contains("isShrinkResources")) features.add("resource_shrinking")
 
         return CICDValidationResult(true, features)
+    }
     }
 }
