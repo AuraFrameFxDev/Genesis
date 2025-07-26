@@ -44,29 +44,27 @@ android {
     
     // Configure Java toolchain for consistent builds
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 
     // Configure Compose
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
-
-        
-            // Configure Android resources
-        androidResources {
-            localeFilters.add("en")
-        }
-        
-        // Enable split APKs by ABI for smaller APK sizes
-        ndk {
-            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
-        }
+    // Configure Android resources
+    androidResources {
+        localeFilters.add("en")
+    }
+    
+    // Enable split APKs by ABI for smaller APK sizes
+    ndk {
+        abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
     }
 
+    // Configure build types
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -79,13 +77,6 @@ android {
             isDebuggable = true
             applicationIdSuffix = ".debug"
         }
-    }
-
-    // Java and Kotlin compilation options
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
     }
 
     // Kotlin compiler options
