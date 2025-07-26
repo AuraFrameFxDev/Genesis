@@ -11,6 +11,6 @@ kotlin {
 
     // Explicitly set the JVM target for Kotlin compilation in buildSrc
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_22)
     }
 }
