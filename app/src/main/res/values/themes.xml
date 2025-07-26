@@ -1,27 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.AuraFrameFX" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.AuraFrameFX" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/light_primary</item>
-        <item name="colorPrimaryDark">@color/light_primary_container</item>
-        <item name="colorAccent">@color/light_secondary</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <!-- Customize your theme here. -->
-    </style>
-
-    <!-- Material 3 theme. -->
-    <style name="Theme.AuraFrameFX.Material3" parent="android:Theme.Material.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="android:colorPrimary">@color/light_primary</item>
-        <item name="android:colorPrimaryDark">@color/light_primary_container</item>
-        <item name="android:colorAccent">@color/light_secondary</item>
-
+        <item name="colorPrimaryVariant">@color/light_primary_dark</item>
+        <item name="colorOnPrimary">@color/black</item>
+        
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorSecondaryVariant">@color/light_secondary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorBackgroundFloating">@color/light_surface</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColor">@color/light_on_background</item>
+        <item name="android:textColorPrimary">@color/light_on_background</item>
+        <item name="android:textColorSecondary">@color/light_on_surface_variant</item>
+        
+        <!-- Components -->
+        <item name="materialButtonStyle">@style/Widget.AuraFrameFX.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.AuraFrameFX.CardView</item>
+        <item name="alertDialogTheme">@style/Theme.AuraFrameFX.Dialog</item>
+        
+        <!-- For Compose compatibility -->
+        <item name="colorPrimaryContainer">@color/light_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+        <item name="colorSecondaryContainer">@color/light_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
+    </style>
+
+    <!-- CardView style -->
+    <style name="Widget.AuraFrameFX.CardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/light_surface</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="strokeColor">@color/light_outline</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    
+    <!-- Button style -->
+    <style name="Widget.AuraFrameFX.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/black</item>
+        <item name="backgroundTint">@color/light_primary</item>
+        <item name="android:padding">12dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+    
+    <!-- Dialog style -->
+    <style name="Theme.AuraFrameFX.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="dialogCornerRadius">16dp</item>
+        <item name="android:windowBackground">@color/light_surface</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="android:textColorPrimary">@color/light_on_surface</item>
+    </style>
+    
+    <!-- Theme overlay for action bar -->
+    <style name="ThemeOverlay.AuraFrameFX.ActionBar" parent="">
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorOnPrimary">@color/black</item>
     </style>
 </resources>

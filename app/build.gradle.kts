@@ -32,6 +32,11 @@ android {
         compose = true
     }
     
+    // Compose compiler options
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
+    
     // Configure Java toolchain for consistent builds
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
@@ -182,13 +187,21 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation("androidx.cardview:cardview:1.0.0")
     
-    // Compose and Material Design
+    // Material Components (includes Material 3)
+    implementation("com.google.android.material:material:1.3.0")
+    
+    // Compose with Material 3
     implementation(platform(libs.compose.bom))
     androidTestImplementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
     implementation("androidx.compose.material3:material3")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.compose.material3:material3-window-size-class")
+    
+    // Material 3 Design Components
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3-adaptive:1.2.6")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.2.0")
     
     // Networking
     implementation(libs.okhttp.logging.interceptor)

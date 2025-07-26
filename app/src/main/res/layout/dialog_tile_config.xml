@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:clipToPadding="false"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context=".ui.settings.TileConfigDialog">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/previewCard"
+            style="@style/Widget.AuraFrameFX.CardView"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@android:color/holo_blue_light"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="?attr/colorPrimaryContainer"
+            app:cardElevation="4dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,33 +34,33 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tileName"
+                    style="?attr/textAppearanceHeadlineSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tile Name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@android:color/white"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="18sp" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceBodySmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Preview"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    android:textColor="@android:color/white"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.AuraFrameFX.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
             app:cardElevation="2dp">
 
             <LinearLayout
@@ -63,40 +69,48 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:text="Tile Settings"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?android:attr/textColorPrimary" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/enabledSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Enable Tile"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/white" />
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?android:attr/textColorPrimary"
+                    app:trackTint="?attr/colorSurfaceVariant"
+                    app:trackTintActive="?attr/colorPrimary"
+                    app:thumbTint="?attr/colorOnPrimary"
+                    app:thumbTintActive="?attr/colorPrimary" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="8dp"
-                    android:background="@android:color/darker_gray" />
+                    app:color="?attr/colorOutline"
+                    app:thickness="1dp" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/enableClicksSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Enable Clicks"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/white"
-                    android:visibility="gone" />
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:visibility="gone"
+                    app:trackTint="?attr/colorSurfaceVariant"
+                    app:trackTintActive="?attr/colorPrimary"
+                    app:thumbTint="?attr/colorOnPrimary"
+                    app:thumbTintActive="?attr/colorPrimary" />
 
                 <View
                     android:layout_width="match_parent"
@@ -105,24 +119,28 @@
                     android:background="@android:color/darker_gray"
                     android:visibility="gone" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.google.android.material.switch.MaterialSwitch
                     android:id="@+id/rippleEffectSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Ripple Effect"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/white"
-                    android:visibility="gone" />
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:visibility="gone"
+                    app:trackTint="?attr/colorSurfaceVariant"
+                    app:trackTintActive="?attr/colorPrimary"
+                    app:thumbTint="?attr/colorOnPrimary"
+                    app:thumbTintActive="?attr/colorPrimary" />
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.AuraFrameFX.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
             app:cardElevation="2dp">
 
             <LinearLayout
@@ -131,15 +149,14 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:text="Appearance"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <LinearLayout
                     android:id="@+id/backgroundColorLayout"
@@ -148,22 +165,37 @@
                     android:layout_marginBottom="16dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Background Color"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/backgroundColorInput"
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceBodyLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:focusable="false"
-                        android:inputType="none"
-                        android:text="#6200EE"
-                        android:textColor="@android:color/white" />
+                        android:layout_marginBottom="8dp"
+                        android:text="Label"
+                        android:textColor="?android:attr/textColorPrimary" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/labelInputLayout"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter label"
+                        app:boxStrokeColor="?attr/colorOutline"
+                        app:boxStrokeWidth="1dp"
+                        app:boxCornerRadius="8dp"
+                        app:boxBackgroundColor="?attr/colorSurface"
+                        app:hintTextColor="?attr/colorOnSurfaceVariant"
+                        app:startIconDrawable="@drawable/ic_edit_24dp"
+                        app:startIconTint="?attr/colorPrimary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/labelEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColorHint="?android:attr/textColorHint" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
@@ -216,7 +248,7 @@
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

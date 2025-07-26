@@ -8,11 +8,13 @@
 
     <!-- Light Theme Colors -->
     <color name="light_primary">#00FFCC</color>
+    <color name="light_primary_dark">#00CC99</color>
     <color name="light_on_primary">#000000</color>
     <color name="light_primary_container">#00CC99</color>
     <color name="light_on_primary_container">#000000</color>
 
     <color name="light_secondary">#E000FF</color>
+    <color name="light_secondary_dark">#B200CC</color>
     <color name="light_on_secondary">#000000</color>
     <color name="light_secondary_container">#B200CC</color>
     <color name="light_on_secondary_container">#000000</color>
