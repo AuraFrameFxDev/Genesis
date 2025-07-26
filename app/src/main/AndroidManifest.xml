@@ -11,7 +11,8 @@
         android:label="AuraFrameFX LSPosed Module"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AuraFrameFX">
+        android:theme="@style/Theme.AuraFrameFX"
+        android:enableOnBackInvokedCallback="true">
         <meta-data
             android:name="xposedmodule"
             android:value="true" />

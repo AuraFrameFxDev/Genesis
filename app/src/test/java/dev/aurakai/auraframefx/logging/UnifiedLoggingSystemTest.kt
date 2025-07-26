@@ -819,7 +819,7 @@ class UnifiedLoggingSystemTest {
         @Test
         fun `AuraFxLoggerCompat should handle uninitialized logger gracefully`() {
             // Given - Create new compat instance without initialization
-            val uninitializedLogger = UnifiedLoggingSystem(mockContext)
+            UnifiedLoggingSystem(mockContext)
 
             // When & Then - Should not throw
             assertDoesNotThrow {

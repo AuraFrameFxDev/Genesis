@@ -56,11 +56,11 @@ class BuildScriptsIntegrationTest {
                 id 'kotlin-kapt'
                 id 'dagger.hilt.android.plugin'
             }
-            
+
             android {
                 namespace = "dev.aurakai.auraframefx"
                 compileSdk 34
-                
+
                 defaultConfig {
                     applicationId "dev.aurakai.auraframefx"
                     minSdk 26
@@ -69,32 +69,32 @@ class BuildScriptsIntegrationTest {
                     versionName "1.0"
                     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
                 }
-                
+
                 buildTypes {
                     release {
                         minifyEnabled false
                         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                     }
                 }
-                
+
                 compileOptions {
                     sourceCompatibility JavaVersion.VERSION_1_8
                     targetCompatibility JavaVersion.VERSION_1_8
                 }
-                
+
                 kotlinOptions {
                     jvmTarget = '1.8'
                 }
-                
+
                 buildFeatures {
                     compose = true
                 }
-                
+
                 composeOptions {
                     kotlinCompilerExtensionVersion = '1.5.0'
                 }
             }
-            
+
             dependencies {
                 implementation 'androidx.core:core-ktx:1.10.1'
                 implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
@@ -103,7 +103,7 @@ class BuildScriptsIntegrationTest {
                 implementation 'androidx.compose.ui:ui'
                 implementation 'androidx.compose.ui:ui-tooling-preview'
                 implementation 'androidx.compose.material3:material3'
-                
+
                 testImplementation 'junit:junit:4.13.2'
                 testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
                 androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -120,21 +120,21 @@ class BuildScriptsIntegrationTest {
                 id 'java'
                 id 'application'
             }
-            
+
             repositories {
                 mavenCentral()
                 google()
             }
-            
+
             dependencies {
                 implementation 'org.slf4j:slf4j-api:1.7.36'
                 testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
             }
-            
+
             application {
                 mainClass = 'dev.aurakai.Main'
             }
-            
+
             test {
                 useJUnitPlatform()
             }
@@ -145,22 +145,22 @@ class BuildScriptsIntegrationTest {
                 id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 id 'application'
             }
-            
+
             repositories {
                 mavenCentral()
             }
-            
+
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
                 testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
                 testImplementation 'org.jetbrains.kotlin:kotlin-test'
             }
-            
+
             application {
                 mainClass = 'dev.aurakai.MainKt'
             }
-            
+
             test {
                 useJUnitPlatform()
             }
@@ -174,7 +174,7 @@ class BuildScriptsIntegrationTest {
             <?xml version="1.0" encoding="utf-8"?>
             <manifest xmlns:android="http://schemas.android.com/apk/res/android"
                 package="dev.aurakai.auraframefx">
-                
+
                 <application
                     android:allowBackup="true"
                     android:icon="@mipmap/ic_launcher"
@@ -351,22 +351,22 @@ class BuildScriptsIntegrationTest {
                 // This is a test build script
                 plugins {
                     id 'java' // Java plugin
-                    /* 
+                    /*
                      * Application plugin for running the app
                      */
                     id 'application'
                 }
-                
+
                 /* Repositories configuration */
                 repositories {
                     mavenCentral() // Central Maven repository
                 }
-                
+
                 // Dependencies block
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36' // Logging API
                 }
-                
+
                 // Application configuration
                 application {
                     mainClass = 'dev.aurakai.Main'
@@ -396,7 +396,7 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
@@ -419,7 +419,7 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
@@ -443,11 +443,11 @@ class BuildScriptsIntegrationTest {
                     id 'java'
                     id 'application'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 application {
                     mainClass = 'dev.aurakai.Main'
                 }
@@ -492,11 +492,11 @@ class BuildScriptsIntegrationTest {
                     id 'jacoco'
                     id 'checkstyle'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 application {
                     mainClass = 'dev.aurakai.Main'
                 }
@@ -525,11 +525,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                     implementation 'com.google.guava:guava:31.1-jre'
@@ -556,13 +556,13 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                     google()
                     gradlePluginPortal()
                 }
-                
+
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                     implementation 'androidx.core:core-ktx:1.10.1'
@@ -586,11 +586,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'invalid:dependency:coordinates:extra:parts:too:many'
                 }
@@ -612,7 +612,7 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                 }
@@ -634,11 +634,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'org.slf4j:slf4j-api:1.7.36'
                     implementation 'org.slf4j:slf4j-api:1.7.30' // Different version
@@ -670,11 +670,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 java {
                     sourceCompatibility = JavaVersion.VERSION_11
                     targetCompatibility = JavaVersion.VERSION_11
@@ -698,11 +698,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 sourceSets {
                     integration {
                         java.srcDir 'src/integration/java'
@@ -741,11 +741,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 java {
                     sourceCompatibility = JavaVersion.$javaVersion
                     targetCompatibility = JavaVersion.$javaVersion
@@ -769,15 +769,15 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 kotlin {
                     jvmToolchain(11)
                 }
-                
+
                 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
                     kotlinOptions {
                         jvmTarget = "11"
@@ -849,17 +849,17 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 task customTask {
                     doLast {
                         println 'Custom task executed successfully'
                     }
                 }
-                
+
                 task dependentTask(dependsOn: customTask) {
                     doLast {
                         println 'Dependent task executed'
@@ -887,16 +887,16 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 compileJava {
                     options.compilerArgs += ['-Xlint:unchecked', '-Xlint:deprecation']
                     options.encoding = 'UTF-8'
                 }
-                
+
                 test {
                     useJUnitPlatform()
                     testLogging {
@@ -940,7 +940,7 @@ class BuildScriptsIntegrationTest {
                 """
                 plugins {
                     id 'java'
-                
+
                 // Missing closing brace for plugins block
                 repositories {
                     mavenCentral()
@@ -965,11 +965,11 @@ class BuildScriptsIntegrationTest {
                     id 'java'
                     id 'application'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 application {
                     mainClass = 'com.nonexistent.Main'
                 }
@@ -991,11 +991,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 task taskA(dependsOn: 'taskB') {
                     doLast { println 'Task A' }
                 }
-                
+
                 task taskB(dependsOn: 'taskA') {
                     doLast { println 'Task B' }
                 }
@@ -1119,11 +1119,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '$kotlinVersion'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 }
@@ -1147,11 +1147,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
@@ -1178,11 +1178,11 @@ class BuildScriptsIntegrationTest {
                     id 'org.jetbrains.kotlin.jvm' version '1.9.0'
                     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
@@ -1222,7 +1222,7 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java-library'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
@@ -1239,15 +1239,15 @@ class BuildScriptsIntegrationTest {
                     id 'java'
                     id 'application'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 dependencies {
                     implementation project(':core')
                 }
-                
+
                 application {
                     mainClass = 'dev.aurakai.App'
                 }
@@ -1366,7 +1366,7 @@ class BuildScriptsIntegrationTest {
             repeat(100) { i ->
                 longScript.append(
                     """
-                    
+
                     // Comment number $i
                     task customTask$i {
                         doLast {
@@ -1395,11 +1395,11 @@ class BuildScriptsIntegrationTest {
                 plugins {
                     id 'java'
                 }
-                
+
                 repositories {
                     mavenCentral()
                 }
-                
+
                 // 中文注释测试
                 task unicodeTask {
                     description = 'Test with émojis and ünïcödë 🚀'
@@ -1423,7 +1423,7 @@ class BuildScriptsIntegrationTest {
         fun shouldHandleDeepDirectoryStructure() {
             // Given
             buildFile.writeText(BASIC_JAVA_BUILD_SCRIPT)
-            val deepPath = "dev/aurakai/deep/very/deeply/nested/package/structure"
+            "dev/aurakai/deep/very/deeply/nested/package/structure"
             createJavaClass(
                 "DeepClass",
                 "dev.aurakai.deep.very.deeply.nested.package.structure",
@@ -1493,13 +1493,13 @@ class BuildScriptsIntegrationTest {
         javaDir.resolve("Invalid.java").writeText(
             """
             package dev.aurakai;
-            
+
             public class Invalid {
                 // Invalid syntax - missing semicolon
                 public void method() {
                     System.out.println("test")
                 }
-                
+
                 // Another error - invalid return type
                 public void returnsInt() {
                     return 42;
@@ -1513,7 +1513,7 @@ class BuildScriptsIntegrationTest {
         createKotlinClass(
             "CoroutinesExample", "dev.aurakai", """
             import kotlinx.coroutines.*
-            
+
             suspend fun main() {
                 val job = GlobalScope.launch {
                     delay(1000)
@@ -1530,10 +1530,10 @@ class BuildScriptsIntegrationTest {
             "SerializationExample", "dev.aurakai", """
             import kotlinx.serialization.*
             import kotlinx.serialization.json.*
-            
+
             @Serializable
             data class User(val name: String, val age: Int)
-            
+
             fun main() {
                 val user = User("John", 30)
                 val json = Json.encodeToString(user)
@@ -1556,7 +1556,7 @@ class BuildScriptsIntegrationTest {
         javaDir.resolve("$className.java").writeText(
             """
             package $packageName;
-            
+
             public class $className {
                 $additionalMethods
             }
@@ -1577,11 +1577,11 @@ class BuildScriptsIntegrationTest {
         kotlinDir.resolve("$className.kt").writeText(
             """
             package $packageName
-            
+
             class $className {
                 // Kotlin class implementation
             }
-            
+
             $additionalContent
         """
         )

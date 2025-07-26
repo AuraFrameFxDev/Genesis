@@ -437,7 +437,7 @@ class LibsVersionsTomlTest {
     @Test
     fun `test activity compose version compatibility`() {
         val activityComposeVersion = extractVersion("activityCompose")
-        val composeBomVersion = extractVersion("composeBom")
+        extractVersion("composeBom")
 
         assertNotNull("Activity Compose version should be defined", activityComposeVersion)
 

@@ -41,7 +41,7 @@ object KineticIdentityLibrary {
         intensity: Float = 1.0f,
         emotionalState: EmotionalState = EmotionalState.NEUTRAL,
     ) {
-        val density = LocalDensity.current
+        LocalDensity.current
 
         // Adjust breathing pattern based on emotional state
         val (duration, amplitude) = when (emotionalState) {

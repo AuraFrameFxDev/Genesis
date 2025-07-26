@@ -112,8 +112,7 @@ class ThemeManager @Inject constructor(
         )
 
         // Set system UI appearance
-        @Suppress("DEPRECATION")
-        val systemUiVisibility = when {
+        when {
             darkTheme -> {
                 window.decorView.systemUiVisibility = 0
                 true

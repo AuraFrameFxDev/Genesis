@@ -69,7 +69,7 @@ fun CanvasScreen() {
     var isDrawing by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
+    rememberScrollState()
 
     // Animation states
     val animatedPaths = remember { mutableStateMapOf<Int, PluckablePath>() }

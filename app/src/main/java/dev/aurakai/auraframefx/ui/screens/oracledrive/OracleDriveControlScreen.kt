@@ -325,7 +325,6 @@ fun ModuleManager(modifier: Modifier = Modifier) {
 @Composable
 private fun ModuleListItem(module: OracleModule) {
     var isActive by remember { mutableStateOf(module.isActive) }
-    var isHovered by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Simulate module initialization

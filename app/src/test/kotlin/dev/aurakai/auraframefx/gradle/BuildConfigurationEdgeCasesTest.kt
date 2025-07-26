@@ -227,7 +227,7 @@ class BuildConfigurationEdgeCasesTest {
     @Test
     fun `test build tools version is compatible`() {
         // Check for buildToolsVersion if present
-        val buildToolsPattern = Regex(
+        Regex(
             "buildToolsVersion\s*=\s*"([^"]+)"")
             val buildToolsVersion = buildToolsPattern . find (buildContent)?.groupValues?.get(1)
 
@@ -244,7 +244,7 @@ class BuildConfigurationEdgeCasesTest {
 
     @Test
     fun `test application ID format is valid`() {
-        val appIdPattern = Regex(
+        Regex(
             "applicationId\s*=\s*"([^"]+)"")
             val applicationId = appIdPattern . find (buildContent)?.groupValues?.get(1)
 
@@ -285,7 +285,7 @@ class BuildConfigurationEdgeCasesTest {
 
     @Test
     fun `test namespace configuration is valid`() {
-        val namespacePattern = Regex(
+        Regex(
             "namespace\s*=\s*"([^"]+)"")
             val namespace = namespacePattern . find (buildContent)?.groupValues?.get(1)
 
@@ -302,7 +302,7 @@ class BuildConfigurationEdgeCasesTest {
     fun `test build types are properly configured`() {
         if (buildContent.contains("buildTypes")) {
             // Check for debug and release build types
-            val debugConfigured = buildContent.contains("debug {")
+            buildContent.contains("debug {")
             val releaseConfigured = buildContent.contains("release {")
 
             if (releaseConfigured) {
@@ -361,7 +361,7 @@ class BuildConfigurationEdgeCasesTest {
 
     @Test
     fun `test test instrumentation runner configuration`() {
-        val testRunnerPattern = Regex(
+        Regex(
             "testInstrumentationRunner\s*=\s*"([^"]+)"")
             val testRunner = testRunnerPattern . find (buildContent)?.groupValues?.get(1)
 
@@ -408,7 +408,7 @@ class BuildConfigurationEdgeCasesTest {
 
             // Count dependency declarations
             val implementationCount = buildContent.split("implementation(").size - 1
-            val testImplementationCount = buildContent.split("testImplementation(").size - 1
+            buildContent.split("testImplementation(").size - 1
 
             assertTrue(
                 "Should have at least one implementation dependency",

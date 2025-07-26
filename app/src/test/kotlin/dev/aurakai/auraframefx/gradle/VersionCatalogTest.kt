@@ -257,7 +257,7 @@ class VersionCatalogTest {
     @Test
     fun `test BOM platform dependencies are properly handled`() {
         val bomPattern = Regex("platform\\(libs\\.[a-zA-Z0-9\\.]+\\)")
-        val bomReferences = bomPattern.findAll(buildContent)
+        bomPattern.findAll(buildContent)
 
         // Common BOMs should be present and properly used
         val expectedBoms = listOf("composeBom", "firebaseBom")
@@ -432,8 +432,7 @@ class VersionCatalogTest {
         // Verify that test dependencies are properly scoped
         val testDependencies =
             Regex("testImplementation\\(libs\\.[a-zA-Z0-9\\.]+\\)").findAll(buildContent)
-        val androidTestDependencies =
-            Regex("androidTestImplementation\\(libs\\.[a-zA-Z0-9\\.]+\\)").findAll(buildContent)
+        Regex("androidTestImplementation\\(libs\\.[a-zA-Z0-9\\.]+\\)").findAll(buildContent)
 
         assertTrue("Should have test dependencies defined", testDependencies.count() > 0)
 

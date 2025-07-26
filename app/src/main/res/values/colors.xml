@@ -40,6 +40,16 @@
     <color name="light_outline">#8D8D8D</color>
     <color name="light_outline_variant">#3D3D3D</color>
 
+    <!-- Hologram Colors -->
+    <color name="hologram_primary">#00FFFF</color> <!-- Cyan -->
+    <color name="hologram_secondary">#FF00FF</color> <!-- Magenta -->
+    <color name="hologram_accent">#00FFCC</color> <!-- Teal -->
+    <color name="hologram_glow_start">#00FFFF</color>
+    <color name="hologram_glow_end">#00FFFF40</color> <!-- 25% opacity -->
+    <color name="hologram_scan_line">#00FFFF40</color> <!-- 25% opacity -->
+    <color name="hologram_noise">#00FFFF20</color> <!-- 12.5% opacity -->
+    <color name="hologram_grid">#00FFFF30</color> <!-- 19% opacity -->
+    
     <!-- Common Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

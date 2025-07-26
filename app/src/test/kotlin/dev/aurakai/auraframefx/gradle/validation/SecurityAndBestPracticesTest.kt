@@ -69,7 +69,7 @@ class SecurityAndBestPracticesTest {
             "retrofit" to "2.9.0"
         )
 
-        securitySensitive.forEach { (dep, minVersion) ->
+        securitySensitive.forEach { (dep, _) ->
             if (tomlContent.contains(dep)) {
                 val versionLine = tomlContent.lines()
                     .find { it.contains(dep) && it.contains("version") }

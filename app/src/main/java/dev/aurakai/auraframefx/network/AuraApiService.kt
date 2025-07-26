@@ -84,8 +84,7 @@ class AuraApiService @Inject constructor(
                 // to manage API service instances when the base URL changes.
                 // For example, you could use a Map to cache API services by base URL.
                 // This is just for demonstration purposes.
-                @Suppress("UNCHECKED_CAST")
-                val newApis = mapOf(
+                mapOf(
                     AuthApi::class to newRetrofit.create(AuthApi::class.java),
                     UserApi::class to newRetrofit.create(UserApi::class.java),
                     AIAgentApi::class to newRetrofit.create(AIAgentApi::class.java),

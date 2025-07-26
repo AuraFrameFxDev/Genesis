@@ -7,11 +7,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.aurakai.auraframefx.R
 import dev.aurakai.auraframefx.ui.animation.*
+import dev.aurakai.auraframefx.ui.components.HologramTransition
 import dev.aurakai.auraframefx.ui.components.*
 import dev.aurakai.auraframefx.ui.navigation.NavDestination
 import dev.aurakai.auraframefx.ui.theme.*
@@ -39,6 +41,14 @@ fun HomeScreen(navController: NavController) {
     // Track selected menu item
     var selectedMenuItem by remember { mutableStateOf("") }
 
+    // Track if hologram transition is visible
+    var isHologramVisible by remember { mutableStateOf(false) }
+    
+    // Trigger hologram animation when screen is first displayed
+    LaunchedEffect(Unit) {
+        isHologramVisible = true
+    }
+    
     // Background with digital landscape and hexagon grid
     Box(modifier = Modifier.fillMaxSize()) {
         // Digital landscape background like in image reference 4
@@ -51,15 +61,25 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier.fillMaxSize(),
             alpha = 0.2f
         )
-
-        // Main content with floating windows
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+        
+        // Wrap main content with HologramTransition
+        HologramTransition(
+            visible = isHologramVisible,
+            modifier = Modifier.fillMaxSize(),
+            primaryColor = Color.Cyan,
+            secondaryColor = Color.Magenta,
+            scanLineDensity = 12,
+            glitchIntensity = 0.15f,
+            edgeGlowIntensity = 0.4f
         ) {
+            // Main content with floating windows
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
             Spacer(modifier = Modifier.height(40.dp))
 
             // Title header like in image reference 4

@@ -145,7 +145,7 @@ fun NeonText(
     ) {
         // Glow effect (drawn behind the text)
         if (visibleText.isNotEmpty()) {
-            val glowPaint = remember(color, glowColor, glowIntensity) {
+            remember(color, glowColor, glowIntensity) {
                 Paint().apply {
                     this.color = color
                     this.blendMode = BlendMode.SrcOver

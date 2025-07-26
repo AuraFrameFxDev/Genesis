@@ -976,7 +976,6 @@ class KineticIdentityLibraryPureFunctionTest {
     fun generateParticles_createsCorrectCount() {
         // We can't directly access private functions, but we can test the public interface
         // that uses them indirectly through the Composable functions
-        val particleCount = 10
 
         // This would be tested through the UI if the private functions were public
         // For now, we test the data class behavior which is used by the private functions
