@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,14 +18,9 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/previewCard"
-            style="@style/Widget.AuraFrameFX.CardView"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="?attr/colorPrimaryContainer"
-            app:cardElevation="4dp"
-            app:strokeColor="?attr/colorOutline"
-            app:strokeWidth="1dp">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,20 +31,18 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tileName"
-                    style="?attr/textAppearanceHeadlineSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tile Name"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceBodySmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Preview"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@android:color/darker_gray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -57,11 +50,9 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.AuraFrameFX.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="2dp">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,13 +61,12 @@
                 android:padding="16dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceTitleMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:text="Tile Settings"
                     android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="@android:color/black" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/enabledSwitch"
@@ -84,172 +74,15 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Enable Tile"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="?android:attr/textColorPrimary"
-                    app:trackTint="?attr/colorSurfaceVariant"
-                    app:trackTintActive="?attr/colorPrimary"
-                    app:thumbTint="?attr/colorOnPrimary"
-                    app:thumbTintActive="?attr/colorPrimary" />
+                    android:textColor="@android:color/black" />
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="8dp"
-                    app:color="?attr/colorOutline"
-                    app:thickness="1dp" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/enableClicksSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Enable Clicks"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:visibility="gone"
-                    app:trackTint="?attr/colorSurfaceVariant"
-                    app:trackTintActive="?attr/colorPrimary"
-                    app:thumbTint="?attr/colorOnPrimary"
-                    app:thumbTintActive="?attr/colorPrimary" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="8dp"
-                    android:background="@android:color/darker_gray"
-                    android:visibility="gone" />
-
-                <com.google.android.material.switch.MaterialSwitch
-                    android:id="@+id/rippleEffectSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Ripple Effect"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:visibility="gone"
-                    app:trackTint="?attr/colorSurfaceVariant"
-                    app:trackTintActive="?attr/colorPrimary"
-                    app:thumbTint="?attr/colorOnPrimary"
-                    app:thumbTintActive="?attr/colorPrimary" />
+                    android:background="@android:color/darker_gray" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.AuraFrameFX.CardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceTitleMedium"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Appearance"
-                    android:textStyle="bold"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <LinearLayout
-                    android:id="@+id/backgroundColorLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="?attr/textAppearanceBodyLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Label"
-                        android:textColor="?android:attr/textColorPrimary" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/labelInputLayout"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter label"
-                        app:boxStrokeColor="?attr/colorOutline"
-                        app:boxStrokeWidth="1dp"
-                        app:boxCornerRadius="8dp"
-                        app:boxBackgroundColor="?attr/colorSurface"
-                        app:hintTextColor="?attr/colorOnSurfaceVariant"
-                        app:startIconDrawable="@drawable/ic_edit_24dp"
-                        app:startIconTint="?attr/colorPrimary">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/labelEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textColor="?android:attr/textColorPrimary"
-                            android:textColorHint="?android:attr/textColorHint" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cornerRadiusLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Corner Radius (dp)"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp" />
-
-                    <androidx.appcompat.widget.AppCompatSeekBar
-                        android:id="@+id/cornerRadiusSlider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:max="32"
-                        android:progress="8" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/elevationLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Elevation (dp)"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp" />
-
-                    <androidx.appcompat.widget.AppCompatSeekBar
-                        android:id="@+id/elevationSlider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:max="24"
-                        android:progress="4" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
     </LinearLayout>
-
 </ScrollView>
