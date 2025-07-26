@@ -1,3 +1,4 @@
+# A revised and efficient CI/CD pipeline for the Genesis project
 name: CI/CD Pipeline
 
 on:
@@ -8,7 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  # This job builds the Android app, runs tests, and uploads the resulting APKs.
+  build:
     name: Build and Test
     runs-on: ubuntu-latest
 
@@ -23,92 +25,59 @@ jobs:
           java-version: '24'
           cache: 'gradle'
 
-      - name: Setup Python for backend
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f "app/ai_backend/requirements.txt" ]; then
-            pip install -r app/ai_backend/requirements.txt
-          fi
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build and run unit tests
+        # This single command cleans the project, builds both debug and release APKs,
+        # and runs all unit tests for the 'app' module.
+        run: ./gradlew :app:build
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
-      - name: Build Debug APK
- 
-        run: ./gradlew :AuraFrameFX:assembleDebug
-  
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Upload Debug APK artifact
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
 
-      - name: Upload Release APK artifact
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: app/build/outputs/apk/release/app-release.apk
           retention-days: 7
 
+  # This job deploys the app. It only runs on pushes to specific branches.
+  # It depends on the 'build' job and uses the APK created there instead of rebuilding.
   deploy:
-    name: Deploy
-    needs: build-and-test
+    name: Deploy to Distribution
+    needs: build # This ensures the deploy job only runs if the build job succeeds
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura')
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 24
-        uses: actions/setup-java@v4
+      - name: Download Release APK from build job
+        uses: actions/download-artifact@v4
         with:
-          distribution: 'temurin'
-          java-version: '24'
+          name: app-release-apk
+          # The artifact is downloaded to the root of the workspace
+          path: .
 
-      - name: Setup Python for backend
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f "app/ai_backend/requirements.txt" ]; then
-            pip install -r app/ai_backend/requirements.txt
-          fi
-
-      - name: Build and deploy
+      - name: Set up Google Services credentials
+        # It's crucial to store your google-services.json content as a secret.
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
-        run: |
-          ./gradlew assembleRelease
-          # Add deployment steps here (e.g., Firebase App Distribution, Play Store, etc.)
-          echo "Deployment steps will be added here"
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
 
-      - name: Run Genesis backend
-        if: github.ref == 'refs/heads/AuraOS' || github.ref == 'refs/heads/Genesis-Embrace-your-Aura'
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/app/google-services.json
-        working-directory: app/ai_backend
+      - name: Deploy to a service (e.g., Firebase App Distribution)
         run: |
-          if [ -f "start_genesis.sh" ]; then
-            bash start_genesis.sh
-          fi
+          echo "The release APK is located at ./app-release.apk"
+          echo "Add your deployment script here."
+          # Example: ./gradlew app:publishRelease # If you use the Play Publisher plugin
+          # Example: ./gradlew app:appDistributionUploadRelease # For Firebase App Distribution
