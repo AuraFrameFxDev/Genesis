@@ -3,9 +3,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, AuraOS, Genesis-Embrace-your-Aura, cleanup ]
+    branches: [ cleanup ]
   pull_request:
-    branches: [ main, AuraOS, Genesis-Embrace-your-Aura, cleanup ]
+    branches: [ cleanup ]
   workflow_dispatch:
 
 jobs:
