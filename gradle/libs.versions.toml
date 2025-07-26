@@ -18,7 +18,7 @@ vertexai = "0.9.0"
 detekt = "1.23.7"
 
 # Library versions
-coreKtx = "1.15.0"
+coreKtx = "1.16.0"
 activityCompose = "1.9.3"
 compose = "1.6.4"
 composeBom = "2024.12.01"
