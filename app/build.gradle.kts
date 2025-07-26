@@ -7,6 +7,50 @@ plugins {
     id("org.openapi.generator") version libs.versions.openapi.get()
 }
 
+// Configure OpenAPI generation
+openApiGenerate {
+    generatorName.set("kotlin")
+    inputSpec.set("${rootProject.projectDir}/openapi.yml")
+    outputDir.set("${buildDir}/generated/openapi")
+    configFile.set("${rootProject.projectDir}/openapi-generator-config.json")
+    
+    // Ensure clean generation
+    skipOverwrite.set(false)
+    
+    // Configure for Kotlin
+    library.set("jvm-retrofit2")
+    apiPackage.set("dev.aurakai.auraframefx.api.generated")
+    modelPackage.set("dev.aurakai.auraframefx.model.generated")
+    
+    // Additional properties
+    configOptions.set(mapOf(
+        "useCoroutines" to "true",
+        "serializationLibrary" to "kotlinx_serialization",
+        "enumPropertyNaming" to "UPPERCASE",
+        "parcelizeModels" to "true",
+        "dateLibrary" to "java8"
+    ))
+}
+
+// Add generated sources to the main source set
+sourceSets.main {
+    java.srcDirs("${buildDir}/generated/openapi/src/main/kotlin")
+}
+
+// Ensure OpenAPI generation happens before compilation
+tasks.named("compileKotlin") {
+    dependsOn("openApiGenerate")
+}
+
+// Clean task for generated files
+tasks.register("cleanOpenApi", Delete::class) {
+    delete("${buildDir}/generated/openapi")
+}
+
+tasks.clean {
+    dependsOn("cleanOpenApi")
+}
+
 android {
     namespace = "dev.aurakai.auraframefx"
     compileSdk = 34

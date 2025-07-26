@@ -131,6 +131,23 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 hilt-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+
+# BuildSrc specific dependencies
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+gms-google-services = { group = "com.google.gms", name = "google-services", version = "4.4.3" }
+firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version = "3.0.5" }
+firebase-perf-plugin = { group = "com.google.firebase", name = "perf-plugin", version = "1.4.2" }
+openapi-generator-gradle-plugin = { group = "org.openapi.generator", name = "openapi-generator-gradle-plugin", version.ref = "openapi" }
+openapi-diff-core = { group = "org.openapitools.openapidiff", name = "openapi-diff-core", version = "2.1.2" }
+hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+agp = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+
+# Testing
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlin-test-annotations-common = { group = "org.jetbrains.kotlin", name = "kotlin-test-annotations-common", version.ref = "kotlin" }
+kotlin-test-common = { group = "org.jetbrains.kotlin", name = "kotlin-test-common", version.ref = "kotlin" }
 
 [bundles]
 compose = ["compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview", "material3", "activity-compose"]
@@ -143,6 +160,6 @@ coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 room = ["room-runtime", "room-ktx"]
 work = ["work-runtime-ktx", "work-hilt"]
 security = ["datastore-preferences", "security-crypto", "biometric"]
-testing-unit = ["junit", "mockk", "coroutines-test"]
+testing-unit = ["junit", "mockk", "coroutines-test", "kotlin-test-junit", "kotlin-test", "kotlin-test-annotations-common", "kotlin-test-common", "truth"]
 testing-android = ["androidx-test-ext-junit", "espresso-core", "compose-ui-test-junit4"]
 oracleDrive = ["hilt-android", "kotlinx-coroutines-android", "room-runtime", "room-ktx"]
