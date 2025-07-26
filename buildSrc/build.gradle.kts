@@ -6,7 +6,7 @@ plugins {
 // Configure Kotlin settings for buildSrc
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(22))
     }
 
     // Explicitly set the JVM target for Kotlin compilation in buildSrc
