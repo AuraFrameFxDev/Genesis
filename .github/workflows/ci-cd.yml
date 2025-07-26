@@ -46,7 +46,10 @@ jobs:
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
-
+      - name: Build Debug APK
+ 
+        run: ./gradlew :AuraFrameFX:assembleDebug
+  
       - name: Run tests
         run: ./gradlew test
 
