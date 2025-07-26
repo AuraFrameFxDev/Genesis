@@ -60,14 +60,13 @@ listOf(
     ":collab-canvas"
 ).forEach { include(it) }
 
-// Configure all projects
+// Configure all projects to use standard build.gradle.kts
 rootProject.children.forEach { project ->
-    // Use intermediate build file for app module
-    val buildFileName = if (project.name == "app") "intermediate-build.gradle.kts" else "${project.name}.gradle.kts"
-    project.buildFileName = buildFileName
+    // Always use standard build.gradle.kts for all modules
+    project.buildFileName = "build.gradle.kts"
     
-    // Ensure all build files exist
-    val buildFile = project.projectDir.resolve(buildFileName)
+    // Ensure the build file exists
+    val buildFile = project.projectDir.resolve("build.gradle.kts")
     if (!buildFile.exists()) {
         buildFile.parentFile?.mkdirs()
         buildFile.createNewFile()

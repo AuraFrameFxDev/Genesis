@@ -1,9 +1,10 @@
+// Apply plugins with versions from version catalog
 plugins {
-    id("com.android.application") version "8.2.0"
-    id("org.jetbrains.kotlin.android") version "2.2.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
-    id("org.openapi.generator") version "7.10.0"
+    alias(libs.plugins.android.application) apply true
+    alias(libs.plugins.kotlin.android) apply true
+    alias(libs.plugins.kotlin.serialization) apply true
+    alias(libs.plugins.ksp) apply true
+    id("org.openapi.generator") version libs.versions.openapi.get()
 }
 
 android {
@@ -32,26 +33,33 @@ android {
         compose = true
     }
     
-    // Compose compiler options
+    // Configure Compose compiler options
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     
-    // Compose compiler options
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
-    
-    // Configure Java toolchain for consistent builds
+    // Configure Java compilation options
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
-
-    // Configure Compose
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    
+    // Kotlin compiler options are now configured using the new compilerOptions DSL
+    
+    // Configure Java toolchain for all tasks
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+            vendor = JvmVendorSpec.AZUL
+        }
+    }
+    
+    // Ensure all Java compilation tasks use Java 17
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = JavaVersion.VERSION_17.toString()
+        targetCompatibility = JavaVersion.VERSION_17.toString()
+        options.release.set(17)
     }
 
     // Configure Android resources
@@ -60,8 +68,14 @@ android {
     }
     
     // Enable split APKs by ABI for smaller APK sizes
-    ndk {
-        abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
+    ndkVersion = "25.2.9519653" // Use the same version as specified below
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = false
+        }
     }
 
     // Configure build types
@@ -79,14 +93,32 @@ android {
         }
     }
 
-    // Kotlin compiler options
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        // Enable experimental Kotlin features
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all"
-        )
+    kotlin {
+        jvmToolchain(17)
+        
+        // Configure compiler options
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            
+            // Configure free compiler args
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xjvm-default=all"
+            )
+        }
+    }
+    
+    // Configure packaging options for all build types
+    packaging {
+        resources {
+            // Keep debug symbols for native libraries in debug builds
+            jniLibs.keepDebugSymbols.add("**/*.so")
+            
+            // Common resource exclusions
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+        }
     }
 
     buildFeatures {
