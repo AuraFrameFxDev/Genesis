@@ -13,7 +13,7 @@ composeCompiler = "1.5.15"
 hilt = "2.57"
 openapi = "7.10.0"
 room = "2.7.2"
-firebase = "33.7.0"
+firebase = "34.0.0"
 vertexai = "0.9.0"
 detekt = "1.23.7"
 
